@@ -1,0 +1,11 @@
+{
+  "name": "FLib",
+  "version": "0.1.0",
+  "title": "Factorio Library",
+  "author": "Raiguard, Optera",
+  "contact": "https://github.com/raiguard/Factorio-Flib",
+  "homepage": "https://github.com/raiguard/Factorio-Flib",
+  "description": "Community Library.",
+  "factorio_version": "0.18",
+  "dependencies": ["base >= 0.18.0"]
+}
