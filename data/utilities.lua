@@ -112,21 +112,8 @@ function get_energy_value(energy_string)
   end
 end
 
---- multiplies energy string, e.g. '12kW' with factor
----@param energy_string string
----@param multiplicator double
----@return string | nil
-function multiply_energy_value(energy_string, factor)
-  local value, unit = get_energy_value(energy_string)
-  if value then
-    value = value * factor
-    return value..unit
-  end
-end
-
 return {
   copy_prototype = copy_prototype,
   create_icons = create_icons,
   get_energy_value = get_energy_value,
-  multiply_energy_value = multiply_energy_value,
 }
