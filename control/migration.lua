@@ -3,7 +3,6 @@ local migration = {}
 
 local string_split = require("__core__.lualib.util").split
 
-
 function migration.compare_versions(v1, v2)
   local v1_split = string_split(v1, ".")
   local v2_split = string_split(v2, ".")
