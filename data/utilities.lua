@@ -1,7 +1,13 @@
 
--- copies prototypes and assigns new name and minable
--- Parameters: prototype, new_name, remove_icon (optional)
--- Returns: copied prototype
+---@class PrototypeBase https://wiki.factorio.com/PrototypeBase
+---@class IconSpecification https://wiki.factorio.com/Types/IconSpecification
+
+
+--- copies prototypes and assigns new name and minable
+---@param prototype PrototypeBase
+---@param new_name string
+---@param remove_icon bool | nil
+---@return PrototypeBase
 function copy_prototype(prototype, new_name, remove_icon)
   if not prototype.type or not prototype.name then
     error("Invalid prototype: prototypes must have name and type properties.")
@@ -35,9 +41,10 @@ function copy_prototype(prototype, new_name, remove_icon)
   return p
 end
 
--- adds new icon layers to a prototype icon or icons and returns the result
--- Parameters: prototype, new_layers = { { icon, icon_size, tint (optional) } }
--- Returns: created layered icon or nil
+--- adds new icon layers to a prototype icon or icons and returns the result
+---@param prototype PrototypeBase
+---@param new_layers IconSpecification[]
+---@return IconSpecification[] | nil
 function create_icons(prototype, new_layers)
   for _,new_layer in pairs(new_layers) do
     if not new_layer.icon or not new_layer.icon_size then
@@ -91,9 +98,10 @@ local exponent_multipliers = {
   ['P'] = 1000000000000000,
 }
 
--- returns energy strings as base unit value + suffix
--- Parameters: energy_string, multiplicator
--- Returns: value, unit
+--- returns energy strings as base unit value + suffix
+---@param energy_string string
+---@return float | nil
+---@return string
 function get_energy_value(energy_string)
   if type(energy_string) == "string" then
     local value, str, exp, unit =  string.match(energy_string, "([%-+]?[0-9]*%.?[0-9]+)(([kMGTP]?)([WJ]))")
@@ -104,15 +112,14 @@ function get_energy_value(energy_string)
   end
 end
 
--- multiplies energy string, e.g. '12kW' with factor
--- Parameters: energy_string, multiplicator
--- Returns: updated energy string
+--- multiplies energy string, e.g. '12kW' with factor
+---@param energy_string string
+---@param multiplicator double
+---@return string | nil
 function multiply_energy_value(energy_string, factor)
-  if type(energy_string) == "string" then
-    local value, unit = get_energy_value(energy_string)
-    if value then
-      value = value * factor
-    end
+  local value, unit = get_energy_value(energy_string)
+  if value then
+    value = value * factor
     return value..unit
   end
 end
