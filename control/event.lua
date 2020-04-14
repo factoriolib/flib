@@ -48,32 +48,38 @@ local function dispatch_event(e)
     end
 
     -- check conditional events
+    local call_handler = true
     for name,_ in pairs(t.conditional_names) do
-      has_name = true
+      call_handler = false -- reset to false if any conditional events exist, to be set to true if something matches
       local con_data = con_registry[name]
       if not con_data then error("Conditional event ["..name.."] has been raised, but has no data!") end
+
       -- if con_data is true, then skip all checks and just call the handler
-      if con_data and con_data ~= true then
+      if con_data == true then
+        call_handler = true
+        break
+      else
         local players = con_data.players
         -- add registered players to the event
         e.registered_players = players
         if e.player_index then
           local player_events = player_lookup[e.player_index]
           -- check if this player is registered
-          if not player_events or not player_events[name] then
-            goto continue
+          if player_events and player_events[name] then
+            call_handler = true
+            break
           end
         end
       end
     end
 
-    -- call the handler
-    t.handler(e)
+    if call_handler then
+      t.handler(e)
+    end
 
     if options.force_crc then
       game.force_crc()
     end
-    ::continue::
   end
   return
 end
@@ -181,12 +187,10 @@ function event.register(id, handler, options, conditional_name)
   return
 end
 
-event.register()
-
 --- register conditional (non-static) events
----@param conditional_events ConditionalEvents
-function event.register_conditional(conditional_events)
-  for n,t in pairs(conditional_events) do
+---@param events ConditionalEvents
+function event.register_conditional(events)
+  for n,t in pairs(events) do
     if conditional_events[n] then
       error("Duplicate conditional event: ["..n.."]")
     end
@@ -265,8 +269,6 @@ function event.enable(name, player_index, reregister)
   -- register handler
   event.register(data.id, data.handler, data.options, name)
 end
-
-event.enable()
 
 --- disable a conditional event
 ---@param name string
