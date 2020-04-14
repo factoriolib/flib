@@ -325,6 +325,7 @@ function event.disable(name, player_index)
     end
     global_data.conditional_events[name] = nil
   end
+
   -- deregister handler
   local id = data.id
   if type(id) ~= "table" then id = {id} end
@@ -412,7 +413,7 @@ function event.on_nth_tick(nth_tick, handler, options)
   return event.register(-nth_tick, handler, nil, options)
 end
 
--- How to document!?
+-- TODO How to document!?
 for n,id in pairs(defines.events) do
   event[n] = function(handler, options)
     event.register(id, handler, options)
@@ -481,8 +482,6 @@ function event.save_id(name, id)
   end
   custom_id_registry[name] = id
 end
-
--- -----------------------------------------------------------------------------
 
 event.events = events
 event.conditional_events = conditional_events
