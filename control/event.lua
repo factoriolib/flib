@@ -21,22 +21,26 @@ local function dispatch_event(e)
   local global_data = global.__flib.event
   local con_registry = global_data.conditional_events
   local player_lookup = global_data.players
-  local id = e.name
-  -- set ID for special events
+
+  -- retrieve event registry
+  local registry
   if e.nth_tick then
-    id = -e.nth_tick
-  end
-  if e.input_name then
-    id = e.input_name
+    registry = events[-e.nth_tick]
+  elseif e.input_name then
+    registry = events[e.input_name]
+  else
+    registry = events[e.name]
   end
   -- error checking
-  if not events[id] then
-    error("Event ["..id.."] is registered but has no handlers!")
+  if not registry then
+    error("Event is registered but has no handlers!")
   end
 
   -- for every handler registered to this event
-  for _,t in ipairs(events[id]) do
+  for _,t in ipairs(registry) do
+    local handler = t.handler
     local options = t.options
+    local conditional_names = t.conditional_names
 
     -- check if any userdata has gone invalid since last iteration
     if not options.skip_validation then
@@ -47,38 +51,36 @@ local function dispatch_event(e)
       end
     end
 
-    -- check conditional events
-    local call_handler = true
-    for name,_ in pairs(t.conditional_names) do
-      call_handler = false -- reset to false if any conditional events exist, to be set to true if something matches
-      local con_data = con_registry[name]
-      if not con_data then error("Conditional event ["..name.."] has been raised, but has no data!") end
+    -- check conditional requirements, or call the handler for static events
+    if conditional_names then
+      for name,_ in pairs(conditional_names) do
+        local con_data = con_registry[name]
+        if not con_data then error("Conditional event ["..name.."] has been raised, but has no data!") end
+        e.conditional_name = name
 
-      -- if con_data is true, then skip all checks and just call the handler
-      if con_data == true then
-        call_handler = true
-        break
-      else
-        local players = con_data.players
-        -- add registered players to the event
-        e.registered_players = players
-        if e.player_index then
-          local player_events = player_lookup[e.player_index]
-          -- check if this player is registered
-          if player_events and player_events[name] then
-            call_handler = true
-            break
+        -- if con_data is true, just call the handler
+        if con_data == true then
+          e.registered_players = nil
+          handler(e)
+        else
+          local players = con_data.players
+          -- add registered players to the event
+          e.registered_players = players
+
+          -- if there is a player index, check if that specific player is registered
+          if e.player_index then
+            local player_events = player_lookup[e.player_index]
+            if player_events and player_events[name] then
+              handler(e)
+            end
+          -- otherwise, just call the handler
+          else
+            handler(e)
           end
         end
       end
-    end
-
-    if call_handler then
-      -- check matcher, if one exists
-      local matcher = options.matcher
-      if not matcher or matcher(e) then
-        t.handler(e)
-      end
+    else
+      handler(e)
     end
   end
   return
@@ -139,17 +141,13 @@ local bootstrap_events = {on_init=true, on_init_postprocess=true, on_load=true, 
 ---@param conditional_name nil
 function event.register(id, handler, options, conditional_name)
   options = options or {}
-  -- register handler
   if type(id) ~= "table" then id = {id} end
+
   for _,n in pairs(id) do
-    -- create event registry if it doesn't exist
+    -- create registry and register master handler, if needed
     if not events[n] then
       events[n] = {}
-    end
-    local registry = events[n]
-    -- create master handler if not already created
-    if not bootstrap_events[n] then
-      if #registry == 0 then
+      if not bootstrap_events[n] then
         if type(n) == "number" and n < 0 then
           script.on_nth_tick(-n, dispatch_event)
         else
@@ -157,21 +155,24 @@ function event.register(id, handler, options, conditional_name)
         end
       end
     end
+    local registry = events[n]
+
     -- make sure the handler has not already been registered
     for _,t in ipairs(registry) do
       if t.handler == handler then
-        -- add conditional name to the list if it's not already there
-        if conditional_name and not t.conditional_names[conditional_name] then
+        -- add conditional name to the list if there is one
+        if conditional_name then
           t.conditional_names[conditional_name] = true
         end
         -- do nothing else
         return
       end
     end
+
     -- insert handler
-    local data = {handler=handler, options=options, conditional_names={}}
+    local data = {handler=handler, options=options}
     if conditional_name then
-      data.conditional_names[conditional_name] = true
+      data.conditional_names = {[conditional_name]=true}
     end
     if options.insert_at then
       table_insert(registry, math_min(#registry+1, options.insert_at), data)
