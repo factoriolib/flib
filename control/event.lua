@@ -1,7 +1,5 @@
--- TODO: write LDoc documentation
-
--- @module control.event
--- @usage local event = require("__flib__.control.event")
+---@module control.event
+---@usage local event = require("__flib__.control.event")
 local event = {}
 
 local migration = require("__flib__.control.migration")
@@ -9,9 +7,6 @@ local migration = require("__flib__.control.migration")
 local math_min = math.min
 local table_insert = table.insert
 local table_remove = table.remove
-
--- -----------------------------------------------------------------------------
--- DISPATCHING
 
 -- holds registered events for dispatch
 local events = {}
@@ -132,14 +127,15 @@ script.on_configuration_changed(function(e)
   global.__flib.__version = script.active_mods["flib"]
 end)
 
--- -----------------------------------------------------------------------------
--- REGISTRATION
+---@section Registration
 
 local bootstrap_events = {on_init=true, on_init_postprocess=true, on_load=true, on_load_postprocess=true, on_configuration_changed=true}
 
--- register static (non-conditional) events
--- used by register_conditional to insert the handler
--- conditional name is not to be used by the modder - it is internal only!
+--- register static (non-conditional) events
+---@param id EventId|EventId[]
+---@param handler function
+---@param options EventOptions
+---@param conditional_name nil
 function event.register(id, handler, options, conditional_name)
   options = options or {}
   -- register handler
@@ -185,10 +181,12 @@ function event.register(id, handler, options, conditional_name)
   return
 end
 
--- register conditional (non-static) events
--- called in on_init and on_load ONLY
-function event.register_conditional(data)
-  for n,t in pairs(data) do
+event.register()
+
+--- register conditional (non-static) events
+---@param conditional_events ConditionalEvents
+function event.register_conditional(conditional_events)
+  for n,t in pairs(conditional_events) do
     if conditional_events[n] then
       error("Duplicate conditional event: ["..n.."]")
     end
@@ -211,7 +209,9 @@ function event.register_conditional(data)
   end
 end
 
--- enables a conditional event
+--- enable a conditional event
+---@param name string
+---@param[opt] player_index integer
 function event.enable(name, player_index, reregister)
   local data = conditional_events[name]
   if not data then
@@ -266,7 +266,11 @@ function event.enable(name, player_index, reregister)
   event.register(data.id, data.handler, data.options, name)
 end
 
--- disables a conditional event
+event.enable()
+
+--- disable a conditional event
+---@param name string
+---@param[opt] player_index integer
 function event.disable(name, player_index)
   local data = conditional_events[name]
   if not data then
@@ -353,7 +357,9 @@ function event.disable(name, player_index)
   end
 end
 
--- enables a group of conditional events
+--- enable a group of conditional events
+---@param group string
+---@param player_index integer
 function event.enable_group(group, player_index)
   local group_events = conditional_event_groups[group]
   if not group_events then error("Group ["..group.."] has no handlers!") end
@@ -362,7 +368,9 @@ function event.enable_group(group, player_index)
   end
 end
 
--- disables a group of conditional events
+--- disable a group of conditional events
+---@param group string
+---@param player_index integer
 function event.disable_group(group, player_index)
   local group_events = conditional_event_groups[group]
   if not group_events then error("Group ["..group.."] has no handlers!") end
@@ -371,43 +379,57 @@ function event.disable_group(group, player_index)
   end
 end
 
--- -------------------------------------
--- SHORTCUT FUNCTIONS
+---@section Shortcut functions
 
--- bootstrap events
+--- Shortcut for `event.register("on_init", ...)
+---@param handler function
+---@param options EventOptions
 function event.on_init(handler, options)
   return event.register("on_init", handler, nil, options)
 end
 
+--- Shortcut for `event.register("on_load", ...)
+---@param handler function
+---@param options EventOptions
 function event.on_load(handler, options)
   return event.register("on_load", handler, nil, options)
 end
 
+--- Shortcut for `event.register("on_configuration_changed", ...)
+---@param handler function
+---@param options EventOptions
 function event.on_configuration_changed(handler, options)
   return event.register("on_configuration_changed", handler, nil, options)
 end
 
-function event.on_nth_tick(nthTick, handler, options)
-  return event.register(-nthTick, handler, nil, options)
+--- Shortcut for `event.register(-nth_tick, ...)
+---@param nth_tick integer
+---@param handler function
+---@param options EventOptions
+function event.on_nth_tick(nth_tick, handler, options)
+  return event.register(-nth_tick, handler, nil, options)
 end
 
--- defines.events
+-- How to document!?
 for n,id in pairs(defines.events) do
   event[n] = function(handler, options)
     event.register(id, handler, options)
   end
 end
 
--- -----------------------------------------------------------------------------
--- EVENT MANIPULATION
+---@section Event manipulation
 
--- raises an event as if it were actually called
-function event.raise(id, table)
-  script.raise_event(id, table)
+--- raise an event as if it were actually called
+---@param id EventId|EventId[]
+---@param event_data EventData
+function event.raise(id, event_data)
+  script.raise_event(id, event_data)
   return
 end
 
--- set or remove event filters
+--- set or remove the event's filters
+---@param id EventId|EventId[]
+---@param filters EventFilters[]
 function event.set_filters(id, filters)
   if type(id) ~= "table" then id = {id} end
   for _,n in pairs(id) do
@@ -416,7 +438,9 @@ function event.set_filters(id, filters)
   return
 end
 
--- returns true if the conditional event is enabled
+--- check if a conditional event is enabled
+---@param name string
+---@param player_index integer
 function event.is_enabled(name, player_index)
   local global_data = global.__flib.event
   local registry = global_data.conditional_events[name]
@@ -437,7 +461,8 @@ end
 -- holds custom event IDs
 local custom_id_registry = {}
 
--- generates or retrieves a custom event ID
+--- generate or retrieve a custom event ID
+---@param name string
 function event.get_id(name)
   if not custom_id_registry[name] then
     custom_id_registry[name] = script.generate_event_name()
@@ -445,7 +470,9 @@ function event.get_id(name)
   return custom_id_registry[name]
 end
 
--- saves a custom event ID
+--- save the custom event ID
+---@param name string
+---@param id integer
 function event.save_id(name, id)
   if custom_id_registry[name] then
     log("Overwriting entry in custom event registry: ["..name.."]")
@@ -460,3 +487,21 @@ event.conditional_events = conditional_events
 event.conditional_event_groups = conditional_event_groups
 
 return event
+
+---@section Concepts
+
+--- One of the following:
+-- <ul>
+--  <li></li>
+--  <li></li>
+--  <li></li>
+--  <li></li>
+-- </ul>
+---@class EventId
+
+---@class EventOptions
+
+---@class ConditionalEvents
+
+---@class EventFilters https://lua-api.factorio.com/latest/Event-Filters.html
+---@class EventData https://lua-api.factorio.com/latest/events.html
