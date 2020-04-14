@@ -74,11 +74,11 @@ local function dispatch_event(e)
     end
 
     if call_handler then
-      t.handler(e)
-    end
-
-    if options.force_crc then
-      game.force_crc()
+      -- check matcher, if one exists
+      local matcher = options.matcher
+      if not matcher or matcher(e) then
+        t.handler(e)
+      end
     end
   end
   return
