@@ -2,8 +2,6 @@
 ---@usage local event = require("__flib__.control.event")
 local event = {}
 
-local migration = require("__flib__.control.migration")
-
 local math_min = math.min
 local table_insert = table.insert
 local table_remove = table.remove
@@ -387,23 +385,20 @@ end
 
 --- Shortcut for `event.register("on_init", ...)
 ---@param handler function
----@param options EventOptions
-function event.on_init(handler, options)
-  return event.register("on_init", handler, nil, options)
+function event.on_init(handler)
+  return event.register("on_init", handler)
 end
 
 --- Shortcut for `event.register("on_load", ...)
 ---@param handler function
----@param options EventOptions
-function event.on_load(handler, options)
-  return event.register("on_load", handler, nil, options)
+function event.on_load(handler)
+  return event.register("on_load", handler)
 end
 
 --- Shortcut for `event.register("on_configuration_changed", ...)
 ---@param handler function
----@param options EventOptions
-function event.on_configuration_changed(handler, options)
-  return event.register("on_configuration_changed", handler, nil, options)
+function event.on_configuration_changed(handler)
+  return event.register("on_configuration_changed", handler)
 end
 
 --- Shortcut for `event.register(-nth_tick, ...)
@@ -411,7 +406,7 @@ end
 ---@param handler function
 ---@param options EventOptions
 function event.on_nth_tick(nth_tick, handler, options)
-  return event.register(-nth_tick, handler, nil, options)
+  return event.register(-nth_tick, handler, options)
 end
 
 -- TODO How to document!?
