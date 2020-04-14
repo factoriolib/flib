@@ -56,6 +56,7 @@ local function dispatch_event(e)
       for name,_ in pairs(conditional_names) do
         local con_data = con_registry[name]
         if not con_data then error("Conditional event ["..name.."] has been raised, but has no data!") end
+        -- add conditional event name to the event table
         e.conditional_name = name
 
         -- if con_data is true, just call the handler
@@ -64,7 +65,7 @@ local function dispatch_event(e)
           handler(e)
         else
           local players = con_data.players
-          -- add registered players to the event
+          -- add registered players to the event table
           e.registered_players = players
 
           -- if there is a player index, check if that specific player is registered
@@ -113,17 +114,19 @@ script.on_load(function()
     t.handler()
   end
   -- re-register conditional events
-  local registered = global.__flib.event.conditional_events
-  for n,_ in pairs(registered) do
-    event.enable(n, nil, true)
+  local con_registry = global.__flib.event.conditional_events
+  for name,_ in pairs(con_registry) do
+    local data = conditional_events[name]
+    if data then
+      event.register(data.id, data.handler, data.options, name)
+    else
+      log("Conditional event ["..name.."] was enabled on save, but now has no registration data and was not re-enabled. If the name was changed, it must "
+        .."be re-enabled in on_configuration_changed. If it was removed entirely, its global data must be removed in on_configuration_changed.")
+    end
   end
 end)
 
 script.on_configuration_changed(function(e)
-  -- module migrations
-  migration.on_config_changed(e, {
-    -- insert migrations here if needed
-  })
   -- dispatch events
   for _,t in ipairs(events.on_configuration_changed or {}) do
     t.handler(e)
@@ -188,7 +191,7 @@ end
 function event.register_conditional(events)
   for n,t in pairs(events) do
     if conditional_events[n] then
-      error("Duplicate conditional event: ["..n.."]")
+      error("Duplicate conditional event ["..n.."]!")
     end
     t.options = t.options or {}
     -- add to conditional events table
@@ -212,7 +215,7 @@ end
 --- enable a conditional event
 ---@param name string
 ---@param[opt] player_index integer
-function event.enable(name, player_index, reregister)
+function event.enable(name, player_index)
   local data = conditional_events[name]
   if not data then
     error("Conditional event ["..name.."] was not registered and has no data!")
@@ -223,7 +226,9 @@ function event.enable(name, player_index, reregister)
   if saved_data then
     -- update existing data / add this player
     if player_index then
-      if saved_data == true then error("Tried to add a player to a global conditional event!") end
+      if saved_data == true then
+        error("Tried to add a player to global conditional event ["..name.."]!")
+      end
       local player_lookup = global_data.players[player_index]
       -- check if they're already registered
       if player_lookup and player_lookup[name] then
@@ -235,7 +240,7 @@ function event.enable(name, player_index, reregister)
       else
         add_player_data = true
       end
-    elseif not reregister then
+    else
       if not data.options.suppress_logging then
         log("Conditional event ["..name.."] was already registered, skipping!")
       end
@@ -347,7 +352,7 @@ function event.disable(name, player_index)
     -- de-register the master handler if it's no longer needed
     if #registry == 0 then
       if type(n) == "number" and n < 0 then
-        script.on_nth_tick(math.abs(n), nil)
+        script.on_nth_tick(-n, nil)
       else
         script.on_event(n, nil)
       end
