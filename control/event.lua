@@ -119,11 +119,9 @@ end)
 
 script.on_configuration_changed(function(e)
   -- module migrations
-  if script.active_mods["flib"] ~= global.__flib.__version then
-    migration.on_config_changed(e, {
-      -- insert migrations here if needed
-    })
-  end
+  migration.on_config_changed(e, {
+    -- insert migrations here if needed
+  })
   -- dispatch events
   for _,t in ipairs(events.on_configuration_changed or {}) do
     t.handler(e)
