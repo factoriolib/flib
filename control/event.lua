@@ -89,7 +89,6 @@ end
 
 script.on_init(function()
   global.__flib = {
-    __version = script.active_mods["flib"], -- current version
     event = {conditional_events={}, players={}}
   }
   -- dispatch events
@@ -121,16 +120,14 @@ end)
 script.on_configuration_changed(function(e)
   -- module migrations
   if script.active_mods["flib"] ~= global.__flib.__version then
-    migration.run(global.__flib.__version, {
-      -- insert migrations here
+    migration.on_config_changed(e, {
+      -- insert migrations here if needed
     })
   end
   -- dispatch events
   for _,t in ipairs(events.on_configuration_changed or {}) do
     t.handler(e)
   end
-  -- update lualib version
-  global.__flib.__version = script.active_mods["flib"]
 end)
 
 ---@section Registration
