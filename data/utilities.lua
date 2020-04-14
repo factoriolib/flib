@@ -1,3 +1,4 @@
+local utilities = {}
 
 ---@class PrototypeBase https://wiki.factorio.com/PrototypeBase
 ---@class IconSpecification https://wiki.factorio.com/Types/IconSpecification
@@ -8,7 +9,7 @@
 ---@param new_name string
 ---@param remove_icon bool | nil
 ---@return PrototypeBase
-function copy_prototype(prototype, new_name, remove_icon)
+function utilities.copy_prototype(prototype, new_name, remove_icon)
   if not prototype.type or not prototype.name then
     error("Invalid prototype: prototypes must have name and type properties.")
     return nil
@@ -45,7 +46,7 @@ end
 ---@param prototype PrototypeBase
 ---@param new_layers IconSpecification[]
 ---@return IconSpecification[] | nil
-function create_icons(prototype, new_layers)
+function utilities.create_icons(prototype, new_layers)
   for _,new_layer in pairs(new_layers) do
     if not new_layer.icon or not new_layer.icon_size then
       return nil
@@ -102,7 +103,7 @@ local exponent_multipliers = {
 ---@param energy_string string
 ---@return float | nil
 ---@return string
-function get_energy_value(energy_string)
+function utilities.get_energy_value(energy_string)
   if type(energy_string) == "string" then
     local value, str, exp, unit =  string.match(energy_string, "([%-+]?[0-9]*%.?[0-9]+)(([kMGTP]?)([WJ]))")
     if exp and exponent_multipliers[exp] then
@@ -112,8 +113,4 @@ function get_energy_value(energy_string)
   end
 end
 
-return {
-  copy_prototype = copy_prototype,
-  create_icons = create_icons,
-  get_energy_value = get_energy_value,
-}
+return utilities
