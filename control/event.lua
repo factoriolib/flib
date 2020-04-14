@@ -485,14 +485,8 @@ event.conditional_event_groups = conditional_event_groups
 return event
 
 ---@section Concepts
+-- TODO Learn how to do this section. It should match the contents of https://github.com/raiguard/Factorio-RaiLuaLib/wiki/Event#concepts
 
---- One of the following:
--- <ul>
---  <li></li>
---  <li></li>
---  <li></li>
---  <li></li>
--- </ul>
 ---@class EventId
 
 ---@class EventOptions
