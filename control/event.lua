@@ -121,8 +121,8 @@ script.on_load(function()
     if data then
       event.register(data.id, data.handler, data.options, name)
     else
-      log("Conditional event ["..name.."] was enabled on save, but now has no registration data and was not re-enabled. If the name was changed, it must "
-        .."be re-enabled in on_configuration_changed. If it was removed entirely, its global data must be removed in on_configuration_changed.")
+      log("Conditional event ["..name.."] was enabled on save, but now has no registration data and was not re-enabled. If the name was changed, the event "
+        .." must be re-enabled in on_configuration_changed. If it was removed entirely, its global data must be removed in on_configuration_changed.")
     end
   end
 end)
