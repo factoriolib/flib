@@ -135,11 +135,19 @@ end)
 
 local bootstrap_events = {on_init=true, on_init_postprocess=true, on_load=true, on_load_postprocess=true, on_configuration_changed=true}
 
---- register static (non-conditional) events
+--- Register a static (non-conditional) handler.
 ---@param id EventId|EventId[]
 ---@param handler function
 ---@param options EventOptions
 ---@param conditional_name nil
+---@usage
+-- -- Register a handler to run on every tick
+-- event.register(defines.events.on_tick, function(e) game.print(game.tick) end)
+-- -- Register a handler for Nth tick using negative numbers
+-- event.register(-10, function(e) game.print("Every 10 ticks") end)
+-- -- Custom inputs and bootstrap events
+-- event.register("mmd-open-gui", handler)
+-- event.register("on_configuration_changed", handler)
 function event.register(id, handler, options, conditional_name)
   options = options or {}
   if type(id) ~= "table" then id = {id} end
@@ -184,8 +192,13 @@ function event.register(id, handler, options, conditional_name)
   return
 end
 
---- register conditional (non-static) events
+--- Register conditional (non-static) handlers.
 ---@param events ConditionalEvents
+---@usage
+-- event.register_conditional{
+--   place_fire_at_feet = {id=defines.events.on_tick, handler=place_fire},
+--   void_chests_tick = {id=defines.events.on_tick, handler=void_chests}
+-- }
 function event.register_conditional(events)
   for n,t in pairs(events) do
     if conditional_events[n] then
@@ -210,9 +223,14 @@ function event.register_conditional(events)
   end
 end
 
---- enable a conditional event
+--- Enable a conditional handler.
 ---@param name string
 ---@param[opt] player_index integer
+---@usage
+-- -- Enable a global conditional handler
+-- event.enable("void_chests_tick")
+-- -- Enable a conditional handler for a specific player
+-- event.enable("place_fire_at_feet", e.player_index)
 function event.enable(name, player_index)
   local data = conditional_events[name]
   if not data then
@@ -269,9 +287,14 @@ function event.enable(name, player_index)
   event.register(data.id, data.handler, data.options, name)
 end
 
---- disable a conditional event
+--- Disable a conditional handler.
 ---@param name string
 ---@param[opt] player_index integer
+---@usage
+-- -- Disable a global conditional handler
+-- event.disable("void_chests_tick")
+-- -- Disable a conditional handler for a specific player
+-- event.disable("place_fire_at_feet", e.player_index)
 function event.disable(name, player_index)
   local data = conditional_events[name]
   if not data then
@@ -359,9 +382,14 @@ function event.disable(name, player_index)
   end
 end
 
---- enable a group of conditional events
+--- Enable a group of conditional handlers.
 ---@param group string
 ---@param player_index integer
+---@usage
+-- -- Enable a group of conditional handlers
+-- event.enable_group("group_1")
+-- -- Enable a group of conditional handlers for a specific player
+-- event.enable_group("player_group", e.player_index)
 function event.enable_group(group, player_index)
   local group_events = conditional_event_groups[group]
   if not group_events then error("Group ["..group.."] has no handlers!") end
@@ -370,9 +398,14 @@ function event.enable_group(group, player_index)
   end
 end
 
---- disable a group of conditional events
+--- Disable a group of conditional handlers.
 ---@param group string
 ---@param player_index integer
+---@usage
+-- -- Disable a group of conditional handlers
+-- event.disable_group("group_1")
+-- -- Disable a group of conditional handlers for a specific player
+-- event.disable_group("player_group", e.player_index)
 function event.disable_group(group, player_index)
   local group_events = conditional_event_groups[group]
   if not group_events then error("Group ["..group.."] has no handlers!") end
@@ -383,33 +416,24 @@ end
 
 ---@section Shortcut functions
 
---- Shortcut for `event.register("on_init", ...)
----@param handler function
+-- TODO: how to document!?
+
 function event.on_init(handler)
   return event.register("on_init", handler)
 end
 
---- Shortcut for `event.register("on_load", ...)
----@param handler function
 function event.on_load(handler)
   return event.register("on_load", handler)
 end
 
---- Shortcut for `event.register("on_configuration_changed", ...)
----@param handler function
 function event.on_configuration_changed(handler)
   return event.register("on_configuration_changed", handler)
 end
 
---- Shortcut for `event.register(-nth_tick, ...)
----@param nth_tick integer
----@param handler function
----@param options EventOptions
 function event.on_nth_tick(nth_tick, handler, options)
   return event.register(-nth_tick, handler, options)
 end
 
--- TODO How to document!?
 for n,id in pairs(defines.events) do
   event[n] = function(handler, options)
     event.register(id, handler, options)
@@ -418,17 +442,23 @@ end
 
 ---@section Event manipulation
 
---- raise an event as if it were actually called
+--- Raise an event as if it were actually called.
 ---@param id EventId|EventId[]
 ---@param event_data EventData
+---@usage
+-- -- Raise an event as if it were really called
+-- event.raise(defines.events.on_built_entity, {player_index=1, created_entity=my_entity, stack=my_stack})
 function event.raise(id, event_data)
   script.raise_event(id, event_data)
   return
 end
 
---- set or remove the event's filters
+--- Set or remove the event's filters.
 ---@param id EventId|EventId[]
 ---@param filters EventFilters[]
+---@usage
+-- -- Set the filters for an event
+-- event.set_filters(defines.events.on_built_entity, {{filter="ghost_name", name="demo-entity-1"}, {filter="ghost"}})
 function event.set_filters(id, filters)
   if type(id) ~= "table" then id = {id} end
   for _,n in pairs(id) do
@@ -437,9 +467,14 @@ function event.set_filters(id, filters)
   return
 end
 
---- check if a conditional event is enabled
+--- Check if a conditional event is enabled.
 ---@param name string
 ---@param player_index integer
+---@usage
+-- -- Check if a conditional event is enabled
+-- if event.is_enabled("print_when_built") then game.print("someone registered this event!") end
+-- -- Check if a conditional event is enabled for a specific player
+-- if event.is_enabled("player_built_entity", player.index) then game.print(player.name.." registered this event!")
 function event.is_enabled(name, player_index)
   local global_data = global.__flib.event
   local registry = global_data.conditional_events[name]
@@ -460,8 +495,18 @@ end
 -- holds custom event IDs
 local custom_id_registry = {}
 
---- generate or retrieve a custom event ID
+--- Generate or retrieve a custom event ID.
 ---@param name string
+---@usage
+-- -- Generate a new event ID, or retrieve it if it has already been made
+-- local custom_event = event.generate_id("example")
+-- -- Listen for the event
+-- event.register(custom_event, handler)
+-- -- Raise the custom event
+-- event.raise(custom_event, {whatever_you_want=true, ...})
+-- -- Alternatively, use the function call directly
+-- event.register(event.get_id("example"), handler)
+-- event.raise(event.get_id("example"), {whatever_you_want=true, ...})
 function event.get_id(name)
   if not custom_id_registry[name] then
     custom_id_registry[name] = script.generate_event_name()
@@ -469,9 +514,12 @@ function event.get_id(name)
   return custom_id_registry[name]
 end
 
---- save the custom event ID
+--- Save a custom event ID.
 ---@param name string
 ---@param id integer
+---@usage
+-- Save an event ID retrieved from another mod
+-- event.save_id("other_mods_event", remote.call("other_mod", "custom_event"))
 function event.save_id(name, id)
   if custom_id_registry[name] then
     log("Overwriting entry in custom event registry: ["..name.."]")
@@ -486,7 +534,7 @@ event.conditional_event_groups = conditional_event_groups
 return event
 
 ---@section Concepts
--- TODO Learn how to do this section. It should match the contents of https://github.com/raiguard/Factorio-RaiLuaLib/wiki/Event#concepts
+-- TODO: How to document!? It should match the contents of https://github.com/raiguard/Factorio-RaiLuaLib/wiki/Event#concepts
 
 ---@class EventId
 
