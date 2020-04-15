@@ -529,12 +529,35 @@ event.conditional_event_groups = conditional_event_groups
 return event
 
 ---@section Concepts
--- TODO: How to document!? It should match the contents of https://github.com/raiguard/Factorio-RaiLuaLib/wiki/Event#concepts
+-- TODO: Fix documentation style if needed
 
+--- One of the following:
+-- - A member of [defines.events](https://lua-api.factorio.com/latest/defines.html#defines.events).
+-- - A [string](https://lua-api.factorio.com/latest/builtin-types.html#string) corresponding to a `custom-input` prototype name, or a bootstrap event.
+-- - A negative [int](https://lua-api.factorio.com/latest/builtin-types.html#int) corresponding to an `nth_tick` value.
+-- - A positive [int](https://lua-api.factorio.com/latest/builtin-types.html#int) corresponding to a custom mod-generated event.
+-- **Examples**
+-- `defines.events.on_player_created`
+-- `'rll-open-search'`
+-- `' on_init'`
+-- `-25`
+-- `241`
 ---@class EventId
 
+
+--- Table with the following fields:
+-- - skip_validation :: [boolean](https://lua-api.factorio.com/latest/Builtin-Types.html#boolean) (optional): If true, validation of userdata will be skipped when the event is raised. This saves on performance, but doesn't protect against crashes relating to invalid userdata!
+-- - insert_at :: [int](https://lua-api.factorio.com/latest/Builtin-Types.html#int) (optional): Inserts the handler at the given position in the event table, instead of at the back.
+-- **Examples**
+-- `{skip_validation=true, insert_at=1}`
 ---@class EventOptions
 
+--- Dictionary [string](https://lua-api.factorio.com/latest/Builtin-Types.html#string) -> [table](https://lua-api.factorio.com/latest/Builtin-Types.html#table). Each table of this dictionary has the following fields:
+-- - id :: [EventId](#eventid) or array of [EventId](#eventid): The event ID(s) to invoke the handler on.
+-- - handler :: function(event): The handler to run. Receives an event table [as defined in the Factorio documentation](https://lua-api.factorio.com/latest/events.html).
+-- - group :: [string](https://lua-api.factorio.com/latest/Builtin-Types.html#string) or array of [string](https://lua-api.factorio.com/latest/Builtin-Types.html#string) (optional): Assigns this event to one or more groups.
+-- - gui_filters :: [GuiFilter](#guifilter) or array of [GuiFilter](#guifilter) (optional): Static GUI filters to use for this event.
+-- - options :: [EventOptions](#eventoptions) (optional): Additional options.
 ---@class ConditionalEvents
 
 ---@class EventFilters https://lua-api.factorio.com/latest/Event-Filters.html
