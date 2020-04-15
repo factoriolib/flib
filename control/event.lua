@@ -356,7 +356,7 @@ function event.disable(name, player_index)
     local registry = events[n]
     -- error checking
     if not registry or #registry == 0 then
-      log("Tried to deregister an unregistered event of id: "..n)
+      log("Tried to deregister an unregistered event of id ["..n.."]")
       return
     end
     for i,t in ipairs(registry) do
