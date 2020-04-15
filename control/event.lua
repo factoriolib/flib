@@ -13,6 +13,9 @@ local conditional_events = {}
 -- conditional events by group
 local conditional_event_groups = {}
 
+-- bootstrap events do not go through dispatch_event, and have extra functionality
+local bootstrap_events = {on_init=true, on_init_postprocess=true, on_load=true, on_load_postprocess=true, on_configuration_changed=true}
+
 -- calls handler functions tied to an event
 -- all non-bootstrap events go through this function
 local function dispatch_event(e)
@@ -132,8 +135,6 @@ script.on_configuration_changed(function(e)
 end)
 
 ---@section Registration
-
-local bootstrap_events = {on_init=true, on_init_postprocess=true, on_load=true, on_load_postprocess=true, on_configuration_changed=true}
 
 --- Register a static (non-conditional) handler.
 ---@param id EventId|EventId[]
@@ -418,20 +419,14 @@ end
 
 -- TODO: how to document!?
 
-function event.on_init(handler)
-  return event.register("on_init", handler)
-end
-
-function event.on_load(handler)
-  return event.register("on_load", handler)
-end
-
-function event.on_configuration_changed(handler)
-  return event.register("on_configuration_changed", handler)
-end
-
 function event.on_nth_tick(nth_tick, handler, options)
   return event.register(-nth_tick, handler, options)
+end
+
+for n,_ in pairs(bootstrap_events) do
+  event[n] = function(handler)
+    event.register(n, handler)
+  end
 end
 
 for n,id in pairs(defines.events) do
