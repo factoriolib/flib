@@ -5,20 +5,38 @@ local migration = {}
 local string_match = string.match
 local string_format = string.format
 
+
 --- @section Functions
 
-local default_version_format = "%02d.%02d.%02d"
-local version_pattern = "(%d+).(%d+).(%d+)"
+-- replaced with gmatch variant for better error handling
+-- local version_pattern = "(%d+)%.?(%d*)%.?(%d*)"
+-- local version_format = "%02d.%02d.%02d"
+-- function migration.format_version(version, format)
+--   if version then
+--     format = format or version_format
+--     return string_format(format, string_match(version, version_pattern))
+--   end
+--   return nil
+-- end
 
 --- Normalizes version strings for easy comparison.
 -- @tparam string version
--- @tparam[opt="%02d.%02d.%02d"] string format
+-- @tparam[opt="%02d"] string format
 -- @treturn string|nil
--- @usage migration.format_version("1.10.1234", "%02d.%02d.%04d")
+-- @usage migration.format_version("1.10.1234", "%04d")
+-- @usage migration.format_version("3", "%02d")
+local version_pattern = "%d+"
+local version_format = "%02d"
 function migration.format_version(version, format)
   if version then
-    format = format or default_version_format
-    return string_format(format, string_match(version, version_pattern))
+    format = format or version_format
+    local tbl = {}
+    for v in string.gmatch(version, version_pattern) do
+      tbl[#tbl+1] = string_format(format, v)
+    end
+    if next(tbl) then
+     return table.concat(tbl, ".")
+    end
   end
   return nil
 end
