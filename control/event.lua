@@ -1,5 +1,6 @@
----@module control.event
----@usage local event = require("__flib__.control.event")
+--- @module control.event
+-- @usage local event = require("__flib__.control.event")
+
 local event = {}
 
 local math_min = math.min
