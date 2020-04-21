@@ -121,8 +121,11 @@ script.on_load(function()
     if data then
       event.register(data.id, data.handler, data.options, name)
     else
-      log("Conditional event ["..name.."] was enabled on save, but now has no registration data and was not re-enabled. If the name was changed, the event "
-        .." must be re-enabled in on_configuration_changed. If it was removed entirely, its global data must be removed in on_configuration_changed.")
+      log(
+        "Conditional event ["..name.."] was enabled on save, but now has no registration data and was not re-enabled."
+          .." If the name was changed, the event must be re-enabled in on_configuration_changed. If it was removed"
+          .." entirely, its global data must be removed in on_configuration_changed."
+      )
     end
   end
 end)
@@ -137,6 +140,8 @@ end)
 ---@section Registration
 
 --- Register a static (non-conditional) handler.
+-- If you're only registering an handler to a single event, and if that event is in @{defines.events} or is a bootstrap
+-- event, you can replace `event.register(id, handler, options)` with `event.event_name(handler, options)`.
 ---@param id EventId|EventId[]
 ---@param handler function
 ---@param options EventOptions
@@ -149,6 +154,9 @@ end)
 -- -- Custom inputs and bootstrap events
 -- event.register("mmd-open-gui", handler)
 -- event.register("on_configuration_changed", handler)
+-- -- Syntax shortcuts for bootstrap and defines.events
+-- event.on_configuration_changed(handler)
+-- event.on_tick(handler)
 function event.register(id, handler, options, conditional_name)
   options = options or {}
   if type(id) ~= "table" then id = {id} end
@@ -328,7 +336,7 @@ function event.disable(name, player_index)
       end
     else
       if not data.options.suppress_logging then
-        log("Tried to disable conditional event ["..name.."] from player "..player_index.." when it wasn't enabled for them!")
+        log("Tried to disable conditional event ["..name.."] from player ["..player_index.."] when it wasn't enabled for them!")
       end
       return
     end
@@ -415,20 +423,19 @@ function event.disable_group(group, player_index)
   end
 end
 
----@section Shortcut functions
-
--- TODO: how to document!?
-
+-- documented in event.register
 function event.on_nth_tick(nth_tick, handler, options)
   return event.register(-nth_tick, handler, options)
 end
 
+-- documented in event.register
 for n,_ in pairs(bootstrap_events) do
   event[n] = function(handler)
     event.register(n, handler)
   end
 end
 
+-- documented in event.register
 for n,id in pairs(defines.events) do
   event[n] = function(handler, options)
     event.register(id, handler, options)
@@ -531,34 +538,30 @@ return event
 ---@section Concepts
 -- TODO: Fix documentation style if needed
 
---- One of the following:
--- - A member of [defines.events](https://lua-api.factorio.com/latest/defines.html#defines.events).
--- - A [string](https://lua-api.factorio.com/latest/builtin-types.html#string) corresponding to a `custom-input` prototype name, or a bootstrap event.
--- - A negative [int](https://lua-api.factorio.com/latest/builtin-types.html#int) corresponding to an `nth_tick` value.
--- - A positive [int](https://lua-api.factorio.com/latest/builtin-types.html#int) corresponding to a custom mod-generated event.
+---@alias EventId defines.events|string|int
+-- One of the following:
+-- - A member of @{defines.events}.
+-- - A @{string} corresponding to a `custom-input` prototype name, or a bootstrap event.
+-- - A negative @{int} corresponding to an `nth_tick` value.
+-- - A positive @{int} corresponding to a custom mod-generated event.
 -- **Examples**
 -- `defines.events.on_player_created`
 -- `'rll-open-search'`
 -- `' on_init'`
 -- `-25`
 -- `241`
----@class EventId
 
+---@tfield[opt] boolean skip_validation Disables userdata validation. Saves on performance, but can cause crashes if not
+-- handled properly.
+---@tfield[opt] integer insert_at Inserts the handler at the given position in the event table, instead of at the back.
+---@table EventOptions
 
---- Table with the following fields:
--- - skip_validation :: [boolean](https://lua-api.factorio.com/latest/Builtin-Types.html#boolean) (optional): If true, validation of userdata will be skipped when the event is raised. This saves on performance, but doesn't protect against crashes relating to invalid userdata!
--- - insert_at :: [int](https://lua-api.factorio.com/latest/Builtin-Types.html#int) (optional): Inserts the handler at the given position in the event table, instead of at the back.
--- **Examples**
--- `{skip_validation=true, insert_at=1}`
----@class EventOptions
-
---- Dictionary [string](https://lua-api.factorio.com/latest/Builtin-Types.html#string) -> [table](https://lua-api.factorio.com/latest/Builtin-Types.html#table). Each table of this dictionary has the following fields:
--- - id :: [EventId](#eventid) or array of [EventId](#eventid): The event ID(s) to invoke the handler on.
--- - handler :: function(event): The handler to run. Receives an event table [as defined in the Factorio documentation](https://lua-api.factorio.com/latest/events.html).
--- - group :: [string](https://lua-api.factorio.com/latest/Builtin-Types.html#string) or array of [string](https://lua-api.factorio.com/latest/Builtin-Types.html#string) (optional): Assigns this event to one or more groups.
--- - gui_filters :: [GuiFilter](#guifilter) or array of [GuiFilter](#guifilter) (optional): Static GUI filters to use for this event.
--- - options :: [EventOptions](#eventoptions) (optional): Additional options.
----@class ConditionalEvents
+--- Dictionary @{string} -> @{table}. Each table of this dictionary has the following fields:
+---@field id EventId|EventId[] The event ID(s) to invoke the handler on.
+---@field handler function The handler to run. Receives an event table as defined in the Factorio documentation.
+---@field[opt] group string|string[] Assigns this event to one or more groups.
+---@field[opt] options EventOptions Additional options.
+---@table ConditionalEvents
 
 ---@class EventFilters https://lua-api.factorio.com/latest/Event-Filters.html
 ---@class EventData https://lua-api.factorio.com/latest/events.html
