@@ -14,7 +14,13 @@ local conditional_events = {}
 local conditional_event_groups = {}
 
 -- bootstrap events do not go through dispatch_event, and have extra functionality
-local bootstrap_events = {on_init=true, on_init_postprocess=true, on_load=true, on_load_postprocess=true, on_configuration_changed=true}
+local bootstrap_events = {
+  on_init = true,
+  on_init_postprocess = true,
+  on_load = true,
+  on_load_postprocess = true,
+  on_configuration_changed = true
+}
 
 -- calls handler functions tied to an event
 -- all non-bootstrap events go through this function
@@ -259,7 +265,7 @@ function event.enable(name, player_index)
       if player_lookup and player_lookup[name] then
         -- don't do anything
         if not data.options.suppress_logging then
-          log("Tried to re-register conditional event ["..name.."] for player "..player_index..", skipping!")
+          log("Tried to re-register conditional event ["..name.."] for player ["..player_index.."], skipping!")
         end
         return
       else
