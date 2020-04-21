@@ -44,7 +44,7 @@ end
 --- Checks if normalized strings of current_version > old_version.
 -- @tparam string old_version
 -- @tparam string current_version
--- @tparam[opt=%02d.%02d.%02d] string format Defaults to "%02d.%02d.%02d"
+-- @tparam[opt=%02d] string format Defaults to "%02d"
 -- @treturn boolean|nil
 function migration.is_new_version(old_version, current_version, format)
   local v1 = migration.format_version(old_version, format)
@@ -61,7 +61,7 @@ end
 --- Runs migrations against the given version.
 -- @tparam string old_version
 -- @tparam MigrationsTable migrations
--- @tparam[opt="%02d.%02d.%02d"] string format
+-- @tparam[opt="%02d"] string format
 function migration.run(old_version, migrations, format)
   local migrate = false
   for version, func in pairs(migrations) do
