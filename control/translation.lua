@@ -25,7 +25,7 @@ local string_lower = string.lower
 local table_sort = table.sort
 
 -- events
-translation.on_finished = event.get_id("translation_finished")
+translation.on_finished = event.get_id("flib_translation_on_finished")
 
 -- converts a localised string into a format readable by the API
 -- basically just spits out the table in string form
