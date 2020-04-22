@@ -1,6 +1,18 @@
 --- Organizes and runs translations for localised strings.
+-- After starting a translation using the translation.start() function, the module will translate 50 entries per tick.
+-- Once it has completed translation of a dictionary, an event will be raised that will provide the player index and
+-- the output tables. Listen for this event to receive and store the results of the translations.
 -- @module translation
--- @usage local translation = require("__flib__.control.translation")
+-- @usage
+-- local translation = require("__flib__.control.translation")
+-- -- Store a dictionary when its translations have finished.\
+-- event.register(translation.on_finished, function(e)
+--   global.players[e.player_index].dictionary[e.dictionary_name] = {
+--     lookup = e.lookup,
+--     sorted_translations = e.sorted_translations,
+--     translations = e.translations
+--   }
+-- end)
 local translation = {}
 
 -- dependencies
@@ -332,8 +344,8 @@ end)
 
 --- @Concepts TranslationOptions
 -- Table with the following fields:
--- @param lowercase_sorted_translations boolean If true, the contents of the sorted_translations table
--- will be all lowercase.
+-- @param lowercase_sorted_translations boolean If true, the contents of the sorted_translations table will be all
+-- lowercase.
 -- @param include_failed_trainslations boolean If true, failed translations will still be added to the
 -- output tables
 
