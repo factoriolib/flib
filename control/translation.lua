@@ -294,7 +294,8 @@ function translation.cancel(player_index, dictionary_name)
 end
 
 -- Cancel all translations for a specific player,  or for everybody.
--- @param[opt] player_index integer The player whose translations to cancel. If not provided, all translations for every player are canceled.
+-- @param[opt] player_index integer The player whose translations to cancel. If not provided, all translations for every
+-- player are canceled.
 function translation.cancel_all(player_index)
   local players = global.__flib.translation.players
   if player_index then
@@ -321,8 +322,16 @@ end
 
 -- register conditional events
 event.register_conditional{
-  translation_translate_batch = {id=defines.events.on_tick, handler=translate_batch, options={skip_validation=true, suppress_logging=true}},
-  translation_sort_result = {id=defines.events.on_string_translated, handler=sort_translated_string, options={skip_validation=true, suppress_logging=true}},
+  translation_translate_batch = {
+    id = defines.events.on_tick,
+    handler = translate_batch,
+    options={skip_validation=true, suppress_logging=true}
+  },
+  translation_sort_result = {
+    id = defines.events.on_string_translated,
+    handler = sort_translated_string,
+    options={skip_validation=true, suppress_logging=true}
+  }
 }
 
 -- set up global
