@@ -127,7 +127,7 @@ local function sort_translated_string(e)
           __translation.active_translations_count = __translation.active_translations_count - 1
           player_data.active_translations_count = player_data.active_translations_count - 1
           -- raise finished event with the output tables
-          event.raise(translation.finish_event, {player_index=e.player_index, dictionary_name=dictionary_name, lookup=data.lookup,
+          event.raise(translation.on_finished, {player_index=e.player_index, dictionary_name=dictionary_name, lookup=data.lookup,
             sorted_translations=data.sorted_translations, translations=data.translations})
           -- remove from active translations table
           player_data.active_translations[dictionary_name] = nil
@@ -230,8 +230,6 @@ function translation.start(player_index, dictionary_name, data, options)
   -- increment active translations counters, register on_tick and sort result handlers
   __translation.active_translations_count = __translation.active_translations_count + 1
   player_data.active_translations_count = player_data.active_translations_count + 1
-  -- raise translation start event
-  event.raise(translation.start_event, {player_index=player_index, dictionary_name=dictionary_name})
   -- register events, if needed
   event.enable("translation_translate_batch", player_index)
   event.enable("translation_sort_result", player_index)
@@ -263,8 +261,6 @@ function translation.cancel(player_index, dictionary_name)
   -- decrement active translation counters
   __translation.active_translations_count = __translation.active_translations_count - 1
   player_data.active_translations_count = player_data.active_translations_count - 1
-  -- raise canceled event with the output tables
-  event.raise(translation.canceled_event, {player_index=player_index, dictionary_name=dictionary_name})
   -- remove from active translations table
   player_data.active_translations[dictionary_name] = nil
 
