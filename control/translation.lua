@@ -8,9 +8,9 @@
 -- -- Store a dictionary when its translations have finished.\
 -- event.register(translation.on_finished, function(e)
 --   global.players[e.player_index].dictionary[e.dictionary_name] = {
---     lookup = e.lookup,
---     sorted_translations = e.sorted_translations,
---     translations = e.translations
+--     lookup = e.lookup, -- translation -> array of internal names
+--     sorted_translations = e.sorted_translations, -- array of translations
+--     translations = e.translations -- internal name -> translation
 --   }
 -- end)
 local translation = {}
