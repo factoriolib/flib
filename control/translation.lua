@@ -24,8 +24,7 @@ local string_gsub = string.gsub
 local string_lower = string.lower
 local table_sort = table.sort
 
--- events
-translation.on_finished = event.get_id()
+local on_finished_handler = function(e) error("Must register a handler using translation.on_finished()") end
 
 -- converts a localised string into a format readable by the API
 -- basically just spits out the table in string form
@@ -139,8 +138,13 @@ local function sort_translated_string(e)
           __translation.active_translations_count = __translation.active_translations_count - 1
           player_data.active_translations_count = player_data.active_translations_count - 1
           -- raise finished event with the output tables
-          event.raise(translation.on_finished, {player_index=e.player_index, dictionary_name=dictionary_name, lookup=data.lookup,
-            sorted_translations=data.sorted_translations, translations=data.translations})
+          on_finished_handler{
+            player_index = e.player_index,
+            dictionary_name = dictionary_name,
+            lookup = data.lookup,
+            sorted_translations = data.sorted_translations,
+            translations = data.translations
+          }
           -- remove from active translations table
           player_data.active_translations[dictionary_name] = nil
 
@@ -307,6 +311,12 @@ function translation.cancel_all(player_index)
       end
     end
   end
+end
+
+-- Register a handler to be called when a translation finishes.
+-- @param handler function The handler to run.
+function translation.on_finished(handler)
+  on_finished_handler = handler
 end
 
 -- register conditional events
