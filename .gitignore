@@ -1,5 +1,6 @@
 .vscode/*
 ./*.code-workspace
+*.code-workspace
 flib-docs/
 
 # Compiled Lua sources
