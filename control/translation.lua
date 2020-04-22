@@ -12,10 +12,8 @@ local string_gsub = string.gsub
 local string_lower = string.lower
 local table_sort = table.sort
 
--- internal events
-translation.start_event = event.get_id("translation_start")
-translation.finish_event = event.get_id("translation_finish")
-translation.canceled_event = event.get_id("translation_canceled")
+-- events
+translation.on_finished = event.get_id("translation_finished")
 
 -- converts a localised string into a format readable by the API
 -- basically just spits out the table in string form
