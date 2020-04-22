@@ -505,8 +505,10 @@ end
 local custom_id_registry = {}
 
 --- Generate or retrieve a custom event ID.
----@param name string
+---@param[opt] name string
 ---@usage
+-- -- Generate a new event ID without saving it to the registry
+-- local my_event = event.get_id()
 -- -- Generate a new event ID, or retrieve it if it has already been made
 -- local custom_event = event.generate_id("example")
 -- -- Listen for the event
@@ -517,6 +519,9 @@ local custom_id_registry = {}
 -- event.register(event.get_id("example"), handler)
 -- event.raise(event.get_id("example"), {whatever_you_want=true, ...})
 function event.get_id(name)
+  if not name then
+    return script.generate_event_name()
+  end
   if not custom_id_registry[name] then
     custom_id_registry[name] = script.generate_event_name()
   end
