@@ -139,6 +139,8 @@ local function sort_translated_string(e)
           player_data.active_translations_count = player_data.active_translations_count - 1
           -- raise finished event with the output tables
           on_finished_handler{
+            name = "flib_translation_on_finished",
+            tick = game.tick,
             player_index = e.player_index,
             dictionary_name = dictionary_name,
             lookup = data.lookup,
@@ -315,12 +317,13 @@ function translation.cancel_all(player_index)
 end
 
 -- Register a handler to be called when a translation finishes.
+-- This does not go through the event system and so doesn't have any of those features, but it passes an event table as
+-- if it was one.
 -- @param handler function The handler to run.
 function translation.on_finished(handler)
   on_finished_handler = handler
 end
 
--- register conditional events
 event.register_conditional{
   translation_translate_batch = {
     id = defines.events.on_tick,
