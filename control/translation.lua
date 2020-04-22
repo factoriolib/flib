@@ -22,7 +22,7 @@ translation.canceled_event = event.get_id("translation_canceled")
 local function serialise_localised_string(t)
   local output = "{"
   if type(t) == "string" then return t end
-  for _,v in pairs(t) do
+  for _, v in pairs(t) do
     if type(v) == "table" then
       output = output..serialise_localised_string(v)
     else
@@ -40,7 +40,7 @@ local function translate_batch(e)
   if iterations < 1 then iterations = 1 end
   local players = __translation.players
   -- for each player that is doing a translation
-  for _,pi in ipairs(e.registered_players) do
+  for _, pi in ipairs(e.registered_players) do
     local pt = players[pi]
     local request_translation = game.get_player(pi).request_translation
     local next_index = pt.next_index
@@ -48,7 +48,7 @@ local function translate_batch(e)
     local strings = pt.strings
     local strings_len = pt.strings_len
     -- request translations for the next n strings
-    for i=next_index,finish_index do
+    for i=next_index, finish_index do
       if i <= strings_len then
         request_translation(strings[i])
       else
@@ -74,7 +74,7 @@ local function sort_translated_string(e)
   local string_registry = player_data.string_registry[serialised]
   if string_registry then
     -- for each dictionary that requested this string
-    for dictionary_name, internal_names in pairs(string_registry) do
+    for dictionary_name,  internal_names in pairs(string_registry) do
       local data = active_translations[dictionary_name]
       -- extra sanity check
       if data then
@@ -98,7 +98,7 @@ local function sort_translated_string(e)
           end
 
           -- for every internal name that this string applies do
-          for i=1,#internal_names do
+          for i=1, #internal_names do
             local internal = internal_names[i]
             -- set result to internal name if the translation failed and the option is active
             if not success and include_failed_translations then
@@ -155,15 +155,19 @@ end
 
 translation.serialise_localised_string = serialise_localised_string
 
--- begin translating strings
-function translation.start(player, dictionary_name, data, options)
+--- Begin translating strings.
+-- @param player_index integer
+-- @param dictionary_name string
+-- @param data Concepts.TranslationData
+-- @param options Concepts.TranslationOptions
+function translation.start(player_index, dictionary_name, data, options)
   options = options or {}
   local __translation = global.__flib.translation
-  local player_data = __translation.players[player.index]
+  local player_data = __translation.players[player_index]
 
   -- create player table if it doesn't exist
   if not player_data then
-    __translation.players[player.index] = {
+    __translation.players[player_index] = {
       active_translations = {}, -- contains data for each dictionary that is being translated
       active_translations_count = 0, -- count of translations that this player is performing
       next_index = 1, -- index of the next string to be translated
@@ -171,11 +175,11 @@ function translation.start(player, dictionary_name, data, options)
       strings = {}, -- contains the actual localised string objects to be translated
       strings_len = 0 -- length of the strings table, for use in on_tick to avoid extraneous logic
     }
-    player_data = __translation.players[player.index]
+    player_data = __translation.players[player_index]
   -- reset if the translation is already running
   elseif player_data.active_translations[dictionary_name] then
-    log("Cancelling and restarting translation of "..dictionary_name.." for "..player.name)
-    translation.cancel(player, dictionary_name)
+    log("Cancelling and restarting translation of dictionary ["..dictionary_name.."] for player ["..player_index.."]")
+    translation.cancel(player_index, dictionary_name)
   end
 
   -- create local references
@@ -185,7 +189,7 @@ function translation.start(player, dictionary_name, data, options)
   local registry_index = {} -- contains a table of keys that represent all the places in the string index that this dictionary has a place in
 
   -- add data to translation tables
-  for i=1,#data do
+  for i=1, #data do
     local t = data[i]
     local localised = t.localised
     local serialised = serialise_localised_string(localised)
@@ -229,26 +233,28 @@ function translation.start(player, dictionary_name, data, options)
   __translation.active_translations_count = __translation.active_translations_count + 1
   player_data.active_translations_count = player_data.active_translations_count + 1
   -- raise translation start event
-  event.raise(translation.start_event, {player_index=player.index, dictionary_name=dictionary_name})
+  event.raise(translation.start_event, {player_index=player_index, dictionary_name=dictionary_name})
   -- register events, if needed
-  event.enable("translation_translate_batch", player.index)
-  event.enable("translation_sort_result", player.index)
+  event.enable("translation_translate_batch", player_index)
+  event.enable("translation_sort_result", player_index)
 end
 
--- cancel a translation
-function translation.cancel(player, dictionary_name)
+-- Cancel an ongoing translation.
+-- @param player_index integer
+-- @param dictionary_name string
+function translation.cancel(player_index, dictionary_name)
   local __translation = global.__flib.translation
-  local player_data = __translation.players[player.index] or {active_translations={}}
+  local player_data = __translation.players[player_index] or {active_translations={}}
   local translation_data = player_data.active_translations[dictionary_name]
   if not translation_data then
-    log("Tried to cancel translation of dictionary ["..dictionary_name.."] when it wasn't running!")
+    log("Tried to cancel translation of dictionary ["..dictionary_name.."] for player ["..player_index.."] when it wasn't running!")
     return
   end
-  log("Canceling translation of dictionary ["..dictionary_name.."] for player ["..player.index.."]")
+  log("Canceling translation of dictionary ["..dictionary_name.."] for player ["..player_index.."]")
 
   -- remove this dictionary from the string registry
   local string_registry = player_data.string_registry
-  for key,_ in pairs(translation_data.registry_index) do
+  for key in pairs(translation_data.registry_index) do
     local key_registry = string_registry[key]
     key_registry[dictionary_name] = nil
     if table_size(key_registry) == 0 then
@@ -260,38 +266,39 @@ function translation.cancel(player, dictionary_name)
   __translation.active_translations_count = __translation.active_translations_count - 1
   player_data.active_translations_count = player_data.active_translations_count - 1
   -- raise canceled event with the output tables
-  event.raise(translation.canceled_event, {player_index=player.index, dictionary_name=dictionary_name})
+  event.raise(translation.canceled_event, {player_index=player_index, dictionary_name=dictionary_name})
   -- remove from active translations table
   player_data.active_translations[dictionary_name] = nil
 
   -- check if the player is done translating
   if player_data.active_translations_count == 0 then
     -- deregister events for this player
-    event.disable("translation_sort_result", player.index)
+    event.disable("translation_sort_result", player_index)
     -- only deregister this if it's actually registered
-    if event.is_enabled("translation_translate_batch", player.index) then
-      event.disable("translation_translate_batch", player.index)
+    if event.is_enabled("translation_translate_batch", player_index) then
+      event.disable("translation_translate_batch", player_index)
     end
     -- remove player's translation table
-    __translation.players[player.index] = nil
+    __translation.players[player_index] = nil
   end
 end
 
--- cancels all translations for a player
-function translation.cancel_all_for_player(player)
-  local __translation = global.__flib.translation
-  local player_translations = __translation.players[player.index].active_translations
-  for name,_ in pairs(player_translations) do
-    translation.cancel(player, name)
-  end
-end
-
--- cancels ALL translations for this mod
-function translation.cancel_all()
-  for i,t in pairs(global.__flib.translation.players) do
-    local player = game.get_player(i)
-    for name,_ in pairs(t.active_translations) do
-      translation.cancel(player, name)
+-- Cancel all translations for a specific player,  or for everybody.
+-- @param[opt] player_index integer The player whose translations to cancel. If not provided, all translations for every player are canceled.
+function translation.cancel_all(player_index)
+  local players = global.__flib.translation.players
+  if player_index then
+    local player_table = players[player_index]
+    if player_table then
+      for name in pairs(player_table.active_translations) do
+        translation.cancel(player_index, name)
+      end
+    end
+  else
+    for i, t in pairs(players) do
+      for name in pairs(t.active_translations) do
+        translation.cancel(i, name)
+      end
     end
   end
 end
@@ -312,11 +319,28 @@ event.on_init(function()
 end)
 
 -- cancel all translations for the player when they leave or are removed
-event.register({defines.events.on_pre_player_left_game, defines.events.on_pre_player_removed}, function(e)
+event.register({defines.events.on_player_left_game, defines.events.on_player_removed}, function(e)
   local player_translation = global.__flib.translation.players[e.player_index]
   if player_translation and player_translation.active_translations_count > 0 then
-    translation.cancel_all_for_player(game.get_player(e.player_index))
+    translation.cancel_all(e.player_index)
   end
 end)
+
+--- @Concepts TranslationData
+-- Array of tables. Each table has the following fields:
+-- @param internal string The internal name that will be used to look up the translation.
+-- @param localised Concepts.LocalisedString The localised string corresponding to the internal name.
+-- @usage
+-- {
+--   {internal="iron-ore", localised={"item-name.iron-ore"}},
+--   {internal="parked-at-depot", localised={"ltnm-gui.parked-at-depot"}}
+-- }
+
+--- @Concepts TranslationOptions
+-- Table with the following fields:
+-- @param lowercase_sorted_translations boolean If true, the contents of the sorted_translations table
+-- will be all lowercase.
+-- @param include_failed_trainslations boolean If true, failed translations will still be added to the
+-- output tables
 
 return translation
