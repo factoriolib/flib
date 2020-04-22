@@ -1,32 +1,39 @@
----@module control.migration
----@usage local migration = require("__flib__.control.migration")
+--- @module control.migration
+-- @usage local migration = require("__flib__.control.migration")
 local migration = {}
 
-local string_match = string.match
 local string_format = string.format
+local table_concat = table.concat
 
----@section Functions
+--- @section Functions
 
 --- Normalizes version strings for easy comparison.
----@param version string
----@param format string | nil Defaults to "%02d.%02d.%02d"
----@return string | nil
----@usage migration.format_version("1.10.1234", "%02d.%02d.%04d")
-local default_version_format = "%02d.%02d.%02d"
-local version_pattern = "(%d+).(%d+).(%d+)"
+-- @tparam string version
+-- @tparam[opt="%02d"] string format
+-- @treturn string|nil
+-- @usage migration.format_version("1.10.1234", "%04d")
+-- @usage migration.format_version("3", "%02d")
+local version_pattern = "%d+"
+local version_format = "%02d"
 function migration.format_version(version, format)
   if version then
-    format = format or default_version_format
-    return string_format(format, string_match(version, version_pattern))
+    format = format or version_format
+    local tbl = {}
+    for v in string.gmatch(version, version_pattern) do
+      tbl[#tbl+1] = string_format(format, v)
+    end
+    if next(tbl) then
+      return table_concat(tbl, ".")
+    end
   end
   return nil
 end
 
 --- Checks if normalized strings of current_version > old_version.
----@param old_version string
----@param current_version string
----@param format string | nil Defaults to "%02d.%02d.%02d"
----@return boolean | nil
+-- @tparam string old_version
+-- @tparam string current_version
+-- @tparam[opt=%02d] string format Defaults to "%02d"
+-- @treturn boolean|nil
 function migration.is_new_version(old_version, current_version, format)
   local v1 = migration.format_version(old_version, format)
   local v2 = migration.format_version(current_version, format)
@@ -40,9 +47,9 @@ function migration.is_new_version(old_version, current_version, format)
 end
 
 --- Runs migrations against the given version.
----@param old_version string
----@param migrations MigrationsTable
----@param format string Defaults to "%02d.%02d.%02d"
+-- @tparam string old_version
+-- @tparam MigrationsTable migrations
+-- @tparam[opt="%02d"] string format
 function migration.run(old_version, migrations, format)
   local migrate = false
   for version, func in pairs(migrations) do
@@ -54,11 +61,11 @@ function migration.run(old_version, migrations, format)
 end
 
 --- Determines if migrations need to be run for this mod, then runs them if needed.
----@param event_data ConfigurationChangedData
----@param migrations MigrationsTable
----@param[optional] mod_name string The mod to check against, defaults to the mod this is used in.
----@treturn boolean Whether or not to run generic migrations.
----@usage
+-- @tparam Concepts.ConfigurationChangedData event_data
+-- @tparam MigrationsTable migrations
+-- @tparam[opt] string mod_name The mod to check against, defaults to the mod this is used in.
+-- @treturn boolean Whether or not to run generic migrations.
+-- @usage
 -- -- In on_configuration_changed:
 -- if migration.on_config_changed(e, migrations) then
 --   -- run generic migrations
@@ -77,11 +84,11 @@ function migration.on_config_changed(event_data, migrations, mod_name)
   return true
 end
 
----@section Concepts
-
----@alias MigrationsTable table<string,function>
--- Array string -> function. Each string is a version number, and each value is a function that will be run for that version.
--- ```
+--- @Concepts MigrationsTable
+-- Dictionary string -> function. Each string is a version number, and each value is a
+-- function that will be run for that version.
+-- @tparam {[string]=function,...} ...
+-- @usage
 -- {
 --   ["1.0.1"] = function()
 --     global.foo = nil
@@ -93,8 +100,5 @@ end
 --     global.foo = "bar"
 --   end
 -- }
--- ```
-
----@class ConfigurationChangedData https://lua-api.factorio.com/latest/Concepts.html#ConfigurationChangedData
 
 return migration
