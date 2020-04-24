@@ -240,16 +240,13 @@ end
 function gui.build(parent, structures)
   local output = {}
   local filters = {}
-  local player_index = parent.player_index or parent.player.index
-  local player_filters = global.__flib.gui.event_filters[player_index]
   for i=1,#structures do
     output, filters = recursive_build(
       parent,
       structures[i],
       output,
       filters,
-      player_index,
-      player_filters
+      parent.player_index or parent.player.index
     )
   end
   return output, filters
