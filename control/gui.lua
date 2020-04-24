@@ -2,32 +2,16 @@
 -- @usage local gui = require("__flib__.control.gui")
 local gui = {}
 
-local event = require("__flib__.control.event")
 local util = require("util")
 
 local string_gmatch = string.gmatch
-local string_gsub = string.gsub
+local string_sub = string.sub
 
 local handlers = {}
 local templates = {}
 
 local template_lookup = {}
-local handler_lookup = {} -- holds GUI handler data for this module
-
--- pass-through handler for all GUI events - checks GUI filters and only calls the real handler if there's a match
-local function event_matcher(e)
-  if not e.conditional_name then return end
-  local element = e.element
-  local handler = handler_lookup[e.conditional_name]
-  local player_filters = global.__flib.event.conditional_events[e.conditional_name].gui_filters[e.player_index]
-  
-  if player_filters and e.element then
-    local element_name = string_gsub(element.name, "__.*", "")
-    if player_filters[element.index] or player_filters[element_name] then
-      handler(e)
-    end
-  end
-end
+local handler_lookup = {}
 
 -- table extension functions
 local function extend_table(self, data, do_return)
@@ -48,7 +32,7 @@ handlers.extend = extend_table
 templates.extend = extend_table
 
 local function generate_template_lookup(t, template_string)
-  for k,v in pairs(t) do
+  for k, v in pairs(t) do
     if k ~= "extend" and type(v) == "table" then
       local new_string = template_string..k
       if v.type then
@@ -60,87 +44,51 @@ local function generate_template_lookup(t, template_string)
   end
 end
 
-local function generate_handlers(output, t, event_string, event_groups)
+local function generate_handler_lookup(t, event_string, event_groups, saved_filters)
   event_groups[#event_groups+1] = event_string
-  for k,v in pairs(t) do
+  for k, v in pairs(t) do
     if k ~= "extend" then
       local new_string = event_string.."."..k
+      -- shortcut syntax: key is a defines.events or a custom-input name, value is just the handler
       if type(v) == "function" then
-        -- shortcut syntax: key is a defines.events or a custom-input name, value is just the handler
-        output[new_string] = {
+        handler_lookup[string_sub(new_string, 2, #new_string)] = {
           id = defines.events[k] or k,
-          handler = event_matcher,
-          group = table.deepcopy(event_groups)
+          handler = v
         }
-        handler_lookup[new_string] = v
       elseif v.handler then
         if not v.id then
           v.id = defines.events[k] or k
         end
         v.group = table.deepcopy(event_groups)
-        output[new_string] = v
+        handler_lookup[string_sub(new_string, 2, #new_string)] = v
       else
-        output = generate_handlers(output, v, new_string, event_groups)
+        generate_handler_lookup(v, new_string, event_groups, saved_filters)
       end
     end
   end
   event_groups[#event_groups] = nil
-  return output
 end
 
--- create template lookup and register conditional GUI handlers
-event.register({"on_init_postprocess", "on_load_postprocess"}, function(e)
-  -- construct template lookup table
-  generate_template_lookup(templates, "")
-  -- create and register conditional handlers for the GUI events
-  event.register_conditional(generate_handlers({}, handlers, "gui", {}), handler_lookup)
-end)
+--- @section Functions
 
---- Update filters for a GUI handler.
--- @tparam string name The name of the handler you wish to update.
--- @tparam int player_index
--- @tparam GuiFilter[] filters
--- @tparam[opt="overwrite"] string mode One of "add", "remove", or "overwrite"
-function gui.update_filters(name, player_index, filters, mode)
-  local __event = global.__flib.event.conditional_events[name]
-  if not __event then
-    log("Tried to update GUI filters for event ["..name.."], which is not enabled!")
-    return
-  end
-  if not __event.gui_filters then
-    __event.gui_filters = {[player_index]={}}
-  end
-  local player_filters = __event.gui_filters[player_index]
-  if not player_filters then
-    __event.gui_filters[player_index] = {}
-    player_filters = __event.gui_filters[player_index]
-  end
-
-  if type(filters) ~= "table" then
-    filters = {filters}
-  end
-
-  mode = mode or "overwrite"
-  if mode == "add" then
-    for i=1,#filters do
-      player_filters[filters[i]] = true
-    end
-  elseif mode == "remove" then
-    for i=1,#filters do
-      player_filters[filters[i]] = nil
-    end
-  elseif mode == "overwrite" then
-    local new_filters = {}
-    for i=1,#filters do
-      new_filters[filters[i]] = true
-    end
-    player_filters[name] = new_filters
+--- Initial setup
+-- Must be called at the BEGINNING of on_init, before any GUI functions are used
+function gui.on_init()
+  if not global.__flib then
+    global.__flib = {gui={}}
   else
-    error("Invalid GUI filter update mode ["..mode.."]")
+    global.__flib.gui = {}
   end
 end
 
---- @section Construction
+--- Generate template and handler lookup tables
+-- Must be called at the END of on_init and on_load
+function gui.bootstrap_postprocess()
+  local template_lookup = template_lookup
+  local handler_lookup = handler_lookup
+  generate_template_lookup(templates, "")
+  generate_handler_lookup(handlers, "", {}, global.__flib.gui)
+end
 
 -- navigate a structure to build a GUI
 local function recursive_build(parent, structure, output, filters, player_index)
@@ -162,34 +110,21 @@ local function recursive_build(parent, structure, output, filters, player_index)
     elem = parent.add(structure)
     -- apply style modifications
     if structure.style_mods then
-      for k,v in pairs(structure.style_mods) do
+      for k, v in pairs(structure.style_mods) do
         elem.style[k] = v
       end
     end
     -- apply modifications
     if structure.mods then
-      for k,v in pairs(structure.mods) do
+      for k, v in pairs(structure.mods) do
         elem[k] = v
       end
     end
     -- register handlers
     if structure.handlers then
       local elem_index = elem.index
-      local name = "gui."..structure.handlers
-      local group = event.conditional_event_groups[name]
-      if not group then error("Invalid GUI event group: "..name) end
-      if not event.is_enabled(group[1], player_index) then
-        event.enable_group(name, player_index)
-      end
-      for i=1,#group do
-        local handler_name = group[i]
-        gui.update_filters(handler_name, player_index, elem_index, "add")
-        if filters[handler_name] then
-          filters[handler_name][#filters[handler_name]+1] = elem_index
-        else
-          filters[handler_name] = {elem_index}
-        end
-      end
+      local name = structure.handlers
+      
     end
     -- add to output table
     if structure.save_as then
