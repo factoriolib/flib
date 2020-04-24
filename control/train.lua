@@ -21,7 +21,7 @@ end
 -- @param train LuaTrain
 -- @return string | nil
 function train.get_backer_name(train)
-  local loco = get_main_locomotive(train)
+  local loco = train.get_main_locomotive(train)
   return loco and loco.backer_name
 end
 
@@ -102,7 +102,7 @@ end
 -- Returns: bool
 function open_train_gui(player_index, train)
   if train and train.valid and game.players[player_index] then
-    local loco = get_main_locomotive(train)
+    local loco = train.get_main_locomotive(train)
     if loco and loco.valid then
       game.players[player_index].opened = loco
       return true
