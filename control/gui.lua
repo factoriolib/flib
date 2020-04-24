@@ -129,7 +129,7 @@ end
 
 --- Dispatch GUI handlers for the given function.
 function gui.dispatch_handlers(e)
-  if e.mod_name and (not e.element or not e.player_index) then return end
+  if not e.element or not e.player_index then return end
   local element = e.element
   local element_name = string_gsub(element.name, "__.*", "")
   local player_filters = global.__flib.gui[e.player_index]
@@ -262,8 +262,18 @@ function gui.add_handlers(t)
   extend_table(handlers, t)
 end
 
+--- Register all GUI events to go through the module.
+function gui.register_events()
+  for name, id in pairs(defines.events) do
+    if string_sub(name, 1, 6) == "on_gui" then
+      script.on_event(id, function(e) gui.dispatch_handlers(e) end)
+    end
+  end
+end
+
 gui.templates = templates
 gui.handlers = handlers
+gui.handler_groups = handler_groups
 
 --- @Concepts GuiFilter
 -- One of the following:
