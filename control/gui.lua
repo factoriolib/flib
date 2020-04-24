@@ -75,9 +75,6 @@ end
 --- Generate template and handler lookup tables
 -- Must be called at the END of on_init and on_load
 function gui.bootstrap_postprocess()
-  local template_lookup = template_lookup
-  local handler_lookup = handler_lookup
-  local handler_groups = handler_groups
   generate_template_lookup(templates, "")
   -- go one level deep before calling the function, to avoid adding an unnecessary prefix to all group names
   for k, v in pairs(handlers) do
@@ -85,7 +82,11 @@ function gui.bootstrap_postprocess()
   end
 end
 
--- filters are a table of [elem_filter] = [handler_path]
+--- Update element filters for the given event.
+-- @tparam defines.events|uint|string id
+-- @tparam uint player_index
+-- @tparam GuiFilters filters
+-- @tparam string mode One of "add", "remove", or "overwrite".
 function gui.update_filters(id, player_index, filters, mode)
   -- get data tables, or create them if needed
   local __gui = global.__flib.gui
@@ -128,6 +129,7 @@ function gui.update_filters(id, player_index, filters, mode)
 end
 
 --- Dispatch GUI handlers for the given function.
+-- @tparam Concepts.EventData e
 function gui.dispatch_handlers(e)
   if not e.element or not e.player_index then return end
   local element = e.element
@@ -218,6 +220,9 @@ local function recursive_build(parent, structure, output, filters, player_index)
   return output, filters, elem
 end
 
+--- Build a GUI structure.
+-- @tparam parent LuaGuiElement
+-- @tparam GuiStructure[] structures
 function gui.build(parent, structures)
   local output = {}
   local filters = {}
@@ -233,6 +238,7 @@ function gui.build(parent, structures)
   return output, filters
 end
 
+-- merge tables
 local function extend_table(self, t, do_return)
   for k, v in pairs(t) do
     if (type(v) == "table") then
@@ -274,6 +280,15 @@ end
 gui.templates = templates
 gui.handlers = handlers
 gui.handler_groups = handler_groups
+
+--- @Concepts GuiStructure
+-- A GUI structure. Basic format is a table corresponding to a LuaGuiElement's constructor.
+-- TODO Raiguard document all properties
+
+--- @Concepts GuiFilters
+-- Table @{GuiFilter} -> string. Each string corresponds to a GUI handler name. When an element matching the given
+-- filter raises an event, the handler corresponding to the handler name is fired.
+-- TODO Raiguard expound on this
 
 --- @Concepts GuiFilter
 -- One of the following:
