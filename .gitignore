@@ -2,6 +2,7 @@
 ./*.code-workspace
 *.code-workspace
 flib-docs/
+NOTES.txt
 
 # Compiled Lua sources
 luac.out

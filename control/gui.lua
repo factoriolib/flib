@@ -12,6 +12,7 @@ local templates = {}
 
 local template_lookup = {}
 local handler_lookup = {}
+local handler_groups = {}
 
 local function generate_template_lookup(t, template_string)
   for k, v in pairs(t) do
@@ -26,29 +27,27 @@ local function generate_template_lookup(t, template_string)
   end
 end
 
-local function generate_handler_lookup(t, event_string, event_groups, saved_filters)
-  event_groups[#event_groups+1] = event_string
+local function generate_handler_lookup(t, event_string, handler_groups, saved_filters)
+  handler_groups[#handler_groups+1] = event_string
   for k, v in pairs(t) do
     if k ~= "extend" then
       local new_string = event_string.."."..k
       -- shortcut syntax: key is a defines.events or a custom-input name, value is just the handler
       if type(v) == "function" then
-        handler_lookup[string_sub(new_string, 2, #new_string)] = {
+        v = {
           id = defines.events[k] or k,
           handler = v
         }
-      elseif v.handler then
-        if not v.id then
-          v.id = defines.events[k] or k
-        end
-        v.group = table.deepcopy(event_groups)
-        handler_lookup[string_sub(new_string, 2, #new_string)] = v
+      end
+      if v.handler then
+        v.id = v.id or defines.events[k] or k
+        handler_lookup[new_string] = v
       else
-        generate_handler_lookup(v, new_string, event_groups, saved_filters)
+        generate_handler_lookup(v, new_string, handler_groups, saved_filters)
       end
     end
   end
-  event_groups[#event_groups] = nil
+  handler_groups[#handler_groups] = nil
 end
 
 --- @section Functions
@@ -68,8 +67,43 @@ end
 function gui.bootstrap_postprocess()
   local template_lookup = template_lookup
   local handler_lookup = handler_lookup
+  local handler_groups = handler_groups
   generate_template_lookup(templates, "")
-  generate_handler_lookup(handlers, "", {}, global.__flib.gui)
+  -- go one level deep before calling the function, to avoid adding an unnecessary prefix to all group names
+  for k, v in pairs(handlers) do
+    generate_handler_lookup(v, k, {}, global.__flib.gui)
+  end
+end
+
+-- filters are a table of [elem_filter] = [handler_path]
+function gui.update_filters(id, player_index, filters, mode)
+  -- get data tables, or create them if needed
+  local __gui = global.__flib.gui
+  local saved_filters = __gui[player_index]
+  if not saved_filters then
+    __gui[player_index] = {[id]={}}
+    saved_filters = __gui[player_index]
+  end
+  local event_filters = saved_filters[id]
+  if not event_filters then
+    saved_filters[id] = {}
+    event_filters = saved_filters[id]
+  end
+
+  mode = mode or "overwrite"
+  if mode == "add" then
+    for filter, handler_path in pairs(filters) do
+      event_filters[filter] = handler_path
+    end
+  elseif mode == "remove" then
+    for filter in pairs(filters) do
+      event_filters[filter] = nil
+    end
+  elseif mode == "overwrite" then
+    saved_filters = filters
+  else
+    error("Invalid GUI filter update mode ["..mode.."]")
+  end
 end
 
 -- navigate a structure to build a GUI
@@ -106,7 +140,7 @@ local function recursive_build(parent, structure, output, filters, player_index)
     if structure.handlers then
       local elem_index = elem.index
       local name = structure.handlers
-      
+      -- this will point not to a specific handler, but to a group of handlers
     end
     -- add to output table
     if structure.save_as then
