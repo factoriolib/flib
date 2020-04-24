@@ -11,12 +11,28 @@ local math_floor = math.floor
 local string_format = string.format
 
 --- calculates the distance in tiles between two positions
--- @param a Position
--- @param b Position
+-- @param pos1 Position
+-- @param pos2 Position
 -- @return double
-function misc.get_distance(a, b)
-  local x, y = a.x-b.x, a.y-b.y
-  return math_sqrt(x*x+y*y) -- sqrt shouldn't be necessary for comparing distances
+function misc.get_distance(pos1, pos2)
+  local x1 = pos1.x or pos1[1]
+  local y1 = pos1.y or pos1[2]
+  local x2 = pos2.x or pos2[1]
+  local y2 = pos2.y or pos2[2]
+  return math_sqrt((x1-x2)^2 + (y1-y2)^2) --Duration: 0.316172ms
+  -- return ((x1-x2)^2 + (y1-y2)^2)^0.5 --Duration: 0.316964ms
+end
+
+--- calculates the squared distance in tiles between two positions
+-- @param pos1 Position
+-- @param pos2 Position
+-- @return double
+function misc.get_distance_squared(pos1, pos2)
+  local x1 = pos1.x or pos1[1]
+  local y1 = pos1.y or pos1[2]
+  local x2 = pos2.x or pos2[1]
+  local y2 = pos2.y or pos2[2]
+  return (x1-x2)^2 + (y1-y2)^2
 end
 
 --- converts given tick or game.tick into "[hh:]mm:ss" format
