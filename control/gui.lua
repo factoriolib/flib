@@ -19,14 +19,12 @@ local function event_matcher(e)
   if not e.conditional_name then return end
   local element = e.element
   local handler = handler_lookup[e.conditional_name]
-  local player_filters = global.__flib.gui.event_filters[e.player_index]
-  if player_filters and e.player_index then
-    local filters = player_filters[e.conditional_name]
-    if player_filters and element then
-      local element_name = string_gsub(element.name, "__.*", "")
-      if filters[element.index] or filters[element_name] then
-        handler(e)
-      end
+  local player_filters = global.__flib.event.conditional_events[e.conditional_name].gui_filters[e.player_index]
+  
+  if player_filters and e.element then
+    local element_name = string_gsub(element.name, "__.*", "")
+    if player_filters[element.index] or player_filters[element_name] then
+      handler(e)
     end
   end
 end
@@ -90,10 +88,6 @@ local function generate_handlers(output, t, event_string, event_groups)
   return output
 end
 
-event.on_init(function()
-  global.__flib.gui = {event_filters={}}
-end)
-
 -- create template lookup and register conditional GUI handlers
 event.register({"on_init_postprocess", "on_load_postprocess"}, function(e)
   -- construct template lookup table
@@ -102,27 +96,24 @@ event.register({"on_init_postprocess", "on_load_postprocess"}, function(e)
   event.register_conditional(generate_handlers({}, handlers, "gui", {}), handler_lookup)
 end)
 
---- @section Events
-
 --- Update filters for a GUI handler.
--- If the gui handler isn't enabled, it will enable it.
--- If the filters list is emptied in the process, it will disable the handler.
 -- @tparam string name The name of the handler you wish to update.
 -- @tparam int player_index
 -- @tparam GuiFilter[] filters
 -- @tparam[opt="overwrite"] string mode One of "add", "remove", or "overwrite"
 function gui.update_filters(name, player_index, filters, mode)
-  local __gui = global.__flib.gui
-  local player_filters = __gui.event_filters[player_index]
-  if not player_filters then
-    __gui.event_filters[player_index] = {}
-    player_filters = __gui.event_filters[player_index]
+  local __event = global.__flib.event.conditional_events[name]
+  if not __event then
+    log("Tried to update GUI filters for event ["..name.."], which is not enabled!")
+    return
   end
-  local handler_filters = player_filters[name]
-  if not handler_filters then
-    event.enable(name, player_index)
-    player_filters[name] = {}
-    handler_filters = player_filters[name]
+  if not __event.gui_filters then
+    __event.gui_filters = {[player_index]={}}
+  end
+  local player_filters = __event.gui_filters[player_index]
+  if not player_filters then
+    __event.gui_filters[player_index] = {}
+    player_filters = __event.gui_filters[player_index]
   end
 
   if type(filters) ~= "table" then
@@ -132,36 +123,20 @@ function gui.update_filters(name, player_index, filters, mode)
   mode = mode or "overwrite"
   if mode == "add" then
     for i=1,#filters do
-      handler_filters[filters[i]] = true
+      player_filters[filters[i]] = true
     end
   elseif mode == "remove" then
     for i=1,#filters do
-      handler_filters[filters[i]] = nil
-    end
-    if table_size(handler_filters) == 0 then
-      disable_handler = true
+      player_filters[filters[i]] = nil
     end
   elseif mode == "overwrite" then
-    local filters_size = #filters
-    if filters_size == 0 then
-      disable_handler = true
-    else
-      local new_filters = {}
-      for i=1,#filters do
-        new_filters[filters[i]] = true
-      end
-      player_filters[name] = new_filters
+    local new_filters = {}
+    for i=1,#filters do
+      new_filters[filters[i]] = true
     end
+    player_filters[name] = new_filters
   else
     error("Invalid GUI filter update mode ["..mode.."]")
-  end
-
-  if disable_handler then
-    event.disable(name, player_index)
-    player_filters[name] = nil
-    if table_size(player_filters) == 0 then
-      __gui.event_filters[player_index] = nil
-    end
   end
 end
 
@@ -203,8 +178,17 @@ local function recursive_build(parent, structure, output, filters, player_index)
       local name = "gui."..structure.handlers
       local group = event.conditional_event_groups[name]
       if not group then error("Invalid GUI event group: "..name) end
+      if not event.is_enabled(group[1], player_index) then
+        event.enable_group(name, player_index)
+      end
       for i=1,#group do
-        gui.update_filters(group[i], player_index, elem_index, "add")
+        local handler_name = group[i]
+        gui.update_filters(handler_name, player_index, elem_index, "add")
+        if filters[handler_name] then
+          filters[handler_name][#filters[handler_name]+1] = elem_index
+        else
+          filters[handler_name] = {elem_index}
+        end
       end
     end
     -- add to output table
@@ -253,5 +237,11 @@ end
 
 gui.templates = templates
 gui.handlers = handlers
+
+--- @Concepts GuiFilter
+-- One of the following:
+-- - A @{string} corresponding to an element's name.
+--   - Partial names may be matched by separating the common part from the unique part with two underscores.
+-- - An @{integer} corresponding to an element's index.
 
 return gui
