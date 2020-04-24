@@ -15,9 +15,6 @@
 -- end)
 local translation = {}
 
--- dependencies
-local event = require("__flib__.control.event")
-
 -- locals
 local math_floor = math.floor
 local string_gsub = string.gsub
@@ -42,15 +39,15 @@ local function serialise_localised_string(t)
   return output
 end
 
--- translate 50 entries per tick
-local function translate_batch(e)
+--- Translate a batch of 50 strings.
+-- @tparam Concepts.EventData e
+function translation.translate_batch(e)
   local __translation = global.__flib.translation
+  if __translation.active_translations_count == 0 then return end
   local iterations = math_floor(50 / __translation.active_translations_count)
   if iterations < 1 then iterations = 1 end
-  local players = __translation.players
   -- for each player that is doing a translation
-  for _, pi in ipairs(e.registered_players) do
-    local pt = players[pi]
+  for pi, pt in ipairs(__translation.players) do
     local request_translation = game.get_player(pi).request_translation
     local next_index = pt.next_index
     local finish_index = next_index + iterations
@@ -61,8 +58,6 @@ local function translate_batch(e)
       if i <= strings_len then
         request_translation(strings[i])
       else
-        -- deregister this event for this player
-        event.disable("translation_translate_batch", pi)
         break
       end
     end
@@ -71,8 +66,9 @@ local function translate_batch(e)
   end
 end
 
--- sorts a translated string into its appropriate dictionaries
-local function sort_translated_string(e)
+--- Sort a translated string into its appropriate dictionaries.
+-- @tparam Concepts.EventData e
+function translation.sort_string(e)
   local __translation = global.__flib.translation
   local player_data = __translation.players[e.player_index]
   local active_translations = player_data.active_translations
@@ -152,9 +148,6 @@ local function sort_translated_string(e)
 
           -- check if the player is done translating
           if player_data.active_translations_count == 0 then
-            -- deregister events from this player
-            event.disable("translation_translate_batch", e.player_index)
-            event.disable("translation_sort_result", e.player_index)
             -- remove player's translation table
             __translation.players[e.player_index] = nil
           end
@@ -248,9 +241,6 @@ function translation.start(player_index, dictionary_name, data, options)
   -- increment active translations counters, register on_tick and sort result handlers
   __translation.active_translations_count = __translation.active_translations_count + 1
   player_data.active_translations_count = player_data.active_translations_count + 1
-  -- register events, if needed
-  event.enable("translation_translate_batch", player_index)
-  event.enable("translation_sort_result", player_index)
 end
 
 -- Cancel an ongoing translation.
@@ -284,12 +274,6 @@ function translation.cancel(player_index, dictionary_name)
 
   -- check if the player is done translating
   if player_data.active_translations_count == 0 then
-    -- deregister events for this player
-    event.disable("translation_sort_result", player_index)
-    -- only deregister this if it's actually registered
-    if event.is_enabled("translation_translate_batch", player_index) then
-      event.disable("translation_translate_batch", player_index)
-    end
     -- remove player's translation table
     __translation.players[player_index] = nil
   end
@@ -324,35 +308,30 @@ function translation.on_finished(handler)
   on_finished_handler = handler
 end
 
-event.register_conditional{
-  translation_translate_batch = {
-    id = defines.events.on_tick,
-    handler = translate_batch,
-    options={skip_validation=true, suppress_logging=true}
-  },
-  translation_sort_result = {
-    id = defines.events.on_string_translated,
-    handler = sort_translated_string,
-    options={skip_validation=true, suppress_logging=true}
-  }
-}
-
 -- set up global
-event.on_init(function()
-  -- this requires the event module so the lualib table will already exist
-  global.__flib.translation = {
-    active_translations_count = 0,
-    players = {}
-  }
-end)
+function translation.on_init()
+  if not global.__flib then
+    global.__flib = {
+      translation = {
+        active_translations_count = 0,
+        players = {}
+      }
+    }
+  else
+    global.__flib.translation = {
+      active_translations_count = 0,
+      players = {}  
+    }
+  end
+end
 
 -- cancel all translations for the player when they leave or are removed
-event.register({defines.events.on_player_left_game, defines.events.on_player_removed}, function(e)
+function translation.on_player_left(e)
   local player_translation = global.__flib.translation.players[e.player_index]
   if player_translation and player_translation.active_translations_count > 0 then
     translation.cancel_all(e.player_index)
   end
-end)
+end
 
 --- @Concepts TranslationData
 -- Array of tables. Each table has the following fields:
