@@ -144,16 +144,15 @@ script.on_configuration_changed(function(e)
   end
 end)
 
----@section Registration
+-- @section Registration
 
 --- Register a static (non-conditional) handler.
 -- If you're only registering an handler to a single event, and if that event is in @{defines.events} or is a bootstrap
 -- event, you can replace `event.register(id, handler, options)` with `event.event_name(handler, options)`.
----@param id EventId|EventId[]
----@param handler function
----@param options EventOptions
----@param conditional_name nil
----@usage
+-- @tparam EventId|EventId[] id
+-- @tparam function handler
+-- @tparam EventOptions options
+-- @usage
 -- -- Register a handler to run on every tick
 -- event.register(defines.events.on_tick, function(e) game.print(game.tick) end)
 -- -- Register a handler for Nth tick using negative numbers
@@ -209,8 +208,8 @@ function event.register(id, handler, options, conditional_name)
 end
 
 --- Register conditional (non-static) handlers.
----@param events ConditionalEvents
----@usage
+-- @tparam ConditionalEvents events
+-- @usage
 -- event.register_conditional{
 --   place_fire_at_feet = {id=defines.events.on_tick, handler=place_fire},
 --   void_chests_tick = {id=defines.events.on_tick, handler=void_chests}
@@ -240,9 +239,9 @@ function event.register_conditional(events)
 end
 
 --- Enable a conditional handler.
----@param name string
----@param[opt] player_index integer
----@usage
+-- @tparam string name
+-- @tparam[opt] integer player_index
+-- @usage
 -- -- Enable a global conditional handler
 -- event.enable("void_chests_tick")
 -- -- Enable a conditional handler for a specific player
@@ -304,9 +303,9 @@ function event.enable(name, player_index)
 end
 
 --- Disable a conditional handler.
----@param name string
----@param[opt] player_index integer
----@usage
+-- @tparam string name
+-- @tparam[opt] player_index integer
+-- @usage
 -- -- Disable a global conditional handler
 -- event.disable("void_chests_tick")
 -- -- Disable a conditional handler for a specific player
@@ -399,9 +398,9 @@ function event.disable(name, player_index)
 end
 
 --- Enable a group of conditional handlers.
----@param group string
----@param player_index integer
----@usage
+-- @tparam string group
+-- @tparam integer player_index
+-- @usage
 -- -- Enable a group of conditional handlers
 -- event.enable_group("group_1")
 -- -- Enable a group of conditional handlers for a specific player
@@ -415,9 +414,9 @@ function event.enable_group(group, player_index)
 end
 
 --- Disable a group of conditional handlers.
----@param group string
----@param player_index integer
----@usage
+-- @tparam string group
+-- @tparam integer player_index
+-- @usage
 -- -- Disable a group of conditional handlers
 -- event.disable_group("group_1")
 -- -- Disable a group of conditional handlers for a specific player
@@ -449,12 +448,12 @@ for n,id in pairs(defines.events) do
   end
 end
 
----@section Event manipulation
+-- @section Event manipulation
 
 --- Raise an event as if it were actually called.
----@param id EventId|EventId[]
----@param event_data EventData
----@usage
+-- @tparam id EventId|EventId[]
+-- @tparam EventData event_data
+-- @usage
 -- -- Raise an event as if it were really called
 -- event.raise(defines.events.on_built_entity, {player_index=1, created_entity=my_entity, stack=my_stack})
 function event.raise(id, event_data)
@@ -463,9 +462,9 @@ function event.raise(id, event_data)
 end
 
 --- Set or remove the event's filters.
----@param id EventId|EventId[]
----@param filters EventFilters[]
----@usage
+-- @tparam EventId|EventId[] id
+-- @tparam EventFilters[] filters
+-- @usage
 -- -- Set the filters for an event
 -- event.set_filters(defines.events.on_built_entity, {{filter="ghost_name", name="demo-entity-1"}, {filter="ghost"}})
 function event.set_filters(id, filters)
@@ -477,9 +476,9 @@ function event.set_filters(id, filters)
 end
 
 --- Check if a conditional event is enabled.
----@param name string
----@param player_index integer
----@usage
+-- @tparam string name
+-- @tparam integer player_index
+-- @usage
 -- -- Check if a conditional event is enabled
 -- if event.is_enabled("print_when_built") then game.print("someone registered this event!") end
 -- -- Check if a conditional event is enabled for a specific player
@@ -505,8 +504,8 @@ end
 local custom_id_registry = {}
 
 --- Generate or retrieve a custom event ID.
----@param[opt] name string
----@usage
+-- @param[opt] name string
+-- @usage
 -- -- Generate a new event ID without saving it to the registry
 -- local my_event = event.get_id()
 -- -- Generate a new event ID, or retrieve it if it has already been made
@@ -529,9 +528,9 @@ function event.get_id(name)
 end
 
 --- Save a custom event ID.
----@param name string
----@param id integer
----@usage
+-- @tparam string name
+-- @tparam integer id
+-- @usage
 -- Save an event ID retrieved from another mod
 -- event.save_id("other_mods_event", remote.call("other_mod", "custom_event"))
 function event.save_id(name, id)
@@ -547,10 +546,7 @@ event.conditional_event_groups = conditional_event_groups
 
 return event
 
----@section Concepts
--- TODO: Fix documentation style if needed
-
----@alias EventId defines.events|string|int
+--- @Concepts EventId defines.events|string|int
 -- One of the following:
 -- - A member of @{defines.events}.
 -- - A @{string} corresponding to a `custom-input` prototype name, or a bootstrap event.
@@ -563,17 +559,14 @@ return event
 -- `-25`
 -- `241`
 
----@tfield[opt] boolean skip_validation Disables userdata validation. Saves on performance, but can cause crashes if not
+--- @Concepts EventOptions
+-- @tfield[opt] boolean skip_validation Disables userdata validation. Saves on performance, but can cause crashes if not
 -- handled properly.
----@tfield[opt] integer insert_at Inserts the handler at the given position in the event table, instead of at the back.
----@table EventOptions
+-- @tfield[opt] integer insert_at Inserts the handler at the given position in the event table, instead of at the back.
 
---- Dictionary @{string} -> @{table}. Each table of this dictionary has the following fields:
----@field id EventId|EventId[] The event ID(s) to invoke the handler on.
----@field handler function The handler to run. Receives an event table as defined in the Factorio documentation.
----@field[opt] group string|string[] Assigns this event to one or more groups.
----@field[opt] options EventOptions Additional options.
----@table ConditionalEvents
-
----@class EventFilters https://lua-api.factorio.com/latest/Event-Filters.html
----@class EventData https://lua-api.factorio.com/latest/events.html
+--- @Concepts ConditionalEvents
+-- Dictionary @{string} -> @{table}. Each table of this dictionary has the following fields:
+-- @field id EventId|EventId[] The event ID(s) to invoke the handler on.
+-- @field handler function The handler to run. Receives an event table as defined in the Factorio documentation.
+-- @field[opt] group string|string[] Assigns this event to one or more groups.
+-- @field[opt] options EventOptions Additional options.
