@@ -5,6 +5,7 @@ local gui = {}
 local util = require("util")
 
 local string_gmatch = string.gmatch
+local string_gsub = string.gsub
 local string_sub = string.sub
 
 local handlers = {}
@@ -27,8 +28,8 @@ local function generate_template_lookup(t, template_string)
   end
 end
 
-local function generate_handler_lookup(t, event_string, handler_groups, saved_filters)
-  handler_groups[#handler_groups+1] = event_string
+local function generate_handler_lookup(t, event_string, groups, saved_filters)
+  groups[#groups+1] = event_string
   for k, v in pairs(t) do
     if k ~= "extend" then
       local new_string = event_string.."."..k
@@ -42,12 +43,21 @@ local function generate_handler_lookup(t, event_string, handler_groups, saved_fi
       if v.handler then
         v.id = v.id or defines.events[k] or k
         handler_lookup[new_string] = v
+        -- assign handler to groups
+        for i=1,#groups do
+          local group = handler_groups[groups[i]]
+          if group then
+            group[#group+1] = new_string
+          else
+            handler_groups[groups[i]] = {new_string}
+          end
+        end
       else
-        generate_handler_lookup(v, new_string, handler_groups, saved_filters)
+        generate_handler_lookup(v, new_string, groups, saved_filters)
       end
     end
   end
-  handler_groups[#handler_groups] = nil
+  groups[#groups] = nil
 end
 
 --- @section Functions
@@ -90,6 +100,7 @@ function gui.update_filters(id, player_index, filters, mode)
     event_filters = saved_filters[id]
   end
 
+  -- update filters
   mode = mode or "overwrite"
   if mode == "add" then
     for filter, handler_path in pairs(filters) do
@@ -103,6 +114,31 @@ function gui.update_filters(id, player_index, filters, mode)
     saved_filters = filters
   else
     error("Invalid GUI filter update mode ["..mode.."]")
+  end
+
+  -- destroy tables if they're not needed any longer
+  if mode == "remove" or mode == "overwrite" then
+    if table_size(event_filters) == 0 then
+      saved_filters[id] = nil
+    end
+    if table_size(saved_filters) == 0 then
+      __gui[player_index] = nil
+    end
+  end
+end
+
+--- Dispatch GUI handlers for the given function.
+function gui.dispatch_handlers(e)
+  if e.mod_name and (not e.element or not e.player_index) then return end
+  local element = e.element
+  local element_name = string_gsub(element.name, "__.*", "")
+  local player_filters = global.__flib.gui[e.player_index]
+  if not player_filters then return end
+  local filters = player_filters[e.name]
+  if not filters then return end
+  local handler_name = filters[element.index] or filters[element_name]
+  if handler_name then
+    handler_lookup[handler_name].handler(e)
   end
 end
 
@@ -139,8 +175,19 @@ local function recursive_build(parent, structure, output, filters, player_index)
     -- register handlers
     if structure.handlers then
       local elem_index = elem.index
-      local name = structure.handlers
-      -- this will point not to a specific handler, but to a group of handlers
+      local group = handler_groups[structure.handlers]
+      if not group then error("Invalid GUI handler name ["..structure.handlers.."]") end
+      for i=1,#group do
+        local name = group[i]
+        local id = handler_lookup[name].id
+        gui.update_filters(id, player_index, {[elem_index]=name}, "add")
+        local saved_filters = filters[id]
+        if not saved_filters then
+          filters[id] = {[elem_index]=name}
+        else
+          saved_filters[elem_index] = name
+        end
+      end
     end
     -- add to output table
     if structure.save_as then
