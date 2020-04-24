@@ -13,24 +13,6 @@ local templates = {}
 local template_lookup = {}
 local handler_lookup = {}
 
--- table extension functions
-local function extend_table(self, data, do_return)
-  for k, v in pairs(data) do
-    if (type(v) == "table") then
-      if (type(self[k] or false) == "table") then
-        self[k] = extend_table(self[k], v, true)
-      else
-        self[k] = table.deepcopy(v)
-      end
-    else
-      self[k] = v
-    end
-  end
-  if do_return then return self end
-end
-handlers.extend = extend_table
-templates.extend = extend_table
-
 local function generate_template_lookup(t, template_string)
   for k, v in pairs(t) do
     if k ~= "extend" and type(v) == "table" then
@@ -168,6 +150,35 @@ function gui.build(parent, structures)
     )
   end
   return output, filters
+end
+
+local function extend_table(self, t, do_return)
+  for k, v in pairs(t) do
+    if (type(v) == "table") then
+      if (type(self[k] or false) == "table") then
+        self[k] = extend_table(self[k], v, true)
+      else
+        self[k] = table.deepcopy(v)
+      end
+    else
+      self[k] = v
+    end
+  end
+  if do_return then return self end
+end
+
+--- Add content to the GUI templates table.
+-- TODO: Explain templating.
+-- @tparam table t
+function gui.add_templates(t)
+  extend_table(templates, t)
+end
+
+--- Add content to the GUI handlers table.
+-- TODO: Explain handlers.
+-- @tparam table t
+function gui.add_handlers(t)
+  extend_table(handlers, t)
 end
 
 gui.templates = templates
