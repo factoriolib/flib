@@ -128,7 +128,23 @@ function gui.update_filters(id, player_index, filters, mode)
   end
 end
 
---- Dispatch GUI handlers for the given function.
+-- PROTOTYPING
+
+-- pass-through for gui.update_filters. takes an event group name instead of an event ID
+function gui.add_filters(group_name, player_index, filters)
+  local group = handler_groups[group_name]
+  for gi=1,#group do
+    local handler_name = group[gi]
+    local handler_data = handler_lookup[handler_name]
+    local new_filters = {}
+    for i=1,#filters do
+      new_filters[filters[i]] = handler_name
+    end
+    gui.update_filters(handler_data.id, player_index, new_filters, "add")
+  end
+end
+
+--- Dispatch GUI handlers for the given event.
 -- @tparam Concepts.EventData e
 function gui.dispatch_handlers(e)
   if not e.element or not e.player_index then return end
