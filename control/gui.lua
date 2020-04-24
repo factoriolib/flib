@@ -104,14 +104,13 @@ end)
 
 --- @section Events
 
---- Updates filters for a GUI handler.
+--- Update filters for a GUI handler.
 -- If the gui handler isn't enabled, it will enable it.
 -- If the filters list is emptied in the process, it will disable the handler.
--- @param name string The name of the handler you wish to update.
--- @param player_index int
--- @param filters GuiFilter[]
--- @param[opt="overwrite"] mode string One of "add", "remove", or "overwrite"
--- @return GuiFilter[] The updated filters.
+-- @tparam string name The name of the handler you wish to update.
+-- @tparam int player_index
+-- @tparam GuiFilter[] filters
+-- @tparam[opt="overwrite"] string mode One of "add", "remove", or "overwrite"
 function gui.update_filters(name, player_index, filters, mode)
   local __gui = global.__flib.gui
   local player_filters = __gui.event_filters[player_index]
