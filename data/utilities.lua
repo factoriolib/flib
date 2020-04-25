@@ -4,10 +4,7 @@
 
 local utilities = {}
 
---class IconSpecification https://wiki.factorio.com/Types/IconSpecification
-
-
---- Copies prototypes and assigns new name and minable.
+--- Copy a prototype, assign new name and minable properties.
 -- @tparam PrototypeBase prototype
 -- @tparam string new_name string
 -- @tparam[opt=false] boolean remove_icon
@@ -45,7 +42,7 @@ function utilities.copy_prototype(prototype, new_name, remove_icon)
   return p
 end
 
---- Adds new icon layers to a prototype icon or icons and returns the result.
+--- Add new icon layers to a prototype icon or icons.
 -- @tparam PrototypeBase prototype
 -- @tparam Types.IconSpecification[] new_layers
 -- @return Types.IconSpecification[]|nil
@@ -102,7 +99,7 @@ local exponent_multipliers = {
   ['P'] = 1000000000000000,
 }
 
---- returns energy strings as base unit value + suffix
+--- Convert an energy string to base unit value + suffix.
 -- @tparam string energy_string
 -- @treturn float|nil
 -- @treturn string
