@@ -2,7 +2,7 @@
 -- After starting a translation using the translation.start() function, the module will translate 50 entries per tick.
 -- Once it has completed translation of a dictionary, an event will be raised that will provide the player index and
 -- the output tables. Listen for this event to receive and store the results of the translations.
--- @module translation
+-- @module control.translation
 -- @usage
 -- local translation = require("__flib__.control.translation")
 -- -- Store a dictionary when its translations have finished.\
@@ -14,6 +14,9 @@
 --   }
 -- end)
 local translation = {}
+
+--- @class OnTickEventData https://lua-api.factorio.com/latest/events.html#on_tick
+--- @class OnStringTranslatedEventData https://lua-api.factorio.com/latest/events.html#on_string_translated
 
 -- locals
 local math_floor = math.floor
@@ -40,7 +43,7 @@ local function serialise_localised_string(t)
 end
 
 --- Translate a batch of 50 strings.
--- @tparam Concepts.EventData e
+-- @tparam OnTickEventData e
 function translation.translate_batch(e)
   local __translation = global.__flib.translation
   if __translation.active_translations_count == 0 then return end
@@ -67,7 +70,7 @@ function translation.translate_batch(e)
 end
 
 --- Sort a translated string into its appropriate dictionaries.
--- @tparam Concepts.EventData e
+-- @tparam OnStringTranslatedEventData e
 function translation.sort_string(e)
   local __translation = global.__flib.translation
   local player_data = __translation.players[e.player_index]
@@ -165,10 +168,10 @@ end
 translation.serialise_localised_string = serialise_localised_string
 
 --- Begin translating strings.
--- @param player_index integer
--- @param dictionary_name string
--- @param data Concepts.TranslationData
--- @param options Concepts.TranslationOptions
+-- @tparam uint player_index
+-- @tparam string dictionary_name
+-- @tparam TranslationData data
+-- @tparam[opt] TranslationOptions options
 function translation.start(player_index, dictionary_name, data, options)
   options = options or {}
   local __translation = global.__flib.translation
@@ -243,9 +246,9 @@ function translation.start(player_index, dictionary_name, data, options)
   player_data.active_translations_count = player_data.active_translations_count + 1
 end
 
--- Cancel an ongoing translation.
--- @param player_index integer
--- @param dictionary_name string
+--- Cancel an ongoing translation.
+-- @tparam uint player_index
+-- @tparam string dictionary_name
 function translation.cancel(player_index, dictionary_name)
   local __translation = global.__flib.translation
   local player_data = __translation.players[player_index] or {active_translations={}}
@@ -279,8 +282,8 @@ function translation.cancel(player_index, dictionary_name)
   end
 end
 
--- Cancel all translations for a specific player,  or for everybody.
--- @param[opt] player_index integer The player whose translations to cancel. If not provided, all translations for every
+--- Cancel all translations for a specific player, or for everybody.
+-- @tparam[opt] uint player_index The player whose translations to cancel. If not provided, all translations for every
 -- player are canceled.
 function translation.cancel_all(player_index)
   local players = global.__flib.translation.players
@@ -300,10 +303,10 @@ function translation.cancel_all(player_index)
   end
 end
 
--- Register a handler to be called when a translation finishes.
+--- Register a handler to be called when a translation finishes.
 -- This does not go through the event system and so doesn't have any of those features, but it passes an event table as
 -- if it was one.
--- @param handler function The handler to run.
+-- @tparam function handler The handler to run.
 function translation.on_finished(handler)
   on_finished_handler = handler
 end
@@ -335,8 +338,8 @@ end
 
 --- @Concepts TranslationData
 -- Array of tables. Each table has the following fields:
--- @param internal string The internal name that will be used to look up the translation.
--- @param localised Concepts.LocalisedString The localised string corresponding to the internal name.
+-- @tparam string internal The internal name that will be used to look up the translation.
+-- @tparam Concepts.LocalisedString localised The localised string corresponding to the internal name.
 -- @usage
 -- {
 --   {internal="iron-ore", localised={"item-name.iron-ore"}},
@@ -345,9 +348,9 @@ end
 
 --- @Concepts TranslationOptions
 -- Table with the following fields:
--- @param lowercase_sorted_translations boolean If true, the contents of the sorted_translations table will be all
+-- @tparam boolean lowercase_sorted_translations If true, the contents of the sorted_translations table will be all
 -- lowercase.
--- @param include_failed_trainslations boolean If true, failed translations will still be added to the
+-- @tparam boolean include_failed_trainslations If true, failed translations will still be added to the
 -- output tables
 
 return translation
