@@ -51,7 +51,7 @@ end
 
 --- creates string representing train composition
 --- L for locomotives, C for cargo wagons, F for fluid wagons, A for artillery wagon
--- @tparam LuaTrain LuaTrain
+-- @tparam LuaTrain train
 -- @return string | nil
 function Train.get_composition_string(train)
   if train and train.valid then
