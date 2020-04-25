@@ -52,9 +52,3 @@ function event.get_filters(id)
 end
 
 return event
-
-
-
-
-
-
