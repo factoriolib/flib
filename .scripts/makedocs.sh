@@ -1,5 +1,3 @@
-#!/bin/bash
-
 echo 'Auto Generating with ldoc'
 rm -rf 'flib-docs'
 mkdir -p 'flib-docs'

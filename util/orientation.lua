@@ -1,6 +1,6 @@
 --- Functions for working with orientations.
--- @module util.Orientation
--- @usage local Orientation = require('__flib__.util.orientation')
+-- @module util.orientation
+-- @usage local orientation = require('__flib__.util.orientation')
 
 local Orientation = {}
 
@@ -28,16 +28,16 @@ local floor = math.floor
 -- @tparam[opt=false] boolean eight_way
 -- @treturn defines.direction
 function Orientation.to_direction(orientation, eight_way)
-    local ways = eight_way and 8 or 4
-    local mod = eight_way and 1 or 2
-    return floor(orientation * ways + 0.5) % ways * mod
+  local ways = eight_way and 8 or 4
+  local mod = eight_way and 1 or 2
+  return floor(orientation * ways + 0.5) % ways * mod
 end
 
 --- Returns the opposite orientation.
 -- @tparam float orientation
 -- @treturn float the opposite orientation
 function Orientation.opposite(orientation)
-    return (orientation + 0.5) % 1
+  return (orientation + 0.5) % 1
 end
 
 --- Add two orientations together.
@@ -45,7 +45,7 @@ end
 -- @tparam float orientation2
 -- @treturn float the orientations added together
 function Orientation.add(orientation1, orientation2)
-    return (orientation1 + orientation2) % 1
+  return (orientation1 + orientation2) % 1
 end
 
 return Orientation
