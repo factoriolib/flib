@@ -1,0 +1,6 @@
+{
+    "image": "nexela/factorio-lua-env:latest",
+    "forwardPorts": [
+        3000
+    ],
+}
