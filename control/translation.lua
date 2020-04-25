@@ -24,7 +24,7 @@ local string_gsub = string.gsub
 local string_lower = string.lower
 local table_sort = table.sort
 
-local on_finished_handler = function(e) error("Must register a handler using translation.on_finished()") end
+local on_finished_handler = function() error("Must register a handler using translation.on_finished()") end
 
 -- converts a localised string into a format readable by the API
 -- basically just spits out the table in string form
@@ -43,8 +43,7 @@ local function serialise_localised_string(t)
 end
 
 --- Translate a batch of 50 strings.
--- @tparam OnTickEventData e
-function translation.translate_batch(e)
+function translation.translate_batch()
   local __translation = global.__flib.translation
   if __translation.active_translations_count == 0 then return end
   local iterations = math_floor(50 / __translation.active_translations_count)
@@ -70,12 +69,12 @@ function translation.translate_batch(e)
 end
 
 --- Sort a translated string into its appropriate dictionaries.
--- @tparam OnStringTranslatedEventData e
-function translation.sort_string(e)
+-- @tparam OnStringTranslatedEventData event_data
+function translation.sort_string(event_data)
   local __translation = global.__flib.translation
-  local player_data = __translation.players[e.player_index]
+  local player_data = __translation.players[event_data.player_index]
   local active_translations = player_data.active_translations
-  local localised = e.localised_string
+  local localised = event_data.localised_string
   local serialised = serialise_localised_string(localised)
   -- check if the string actually exists in the registry.
   -- if it does not, then another mod requested this translation as well and it was already sorted.
@@ -91,11 +90,11 @@ function translation.sort_string(e)
         data.registry_index_size = data.registry_index_size - 1
 
         -- check if the string was successfully translated
-        local success = e.translated
-        local result = e.result
+        local success = event_data.translated
+        local result = event_data.result
         local include_failed_translations = data.include_failed_translations
         if not include_failed_translations and (not success or result == "") then
-          log("["..dictionary_name.."]["..e.player_index.."]:  key "..serialised.." was not successfully translated, and will not be included in the output.")
+          log("["..dictionary_name.."]["..event_data.player_index.."]:  key "..serialised.." was not successfully translated, and will not be included in the output.")
         else
           -- do this only if the result will be the same for all internal names
           if success then
@@ -140,7 +139,7 @@ function translation.sort_string(e)
           on_finished_handler{
             name = "flib_translation_on_finished",
             tick = game.tick,
-            player_index = e.player_index,
+            player_index = event_data.player_index,
             dictionary_name = dictionary_name,
             lookup = data.lookup,
             sorted_translations = data.sorted_translations,
@@ -152,11 +151,11 @@ function translation.sort_string(e)
           -- check if the player is done translating
           if player_data.active_translations_count == 0 then
             -- remove player's translation table
-            __translation.players[e.player_index] = nil
+            __translation.players[event_data.player_index] = nil
           end
         end
       else
-        error("Data for dictionary: "..dictionary_name.." for player: "..e.player_index.." does not exist!")
+        error("Data for dictionary: "..dictionary_name.." for player: "..event_data.player_index.." does not exist!")
       end
     end
 
@@ -323,7 +322,7 @@ function translation.on_init()
   else
     global.__flib.translation = {
       active_translations_count = 0,
-      players = {}  
+      players = {}
     }
   end
 end
