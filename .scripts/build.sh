@@ -1,5 +1,3 @@
-#!/bin/bash
-
 #ln -s /workspaces/flib /usr/local/share/lua/5.2/__flib__
 
 wget -q --no-check-certificate -O ../.luacheckrc https://raw.githubusercontent.com/Nexela/Factorio-luacheckrc/master/.luacheckrc
