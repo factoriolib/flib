@@ -28,7 +28,7 @@ local function generate_template_lookup(t, template_string)
   end
 end
 
-local function generate_handler_lookup(t, event_string, groups, saved_filters)
+local function generate_handler_lookup(t, event_string, groups)
   groups[#groups+1] = event_string
   for k, v in pairs(t) do
     if k ~= "extend" then
@@ -53,7 +53,7 @@ local function generate_handler_lookup(t, event_string, groups, saved_filters)
           end
         end
       else
-        generate_handler_lookup(v, new_string, groups, saved_filters)
+        generate_handler_lookup(v, new_string, groups)
       end
     end
   end
@@ -64,7 +64,7 @@ end
 
 --- Initial setup
 -- Must be called at the BEGINNING of on_init, before any GUI functions are used
-function gui.on_init()
+function gui.init()
   if not global.__flib then
     global.__flib = {gui={}}
   else
@@ -78,7 +78,7 @@ function gui.bootstrap_postprocess()
   generate_template_lookup(templates, "")
   -- go one level deep before calling the function, to avoid adding an unnecessary prefix to all group names
   for k, v in pairs(handlers) do
-    generate_handler_lookup(v, k, {}, global.__flib.gui)
+    generate_handler_lookup(v, k, {})
   end
 end
 
@@ -141,6 +141,13 @@ function gui.add_filters(group_name, player_index, filters)
       new_filters[filters[i]] = handler_name
     end
     gui.update_filters(handler_data.id, player_index, new_filters, "add")
+  end
+end
+
+-- takes in a filters table as provided in gui.build, and removes them
+function gui.remove_filters(player_index, filters)
+  for id, event_filters in pairs(filters) do
+    gui.update_filters(id, player_index, event_filters, "remove")
   end
 end
 
