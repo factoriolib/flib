@@ -23,8 +23,14 @@ function event.on_nth_tick(nth_tick, handler)
   return script.on_nth_tick(nth_tick, handler)
 end
 
-function event.register(id, handler, filters)
-  return script.on_event(id, handler, filters)
+function event.register(ids, handler, filters)
+  if type(ids) ~= "table" then
+    ids = {ids}
+  end
+  for i=1,#ids do
+    script.on_event(ids[i], handler, filters)
+  end
+  return
 end
 
 function event.generate_id()
@@ -43,8 +49,14 @@ function event.get_order()
   return script.get_event_order()
 end
 
-function event.set_filters(id, filters)
-  return script.set_event_filter(id, filters)
+function event.set_filters(ids, filters)
+  if type(ids) ~= "table" then
+    ids = {ids}
+  end
+  for i=1,#ids do
+    script.set_event_filter(ids[i], filters)
+  end
+  return
 end
 
 function event.get_filters(id)
