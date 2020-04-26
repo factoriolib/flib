@@ -28,7 +28,12 @@ function event.register(ids, handler, filters)
     ids = {ids}
   end
   for i=1,#ids do
-    script.on_event(ids[i], handler, filters)
+    -- dumb workaround - the game doesn't like you passing filters, even if it's nil
+    if filters then
+      script.on_event(ids[i], handler, filters)
+    else
+      script.on_event(ids[i], handler)
+    end
   end
   return
 end
