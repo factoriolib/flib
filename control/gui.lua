@@ -62,8 +62,8 @@ end
 
 --- @section Functions
 
---- Initial setup
--- Must be called at the BEGINNING of on_init, before any GUI functions are used
+--- Initial setup. Must be called at the BEGINNING of on_init, before any GUI functions are used.
+-- If adding the module to an existing mod, this should be called in on_configuration_changed as well.
 function gui.init()
   if not global.__flib then
     global.__flib = {gui={}}
@@ -153,17 +153,21 @@ end
 
 --- Dispatch GUI handlers for the given event.
 -- @tparam Concepts.EventData e
+-- @return boolean If a handler was dispatched.
 function gui.dispatch_handlers(e)
-  if not e.element or not e.player_index then return end
+  if not e.element or not e.player_index then return false end
   local element = e.element
   local element_name = string_gsub(element.name, "__.*", "")
   local player_filters = global.__flib.gui[e.player_index]
-  if not player_filters then return end
+  if not player_filters then return false end
   local filters = player_filters[e.name]
-  if not filters then return end
+  if not filters then return false end
   local handler_name = filters[element.index] or filters[element_name]
   if handler_name then
     handler_lookup[handler_name].handler(e)
+    return true
+  else
+    return false
   end
 end
 
