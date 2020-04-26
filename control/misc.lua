@@ -1,18 +1,15 @@
 --- @module control.misc
---- loose collection of functions that didn't fit into other modules
+-- Loose collection of functions that don't fit into any other modules.
 -- @usage local misc = require("__flib__.control.misc")
-
----@class Position https://lua-api.factorio.com/latest/Concepts.html#Position
-
 local misc = {}
 
 local math_sqrt = math.sqrt
 local math_floor = math.floor
 local string_format = string.format
 
---- calculates the distance in tiles between two positions
--- @param pos1 Position
--- @param pos2 Position
+--- Calculate the distance in tiles between two positions.
+-- @tparam Concepts.Position pos1
+-- @tparam Concepts.Position pos2
 -- @return double
 function misc.get_distance(pos1, pos2)
   local x1 = pos1.x or pos1[1]
@@ -23,9 +20,9 @@ function misc.get_distance(pos1, pos2)
   -- return ((x1-x2)^2 + (y1-y2)^2)^0.5 --Duration: 0.316964ms
 end
 
---- calculates the squared distance in tiles between two positions
--- @param pos1 Position
--- @param pos2 Position
+--- Calculate the squared distance in tiles between two positions.
+-- @tparam Concepts.Position pos1
+-- @tparam Concepts.Position pos2
 -- @return double
 function misc.get_distance_squared(pos1, pos2)
   local x1 = pos1.x or pos1[1]
@@ -35,11 +32,12 @@ function misc.get_distance_squared(pos1, pos2)
   return (x1-x2)^2 + (y1-y2)^2
 end
 
---- converts given tick or game.tick into "[hh:]mm:ss" format
--- @param tick uint | nil
--- @return string
 local format_string_1 = "%d:%02d"
 local format_string_2 = "%d:%02d:%02d"
+
+--- Convert given tick or game.tick into "[hh:]mm:ss" format.
+-- @tparam[opt=game.tick] uint tick
+-- @return string
 function misc.ticks_to_timestring(tick)
   local total_seconds = math_floor((tick or game.tick)/60)
   local seconds = total_seconds % 60
@@ -52,6 +50,5 @@ function misc.ticks_to_timestring(tick)
     return string_format(format_string_1, minutes, seconds)
   end
 end
-
 
 return misc

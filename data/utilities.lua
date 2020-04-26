@@ -1,14 +1,14 @@
+--- Rando data functions
+-- @module data.utilities
+-- @usage local utilities = require('__flib__.data.utilities')
+
 local utilities = {}
 
----@class PrototypeBase https://wiki.factorio.com/PrototypeBase
----@class IconSpecification https://wiki.factorio.com/Types/IconSpecification
-
-
---- copies prototypes and assigns new name and minable
----@param prototype PrototypeBase
----@param new_name string
----@param remove_icon bool | nil
----@return PrototypeBase
+--- Copy a prototype, assign new name and minable properties.
+-- @tparam PrototypeBase prototype
+-- @tparam string new_name string
+-- @tparam[opt=false] boolean remove_icon
+-- @treturn PrototypeBase
 function utilities.copy_prototype(prototype, new_name, remove_icon)
   if not prototype.type or not prototype.name then
     error("Invalid prototype: prototypes must have name and type properties.")
@@ -42,10 +42,10 @@ function utilities.copy_prototype(prototype, new_name, remove_icon)
   return p
 end
 
---- adds new icon layers to a prototype icon or icons and returns the result
----@param prototype PrototypeBase
----@param new_layers IconSpecification[]
----@return IconSpecification[] | nil
+--- Add new icon layers to a prototype icon or icons.
+-- @tparam PrototypeBase prototype
+-- @tparam Types.IconSpecification[] new_layers
+-- @return Types.IconSpecification[]|nil
 function utilities.create_icons(prototype, new_layers)
   for _,new_layer in pairs(new_layers) do
     if not new_layer.icon or not new_layer.icon_size then
@@ -99,13 +99,13 @@ local exponent_multipliers = {
   ['P'] = 1000000000000000,
 }
 
---- returns energy strings as base unit value + suffix
----@param energy_string string
----@return float | nil
----@return string
+--- Convert an energy string to base unit value + suffix.
+-- @tparam string energy_string
+-- @treturn float|nil
+-- @treturn string
 function utilities.get_energy_value(energy_string)
   if type(energy_string) == "string" then
-    local value, str, exp, unit =  string.match(energy_string, "([%-+]?[0-9]*%.?[0-9]+)(([kMGTP]?)([WJ]))")
+    local value, _, exp, unit =  string.match(energy_string, "([%-+]?[0-9]*%.?[0-9]+)(([kMGTP]?)([WJ]))")
     if exp and exponent_multipliers[exp] then
       value = value * exponent_multipliers[exp]
     end

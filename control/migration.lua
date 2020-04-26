@@ -7,7 +7,7 @@ local table_concat = table.concat
 
 --- @section Functions
 
---- Normalizes version strings for easy comparison.
+--- Normalize version strings for easy comparison.
 -- @tparam string version
 -- @tparam[opt="%02d"] string format
 -- @treturn string|nil
@@ -29,10 +29,10 @@ function migration.format_version(version, format)
   return nil
 end
 
---- Checks if normalized strings of current_version > old_version.
+--- Check if current_version is newer than old_version.
 -- @tparam string old_version
 -- @tparam string current_version
--- @tparam[opt=%02d] string format Defaults to "%02d"
+-- @tparam[opt=%02d] string format
 -- @treturn boolean|nil
 function migration.is_new_version(old_version, current_version, format)
   local v1 = migration.format_version(old_version, format)
@@ -46,7 +46,7 @@ function migration.is_new_version(old_version, current_version, format)
   return nil
 end
 
---- Runs migrations against the given version.
+--- Run migrations against the given version.
 -- @tparam string old_version
 -- @tparam MigrationsTable migrations
 -- @tparam[opt="%02d"] string format
@@ -60,7 +60,7 @@ function migration.run(old_version, migrations, format)
   end
 end
 
---- Determines if migrations need to be run for this mod, then runs them if needed.
+--- Determine if migrations need to be run for this mod, then run them if needed.
 -- @tparam Concepts.ConfigurationChangedData event_data
 -- @tparam MigrationsTable migrations
 -- @tparam[opt] string mod_name The mod to check against, defaults to the mod this is used in.

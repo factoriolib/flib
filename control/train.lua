@@ -1,33 +1,30 @@
 --- @module control.train
 -- @usage local train = require("__flib__.control.train")
-
----@class LuaEntity https://lua-api.factorio.com/latest/LuaEntity.html
----@class LuaTrain https://lua-api.factorio.com/latest/LuaTrain.html
-
+-- @see LuaTrain
 local train = {}
 
 local table_concat = table.concat
 
---- gets main locomotive in a given train
--- @param train LuaTrain
--- @return LuaEntity | nil
+--- Get the main locomotive in a given train.
+-- @tparam LuaTrain train
+-- @return LuaEntity|nil
 function train.get_main_locomotive(train)
   if train.valid and train.locomotives and (#train.locomotives.front_movers > 0 or #train.locomotives.back_movers > 0) then
     return train.locomotives.front_movers and train.locomotives.front_movers[1] or train.locomotives.back_movers[1]
   end
 end
 
---- gets backer_name of main locomotive in a given train
--- @param train LuaTrain
--- @return string | nil
+--- Get backer_name of the main locomotive in a given train.
+-- @tparam LuaTrain train
+-- @return string|nil
 function train.get_backer_name(train)
   local loco = train.get_main_locomotive(train)
   return loco and loco.backer_name
 end
 
---- rotates a single carriage of a train, returns true if successful
--- @param entity LuaEntity
--- @return bool
+--- Rotate a single carriage of a train.
+-- @tparam LuaEntity entity
+-- @return boolean Whether or not the rotation was successful.
 function train.rotate_carriage(entity)
   local disconnected_back = entity.disconnect_rolling_stock(defines.rail_direction.back)
   local disconnected_front = entity.disconnect_rolling_stock(defines.rail_direction.front)
@@ -51,10 +48,10 @@ function train.rotate_carriage(entity)
   return true
 end
 
---- creates string representing train composition
---- L for locomotives, C for cargo wagons, F for fluid wagons, A for artillery wagon
--- @param train LuaTrain
--- @return string | nil
+--- Create a string representing train composition.
+-- L for locomotives, C for cargo wagons, F for fluid wagons, A for artillery wagon.
+-- @tparam LuaTrain train
+-- @return string|nil
 function train.get_composition_string(train)
   if train and train.valid then
     local carriages = train.carriages
@@ -96,11 +93,11 @@ function train.get_composition_string(train)
   end
 end
 
---- open train GUI for one player
+--- Open train GUI for one player.
 -- @param player_index uint
--- @param train LuaTrain
--- Returns: bool
-function open_train_gui(player_index, train)
+-- @tparam LuaTrain train
+-- @return boolean If the GUI was opened.
+function train.open_train_gui(player_index, train)
   if train and train.valid and game.players[player_index] then
     local loco = train.get_main_locomotive(train)
     if loco and loco.valid then
