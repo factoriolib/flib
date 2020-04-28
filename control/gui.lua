@@ -130,7 +130,10 @@ end
 
 -- PROTOTYPING
 
--- pass-through for gui.update_filters. takes an event group name instead of an event ID
+--- Adds filters to the given group of handlers.
+-- @tparam string group_name
+-- @tparam uint player_index
+-- @tparam GuiFilter[] filters
 function gui.add_filters(group_name, player_index, filters)
   local group = handler_groups[group_name]
   for gi=1,#group do
@@ -144,7 +147,9 @@ function gui.add_filters(group_name, player_index, filters)
   end
 end
 
--- takes in a filters table as provided in gui.build, and removes them
+--- Takes in a filters table as provided in gui.build, and removes those filters.
+-- @tparam uint player_index
+-- @tparam
 function gui.remove_filters(player_index, filters)
   for id, event_filters in pairs(filters) do
     gui.update_filters(id, player_index, event_filters, "remove")
@@ -250,6 +255,9 @@ end
 --- Build a GUI structure.
 -- @tparam parent LuaGuiElement
 -- @tparam GuiStructure[] structures
+-- @return GuiOutputTable
+-- @return table Dictionary @{defines.events|string|int} -> @{GuiFilters}, a mapping of an event ID to the filters
+-- belonging to it.
 function gui.build(parent, structures)
   local output = {}
   local filters = {}
@@ -308,19 +316,25 @@ gui.templates = templates
 gui.handlers = handlers
 gui.handler_groups = handler_groups
 
---- @Concepts GuiStructure
--- A GUI structure. Basic format is a table corresponding to a LuaGuiElement's constructor.
--- TODO Raiguard document all properties
-
---- @Concepts GuiFilters
--- Table @{GuiFilter} -> string. Each string corresponds to a GUI handler name. When an element matching the given
--- filter raises an event, the handler corresponding to the handler name is fired.
--- TODO Raiguard expound on this
+--- @section Concepts
 
 --- @Concepts GuiFilter
 -- One of the following:
 -- - A @{string} corresponding to an element's name.
---   - Partial names may be matched by separating the common part from the unique part with two underscores.
+--   - Partial names may be matched by separating the common part from the unique part with two underscores `__`.
 -- - An @{integer} corresponding to an element's index.
+
+--- @Concepts GuiFilters
+-- Table @{GuiFilter} -> string. Each string corresponds to a GUI handler name. When an element matching the given
+-- filter raises an event, the handler corresponding to the handler name is fired.
+-- TODO Raiguard expound on this!
+
+--- @Concepts GuiStructure
+-- A GUI structure. Basic format is a table corresponding to a LuaGuiElement's constructor.
+-- TODO Raiguard document all properties!
+
+--- @Concepts GuiOutputTable
+-- A table with a custom structure depending on how it is set up in gui.build().
+-- TODO Raiguard document more!
 
 return gui
