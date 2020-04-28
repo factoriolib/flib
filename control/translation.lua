@@ -311,7 +311,7 @@ function translation.on_finished(handler)
 end
 
 -- set up global
-function translation.on_init()
+function translation.init()
   if not global.__flib then
     global.__flib = {
       translation = {
