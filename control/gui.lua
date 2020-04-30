@@ -42,6 +42,8 @@ local function generate_handler_lookup(t, event_string, groups)
       end
       if v.handler then
         v.id = v.id or defines.events[k] or k
+        v.filters = {}
+        v.groups = table.deepcopy(groups)
         handler_lookup[new_string] = v
         -- assign handler to groups
         for i=1,#groups do
@@ -58,6 +60,28 @@ local function generate_handler_lookup(t, event_string, groups)
     end
   end
   groups[#groups] = nil
+end
+
+local function generate_filter_lookup()
+  -- add filter lookup to each handler
+  for player_index, events in pairs(global.__flib.gui) do
+    for event_id, filters in pairs(events) do
+      for filter, handler_name in pairs(filters) do
+        local handler_filters = handler_lookup[handler_name].filters
+        local player_filters = handler_filters[player_index]
+        if player_filters then
+          local event_filters = player_filters[event_id]
+          if event_filters then
+            event_filters[filter] = handler_name
+          else
+            player_filters[event_id] = {[filter]=handler_name}
+          end
+        else
+          handler_filters[player_index] = {[event_id]={[filter]=handler_name}}
+        end
+      end
+    end
+  end
 end
 
 --- @section Functions
@@ -79,6 +103,9 @@ function gui.bootstrap_postprocess()
   -- go one level deep before calling the function, to avoid adding an unnecessary prefix to all group names
   for k, v in pairs(handlers) do
     generate_handler_lookup(v, k, {})
+  end
+  if global.__flib and global.__flib.gui then
+    generate_filter_lookup()
   end
 end
 
@@ -314,6 +341,7 @@ end
 
 gui.templates = templates
 gui.handlers = handlers
+gui.handler_lookup = handler_lookup
 gui.handler_groups = handler_groups
 
 --- @section Concepts
