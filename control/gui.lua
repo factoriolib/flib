@@ -64,20 +64,18 @@ end
 
 local function generate_filter_lookup()
   -- add filter lookup to each handler
-  for player_index, events in pairs(global.__flib.gui) do
-    for event_id, filters in pairs(events) do
+  for _, players in pairs(global.__flib.gui) do
+    for player_index, filters in pairs(players) do
       for filter, handler_name in pairs(filters) do
-        local handler_filters = handler_lookup[handler_name].filters
-        local player_filters = handler_filters[player_index]
-        if player_filters then
-          local event_filters = player_filters[event_id]
-          if event_filters then
-            event_filters[filter] = handler_name
+        if filter ~= "__size" then
+          local handler_filters = handler_lookup[handler_name].filters
+          local player_filters = handler_filters[player_index]
+          if player_filters then
+            player_filters[filter] = handler_name
+            player_filters.__size = player_filters.__size + 1
           else
-            player_filters[event_id] = {[filter]=handler_name}
+            handler_filters[player_index] = {__size=1, [filter]=handler_name}
           end
-        else
-          handler_filters[player_index] = {[event_id]={[filter]=handler_name}}
         end
       end
     end
@@ -112,7 +110,7 @@ end
 -- Add or remove GUI filters to a handler or group of handlers.
 -- @tparam string name The handler name, or group name.
 -- @tparam uint player_index
--- @tparam GuiFilter[] filters An array or like-key table of filters.
+-- @tparam GuiFilter[] filters An array of filters.
 -- @tparam string mode One of "add" or "remove".
 function gui.update_filters(name, player_index, filters, mode)
   local handler_names = handler_groups[name] or {name}
@@ -125,36 +123,55 @@ function gui.update_filters(name, player_index, filters, mode)
 
     -- saved filters table (in global)
     local __gui = global.__flib.gui
-    local saved_player_filters = __gui[player_index]
-    if not saved_player_filters then
-      __gui[player_index] = {[id]={}}
-      saved_player_filters = __gui[player_index]
-    end
-    local saved_event_filters = saved_player_filters[id]
+    local saved_event_filters = __gui[id]
     if not saved_event_filters then
-      saved_player_filters[id] = {}
-      saved_event_filters = saved_player_filters[id]
+      __gui[id] = {__size=1, [player_index]={__size=0}}
+      saved_event_filters = __gui[id]
+    end
+    local saved_player_filters = saved_event_filters[player_index]
+    if not saved_player_filters then
+      saved_event_filters[player_index] = {__size=0}
+      saved_event_filters.__size = saved_event_filters.__size + 1
+      saved_player_filters = saved_event_filters[player_index]
     end
 
-    -- filters table (in lookup)
-    local player_filters = handler_filters[player_index]
-    if not player_filters then
-      handler_filters[player_index] = {}
-      player_filters = handler_filters[player_index]
+    -- handler filters table (in lookup)
+    local handler_player_filters = handler_filters[player_index]
+    if not handler_player_filters then
+      handler_filters[player_index] = {__size=0}
+      handler_player_filters = handler_filters[player_index]
     end
 
     -- update filters
     mode = mode or "add"
     if mode == "add" then
       for _, filter in pairs(filters) do
-        saved_event_filters[filter] = handler_name
-        player_filters[filter] = filter
+        saved_player_filters[filter] = handler_name
+        saved_player_filters.__size = saved_player_filters.__size + 1
+        handler_player_filters[filter] = filter
+        handler_player_filters.__size = handler_player_filters.__size + 1
       end
     elseif mode == "remove" then
       -- if a filters table wasn't provided, remove all of them
-      for _, filter in pairs(filters or player_filters) do
-        saved_event_filters[filter] = nil
-        player_filters[filter] = nil
+      for key, filter in pairs(filters or handler_player_filters) do
+        if key ~= "__size" then
+          saved_player_filters[filter] = nil
+          saved_player_filters.__size = saved_player_filters.__size - 1
+          handler_player_filters[filter] = nil
+          handler_player_filters.__size = handler_player_filters.__size - 1
+        end
+      end
+
+      -- clean up empty tables
+      if saved_player_filters.__size == 0 then
+        saved_event_filters[player_index] = nil
+        saved_event_filters.__size = saved_event_filters.__size - 1
+        if saved_event_filters.__size == 0 then
+          __gui[id] = nil
+        end
+      end
+      if handler_player_filters.__size == 0 then
+        handler_filters[player_index] = nil
       end
     else
       error("Invalid GUI filter update mode ["..mode.."]")
@@ -169,11 +186,11 @@ function gui.dispatch_handlers(e)
   if not e.element or not e.player_index then return false end
   local element = e.element
   local element_name = string_gsub(element.name, "__.*", "")
-  local player_filters = global.__flib.gui[e.player_index]
+  local event_filters = global.__flib.gui[e.name]
+  if not event_filters then return false end
+  local player_filters = event_filters[e.player_index]
   if not player_filters then return false end
-  local filters = player_filters[e.name]
-  if not filters then return false end
-  local handler_name = filters[element.index] or filters[element_name]
+  local handler_name = player_filters[element.index] or player_filters[element_name]
   if handler_name then
     handler_lookup[handler_name].handler(e)
     return true
