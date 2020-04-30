@@ -66,15 +66,17 @@ local function generate_filter_lookup()
   -- add filter lookup to each handler
   for _, players in pairs(global.__flib.gui) do
     for player_index, filters in pairs(players) do
-      for filter, handler_name in pairs(filters) do
-        if filter ~= "__size" then
-          local handler_filters = handler_lookup[handler_name].filters
-          local player_filters = handler_filters[player_index]
-          if player_filters then
-            player_filters[filter] = handler_name
-            player_filters.__size = player_filters.__size + 1
-          else
-            handler_filters[player_index] = {__size=1, [filter]=handler_name}
+      if player_index ~= "__size" then
+        for filter, handler_name in pairs(filters) do
+          if filter ~= "__size" then
+            local handler_filters = handler_lookup[handler_name].filters
+            local player_filters = handler_filters[player_index]
+            if player_filters then
+              player_filters[filter] = filter
+              player_filters.__size = player_filters.__size + 1
+            else
+              handler_filters[player_index] = {__size=1, [filter]=filter}
+            end
           end
         end
       end
