@@ -98,7 +98,7 @@ end
 
 --- Generate template and handler lookup tables
 -- Must be called at the END of on_init and on_load
-function gui.bootstrap_postprocess()
+function gui.build_lookup_tables()
   generate_template_lookup(templates, "")
   -- go one level deep before calling the function, to avoid adding an unnecessary prefix to all group names
   for k, v in pairs(handlers) do
@@ -109,77 +109,56 @@ function gui.bootstrap_postprocess()
   end
 end
 
---- Update element filters for the given event.
--- @tparam defines.events|uint|string id
+-- Add or remove GUI filters to a handler or group of handlers.
+-- @tparam string name The handler name, or group name.
 -- @tparam uint player_index
--- @tparam GuiFilters filters
--- @tparam string mode One of "add", "remove", or "overwrite".
-function gui.update_filters(id, player_index, filters, mode)
-  -- get data tables, or create them if needed
-  local __gui = global.__flib.gui
-  local saved_filters = __gui[player_index]
-  if not saved_filters then
-    __gui[player_index] = {[id]={}}
-    saved_filters = __gui[player_index]
-  end
-  local event_filters = saved_filters[id]
-  if not event_filters then
-    saved_filters[id] = {}
-    event_filters = saved_filters[id]
-  end
-
-  -- update filters
-  mode = mode or "overwrite"
-  if mode == "add" then
-    for filter, handler_path in pairs(filters) do
-      event_filters[filter] = handler_path
-    end
-  elseif mode == "remove" then
-    for filter in pairs(filters) do
-      event_filters[filter] = nil
-    end
-  elseif mode == "overwrite" then
-    saved_filters = filters
-  else
-    error("Invalid GUI filter update mode ["..mode.."]")
-  end
-
-  -- destroy tables if they're not needed any longer
-  if mode == "remove" or mode == "overwrite" then
-    if table_size(event_filters) == 0 then
-      saved_filters[id] = nil
-    end
-    if table_size(saved_filters) == 0 then
-      __gui[player_index] = nil
-    end
-  end
-end
-
--- PROTOTYPING
-
---- Adds filters to the given group of handlers.
--- @tparam string group_name
--- @tparam uint player_index
--- @tparam GuiFilter[] filters
-function gui.add_filters(group_name, player_index, filters)
-  local group = handler_groups[group_name]
-  for gi=1,#group do
-    local handler_name = group[gi]
+-- @tparam GuiFilter[] filters An array of filters, or filters output from gui.build (like-key table).
+-- @tparam string mode One of "add" or "remove".
+function gui.update_filters(name, player_index, filters, mode)
+  local handler_names = handler_groups[name] or {name}
+  for hi=1,#handler_names do
+    local handler_name = handler_names[hi]
     local handler_data = handler_lookup[handler_name]
-    local new_filters = {}
-    for i=1,#filters do
-      new_filters[filters[i]] = handler_name
-    end
-    gui.update_filters(handler_data.id, player_index, new_filters, "add")
-  end
-end
+    if not handler_data then error("GUI handler ["..handler_name.."] does not exist!") end
+    local id = handler_data.id
+    local handler_filters = handler_data.filters
 
---- Takes in a filters table as provided in gui.build, and removes those filters.
--- @tparam uint player_index
--- @tparam
-function gui.remove_filters(player_index, filters)
-  for id, event_filters in pairs(filters) do
-    gui.update_filters(id, player_index, event_filters, "remove")
+    -- saved filters table (in global)
+    local __gui = global.__flib.gui
+    local saved_player_filters = __gui[player_index]
+    if not saved_player_filters then
+      __gui[player_index] = {[id]={}}
+      saved_player_filters = __gui[player_index]
+    end
+    local saved_event_filters = saved_player_filters[id]
+    if not saved_event_filters then
+      saved_player_filters[id] = {}
+      saved_event_filters = saved_player_filters[id]
+    end
+
+    -- filters table (in lookup)
+    local player_filters = handler_filters[player_index]
+    if not player_filters then
+      handler_filters[player_index] = {}
+      player_filters = handler_filters[player_index]
+    end
+
+    -- update filters
+    mode = mode or "add"
+    if mode == "add" then
+      for _, filter in pairs(filters) do
+        saved_event_filters[filter] = handler_name
+        player_filters[filter] = filter
+      end
+    elseif mode == "remove" then
+      -- if a filters table wasn't provided, remove all of them
+      for _, filter in pairs(filters or player_filters) do
+        saved_event_filters[filter] = nil
+        player_filters[filter] = nil
+      end
+    else
+      error("Invalid GUI filter update mode ["..mode.."]")
+    end
   end
 end
 
@@ -240,13 +219,11 @@ local function recursive_build(parent, structure, output, filters, player_index)
       if not group then error("Invalid GUI handler name ["..structure.handlers.."]") end
       for i=1,#group do
         local name = group[i]
-        local id = handler_lookup[name].id
-        gui.update_filters(id, player_index, {[elem_index]=name}, "add")
-        local saved_filters = filters[id]
+        local saved_filters = filters[name]
         if not saved_filters then
-          filters[id] = {[elem_index]=name}
+          filters[name] = {elem_index}
         else
-          saved_filters[elem_index] = name
+          saved_filters[#saved_filters+1] = elem_index
         end
       end
     end
@@ -288,14 +265,18 @@ end
 function gui.build(parent, structures)
   local output = {}
   local filters = {}
+  local player_index = parent.player_index or parent.player.index
   for i=1,#structures do
     output, filters = recursive_build(
       parent,
       structures[i],
       output,
       filters,
-      parent.player_index or parent.player.index
+      player_index
     )
+  end
+  for name, filters_table in pairs(filters) do
+    gui.update_filters(name, player_index, filters_table, "add")
   end
   return output, filters
 end
