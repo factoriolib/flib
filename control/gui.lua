@@ -112,7 +112,7 @@ end
 -- Add or remove GUI filters to a handler or group of handlers.
 -- @tparam string name The handler name, or group name.
 -- @tparam uint player_index
--- @tparam GuiFilter[] filters An array of filters, or filters output from gui.build (like-key table).
+-- @tparam GuiFilter[] filters An array or like-key table of filters.
 -- @tparam string mode One of "add" or "remove".
 function gui.update_filters(name, player_index, filters, mode)
   local handler_names = handler_groups[name] or {name}
