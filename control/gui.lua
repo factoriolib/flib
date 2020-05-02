@@ -109,7 +109,7 @@ function gui.build_lookup_tables()
   end
 end
 
--- Add or remove GUI filters to a handler or group of handlers.
+-- Add or remove GUI filters to or from a handler or group of handlers.
 -- @tparam string name The handler name, or group name.
 -- @tparam uint player_index
 -- @tparam GuiFilter[] filters An array of filters.
@@ -330,8 +330,8 @@ function gui.add_handlers(t)
   extend_table(handlers, t)
 end
 
---- Register all GUI events to go through the module.
-function gui.register_events()
+--- Register all GUI handlers to go through the module.
+function gui.register_handlers()
   for name, id in pairs(defines.events) do
     if string_sub(name, 1, 6) == "on_gui" then
       script.on_event(id, function(e) gui.dispatch_handlers(e) end)
