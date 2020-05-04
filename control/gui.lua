@@ -1,4 +1,5 @@
 --- @module control.gui
+-- GUI structuring tools and event handling.
 -- @usage local gui = require("__flib__.control.gui")
 local gui = {}
 
@@ -84,10 +85,10 @@ local function generate_filter_lookup()
   end
 end
 
---- @section Functions
+-- @section Functions
 
 --- Initial setup. Must be called at the BEGINNING of on_init, before any GUI functions are used.
--- If adding the module to an existing mod, this should be called in on_configuration_changed as well.
+-- If adding the module to an existing mod, this must be called in on_configuration_changed for that version as well.
 function gui.init()
   if not global.__flib then
     global.__flib = {gui={}}
@@ -96,7 +97,7 @@ function gui.init()
   end
 end
 
---- Generate template and handler lookup tables
+--- Generate template and handler lookup tables.
 -- Must be called at the END of on_init and on_load
 function gui.build_lookup_tables()
   generate_template_lookup(templates, "")
@@ -109,7 +110,7 @@ function gui.build_lookup_tables()
   end
 end
 
--- Add or remove GUI filters to or from a handler or group of handlers.
+--- Add or remove GUI filters to or from a handler or group of handlers.
 -- @tparam string name The handler name, or group name.
 -- @tparam uint player_index
 -- @tparam GuiFilter[] filters An array of filters.
@@ -344,13 +345,13 @@ gui.handlers = handlers
 gui.handler_lookup = handler_lookup
 gui.handler_groups = handler_groups
 
---- @section Concepts
+-- @section Concepts
 
 --- @Concepts GuiFilter
 -- One of the following:
 -- - A @{string} corresponding to an element's name.
---   - Partial names may be matched by separating the common part from the unique part with two underscores `__`.
--- - An @{integer} corresponding to an element's index.
+--   - Partial names may be matched by separating the common section from the unique section with two underscores `__`.
+-- - A @{uint} corresponding to an element's index.
 
 --- @Concepts GuiFilters
 -- Table @{GuiFilter} -> string. Each string corresponds to a GUI handler name. When an element matching the given
@@ -364,5 +365,4 @@ gui.handler_groups = handler_groups
 --- @Concepts GuiOutputTable
 -- A table with a custom structure depending on how it is set up in gui.build().
 -- TODO Raiguard document more!
-
 return gui
