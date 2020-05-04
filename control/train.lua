@@ -97,7 +97,7 @@ end
 -- @param player_index uint
 -- @tparam LuaTrain train
 -- @return boolean If the GUI was opened.
-function train.open_train_gui(player_index, train)
+function train.open_gui(player_index, train)
   if train and train.valid and game.players[player_index] then
     local loco = train.get_main_locomotive(train)
     if loco and loco.valid then
