@@ -72,7 +72,9 @@ end
 -- @tparam OnStringTranslatedEventData event_data
 function translation.sort_string(event_data)
   local __translation = global.__flib.translation
+  if __translation.active_translations_count == 0 then return end
   local player_data = __translation.players[event_data.player_index]
+  if not player_data then return end
   local active_translations = player_data.active_translations
   local localised = event_data.localised_string
   local serialised = serialise_localised_string(localised)
