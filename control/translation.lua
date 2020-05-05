@@ -12,6 +12,7 @@ local util = require("__core__.lualib.util")
 local math = math
 local next = next
 local pairs = pairs
+local string = string
 local table = table
 local type = type
 
