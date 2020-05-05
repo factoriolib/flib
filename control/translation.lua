@@ -56,13 +56,14 @@ function translation.iterate_batch(event_data)
     if player.connected then
       local request_translation = player.request_translation
       local i = 0
+      local sort_data = player_table.sort
+      local sort_strings = sort_data and sort_data.strings
+      local translate_data = player_table.translate
+      local translate_strings = translate_data.strings
       while i < iterations do
         if player_table.state == "sort" then
-          local sort_data = player_table.sort
           local string_index = sort_data.next_index
-          local sort_strings = sort_data.strings
           local string_data = sort_strings[string_index]
-          local translate_strings = player_table.translate.strings
           if string_data then
             i = i + 1
             local serialised = serialise_localised_string(string_data.localised)
@@ -89,9 +90,7 @@ function translation.iterate_batch(event_data)
             player_table.translate.next_key = next(player_table.translate.strings, "__size")
           end
         elseif player_table.state == "translate" then
-          local translate_data = player_table.translate
           local current_key = translate_data.next_key
-          local translate_strings = translate_data.strings
           local translation_data = translate_strings[current_key]
           if translation_data then
             i = i + 1
@@ -108,7 +107,7 @@ function translation.iterate_batch(event_data)
               -- if this player is still being iterated at this point, there are some unreceived translations
               -- see https://forums.factorio.com/84570
               player_table.state = "translate"
-              player_table.translate.next_key = next(player_table.translate.strings)
+              player_table.translate.next_key = next(translate_strings)
             end
           else
             player_table.wait_tick = current_tick + 20
