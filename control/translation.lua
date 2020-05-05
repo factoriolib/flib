@@ -3,6 +3,8 @@
 -- @usage local translation = require("__flib__.control.translation")
 local translation = {}
 
+local util = require("__core__.lualib.util")
+
 -- these don't work?
 -- @class OnTickEventData https://lua-api.factorio.com/latest/events.html#on_tick
 -- @class OnStringTranslatedEventData https://lua-api.factorio.com/latest/events.html#on_string_translated
@@ -10,6 +12,7 @@ local translation = {}
 local math = math
 local next = next
 local pairs = pairs
+local table = table
 local type = type
 
 local function serialise_localised_string(t)
@@ -53,32 +56,46 @@ function translation.iterate_batch(event_data)
     if player.connected then
       local request_translation = player.request_translation
       local i = 0
-      while i <= iterations do
+      while i < iterations do
         if player_table.state == "sort" then
           local sort_data = player_table.sort
           local string_index = sort_data.next_index
           local sort_strings = sort_data.strings
-          local string_to_sort = sort_strings[string_index]
+          local string_data = sort_strings[string_index]
           local translate_strings = player_table.translate.strings
-          if string_to_sort then
+          if string_data then
             i = i + 1
-            local serialised = serialise_localised_string(string_to_sort)
-            translate_strings[serialised] = string_to_sort
+            local serialised = serialise_localised_string(string_data.localised)
+            local translation_data = translate_strings[serialised]
+            if translation_data then
+              local dictionary_names = translation_data.names[string_data.dictionary]
+              if dictionary_names then
+                dictionary_names[#dictionary_names+1] = string_data.internal
+              else
+                translation_data.names[string_data.dictionary] = {string_data.internal}
+              end
+            else
+              translate_strings[serialised] = {
+                string = string_data.localised,
+                names = {[string_data.dictionary]={string_data.internal}}
+              }
+              translate_strings.__size = translate_strings.__size + 1
+            end
             sort_data.next_index = next(sort_strings, string_index)
             sort_strings[string_index] = nil
           else
             player_table.state = "translate"
             player_table.sort = nil
-            player_table.translate.next_key = next(player_table.translate.strings)
+            player_table.translate.next_key = next(player_table.translate.strings, "__size")
           end
         elseif player_table.state == "translate" then
           local translate_data = player_table.translate
           local current_key = translate_data.next_key
           local translate_strings = translate_data.strings
-          local string_to_translate = translate_strings[current_key]
-          if string_to_translate then
+          local translation_data = translate_strings[current_key]
+          if translation_data then
             i = i + 1
-            request_translation(string_to_translate)
+            request_translation(translation_data.string)
             translate_data.next_key = next(translate_strings, current_key)
           else
             player_table.state = "wait"
@@ -108,27 +125,35 @@ end
 --- Process a received translation.
 -- Must be called during an on_string_translated event.
 -- @tparam OnStringTranslatedEventData event_data
+-- @return boolean If all of the player's translations are complete.
 function translation.process_result(event_data)
   local __translation = global.__flib.translation
   if __translation.translating_players_count == 0 then return end
   local player_table = __translation.players[event_data.player_index]
   if not player_table then return end
 
-  -- local profiler = game.create_profiler()
   local serialised = serialise_localised_string(event_data.localised_string)
   local translate_strings = player_table.translate.strings
 
-  if translate_strings[serialised] then
+  local translation_data = translate_strings[serialised]
+  if translation_data then
+    local names = translation_data.names
     translate_strings[serialised] = nil
-    if next(translate_strings) == nil then
+    translate_strings.__size = translate_strings.__size - 1
+    local finished = false
+    if translate_strings.__size == 0 then
       translation.cancel(event_data.player_index)
+      finished = true
     end
+    return names, finished
   end
+  return nil, false
 end
 
 --- Add translation requests for the given player, to be requested over the next several ticks.
 -- @tparam uint player_index
--- @tparam Concepts.LocalisedString[] strings
+-- @tparam string dictionary_name
+-- @tparam StringData[] strings
 function translation.add_requests(player_index, strings)
   local __translation = global.__flib.translation
   local player_table = __translation.players[player_index]
@@ -142,7 +167,7 @@ function translation.add_requests(player_index, strings)
       player_table.sort.last_index = nil
     else
       player_table.sort = {
-        strings = strings,
+        strings = table.deepcopy(strings),
         last_index = nil
       }
     end
@@ -152,12 +177,12 @@ function translation.add_requests(player_index, strings)
       state = "sort",
       -- sort
       sort = {
-        strings = strings,
+        strings = table.deepcopy(strings),
         next_index = next(strings)
       },
       -- translate
       translate = {
-        strings = {},
+        strings = {__size=0},
         next_key = nil
       },
       -- wait
@@ -179,5 +204,13 @@ function translation.cancel(player_index)
   __translation.players[player_index] = nil
   __translation.translating_players_count = __translation.translating_players_count - 1
 end
+
+--- Serialise a localised string into a form readable by the API.
+-- Gives a similar result to serpent.line(), but is much faster.
+translation.serialise_localised_string = serialise_localised_string
+
+--- @Concepts StringData
+-- Table with the following fields:
+-- TODO Raiguard document moar!!!
 
 return translation
