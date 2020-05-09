@@ -108,7 +108,7 @@ function translation.iterate_batch(event_data)
               -- if this player is still being iterated at this point, there are some unreceived translations
               -- see https://forums.factorio.com/84570
               player_table.state = "translate"
-              player_table.translate.next_key = next(translate_strings)
+              player_table.translate.next_key = next(translate_strings, "__size")
             end
           else
             player_table.wait_tick = current_tick + 20
