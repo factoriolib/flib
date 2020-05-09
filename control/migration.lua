@@ -34,7 +34,7 @@ end
 -- @tparam string current_version
 -- @tparam[opt=%02d] string format
 -- @treturn boolean|nil
-function migration.is_new_version(old_version, current_version, format)
+function migration.is_newer_version(old_version, current_version, format)
   local v1 = migration.format_version(old_version, format)
   local v2 = migration.format_version(current_version, format)
   if v1 and v2 then
@@ -53,7 +53,7 @@ end
 function migration.run(old_version, migrations, format)
   local migrate = false
   for version, func in pairs(migrations) do
-    if migrate or migration.is_new_version(old_version, version, format) then
+    if migrate or migration.is_newer_version(old_version, version, format) then
       migrate = true
       func()
     end
