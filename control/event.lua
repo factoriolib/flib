@@ -115,6 +115,8 @@ function event.get_handler(id)
   return script.get_event_handler(id)
 end
 
+-- TODO Nexela link EventData to https://lua-api.factorio.com/latest/events.html
+
 --- Raise an event as if it were actually called.
 -- @tparam EventId id
 -- @tparam EventData event_data The event data that will be passed to the handlers.
