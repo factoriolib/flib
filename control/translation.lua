@@ -5,7 +5,7 @@ local translation = {}
 
 local util = require("__core__.lualib.util")
 
--- these don't work?
+-- TODO Nexela make these work!
 -- @class OnTickEventData https://lua-api.factorio.com/latest/events.html#on_tick
 -- @class OnStringTranslatedEventData https://lua-api.factorio.com/latest/events.html#on_string_translated
 
@@ -16,19 +16,7 @@ local string = string
 local table = table
 local type = type
 
-local function serialise_localised_string(t)
-  local output = "{"
-  if type(t) == "string" then return t end
-  for _, v in pairs(t) do
-    if type(v) == "table" then
-      output = output..serialise_localised_string(v)
-    else
-      output = output.."\""..v.."\", "
-    end
-  end
-  output = string.gsub(output, ", $", "").."}"
-  return output
-end
+-- @section Event functions
 
 --- Initial setup.
 -- Must be called during on_init, and during on_configuration_changed if adding the module to an existing mod.
@@ -67,7 +55,7 @@ function translation.iterate_batch(event_data)
           local string_data = sort_strings[string_index]
           if string_data then
             i = i + 1
-            local serialised = serialise_localised_string(string_data.localised)
+            local serialised = translation.serialise_localised_string(string_data.localised)
             local translation_data = translate_strings[serialised]
             if translation_data then
               local dictionary_names = translation_data.names[string_data.dictionary]
@@ -132,7 +120,7 @@ function translation.process_result(event_data)
   local player_table = __translation.players[event_data.player_index]
   if not player_table then return end
 
-  local serialised = serialise_localised_string(event_data.localised_string)
+  local serialised = translation.serialise_localised_string(event_data.localised_string)
   local translate_strings = player_table.translate.strings
 
   local translation_data = translate_strings[serialised]
@@ -149,6 +137,8 @@ function translation.process_result(event_data)
   end
   return nil, false
 end
+
+-- @section Functions
 
 --- Add translation requests for the given player, to be requested over the next several ticks.
 -- @tparam uint player_index
@@ -207,7 +197,21 @@ end
 
 --- Serialise a localised string into a form readable by the API.
 -- Gives a similar result to serpent.line(), but is much faster.
-translation.serialise_localised_string = serialise_localised_string
+function translation.serialise_localised_string(t)
+  local output = "{"
+  if type(t) == "string" then return t end
+  for _, v in pairs(t) do
+    if type(v) == "table" then
+      output = output..translation.serialise_localised_string(v)
+    else
+      output = output.."\""..v.."\", "
+    end
+  end
+  output = string.gsub(output, ", $", "").."}"
+  return output
+end
+
+-- @section Concepts
 
 --- @Concepts StringData
 -- Table with the following fields:
