@@ -5,7 +5,7 @@ local migration = {}
 local string_format = string.format
 local table_concat = table.concat
 
---- @section Functions
+-- @section Functions
 
 --- Normalize version strings for easy comparison.
 -- @tparam string version
@@ -83,6 +83,8 @@ function migration.on_config_changed(event_data, migrations, mod_name)
   end
   return true
 end
+
+-- @section Concepts
 
 --- @Concepts MigrationsTable
 -- Dictionary string -> function. Each string is a version number, and each value is a
