@@ -1,5 +1,5 @@
---- @module control.misc
--- Loose collection of functions that don't fit into any other modules.
+--- Miscellaneous control-stage functions that don't yet have a proper home.
+-- @module control.misc
 -- @usage local misc = require("__flib__.control.misc")
 local misc = {}
 
@@ -16,8 +16,7 @@ function misc.get_distance(pos1, pos2)
   local y1 = pos1.y or pos1[2]
   local x2 = pos2.x or pos2[1]
   local y2 = pos2.y or pos2[2]
-  return math_sqrt((x1-x2)^2 + (y1-y2)^2) --Duration: 0.316172ms
-  -- return ((x1-x2)^2 + (y1-y2)^2)^0.5 --Duration: 0.316964ms
+  return math_sqrt((x1-x2)^2 + (y1-y2)^2)
 end
 
 --- Calculate the squared distance in tiles between two positions.
