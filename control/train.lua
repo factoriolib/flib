@@ -1,22 +1,24 @@
---- @module control.train
--- @usage local train = require("__flib__.control.train")
+--- @usage local train = require("__flib__.control.train")
+-- @module control.train
 -- @see LuaTrain
 local train = {}
 
-local table_concat = table.concat
+local table = table
+
+-- @section Functions
 
 --- Get the main locomotive in a given train.
 -- @tparam LuaTrain train
--- @return LuaEntity|nil
+-- @treturn LuaEntity|nil
 function train.get_main_locomotive(train)
   if train.valid and train.locomotives and (#train.locomotives.front_movers > 0 or #train.locomotives.back_movers > 0) then
     return train.locomotives.front_movers and train.locomotives.front_movers[1] or train.locomotives.back_movers[1]
   end
 end
 
---- Get backer_name of the main locomotive in a given train.
+--- Get the backer_name of the main locomotive in a given train.
 -- @tparam LuaTrain train
--- @return string|nil
+-- @treturn LuaEntity|nil
 function train.get_backer_name(train)
   local loco = train.get_main_locomotive(train)
   return loco and loco.backer_name
@@ -24,7 +26,7 @@ end
 
 --- Rotate a single carriage of a train.
 -- @tparam LuaEntity entity
--- @return boolean Whether or not the rotation was successful.
+-- @treturn boolean Whether or not the rotation was successful.
 function train.rotate_carriage(entity)
   local disconnected_back = entity.disconnect_rolling_stock(defines.rail_direction.back)
   local disconnected_front = entity.disconnect_rolling_stock(defines.rail_direction.front)
@@ -51,7 +53,8 @@ end
 --- Create a string representing train composition.
 -- L for locomotives, C for cargo wagons, F for fluid wagons, A for artillery wagon.
 -- @tparam LuaTrain train
--- @return string|nil
+-- @treturn string|nil
+-- @treturn TrainCompositionCounts|nil
 function train.get_composition_string(train)
   if train and train.valid then
     local carriages = train.carriages
@@ -89,14 +92,19 @@ function train.get_composition_string(train)
         string_table[i] = "?"
       end
     end
-    return table_concat(string_table), {total = i, wagons = count_wagons, front_movers = count_loco_front, back_movers = count_loco_back}
+    return table.concat(string_table), {
+      total = i,
+      wagons = count_wagons,
+      front_movers = count_loco_front,
+      back_movers = count_loco_back
+    }
   end
 end
 
 --- Open train GUI for one player.
 -- @param player_index uint
 -- @tparam LuaTrain train
--- @return boolean If the GUI was opened.
+-- @treturn boolean If the GUI was opened.
 function train.open_gui(player_index, train)
   if train and train.valid and game.players[player_index] then
     local loco = train.get_main_locomotive(train)
@@ -107,5 +115,14 @@ function train.open_gui(player_index, train)
   end
   return false
 end
+
+-- @section Concepts
+
+--- @Concepts TrainCompositionCounts
+-- A @{table} with the following fields:
+-- @tfield uint total The total number of rolling stocks in the train.
+-- @tfield uint wagons The number of wagons in the train.
+-- @tfield uint front_movers The number of front-facing locomotives in the train.
+-- @tfield uint back_movers The number of back-facing locomotives in the train.
 
 return train
