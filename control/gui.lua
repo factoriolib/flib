@@ -184,7 +184,7 @@ end
 
 --- Dispatch GUI handlers for the given event.
 -- @tparam Concepts.EventData e
--- @return boolean If a handler was dispatched.
+-- @treturn boolean If a handler was dispatched.
 function gui.dispatch_handlers(e)
   if not e.element or not e.player_index then return false end
   local element = e.element
@@ -279,8 +279,8 @@ end
 --- Build a GUI structure.
 -- @tparam parent LuaGuiElement
 -- @tparam GuiStructure[] structures
--- @return GuiOutputTable
--- @return table Dictionary @{defines.events|string|int} -> @{GuiFilters}, a mapping of an event ID to the filters
+-- @treturn GuiOutputTable
+-- @treturn table Dictionary @{defines.events|string|int} -> @{GuiFilters}, a mapping of an event ID to the filters
 -- belonging to it.
 function gui.build(parent, structures)
   local output = {}

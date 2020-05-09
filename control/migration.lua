@@ -7,14 +7,16 @@ local table_concat = table.concat
 
 -- @section Functions
 
+local version_pattern = "%d+"
+local version_format = "%02d"
+
 --- Normalize version strings for easy comparison.
 -- @tparam string version
 -- @tparam[opt="%02d"] string format
 -- @treturn string|nil
--- @usage migration.format_version("1.10.1234", "%04d")
--- @usage migration.format_version("3", "%02d")
-local version_pattern = "%d+"
-local version_format = "%02d"
+-- @usage
+-- migration.format_version("1.10.1234", "%04d")
+-- migration.format_version("3", "%02d")
 function migration.format_version(version, format)
   if version then
     format = format or version_format

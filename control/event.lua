@@ -96,7 +96,7 @@ function event.register(ids, handler, filters)
 end
 
 --- Generate a new, unique event ID.
--- @return uint
+-- @treturn uint
 -- @usage
 -- -- generate a new event ID
 -- local my_event = event.generate_id()
@@ -108,7 +108,7 @@ end
 
 --- Retrieve the handler for an event, if one exists.
 -- @tparam EventId id
--- @return function The registered handler, or `nil` if one isn't registered.
+-- @treturn function The registered handler, or `nil` if one isn't registered.
 -- @usage
 -- local existing_handler = event.get_handler(defines.events.on_gui_click)
 function event.get_handler(id)
@@ -127,7 +127,7 @@ function event.raise(id, event_data)
 end
 
 --- Retrieve the mod event order.
--- @return string
+-- @treturn string
 -- @usage
 -- local event_order = event.get_order()
 function event.get_order()
@@ -162,7 +162,7 @@ end
 
 --- Retrieve the filters for the given event.
 -- @tparam EventId id
--- @return EventFilters filters The filters, or `nil` if there are none defined.
+-- @treturn EventFilters filters The filters, or `nil` if there are none defined.
 -- @usage
 -- local filters = event.get_filters(defines.events.on_built_entity)
 function event.get_filters(id)
