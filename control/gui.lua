@@ -347,22 +347,22 @@ gui.handler_groups = handler_groups
 
 -- @section Concepts
 
---- @Concepts GuiFilter
+--- @Concept GuiFilter
 -- One of the following:
 -- - A @{string} corresponding to an element's name.
 --   - Partial names may be matched by separating the common section from the unique section with two underscores `__`.
 -- - A @{uint} corresponding to an element's index.
 
---- @Concepts GuiFilters
+--- @Concept GuiFilters
 -- Table @{GuiFilter} -> string. Each string corresponds to a GUI handler name. When an element matching the given
 -- filter raises an event, the handler corresponding to the handler name is fired.
 -- TODO Raiguard expound on this!
 
---- @Concepts GuiStructure
+--- @Concept GuiStructure
 -- A GUI structure. Basic format is a table corresponding to a LuaGuiElement's constructor.
 -- TODO Raiguard document all properties!
 
---- @Concepts GuiOutputTable
+--- @Concept GuiOutputTable
 -- A table with a custom structure depending on how it is set up in gui.build().
 -- TODO Raiguard document more!
 return gui

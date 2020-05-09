@@ -1,13 +1,9 @@
---- Organizes and runs translations for localised strings over the span of multiple ticks.
+--- Localised string translation and dictionary organization.
 -- @module control.translation
 -- @usage local translation = require("__flib__.control.translation")
 local translation = {}
 
 local util = require("__core__.lualib.util")
-
--- TODO Nexela make these work!
--- @class OnTickEventData https://lua-api.factorio.com/latest/events.html#on_tick
--- @class OnStringTranslatedEventData https://lua-api.factorio.com/latest/events.html#on_string_translated
 
 local math = math
 local next = next
@@ -15,8 +11,6 @@ local pairs = pairs
 local string = string
 local table = table
 local type = type
-
--- @section Event functions
 
 --- Initial setup.
 -- Must be called during on_init, and during on_configuration_changed if adding the module to an existing mod.
@@ -113,7 +107,8 @@ end
 --- Process a received translation.
 -- Must be called during an on_string_translated event.
 -- @tparam OnStringTranslatedEventData event_data
--- @return boolean If all of the player's translations are complete.
+-- @treturn table TODO make this a concept
+-- @treturn boolean If all of the player's translations are complete.
 function translation.process_result(event_data)
   local __translation = global.__flib.translation
   if __translation.translating_players_count == 0 then return end
@@ -137,8 +132,6 @@ function translation.process_result(event_data)
   end
   return nil, false
 end
-
--- @section Functions
 
 --- Add translation requests for the given player, to be requested over the next several ticks.
 -- @tparam uint player_index
@@ -211,10 +204,7 @@ function translation.serialise_localised_string(t)
   return output
 end
 
--- @section Concepts
-
---- @Concepts StringData
+--- @Concept StringData
 -- Table with the following fields:
--- TODO Raiguard document moar!!!
 
 return translation

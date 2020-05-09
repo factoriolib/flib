@@ -88,7 +88,7 @@ end
 
 -- @section Concepts
 
---- @Concepts MigrationsTable
+--- @Concept MigrationsTable
 -- Dictionary string -> function. Each string is a version number, and each value is a
 -- function that will be run for that version.
 -- @tparam {[string]=function,...} ...

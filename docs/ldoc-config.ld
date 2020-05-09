@@ -211,4 +211,4 @@ custom_see_handler(
   end
 )
 
-new_type('Concepts', 'Concepts', false)
+new_type('Concept', 'Concepts', false)

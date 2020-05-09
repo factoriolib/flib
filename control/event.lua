@@ -171,7 +171,7 @@ end
 
 -- @section Concepts
 
---- @Concepts EventId
+--- @Concept EventId
 -- One of the following:
 -- <ul>
 --   <li>A member of @{defines.events}.</li>

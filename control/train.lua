@@ -118,7 +118,7 @@ end
 
 -- @section Concepts
 
---- @Concepts TrainCompositionCounts
+--- @Concept TrainCompositionCounts
 -- A @{table} with the following fields:
 -- @tfield uint total The total number of rolling stocks in the train.
 -- @tfield uint wagons The number of wagons in the train.
