@@ -64,7 +64,7 @@ function train.get_composition_string(train)
       i = i + 1
       if carriage.type == "locomotive" then
         local faces_forward = false
-        for _,loco in ipairs(locos_front) do
+        for _,loco in pairs(locos_front) do
           if carriage.unit_number == loco.unit_number then
             faces_forward = true
             break
