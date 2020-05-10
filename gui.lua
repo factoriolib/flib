@@ -1,6 +1,6 @@
---- @module control.gui
--- GUI structuring tools and event handling.
--- @usage local gui = require("__flib__.control.gui")
+--- GUI structuring tools and event handling.
+-- @module gui
+-- @usage local gui = require("__flib__.gui")
 local gui = {}
 
 local util = require("util")
@@ -84,8 +84,6 @@ local function generate_filter_lookup()
     end
   end
 end
-
--- @section Functions
 
 --- Initial setup. Must be called at the BEGINNING of on_init, before any GUI functions are used.
 -- If adding the module to an existing mod, this must be called in on_configuration_changed for that version as well.
@@ -344,8 +342,6 @@ gui.templates = templates
 gui.handlers = handlers
 gui.handler_lookup = handler_lookup
 gui.handler_groups = handler_groups
-
--- @section Concepts
 
 --- @Concept GuiFilter
 -- One of the following:

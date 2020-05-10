@@ -5,8 +5,8 @@
 --
 -- To use a shortcut, replace `event.register(defines.events.on_built_entity, handler, filters)` with
 -- `event.on_built_entity(handler, filters)`. You can also deregister the handler using `event.on_built_entity(nil)`.
--- @module control.event
--- @usage local event = require("__flib__.control.event")
+-- @module event
+-- @usage local event = require("__flib__.event")
 local event = {}
 
 -- generate syntax shortcuts
@@ -60,8 +60,6 @@ end
 function event.on_nth_tick(nth_tick, handler)
   return script.on_nth_tick(nth_tick, handler)
 end
-
--- @section Functions
 
 -- TODO Nexela link EventFilters to https://lua-api.factorio.com/latest/Event-Filters.html
 
@@ -168,8 +166,6 @@ end
 function event.get_filters(id)
   return script.get_event_filter(id)
 end
-
--- @section Concepts
 
 --- @Concept EventId
 -- One of the following:

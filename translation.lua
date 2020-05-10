@@ -1,6 +1,6 @@
 --- Localised string translation and dictionary organization.
--- @module control.translation
--- @usage local translation = require("__flib__.control.translation")
+-- @module translation
+-- @usage local translation = require("__flib__.translation")
 local translation = {}
 
 local util = require("__core__.lualib.util")

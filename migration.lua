@@ -1,11 +1,10 @@
---- @module control.migration
--- @usage local migration = require("__flib__.control.migration")
+--- Mod migrations and version comparison functions.
+-- @module migration
+-- @usage local migration = require("__flib__.migration")
 local migration = {}
 
 local string_format = string.format
 local table_concat = table.concat
-
--- @section Functions
 
 local version_pattern = "%d+"
 local version_format = "%02d"
@@ -85,8 +84,6 @@ function migration.on_config_changed(event_data, migrations, mod_name)
   end
   return true
 end
-
--- @section Concepts
 
 --- @Concept MigrationsTable
 -- Dictionary string -> function. Each string is a version number, and each value is a
