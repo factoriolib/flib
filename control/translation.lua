@@ -65,7 +65,7 @@ function translation.iterate_batch(event_data)
               }
               translate_strings.__size = translate_strings.__size + 1
             end
-            sort_data.next_index = next(sort_strings, string_index)
+            sort_data.next_index = string_index + 1
             sort_strings[string_index] = nil
           else
             player_table.state = "translate"
@@ -114,6 +114,7 @@ function translation.process_result(event_data)
   if __translation.translating_players_count == 0 then return end
   local player_table = __translation.players[event_data.player_index]
   if not player_table then return end
+  if player_table.state == "sort" then return end
 
   local serialised = translation.serialise_localised_string(event_data.localised_string)
   local translate_strings = player_table.translate.strings
