@@ -2,14 +2,14 @@
 -- @module data_util
 -- @usage local data_util = require('__flib__.data_util')
 
-local data_util = {}
+local flib_data_util = {}
 
 --- Copy a prototype, assign new name and minable properties.
 -- @tparam PrototypeBase prototype
 -- @tparam string new_name string
 -- @tparam[opt=false] boolean remove_icon
 -- @treturn PrototypeBase
-function data_util.copy_prototype(prototype, new_name, remove_icon)
+function flib_data_util.copy_prototype(prototype, new_name, remove_icon)
   if not prototype.type or not prototype.name then
     error("Invalid prototype: prototypes must have name and type properties.")
     return nil
@@ -46,7 +46,7 @@ end
 -- @tparam PrototypeBase prototype
 -- @tparam Types.IconSpecification[] new_layers
 -- @return Types.IconSpecification[]|nil
-function data_util.create_icons(prototype, new_layers)
+function flib_data_util.create_icons(prototype, new_layers)
   for _,new_layer in pairs(new_layers) do
     if not new_layer.icon or not new_layer.icon_size then
       return nil
@@ -103,7 +103,7 @@ local exponent_multipliers = {
 -- @tparam string energy_string
 -- @treturn float|nil
 -- @treturn string
-function data_util.get_energy_value(energy_string)
+function flib_data_util.get_energy_value(energy_string)
   if type(energy_string) == "string" then
     local value, _, exp, unit = string.match(energy_string, "([%-+]?[0-9]*%.?[0-9]+)(([kMGTP]?)([WJ]))")
     if exp and exponent_multipliers[exp] then
@@ -113,4 +113,4 @@ function data_util.get_energy_value(energy_string)
   end
 end
 
-return data_util
+return flib_data_util

@@ -7,11 +7,11 @@
 -- `event.on_built_entity(handler, filters)`. You can also deregister the handler using `event.on_built_entity(nil)`.
 -- @module event
 -- @usage local event = require("__flib__.event")
-local event = {}
+local flib_event = {}
 
 -- generate syntax shortcuts
 for name, id in pairs(defines.events) do
-  event[name] = function(handler, filters)
+  flib_event[name] = function(handler, filters)
     return script.on_event(id, handler, filters)
   end
 end
@@ -23,7 +23,7 @@ end
 -- event.on_init(function() log("on_init") end)
 -- -- deregister the registered handler, if one exists
 -- event.on_init(nil)
-function event.on_init(handler)
+function flib_event.on_init(handler)
   return script.on_init(handler)
 end
 
@@ -34,7 +34,7 @@ end
 -- event.on_load(function() log("on_load") end)
 -- -- deregister the registered handler, if one exists
 -- event.on_load(nil)
-function event.on_load(handler)
+function flib_event.on_load(handler)
   return script.on_load(handler)
 end
 
@@ -45,7 +45,7 @@ end
 -- event.on_configuration_changed(function() log("on_configuration_changed") end)
 -- -- deregister the registered handler, if one exists
 -- event.on_configuration_changed(nil)
-function event.on_configuration_changed(handler)
+function flib_event.on_configuration_changed(handler)
   return script.on_configuration_changed(handler)
 end
 
@@ -57,7 +57,7 @@ end
 -- event.on_nth_tick(30, function(e) log("30th tick!") end)
 -- -- deregister the registered handler, if one exists
 -- event.on_nth_tick(30, nil)
-function event.on_nth_tick(nth_tick, handler)
+function flib_event.on_nth_tick(nth_tick, handler)
   return script.on_nth_tick(nth_tick, handler)
 end
 
@@ -78,7 +78,7 @@ end
 -- event.register("my-input", nil)
 -- -- deregister a handler from multiple events, if one is registered
 -- event.register({"my-input", defines.events.on_lua_shortcut}, nil)
-function event.register(ids, handler, filters)
+function flib_event.register(ids, handler, filters)
   if type(ids) ~= "table" then
     ids = {ids}
   end
@@ -100,7 +100,7 @@ end
 -- local my_event = event.generate_id()
 -- -- raise that event with custom parameters
 -- event.raise(my_event, {whatever_you_want=true, ...})
-function event.generate_id()
+function flib_event.generate_id()
   return script.generate_event_name()
 end
 
@@ -109,7 +109,7 @@ end
 -- @treturn function The registered handler, or `nil` if one isn't registered.
 -- @usage
 -- local existing_handler = event.get_handler(defines.events.on_gui_click)
-function event.get_handler(id)
+function flib_event.get_handler(id)
   return script.get_event_handler(id)
 end
 
@@ -120,7 +120,7 @@ end
 -- @tparam EventData event_data The event data that will be passed to the handlers.
 -- @usage
 -- event.raise(defines.events.on_gui_click, {player_index=e.player_index, element=my_button, ...})
-function event.raise(id, event_data)
+function flib_event.raise(id, event_data)
   return script.raise_event(id, event_data)
 end
 
@@ -128,7 +128,7 @@ end
 -- @treturn string
 -- @usage
 -- local event_order = event.get_order()
-function event.get_order()
+function flib_event.get_order()
   return script.get_event_order()
 end
 
@@ -148,7 +148,7 @@ end
 -- })
 -- -- clear event filters if any are set
 -- event.set_filters(defines.events.on_robot_built_entity, nil)
-function event.set_filters(ids, filters)
+function flib_event.set_filters(ids, filters)
   if type(ids) ~= "table" then
     ids = {ids}
   end
@@ -163,7 +163,7 @@ end
 -- @treturn EventFilters filters The filters, or `nil` if there are none defined.
 -- @usage
 -- local filters = event.get_filters(defines.events.on_built_entity)
-function event.get_filters(id)
+function flib_event.get_filters(id)
   return script.get_event_filter(id)
 end
 
@@ -175,4 +175,4 @@ end
 --   <li>For @{event.register} only - a @{string} corresponding to a custom-input name.</li>
 -- </ul>
 
-return event
+return flib_event
