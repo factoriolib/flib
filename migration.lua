@@ -1,7 +1,7 @@
 --- Mod migrations and version comparison functions.
 -- @module migration
 -- @usage local migration = require("__flib__.migration")
-local migration = {}
+local flib_migration = {}
 
 local string_format = string.format
 local table_concat = table.concat
@@ -14,9 +14,9 @@ local version_format = "%02d"
 -- @tparam[opt="%02d"] string format
 -- @treturn string|nil
 -- @usage
--- migration.format_version("1.10.1234", "%04d")
--- migration.format_version("3", "%02d")
-function migration.format_version(version, format)
+-- format_version("1.10.1234", "%04d")
+-- format_version("3", "%02d")
+function flib_migration.format_version(version, format)
   if version then
     format = format or version_format
     local tbl = {}
@@ -35,9 +35,9 @@ end
 -- @tparam string current_version
 -- @tparam[opt=%02d] string format
 -- @treturn boolean|nil
-function migration.is_newer_version(old_version, current_version, format)
-  local v1 = migration.format_version(old_version, format)
-  local v2 = migration.format_version(current_version, format)
+function flib_migration.is_newer_version(old_version, current_version, format)
+  local v1 = flib_migration.format_version(old_version, format)
+  local v2 = flib_migration.format_version(current_version, format)
   if v1 and v2 then
     if v2 > v1 then
       return true
@@ -51,10 +51,10 @@ end
 -- @tparam string old_version
 -- @tparam MigrationsTable migrations
 -- @tparam[opt="%02d"] string format
-function migration.run(old_version, migrations, format)
+function flib_migration.run(old_version, migrations, format)
   local migrate = false
   for version, func in pairs(migrations) do
-    if migrate or migration.is_newer_version(old_version, version, format) then
+    if migrate or flib_migration.is_newer_version(old_version, version, format) then
       migrate = true
       func()
     end
@@ -68,16 +68,16 @@ end
 -- @treturn boolean Whether or not to run generic migrations.
 -- @usage
 -- -- In on_configuration_changed:
--- if migration.on_config_changed(e, migrations) then
+-- if on_config_changed(e, migrations) then
 --   -- run generic migrations
 --   rebuild_prototype_data()
 -- end
-function migration.on_config_changed(event_data, migrations, mod_name)
+function flib_migration.on_config_changed(event_data, migrations, mod_name)
   local changes = event_data.mod_changes[mod_name or script.mod_name]
   if changes then
     local old_version = changes.old_version
     if old_version then
-      migration.run(old_version, migrations)
+      flib_migration.run(old_version, migrations)
     else
       return false -- don't do generic migrations, because we just initialized
     end
@@ -102,4 +102,4 @@ end
 --   end
 -- }
 
-return migration
+return flib_migration

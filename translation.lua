@@ -1,7 +1,7 @@
 --- Localised string translation and dictionary organization.
 -- @module translation
 -- @usage local translation = require("__flib__.translation")
-local translation = {}
+local flib_translation = {}
 
 local util = require("__core__.lualib.util")
 
@@ -14,11 +14,11 @@ local type = type
 
 --- Initial setup.
 -- Must be called during on_init, and during on_configuration_changed if adding the module to an existing mod.
-function translation.init()
+function flib_translation.init()
   if not global.__flib then
     global.__flib = {}
   end
-  global.__flib.translation = {
+  global.__flib.flib_translation = {
     players = {},
     translating_players_count = 0
   }
@@ -27,8 +27,8 @@ end
 --- Perform translation operations.
 -- Must be called during an on_tick event.
 -- @tparam OnTickEventData event_data
-function translation.iterate_batch(event_data)
-  local __translation = global.__flib.translation
+function flib_translation.iterate_batch(event_data)
+  local __translation = global.__flib.flib_translation
   if __translation.translating_players_count == 0 then return end
   local iterations = math.floor(50 / __translation.translating_players_count)
   if iterations < 1 then iterations = 1 end
@@ -49,7 +49,7 @@ function translation.iterate_batch(event_data)
           local string_data = sort_strings[string_index]
           if string_data then
             i = i + 1
-            local serialised = translation.serialise_localised_string(string_data.localised)
+            local serialised = flib_translation.serialise_localised_string(string_data.localised)
             local translation_data = translate_strings[serialised]
             if translation_data then
               local dictionary_names = translation_data.names[string_data.dictionary]
@@ -99,7 +99,7 @@ function translation.iterate_batch(event_data)
         end
       end
     else
-      translation.cancel(player_index)
+      flib_translation.cancel(player_index)
     end
   end
 end
@@ -109,14 +109,14 @@ end
 -- @tparam OnStringTranslatedEventData event_data
 -- @treturn table TODO make this a concept
 -- @treturn boolean If all of the player's translations are complete.
-function translation.process_result(event_data)
-  local __translation = global.__flib.translation
+function flib_translation.process_result(event_data)
+  local __translation = global.__flib.flib_translation
   if __translation.translating_players_count == 0 then return end
   local player_table = __translation.players[event_data.player_index]
   if not player_table then return end
   if player_table.state == "sort" then return end
 
-  local serialised = translation.serialise_localised_string(event_data.localised_string)
+  local serialised = flib_translation.serialise_localised_string(event_data.localised_string)
   local translate_strings = player_table.translate.strings
 
   local translation_data = translate_strings[serialised]
@@ -126,7 +126,7 @@ function translation.process_result(event_data)
     translate_strings.__size = translate_strings.__size - 1
     local finished = false
     if translate_strings.__size == 0 then
-      translation.cancel(event_data.player_index)
+      flib_translation.cancel(event_data.player_index)
       finished = true
     end
     return names, finished
@@ -138,8 +138,8 @@ end
 -- @tparam uint player_index
 -- @tparam string dictionary_name
 -- @tparam StringData[] strings
-function translation.add_requests(player_index, strings)
-  local __translation = global.__flib.translation
+function flib_translation.add_requests(player_index, strings)
+  local __translation = global.__flib.flib_translation
   local player_table = __translation.players[player_index]
   if player_table then
     player_table.state = "sort"
@@ -178,8 +178,8 @@ end
 
 --- Cancel a player's translations.
 -- @tparam uint player_index
-function translation.cancel(player_index)
-  local __translation = global.__flib.translation
+function flib_translation.cancel(player_index)
+  local __translation = global.__flib.flib_translation
   local player_table = __translation.players[player_index]
   if not player_table then
     log("Tried to cancel translations for player ["..player_index.."] when no translations were running!")
@@ -191,12 +191,12 @@ end
 
 --- Serialise a localised string into a form readable by the API.
 -- Gives a similar result to serpent.line(), but is much faster.
-function translation.serialise_localised_string(t)
+function flib_translation.serialise_localised_string(t)
   local output = "{"
   if type(t) == "string" then return t end
   for _, v in pairs(t) do
     if type(v) == "table" then
-      output = output..translation.serialise_localised_string(v)
+      output = output..flib_translation.serialise_localised_string(v)
     else
       output = output.."\""..v.."\", "
     end
@@ -208,4 +208,4 @@ end
 --- @Concept StringData
 -- Table with the following fields:
 
-return translation
+return flib_translation

@@ -1,15 +1,15 @@
---- Miscellaneous data-stage functions that don't yet have a proper home.
--- @module data_misc
--- @usage local utilities = require('__flib__.data_misc')
+--- Misc functions for data stage prototype manipulation
+-- @module data_util
+-- @usage local data_util = require('__flib__.data_util')
 
-local data_misc = {}
+local data_util = {}
 
 --- Copy a prototype, assign new name and minable properties.
 -- @tparam PrototypeBase prototype
 -- @tparam string new_name string
 -- @tparam[opt=false] boolean remove_icon
 -- @treturn PrototypeBase
-function data_misc.copy_prototype(prototype, new_name, remove_icon)
+function data_util.copy_prototype(prototype, new_name, remove_icon)
   if not prototype.type or not prototype.name then
     error("Invalid prototype: prototypes must have name and type properties.")
     return nil
@@ -46,7 +46,7 @@ end
 -- @tparam PrototypeBase prototype
 -- @tparam Types.IconSpecification[] new_layers
 -- @return Types.IconSpecification[]|nil
-function data_misc.create_icons(prototype, new_layers)
+function data_util.create_icons(prototype, new_layers)
   for _,new_layer in pairs(new_layers) do
     if not new_layer.icon or not new_layer.icon_size then
       return nil
@@ -103,9 +103,9 @@ local exponent_multipliers = {
 -- @tparam string energy_string
 -- @treturn float|nil
 -- @treturn string
-function data_misc.get_energy_value(energy_string)
+function data_util.get_energy_value(energy_string)
   if type(energy_string) == "string" then
-    local value, _, exp, unit =  string.match(energy_string, "([%-+]?[0-9]*%.?[0-9]+)(([kMGTP]?)([WJ]))")
+    local value, _, exp, unit = string.match(energy_string, "([%-+]?[0-9]*%.?[0-9]+)(([kMGTP]?)([WJ]))")
     if exp and exponent_multipliers[exp] then
       value = value * exponent_multipliers[exp]
     end
@@ -113,4 +113,4 @@ function data_misc.get_energy_value(energy_string)
   end
 end
 
-return data_misc
+return data_util

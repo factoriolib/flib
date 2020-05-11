@@ -1,7 +1,7 @@
 --- defines reverse lookup table
 -- @usage local reverse_defines = require('__flib__.reverse_defines')
 
-local reverse_defines = {}
+local flib_reverse_defines = {}
 
 local function build_reverse_defines(lookup_table, base_table)
   lookup_table = lookup_table or {}
@@ -15,6 +15,6 @@ local function build_reverse_defines(lookup_table, base_table)
   end
 end
 
-build_reverse_defines(reverse_defines, defines)
+build_reverse_defines(flib_reverse_defines, defines)
 
-return reverse_defines
+return flib_reverse_defines

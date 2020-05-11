@@ -1,7 +1,7 @@
 --- Miscellaneous control-stage functions that don't yet have a proper home.
--- @module control_misc
--- @usage local misc = require("__flib__.control_misc")
-local misc = {}
+-- @module misc
+-- @usage local misc = require("__flib__.misc")
+local flib_misc = {}
 
 local math_sqrt = math.sqrt
 local math_floor = math.floor
@@ -11,7 +11,7 @@ local string_format = string.format
 -- @tparam Concepts.Position pos1
 -- @tparam Concepts.Position pos2
 -- @treturn double
-function misc.get_distance(pos1, pos2)
+function flib_misc.get_distance(pos1, pos2)
   local x1 = pos1.x or pos1[1]
   local y1 = pos1.y or pos1[2]
   local x2 = pos2.x or pos2[1]
@@ -23,7 +23,7 @@ end
 -- @tparam Concepts.Position pos1
 -- @tparam Concepts.Position pos2
 -- @treturn double
-function misc.get_distance_squared(pos1, pos2)
+function flib_misc.get_distance_squared(pos1, pos2)
   local x1 = pos1.x or pos1[1]
   local y1 = pos1.y or pos1[2]
   local x2 = pos2.x or pos2[1]
@@ -37,7 +37,7 @@ local format_string_2 = "%d:%02d:%02d"
 --- Convert given tick or game.tick into "[hh:]mm:ss" format.
 -- @tparam[opt=game.tick] uint tick
 -- @treturn string
-function misc.ticks_to_timestring(tick)
+function flib_misc.ticks_to_timestring(tick)
   local total_seconds = math_floor((tick or game.tick)/60)
   local seconds = total_seconds % 60
   local minutes = math_floor(total_seconds/60)
@@ -50,4 +50,4 @@ function misc.ticks_to_timestring(tick)
   end
 end
 
-return misc
+return flib_misc

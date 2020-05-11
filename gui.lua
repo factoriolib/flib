@@ -1,7 +1,7 @@
 --- GUI structuring tools and event handling.
 -- @module gui
 -- @usage local gui = require("__flib__.gui")
-local gui = {}
+local flib_gui = {}
 
 local util = require("util")
 
@@ -65,7 +65,7 @@ end
 
 local function generate_filter_lookup()
   -- add filter lookup to each handler
-  for _, players in pairs(global.__flib.gui) do
+  for _, players in pairs(global.__flib.flib_gui) do
     for player_index, filters in pairs(players) do
       if player_index ~= "__size" then
         for filter, handler_name in pairs(filters) do
@@ -87,23 +87,23 @@ end
 
 --- Initial setup. Must be called at the BEGINNING of on_init, before any GUI functions are used.
 -- If adding the module to an existing mod, this must be called in on_configuration_changed for that version as well.
-function gui.init()
+function flib_gui.init()
   if not global.__flib then
-    global.__flib = {gui={}}
+    global.__flib = {flib_gui={}}
   else
-    global.__flib.gui = {}
+    global.__flib.flib_gui = {}
   end
 end
 
 --- Generate template and handler lookup tables.
 -- Must be called at the END of on_init and on_load
-function gui.build_lookup_tables()
+function flib_gui.build_lookup_tables()
   generate_template_lookup(templates, "")
   -- go one level deep before calling the function, to avoid adding an unnecessary prefix to all group names
   for k, v in pairs(handlers) do
     generate_handler_lookup(v, k, {})
   end
-  if global.__flib and global.__flib.gui then
+  if global.__flib and global.__flib.flib_gui then
     generate_filter_lookup()
   end
 end
@@ -113,7 +113,7 @@ end
 -- @tparam uint player_index
 -- @tparam GuiFilter[] filters An array of filters.
 -- @tparam string mode One of "add" or "remove".
-function gui.update_filters(name, player_index, filters, mode)
+function flib_gui.update_filters(name, player_index, filters, mode)
   local handler_names = handler_groups[name] or {name}
   for hi=1,#handler_names do
     local handler_name = handler_names[hi]
@@ -123,7 +123,7 @@ function gui.update_filters(name, player_index, filters, mode)
     local handler_filters = handler_data.filters
 
     -- saved filters table (in global)
-    local __gui = global.__flib.gui
+    local __gui = global.__flib.flib_gui
     local saved_event_filters = __gui[id]
     if not saved_event_filters then
       __gui[id] = {__size=1, [player_index]={__size=0}}
@@ -183,11 +183,11 @@ end
 --- Dispatch GUI handlers for the given event.
 -- @tparam Concepts.EventData e
 -- @treturn boolean If a handler was dispatched.
-function gui.dispatch_handlers(e)
+function flib_gui.dispatch_handlers(e)
   if not e.element or not e.player_index then return false end
   local element = e.element
   local element_name = string_gsub(element.name, "__.*", "")
-  local event_filters = global.__flib.gui[e.name]
+  local event_filters = global.__flib.flib_gui[e.name]
   if not event_filters then return false end
   local player_filters = event_filters[e.player_index]
   if not player_filters then return false end
@@ -280,7 +280,7 @@ end
 -- @treturn GuiOutputTable
 -- @treturn table Dictionary @{defines.events|string|int} -> @{GuiFilters}, a mapping of an event ID to the filters
 -- belonging to it.
-function gui.build(parent, structures)
+function flib_gui.build(parent, structures)
   local output = {}
   local filters = {}
   local player_index = parent.player_index or parent.player.index
@@ -294,7 +294,7 @@ function gui.build(parent, structures)
     )
   end
   for name, filters_table in pairs(filters) do
-    gui.update_filters(name, player_index, filters_table, "add")
+    flib_gui.update_filters(name, player_index, filters_table, "add")
   end
   return output, filters
 end
@@ -318,30 +318,30 @@ end
 --- Add content to the GUI templates table.
 -- TODO: Explain templating.
 -- @tparam table t
-function gui.add_templates(t)
+function flib_gui.add_templates(t)
   extend_table(templates, t)
 end
 
 --- Add content to the GUI handlers table.
 -- TODO: Explain handlers.
 -- @tparam table t
-function gui.add_handlers(t)
+function flib_gui.add_handlers(t)
   extend_table(handlers, t)
 end
 
 --- Register all GUI handlers to go through the module.
-function gui.register_handlers()
+function flib_gui.register_handlers()
   for name, id in pairs(defines.events) do
     if string_sub(name, 1, 6) == "on_gui" then
-      script.on_event(id, function(e) gui.dispatch_handlers(e) end)
+      script.on_event(id, function(e) flib_gui.dispatch_handlers(e) end)
     end
   end
 end
 
-gui.templates = templates
-gui.handlers = handlers
-gui.handler_lookup = handler_lookup
-gui.handler_groups = handler_groups
+flib_gui.templates = templates
+flib_gui.handlers = handlers
+flib_gui.handler_lookup = handler_lookup
+flib_gui.handler_groups = handler_groups
 
 --- @Concept GuiFilter
 -- One of the following:
@@ -361,4 +361,4 @@ gui.handler_groups = handler_groups
 --- @Concept GuiOutputTable
 -- A table with a custom structure depending on how it is set up in gui.build().
 -- TODO Raiguard document more!
-return gui
+return flib_gui
