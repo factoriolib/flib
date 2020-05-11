@@ -65,7 +65,7 @@ end
 
 local function generate_filter_lookup()
   -- add filter lookup to each handler
-  for _, players in pairs(global.__flib.flib_gui) do
+  for _, players in pairs(global.__flib.gui) do
     for player_index, filters in pairs(players) do
       if player_index ~= "__size" then
         for filter, handler_name in pairs(filters) do
@@ -89,9 +89,9 @@ end
 -- If adding the module to an existing mod, this must be called in on_configuration_changed for that version as well.
 function flib_gui.init()
   if not global.__flib then
-    global.__flib = {flib_gui={}}
+    global.__flib = {gui={}}
   else
-    global.__flib.flib_gui = {}
+    global.__flib.gui = {}
   end
 end
 
@@ -103,7 +103,7 @@ function flib_gui.build_lookup_tables()
   for k, v in pairs(handlers) do
     generate_handler_lookup(v, k, {})
   end
-  if global.__flib and global.__flib.flib_gui then
+  if global.__flib and global.__flib.gui then
     generate_filter_lookup()
   end
 end
@@ -123,7 +123,7 @@ function flib_gui.update_filters(name, player_index, filters, mode)
     local handler_filters = handler_data.filters
 
     -- saved filters table (in global)
-    local __gui = global.__flib.flib_gui
+    local __gui = global.__flib.gui
     local saved_event_filters = __gui[id]
     if not saved_event_filters then
       __gui[id] = {__size=1, [player_index]={__size=0}}
@@ -187,7 +187,7 @@ function flib_gui.dispatch_handlers(e)
   if not e.element or not e.player_index then return false end
   local element = e.element
   local element_name = string_gsub(element.name, "__.*", "")
-  local event_filters = global.__flib.flib_gui[e.name]
+  local event_filters = global.__flib.gui[e.name]
   if not event_filters then return false end
   local player_filters = event_filters[e.player_index]
   if not player_filters then return false end

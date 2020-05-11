@@ -18,7 +18,7 @@ function flib_translation.init()
   if not global.__flib then
     global.__flib = {}
   end
-  global.__flib.flib_translation = {
+  global.__flib.translation = {
     players = {},
     translating_players_count = 0
   }
@@ -28,7 +28,7 @@ end
 -- Must be called during an on_tick event.
 -- @tparam OnTickEventData event_data
 function flib_translation.iterate_batch(event_data)
-  local __translation = global.__flib.flib_translation
+  local __translation = global.__flib.translation
   if __translation.translating_players_count == 0 then return end
   local iterations = math.floor(50 / __translation.translating_players_count)
   if iterations < 1 then iterations = 1 end
@@ -110,7 +110,7 @@ end
 -- @treturn table TODO make this a concept
 -- @treturn boolean If all of the player's translations are complete.
 function flib_translation.process_result(event_data)
-  local __translation = global.__flib.flib_translation
+  local __translation = global.__flib.translation
   if __translation.translating_players_count == 0 then return end
   local player_table = __translation.players[event_data.player_index]
   if not player_table then return end
@@ -139,7 +139,7 @@ end
 -- @tparam string dictionary_name
 -- @tparam StringData[] strings
 function flib_translation.add_requests(player_index, strings)
-  local __translation = global.__flib.flib_translation
+  local __translation = global.__flib.translation
   local player_table = __translation.players[player_index]
   if player_table then
     player_table.state = "sort"
@@ -179,7 +179,7 @@ end
 --- Cancel a player's translations.
 -- @tparam uint player_index
 function flib_translation.cancel(player_index)
-  local __translation = global.__flib.flib_translation
+  local __translation = global.__flib.translation
   local player_table = __translation.players[player_index]
   if not player_table then
     log("Tried to cancel translations for player ["..player_index.."] when no translations were running!")
