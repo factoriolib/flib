@@ -224,9 +224,21 @@ local function recursive_build(parent, structure, output, filters, player_index)
       structure[k] = structure[k] or v
     end
   end
+
+  -- process structure
   local elem
-  -- special logic if this is a tab-and-content
-  if structure.type == "tab-and-content" then
+  local structure_type = structure.type
+  if structure_type == "condition" then
+    if structure.condition then
+      -- add children
+      local children = structure.children
+      if children then
+        for i=1,#children do
+          output, filters = recursive_build(parent, children[i], output, filters, player_index)
+        end
+      end
+    end
+  elseif structure_type == "tab-and-content" then
     local tab, content
     output, filters, tab = recursive_build(parent, structure.tab, output, filters, player_index)
     output, filters, content = recursive_build(parent, structure.content, output, filters, player_index)
@@ -287,6 +299,7 @@ local function recursive_build(parent, structure, output, filters, player_index)
       end
     end
   end
+
   return output, filters, elem
 end
 
