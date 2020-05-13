@@ -180,6 +180,22 @@ function flib_gui.update_filters(name, player_index, filters, mode)
   end
 end
 
+--- Remove all GUI filters for the given player.
+-- @tparam uint player_index
+function flib_gui.remove_player_filters(player_index)
+  local filters_table = global.__flib.gui
+  for event_name, event_filters in pairs(filters_table) do
+    local player_filters = event_filters[player_index]
+    if player_filters then
+      event_filters[player_index] = nil
+      event_filters.__size = event_filters.__size - 1
+      if event_filters.__size == 0 then
+        filters_table[event_name] = nil
+      end
+    end
+  end
+end
+
 --- Dispatch GUI handlers for the given event.
 -- @tparam Concepts.EventData e
 -- @treturn boolean If a handler was dispatched.
