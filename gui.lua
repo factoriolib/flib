@@ -124,114 +124,6 @@ end
 --- Functions
 -- @section
 
---- Add or remove GUI filters to or from a handler or group of handlers.
--- @tparam string name The handler name, or group name.
--- @tparam uint player_index
--- @tparam GuiFilter[] filters An array of filters.
--- @tparam string mode One of "add" or "remove".
-function flib_gui.update_filters(name, player_index, filters, mode)
-  local handler_names = handler_groups[name] or {name}
-  for hi=1,#handler_names do
-    local handler_name = handler_names[hi]
-    local handler_data = handler_lookup[handler_name]
-    if not handler_data then error("GUI handler ["..handler_name.."] does not exist!") end
-    local id = handler_data.id
-    local handler_filters = handler_data.filters
-
-    -- saved filters table (in global)
-    local __gui = global.__flib.gui
-    local saved_event_filters = __gui[id]
-    if not saved_event_filters then
-      __gui[id] = {__size=1, [player_index]={__size=0}}
-      saved_event_filters = __gui[id]
-    end
-    local saved_player_filters = saved_event_filters[player_index]
-    if not saved_player_filters then
-      saved_event_filters[player_index] = {__size=0}
-      saved_event_filters.__size = saved_event_filters.__size + 1
-      saved_player_filters = saved_event_filters[player_index]
-    end
-
-    -- handler filters table (in lookup)
-    local handler_player_filters = handler_filters[player_index]
-    if not handler_player_filters then
-      handler_filters[player_index] = {__size=0}
-      handler_player_filters = handler_filters[player_index]
-    end
-
-    -- update filters
-    mode = mode or "add"
-    if mode == "add" then
-      for _, filter in pairs(filters) do
-        saved_player_filters[filter] = handler_name
-        saved_player_filters.__size = saved_player_filters.__size + 1
-        handler_player_filters[filter] = filter
-        handler_player_filters.__size = handler_player_filters.__size + 1
-      end
-    elseif mode == "remove" then
-      -- if a filters table wasn't provided, remove all of them
-      for key, filter in pairs(filters or handler_player_filters) do
-        if key ~= "__size" then
-          saved_player_filters[filter] = nil
-          saved_player_filters.__size = saved_player_filters.__size - 1
-          handler_player_filters[filter] = nil
-          handler_player_filters.__size = handler_player_filters.__size - 1
-        end
-      end
-
-      -- clean up empty tables
-      if saved_player_filters.__size == 0 then
-        saved_event_filters[player_index] = nil
-        saved_event_filters.__size = saved_event_filters.__size - 1
-        if saved_event_filters.__size == 0 then
-          __gui[id] = nil
-        end
-      end
-      if handler_player_filters.__size == 0 then
-        handler_filters[player_index] = nil
-      end
-    else
-      error("Invalid GUI filter update mode ["..mode.."]")
-    end
-  end
-end
-
---- Remove all GUI filters for the given player.
--- @tparam uint player_index
-function flib_gui.remove_player_filters(player_index)
-  local filters_table = global.__flib.gui
-  for event_name, event_filters in pairs(filters_table) do
-    local player_filters = event_filters[player_index]
-    if player_filters then
-      event_filters[player_index] = nil
-      event_filters.__size = event_filters.__size - 1
-      if event_filters.__size == 0 then
-        filters_table[event_name] = nil
-      end
-    end
-  end
-end
-
---- Dispatch GUI handlers for the given event.
--- @tparam Concepts.EventData e
--- @treturn boolean If a handler was dispatched.
-function flib_gui.dispatch_handlers(e)
-  if not e.element or not e.player_index then return false end
-  local element = e.element
-  local element_name = string_gsub(element.name, "__.*", "")
-  local event_filters = global.__flib.gui[e.name]
-  if not event_filters then return false end
-  local player_filters = event_filters[e.player_index]
-  if not player_filters then return false end
-  local handler_name = player_filters[element.index] or player_filters[element_name]
-  if handler_name then
-    handler_lookup[handler_name].handler(e)
-    return true
-  else
-    return false
-  end
-end
-
 -- navigate a structure to build a GUI
 local function recursive_build(parent, structure, output, filters, player_index)
   -- load template
@@ -320,7 +212,7 @@ local function recursive_build(parent, structure, output, filters, player_index)
 end
 
 --- Build a GUI structure.
--- @tparam parent LuaGuiElement
+-- @tparam LuaGuiElement parent
 -- @tparam GuiStructure[] structures
 -- @treturn GuiOutputTable output
 -- @treturn GuiOutputFiltersTable filters
@@ -343,6 +235,27 @@ function flib_gui.build(parent, structures)
   return output, filters
 end
 
+--- Dispatch GUI handlers for the given event.
+-- Only needed if not using @{gui.register_handlers} or if overriding a handler registered using that function.
+-- @tparam Concepts.EventData event_data
+-- @treturn boolean If a handler was dispatched.
+function flib_gui.dispatch_handlers(event_data)
+  if not event_data.element or not event_data.player_index then return false end
+  local element = event_data.element
+  local element_name = string_gsub(element.name, "__.*", "")
+  local event_filters = global.__flib.gui[event_data.name]
+  if not event_filters then return false end
+  local player_filters = event_filters[event_data.player_index]
+  if not player_filters then return false end
+  local handler_name = player_filters[element.index] or player_filters[element_name]
+  if handler_name then
+    handler_lookup[handler_name].handler(event_data)
+    return true
+  else
+    return false
+  end
+end
+
 -- merge tables
 local function extend_table(self, t, do_return)
   for k, v in pairs(t) do
@@ -359,18 +272,106 @@ local function extend_table(self, t, do_return)
   if do_return then return self end
 end
 
---- Add content to the GUI templates table.
+--- Add content to the `gui.templates` table.
 -- TODO: Explain templating.
 -- @tparam table t
 function flib_gui.add_templates(t)
   extend_table(templates, t)
 end
 
---- Add content to the GUI handlers table.
+--- Add content to the `gui.handlers` table.
 -- TODO: Explain handlers.
 -- @tparam table t
 function flib_gui.add_handlers(t)
   extend_table(handlers, t)
+end
+
+--- Add or remove GUI filters to or from a handler or group of handlers.
+-- @tparam string name The handler name, or group name.
+-- @tparam uint player_index
+-- @tparam GuiFilter[] filters An array of filters.
+-- @tparam string mode One of "add" or "remove".
+function flib_gui.update_filters(name, player_index, filters, mode)
+  local handler_names = handler_groups[name] or {name}
+  for hi=1,#handler_names do
+    local handler_name = handler_names[hi]
+    local handler_data = handler_lookup[handler_name]
+    if not handler_data then error("GUI handler ["..handler_name.."] does not exist!") end
+    local id = handler_data.id
+    local handler_filters = handler_data.filters
+
+    -- saved filters table (in global)
+    local __gui = global.__flib.gui
+    local saved_event_filters = __gui[id]
+    if not saved_event_filters then
+      __gui[id] = {__size=1, [player_index]={__size=0}}
+      saved_event_filters = __gui[id]
+    end
+    local saved_player_filters = saved_event_filters[player_index]
+    if not saved_player_filters then
+      saved_event_filters[player_index] = {__size=0}
+      saved_event_filters.__size = saved_event_filters.__size + 1
+      saved_player_filters = saved_event_filters[player_index]
+    end
+
+    -- handler filters table (in lookup)
+    local handler_player_filters = handler_filters[player_index]
+    if not handler_player_filters then
+      handler_filters[player_index] = {__size=0}
+      handler_player_filters = handler_filters[player_index]
+    end
+
+    -- update filters
+    mode = mode or "add"
+    if mode == "add" then
+      for _, filter in pairs(filters) do
+        saved_player_filters[filter] = handler_name
+        saved_player_filters.__size = saved_player_filters.__size + 1
+        handler_player_filters[filter] = filter
+        handler_player_filters.__size = handler_player_filters.__size + 1
+      end
+    elseif mode == "remove" then
+      -- if a filters table wasn't provided, remove all of them
+      for key, filter in pairs(filters or handler_player_filters) do
+        if key ~= "__size" then
+          saved_player_filters[filter] = nil
+          saved_player_filters.__size = saved_player_filters.__size - 1
+          handler_player_filters[filter] = nil
+          handler_player_filters.__size = handler_player_filters.__size - 1
+        end
+      end
+
+      -- clean up empty tables
+      if saved_player_filters.__size == 0 then
+        saved_event_filters[player_index] = nil
+        saved_event_filters.__size = saved_event_filters.__size - 1
+        if saved_event_filters.__size == 0 then
+          __gui[id] = nil
+        end
+      end
+      if handler_player_filters.__size == 0 then
+        handler_filters[player_index] = nil
+      end
+    else
+      error("Invalid GUI filter update mode ["..mode.."]")
+    end
+  end
+end
+
+--- Remove all GUI filters for the given player.
+-- @tparam uint player_index
+function flib_gui.remove_player_filters(player_index)
+  local filters_table = global.__flib.gui
+  for event_name, event_filters in pairs(filters_table) do
+    local player_filters = event_filters[player_index]
+    if player_filters then
+      event_filters[player_index] = nil
+      event_filters.__size = event_filters.__size - 1
+      if event_filters.__size == 0 then
+        filters_table[event_name] = nil
+      end
+    end
+  end
 end
 
 flib_gui.templates = templates
