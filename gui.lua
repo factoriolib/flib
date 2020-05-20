@@ -121,6 +121,36 @@ function flib_gui.register_handlers()
   end
 end
 
+-- merge tables
+local function extend_table(self, t, do_return)
+  for k, v in pairs(t) do
+    if (type(v) == "table") then
+      if (type(self[k] or false) == "table") then
+        self[k] = extend_table(self[k], v, true)
+      else
+        self[k] = table.deepcopy(v)
+      end
+    else
+      self[k] = v
+    end
+  end
+  if do_return then return self end
+end
+
+--- Add content to the @{gui.templates} table.
+-- @tparam table input
+-- @see gui.templates
+function flib_gui.add_templates(input)
+  extend_table(templates, input)
+end
+
+--- Add content to the @{gui.handlers} table.
+-- @tparam table input
+-- @see gui.handlers
+function flib_gui.add_handlers(input)
+  extend_table(handlers, input)
+end
+
 --- Functions
 -- @section
 
@@ -256,36 +286,6 @@ function flib_gui.dispatch_handlers(event_data)
   end
 end
 
--- merge tables
-local function extend_table(self, t, do_return)
-  for k, v in pairs(t) do
-    if (type(v) == "table") then
-      if (type(self[k] or false) == "table") then
-        self[k] = extend_table(self[k], v, true)
-      else
-        self[k] = table.deepcopy(v)
-      end
-    else
-      self[k] = v
-    end
-  end
-  if do_return then return self end
-end
-
---- Add content to the `gui.templates` table.
--- TODO: Explain templating.
--- @tparam table t
-function flib_gui.add_templates(t)
-  extend_table(templates, t)
-end
-
---- Add content to the `gui.handlers` table.
--- TODO: Explain handlers.
--- @tparam table t
-function flib_gui.add_handlers(t)
-  extend_table(handlers, t)
-end
-
 --- Add or remove GUI filters to or from a handler or group of handlers.
 -- @tparam string name The handler name, or group name.
 -- @tparam uint player_index
@@ -374,10 +374,181 @@ function flib_gui.remove_player_filters(player_index)
   end
 end
 
-flib_gui.templates = templates
+--- Fields
+-- @section
+
+--- GUI handlers, built using @{gui.add_handlers}.
+-- @usage
+-- -- add handlers
+-- gui.add_handlers{
+--   -- you can organize the handlers however you like
+--   base = {
+--     titlebar = {
+--       -- this is a handler group for a specific GUI element
+--       close_button = {
+--         -- if using a defines.events event, this shortcut syntax is used:
+--         on_gui_click = function(e)
+--           __DebugAdapter.print(e)
+--         end,
+--         -- for direct event IDs, nest the function inside a table:
+--         my_custom_event = {id=constants.my_custom_event, handler=function(e)
+--           __DebugAdapter.print(e)
+--         }
+--       }
+--     }
+--   }
+-- }
+--
+-- -- use the handlers
+-- gui.build(player.gui.screen, {
+--   {type="sprite-button", style="frame_action_button", sprite="utility/close_white", handlers="base.titlebar.close_button"}
+-- })
 flib_gui.handlers = handlers
+
+--- One-dimensional handler lookup table, generated using @{gui.build_lookup_tables}.
+-- This is what @{gui.dispatch_handlers} uses to retrieve and dispatch handlers tied to certain elements.
+-- Each value is a table containing the event ID, handler, groups that handler belongs to, and a mapping of the GUI
+-- filters currently assigned to the handler.
+-- @usage
+-- -- given:
+-- gui.add_handlers{
+--   base = {
+--     titlebar = {
+--       close_button = {
+--         on_gui_click = function(e)
+--           __DebugAdapter.print(e)
+--         end
+--       }
+--     }
+--   }
+-- }
+-- gui.build(player.gui.screen, {
+--   {type="sprite-button", style="frame_action_button", sprite="utility/close_white", handlers="base.titlebar.close_button"}
+-- })
+--
+-- -- contents of gui.handler_lookup will be:
+-- {
+--   ["base.titlebar.close_button.on_gui_click"] = {
+--     id = defines.events.on_gui_click,
+--     handler = function(e)
+--       __DebugAdapter.print(e)
+--     end,
+--     groups = {
+--       "base",
+--       "base.titlebar",
+--       "base.titlebar.close_button"
+--     },
+--     filters = {
+--       [1] = { -- the player's index
+--         __size = 1,
+--         [5] = 5 -- the element's index, as both the key and the value
+--       }
+--     }
+--   }
+-- }
 flib_gui.handler_lookup = handler_lookup
+
+--- Mapping of group names to all handlers belonging to them, generated using @{gui.build_lookup_tables}.
+-- This is what @{gui.build} uses to find handler groups when using the `handlers` parameter in a @{GuiStructure}.
+-- @usage
+-- -- given:
+-- gui.add_handlers{
+--   base = {
+--     titlebar = {
+--       close_button = {
+--         on_gui_click = function(e)
+--           __DebugAdapter.print(e)
+--         end,
+--         my_custom_event = {id=constants.my_custom_event, handler=function(e)
+--           __DebugAdapter.print(e)
+--         }
+--       }
+--     },
+--     content = {
+--       item_button = {
+--         on_gui_click = function(e)
+--           __DebugAdapter.print(e)
+--         end
+--       }
+--     }
+--   }
+-- }
+--
+-- -- contents of gui.handler_groups will be:
+-- {
+--   ["base"] = {
+--     "base.titlebar.close_button.on_gui_click",
+--     "base.titlebar.close_button.my_custom_event",
+--     "base.content.item_button.on_gui_click"
+--   },
+--   ["base.titlebar"] = {
+--     "base.titlebar.close_button.on_gui_click",
+--     "base.titlebar.close_button.my_custom_event"
+--   },
+--   ["base.titlebar.close_button"] = {
+--     "base.titlebar.close_button.on_gui_click",
+--     "base.titlebar.close_button.my_custom_event"
+--   },
+--   ["base.content"] = {
+--     "base.content.item_button.on_gui_click"
+--   },
+--   ["base.content.item_button"] = {
+--     "base.content.item_button.on_gui_click"
+--   }
+-- }
 flib_gui.handler_groups = handler_groups
+
+--- GUI templates, built using @{gui.add_templates}.
+-- @usage
+-- -- add content to the table
+-- gui.add_templates{
+--   -- templates are usually defined as GuiStructures
+--   frame_action_button = {type="sprite-button", style="frame_action_button", mouse_button_filter={"left"}},
+--   -- you can divide and organize templates however you wish
+--   pushers = {
+--     horizontal = {type="empty-widget", style_mods={horizontally_stretchable=true}},
+--     vertical = {type="empty-widget", style_mods={vertically_stretchable=true}}
+--   },
+--   -- templates can also be functions
+--   list_box_with_label = function(name)
+--     return
+--       {type="flow", direction="vertical", children={
+--         {type="label", style="bold_label", caption={"my-listbox-labels."..name}, save_as="listboxes."..name..".label"},
+--         {type="list-box", save_as="listboxes."..name..".list_box"}
+--       }}
+--   end
+-- }
+--
+-- -- use the templates
+-- gui.build(player.gui.screen, {
+--   -- use GuiStructure templates using the "template" parameter
+--   {template="pushers.horizontal"},
+--   {template="frame_action_button", sprite="utility/close_white"},
+--   -- use function templates by calling them directly
+--   gui.templates.list_box_with_label("ingredients"),
+--   gui.templates.list_box_with_label("products")
+-- })
+flib_gui.templates = templates
+
+--- One-dimensional template lookup table, generating using @{gui.build_lookup_tables}.
+-- This is what @{gui.build} uses to find templates when using the `templates` parameter in a @{GuiStructure}.
+-- @usage
+-- -- given:
+-- gui.add_templates{
+--   frame_action_button = {type="sprite-button", style="frame_action_button", mouse_button_filter={"left"}},
+--   pushers = {
+--     horizontal = {type="empty-widget", style_mods={horizontally_stretchable=true}},
+--     vertical = {type="empty-widget", style_mods={vertically_stretchable=true}}
+--   }
+-- }
+--
+-- -- contents of template_lookup will be:
+-- {
+--   ["frame_action_button"] = {type="sprite-button", style="frame_action_button", mouse_button_filter={"left"}},
+--   ["pushers.horizontal"] = {type="empty-widget", style_mods={horizontally_stretchable=true}},
+--   ["pushers.vertical"] = {type="empty-widget", style_mods={vertically_stretchable=true}}
+-- }
+flib_gui.template_lookup = template_lookup
 
 return flib_gui
 
@@ -408,9 +579,8 @@ return flib_gui
 --
 -- <strong><em>template</em></strong>
 --
--- A @{string} consisting of a dot-deliminated path to a @{GuiStructure} in the `gui.templates` table, added through
--- @{gui.add_templates}. The contents of this "template" will be used as a base, and any other paramters in this
--- @{GuiStructure} will overwrite / add to this base.
+-- A @{string} corresponding to a @{GuiStructure} in the @{gui.template_lookup} table. The contents of this "template"
+-- will be used as a base, and any other paramters in this @{GuiStructure} will overwrite / add to this base.
 --
 -- <strong><em>condition</em></strong>
 --
@@ -438,9 +608,9 @@ return flib_gui
 --
 -- <strong><em>handlers</em></strong>
 --
--- A @{string} defining a group of functions in the `gui.handlers` table, added through @{gui.add_handlers}. The element
--- will be registered to those handlers, and when the events are raised by the game relating to this element, the
--- corresponding handlers will be dispatched.
+-- A @{string} corresponding to an item in the @{gui.handler_groups} table. The element will be registered to the
+-- handlers in that group, and when the events are raised by the game relating to this element, the corresponding
+-- handlers will be dispatched.
 --
 -- <strong><em>save_as</em></strong>
 --
