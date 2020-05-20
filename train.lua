@@ -1,5 +1,6 @@
 --- Functions for working with trains.
 -- @module train
+-- @alias flib_train
 -- @usage local train = require("__flib__.train")
 -- @see LuaTrain
 local flib_train = {}
