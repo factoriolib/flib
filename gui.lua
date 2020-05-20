@@ -379,10 +379,6 @@ flib_gui.handler_groups = handler_groups
 --   <li>A @{uint} corresponding to an element's index.</li>
 -- </ul>
 
---- @Concept GuiFilters
--- Dictionary @{GuiFilter} -> string, returned as
--- TODO Raiguard expound on this!
-
 --- @Concept GuiStructure
 -- A GUI structure in its basic form takes on the format of the @{LuaGuiElement} you are creating, and must have all of
 -- the required parameters for that element. There are several additional parameters that define custom behavior:
@@ -435,7 +431,8 @@ flib_gui.handler_groups = handler_groups
 -- An array of @{GuiStructure} that will be added as children of this element.
 
 --- @Concept GuiOutputTable
--- A table with a custom structure as defined in @{GuiStructure}.save_as.
+-- A table with a custom structure as defined in @{GuiStructure}.save_as. Consists of nested tables and key ->
+-- @{LuaGuiElement} pairs.
 
 --- @Concept GuiOutputFiltersTable
 -- Dictionary @{event.EventId} -> (Dictionary @{GuiFilter} -> string). A mapping of event IDs to the filters assigned
