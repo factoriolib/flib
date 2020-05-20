@@ -254,8 +254,8 @@ local function recursive_build(parent, structure, output, filters, player_index)
       end
     end
     -- apply modifications
-    if structure.mods then
-      for k, v in pairs(structure.mods) do
+    if structure.elem_mods then
+      for k, v in pairs(structure.elem_mods) do
         elem[k] = v
       end
     end
@@ -381,8 +381,8 @@ flib_gui.handler_groups = handler_groups
 -- </ul>
 
 --- @Concept GuiStructure
--- A GUI structure in its basic form takes on the format of the @{LuaGuiElement} you are creating, and must have all of
--- the required parameters for that element. There are several additional parameters that define custom behavior:
+-- A GUI structure takes on the form of the @{LuaGuiElement} you are creating, and must have all of the required
+-- parameters for that element. There are several parameters added / modified by the module that define custom behavior:
 --
 -- <strong><em>type</em></strong>
 --
@@ -408,16 +408,17 @@ flib_gui.handler_groups = handler_groups
 --
 -- <strong><em>style_mods</em></strong>
 --
--- A key -> value dictionary defining edits to make to the element's style. Available properties are listed in
+-- A key -> value dictionary defining modifications to make to the element's style. Available properties are listed in
 -- @{LuaStyle}.
 --
--- <strong><em>mods</em></strong>
+-- <strong><em>elem_mods</em></strong>
 --
--- A key -> value dictionary defining edits to make to the element. Available properties are listed in @{LuaGuiElement}.
+-- A key -> value dictionary defining modifications to make to the element. Available properties are listed in
+-- @{LuaGuiElement}.
 --
 -- <strong><em>handlers</em></strong>
 --
--- A @{string} defining group of functions in the gui.handlers table, added through @{gui.add_handlers}. The element
+-- A @{string} defining a group of functions in the gui.handlers table, added through @{gui.add_handlers}. The element
 -- will be registered to those handlers, and when the events are raised by the game relating to this element, the
 -- corresponding handlers will be dispatched.
 --
