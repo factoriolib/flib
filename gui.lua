@@ -306,9 +306,8 @@ end
 --- Build a GUI structure.
 -- @tparam parent LuaGuiElement
 -- @tparam GuiStructure[] structures
--- @treturn GuiOutputTable
--- @treturn table Dictionary @{defines.events|string|int} -> @{GuiFilters}, a mapping of an event ID to the filters
--- belonging to it.
+-- @treturn GuiOutputTable output
+-- @treturn GuiOutputFiltersTable filters
 function flib_gui.build(parent, structures)
   local output = {}
   local filters = {}
@@ -374,20 +373,85 @@ flib_gui.handler_groups = handler_groups
 
 --- @Concept GuiFilter
 -- One of the following:
--- - A @{string} corresponding to an element's name.
---   - Partial names may be matched by separating the common section from the unique section with two underscores `__`.
--- - A @{uint} corresponding to an element's index.
+-- <ul>
+--   <li>A @{string} corresponding to an element's name. Partial names may be matched by separating the common section
+--   from the unique section with two underscores `__`.</li>
+--   <li>A @{uint} corresponding to an element's index.</li>
+-- </ul>
 
 --- @Concept GuiFilters
--- Table @{GuiFilter} -> string. Each string corresponds to a GUI handler name. When an element matching the given
--- filter raises an event, the handler corresponding to the handler name is fired.
+-- Dictionary @{GuiFilter} -> string, returned as
 -- TODO Raiguard expound on this!
 
 --- @Concept GuiStructure
--- A GUI structure. Basic format is a table corresponding to a LuaGuiElement's constructor.
--- TODO Raiguard document all properties!
+-- A GUI structure in its basic form takes on the format of the @{LuaGuiElement} you are creating, and must have all of
+-- the required parameters for that element. There are several additional parameters that define custom behavior:
+--
+-- <strong><em>type</em></strong>
+--
+-- Alongside the usual @{LuaGuiElement} types, there are two additional types added by the module:
+-- <ul>
+--   <li><strong>condition:</strong> Accepts the `condition` and `children` parameters only.</li>
+--   <li><strong>tab-and-content:</strong> Accepts the `tab` and `content` parameters only.</li>
+-- </ul>
+--
+-- <strong><em>condition</em></strong>
+--
+-- For `condition` types only. If true, the children of this @{GuiStructure} will be added to the parent of this
+-- @{GuiStructure}. If false, they will not.
+--
+-- <strong><em>tab</em></strong>
+--
+-- For `tab-and-content` types only. A @{GuiStructure} defining a tab to be placed in a tabbed-pane.
+--
+-- <strong><em>content</em></strong>
+--
+-- For `tab-and-content` types only. A @{GuiStructure} defining the content that will be shown when the corresponding
+-- tab is active.
+--
+-- <strong><em>style_mods</em></strong>
+--
+-- A key -> value dictionary defining edits to make to the element's style. Available properties are listed in
+-- @{LuaStyle}.
+--
+-- <strong><em>mods</em></strong>
+--
+-- A key -> value dictionary defining edits to make to the element. Available properties are listed in @{LuaGuiElement}.
+--
+-- <strong><em>handlers</em></strong>
+--
+-- A @{string} defining group of functions in the gui.handlers table, added through @{gui.add_handlers}. The element
+-- will be registered to those handlers, and when the events are raised by the game relating to this element, the
+-- corresponding handlers will be dispatched.
+--
+-- <strong><em>save_as</em></strong>
+--
+-- A @{string} defining a table path to save this element to, in the first return value of @{gui.build}. This is a
+-- dot-deliminated list of nested table names, followed by a key to save the element as. The module will construct the
+-- output table dynamically based on the contents of `save_as` throughout the structure.
+--
+-- <strong><em>children</em></strong>
+--
+-- An array of @{GuiStructure} that will be added as children of this element.
 
 --- @Concept GuiOutputTable
--- A table with a custom structure depending on how it is set up in gui.build().
--- TODO Raiguard document more!
+-- A table with a custom structure as defined in @{GuiStructure}.save_as.
+
+--- @Concept GuiOutputFiltersTable
+-- Dictionary @{event.EventId} -> (Dictionary @{GuiFilter} -> string). A mapping of event IDs to the filters assigned
+-- to it by this structure, using @{GuiStructure}.handlers.
+-- @usage
+-- {
+--   [defines.events.on_gui_closed] = {
+--     [23] = "window.on_gui_closed"
+--   },
+--   [defines.events.on_gui_click] = {
+--     [21] = "titlebar.close_button.on_gui_click",
+--     [30] = "content_pane.ingredients_list.ingredient_button.on_gui_click"
+--   },
+--   [custom_mod_event] = {
+--     [31] = "content_pane.something_or_another"
+--   }
+-- }
+
 return flib_gui
