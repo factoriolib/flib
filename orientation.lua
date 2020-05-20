@@ -1,5 +1,6 @@
 --- Functions for working with orientations.
 -- @module orientation
+-- @alias flib_orientation
 -- @usage local orientation = require('__flib__.orientation')
 
 local flib_orientation = {}

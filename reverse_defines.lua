@@ -1,5 +1,6 @@
 --- Defines reverse lookup table.
 -- @module reverse_defines
+-- @alias flib_reverse_defines
 -- @usage local reverse_defines = require('__flib__.reverse_defines')
 local flib_reverse_defines = {}
 

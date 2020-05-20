@@ -1,5 +1,6 @@
 --- Mod migrations and version comparison functions.
 -- @module migration
+-- @alias flib_migration
 -- @usage local migration = require("__flib__.migration")
 local flib_migration = {}
 
@@ -14,8 +15,8 @@ local version_format = "%02d"
 -- @tparam[opt="%02d"] string format
 -- @treturn string|nil
 -- @usage
--- format_version("1.10.1234", "%04d")
--- format_version("3", "%02d")
+-- migration.format_version("1.10.1234", "%04d")
+-- migration.format_version("3", "%02d")
 function flib_migration.format_version(version, format)
   if version then
     format = format or version_format
@@ -65,12 +66,15 @@ end
 -- @tparam Concepts.ConfigurationChangedData event_data
 -- @tparam MigrationsTable migrations
 -- @tparam[opt] string mod_name The mod to check against, defaults to the mod this is used in.
--- @treturn boolean Whether or not to run generic migrations.
+-- @treturn boolean If true, run generic migrations. If false, run post-init setup.
 -- @usage
 -- -- In on_configuration_changed:
--- if on_config_changed(e, migrations) then
---   -- run generic migrations
+-- if migration.on_config_changed(e, migrations) then
+--   -- run generic (non-init) migrations
 --   rebuild_prototype_data()
+-- else
+--   -- run post-init setup
+--   unlock_recipes_for_cheating_forces()
 -- end
 function flib_migration.on_config_changed(event_data, migrations, mod_name)
   local changes = event_data.mod_changes[mod_name or script.mod_name]

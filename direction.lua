@@ -1,5 +1,6 @@
 --- Functions for working with directions.
 -- @module direction
+-- @alias flib_direction
 -- @usage local direction = require('__flib__.direction')
 -- @see defines.direction
 

@@ -1,5 +1,6 @@
 --- Localised string translation and dictionary organization.
 -- @module translation
+-- @alias flib_translation
 -- @usage local translation = require("__flib__.translation")
 local flib_translation = {}
 

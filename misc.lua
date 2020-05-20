@@ -1,5 +1,6 @@
 --- Miscellaneous control-stage functions that don't yet have a proper home.
 -- @module misc
+-- @alias flib_misc
 -- @usage local misc = require("__flib__.misc")
 local flib_misc = {}
 

@@ -1,5 +1,6 @@
 --- GUI structuring tools and event handling.
 -- @module gui
+-- @alias flib_gui
 -- @usage local gui = require("__flib__.gui")
 local flib_gui = {}
 
