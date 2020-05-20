@@ -86,6 +86,9 @@ local function generate_filter_lookup()
   end
 end
 
+--- Setup functions
+-- @section
+
 --- Initial setup. Must be called at the BEGINNING of on_init, before any GUI functions are used.
 -- If adding the module to an existing mod, this must be called in on_configuration_changed for that version as well.
 function flib_gui.init()
@@ -108,6 +111,18 @@ function flib_gui.build_lookup_tables()
     generate_filter_lookup()
   end
 end
+
+--- Register all GUI handlers to go through the module.
+function flib_gui.register_handlers()
+  for name, id in pairs(defines.events) do
+    if string_sub(name, 1, 6) == "on_gui" then
+      script.on_event(id, function(e) flib_gui.dispatch_handlers(e) end)
+    end
+  end
+end
+
+--- Functions
+-- @section
 
 --- Add or remove GUI filters to or from a handler or group of handlers.
 -- @tparam string name The handler name, or group name.
@@ -358,19 +373,15 @@ function flib_gui.add_handlers(t)
   extend_table(handlers, t)
 end
 
---- Register all GUI handlers to go through the module.
-function flib_gui.register_handlers()
-  for name, id in pairs(defines.events) do
-    if string_sub(name, 1, 6) == "on_gui" then
-      script.on_event(id, function(e) flib_gui.dispatch_handlers(e) end)
-    end
-  end
-end
-
 flib_gui.templates = templates
 flib_gui.handlers = handlers
 flib_gui.handler_lookup = handler_lookup
 flib_gui.handler_groups = handler_groups
+
+return flib_gui
+
+--- Concepts
+-- @section
 
 --- @Concept GuiFilter
 -- One of the following:
@@ -381,16 +392,24 @@ flib_gui.handler_groups = handler_groups
 -- </ul>
 
 --- @Concept GuiStructure
--- A GUI structure takes on the form of the @{LuaGuiElement} you are creating, and must have all of the required
--- parameters for that element. There are several parameters added / modified by the module that define custom behavior:
+-- A @{GuiStructure} is an extension of a @{LuaGuiElement}, providing new features and options.
 --
--- <strong><em>type</em></strong>
+-- A @{GuiStructure} inherits all required properties from its base @{LuaGuiElement}, i.e. if the `type` field is
+-- `sprite-button`, the @{GuiStructure} must contain all the fields that a `sprite-button` @{LuaGuiElement} requires.
 --
--- Alongside the usual @{LuaGuiElement} types, there are two additional types added by the module:
+-- There are two new types that are exposed, each of which restrict what parameters can be added:
 -- <ul>
 --   <li><strong>condition:</strong> Accepts the `condition` and `children` parameters only.</li>
 --   <li><strong>tab-and-content:</strong> Accepts the `tab` and `content` parameters only.</li>
 -- </ul>
+--
+-- In addition there are a number of new, common, fields that can be applied to any @{GuiStructure}:
+--
+-- <strong><em>template</em></strong>
+--
+-- A @{string} consisting of a dot-deliminated path to a @{GuiStructure} in the `gui.templates` table, added through
+-- @{gui.add_templates}. The contents of this "template" will be used as a base, and any other paramters in this
+-- @{GuiStructure} will overwrite / add to this base.
 --
 -- <strong><em>condition</em></strong>
 --
@@ -418,7 +437,7 @@ flib_gui.handler_groups = handler_groups
 --
 -- <strong><em>handlers</em></strong>
 --
--- A @{string} defining a group of functions in the gui.handlers table, added through @{gui.add_handlers}. The element
+-- A @{string} defining a group of functions in the `gui.handlers` table, added through @{gui.add_handlers}. The element
 -- will be registered to those handlers, and when the events are raised by the game relating to this element, the
 -- corresponding handlers will be dispatched.
 --
@@ -452,5 +471,3 @@ flib_gui.handler_groups = handler_groups
 --     [31] = "content_pane.something_or_another"
 --   }
 -- }
-
-return flib_gui
