@@ -89,8 +89,10 @@ end
 --- Setup functions
 -- @section
 
---- Initial setup. Must be called at the BEGINNING of on_init, before any GUI functions are used.
--- If adding the module to an existing mod, this must be called in on_configuration_changed for that version as well.
+--- Initial setup.
+-- Must be called at the **beginning** of `on_init`.
+--
+-- If adding the module to an existing mod, this must be called in `on_configuration_changed` for that version as well.
 function flib_gui.init()
   if not global.__flib then
     global.__flib = {gui={}}
@@ -100,7 +102,7 @@ function flib_gui.init()
 end
 
 --- Generate template and handler lookup tables.
--- Must be called at the END of on_init and on_load
+-- Must be called at the **end** of `on_init` and `on_load`.
 function flib_gui.build_lookup_tables()
   generate_template_lookup(templates, "")
   -- go one level deep before calling the function, to avoid adding an unnecessary prefix to all group names
@@ -112,7 +114,21 @@ function flib_gui.build_lookup_tables()
   end
 end
 
---- Register all GUI handlers to go through the module.
+--- Register handlers for all GUI events to pass through the module.
+-- This is completely optional, but saves you having to create handlers for all GUI events simply to call
+-- @{gui.dispatch_handlers}. If custom logic is needed, handlers may be overwritten after calling this.
+-- @usage
+-- -- register handlers for all GUI events
+-- gui.register_handlers()
+--
+-- -- overwrite a handler to add custom logic
+-- event.on_gui_opened(function(e)
+--   -- pass through the GUI module
+--   if not gui.dispatch_handlers(e) then
+--     -- run our custom logic if no handlers were dispatched
+--     inventory.on_gui_opened(e)
+--   end
+-- end)
 function flib_gui.register_handlers()
   for name, id in pairs(defines.events) do
     if string_sub(name, 1, 6) == "on_gui" then
@@ -138,6 +154,9 @@ local function extend_table(self, t, do_return)
 end
 
 --- Add content to the @{gui.templates} table.
+-- The table you provide will be merged with the current contents of the table.
+--
+-- This table must be complete **before** @{gui.build_lookup_tables} is run, and must not be changed afterwards.
 -- @tparam table input
 -- @see gui.templates
 function flib_gui.add_templates(input)
@@ -145,6 +164,9 @@ function flib_gui.add_templates(input)
 end
 
 --- Add content to the @{gui.handlers} table.
+-- The table you provide will be merged with the current contents of the table.
+--
+-- This table must be complete **before** @{gui.build_lookup_tables} is run, and must not be changed afterwards.
 -- @tparam table input
 -- @see gui.handlers
 function flib_gui.add_handlers(input)
@@ -246,6 +268,29 @@ end
 -- @tparam GuiStructure[] structures
 -- @treturn GuiOutputTable output
 -- @treturn GuiOutputFiltersTable filters
+-- @usage
+-- gui.build(player.gui.screen, {
+--   {type="frame", style="dialog_frame", direction="vertical", handlers="window", save_as="window", children={
+--     {type="flow", children={
+--       {type="label", style="frame_title", caption="Menu"},
+--       {template="drag_handle", style_mods={horizontally_stretchable=true, height=24},
+--         save_as="titlebar.drag_handle"},
+--       {type="condition", condition=(not is_dialog_frame), children={
+--         {template="frame_action_button", sprite="utility/close_white", handlers="titlebar.close_button",
+--           save_as="titlebar.close_button"}
+--       }}
+--     }},
+--     {type="frame", style="inside_shallow_frame_with_padding", children={
+--       {type="table", style="slot_table", column_count=10, save_as="content.slot_table"}
+--     }},
+--     {type="condition", condition=is_dialog_frame, children={
+--       {type="flow", children={
+--         {type="button", style="back_button", caption={"gui.back"}, handlers="footer.back_button"},
+--         {template="drag_handle", style_mods={horizontally_stretchable=true, height=32}, save_as="footer.drag_handle"}
+--       }}
+--     }}
+--   }}
+-- })
 function flib_gui.build(parent, structures)
   local output = {}
   local filters = {}
@@ -269,6 +314,14 @@ end
 -- Only needed if not using @{gui.register_handlers} or if overriding a handler registered using that function.
 -- @tparam Concepts.EventData event_data
 -- @treturn boolean If a handler was dispatched.
+-- @usage
+-- event.on_gui_opened(function(e)
+--   -- dispatch any matching handlers
+--   if not gui.dispatch_handlers(e) then
+--     -- run custom logic if no handlers were dispatched
+--     inventory.on_gui_opened(e)
+--   end
+-- end)
 function flib_gui.dispatch_handlers(event_data)
   if not event_data.element or not event_data.player_index then return false end
   local element = event_data.element
@@ -289,8 +342,17 @@ end
 --- Add or remove GUI filters to or from a handler or group of handlers.
 -- @tparam string name The handler name, or group name.
 -- @tparam uint player_index
--- @tparam GuiFilter[] filters An array of filters.
+-- @tparam GuiFilter[]|nil filters An array of filters, or `nil` to clear all filters when in `remove` mode.
 -- @tparam string mode One of "add" or "remove".
+-- @usage
+-- -- add a filter to a group of events
+-- gui.update_filters("main.content.inventory_button", player_index, {"demo_inventory_button"}, "add")
+-- -- remove a filter from a group of events
+-- gui.update_filters("main.content.inventory_button", player_index, {"demo_inventory_button"}, "remove")
+-- -- remove all filters tied to a group of events
+-- gui.update_filters("main.content.inventory_button", player_index, nil, "remove")
+-- -- add a filter to a specific event
+-- gui.update_filters("main.titlebar.drag_handle.on_gui_click", player_index, {elems.drag_handle.index}, "add")
 function flib_gui.update_filters(name, player_index, filters, mode)
   local handler_names = handler_groups[name] or {name}
   for hi=1,#handler_names do
@@ -322,7 +384,6 @@ function flib_gui.update_filters(name, player_index, filters, mode)
     end
 
     -- update filters
-    mode = mode or "add"
     if mode == "add" then
       for _, filter in pairs(filters) do
         saved_player_filters[filter] = handler_name
@@ -578,48 +639,48 @@ return flib_gui
 --
 -- In addition there are a number of new, common, fields that can be applied to any @{GuiStructure}:
 --
--- <strong><em>template</em></strong>
+-- **_template_**
 --
 -- A @{string} corresponding to a @{GuiStructure} in the @{gui.template_lookup} table. The contents of this "template"
 -- will be used as a base, and any other paramters in this @{GuiStructure} will overwrite / add to this base.
 --
--- <strong><em>condition</em></strong>
+-- **_condition_**
 --
 -- For `condition` types only. If true, the children of this @{GuiStructure} will be added to the parent of this
 -- @{GuiStructure}. If false, they will not.
 --
--- <strong><em>tab</em></strong>
+-- **_tab_**
 --
 -- For `tab-and-content` types only. A @{GuiStructure} defining a tab to be placed in a tabbed-pane.
 --
--- <strong><em>content</em></strong>
+-- **_content_**
 --
 -- For `tab-and-content` types only. A @{GuiStructure} defining the content that will be shown when the corresponding
 -- tab is active.
 --
--- <strong><em>style_mods</em></strong>
+-- **_style_mods_**
 --
 -- A key -> value dictionary defining modifications to make to the element's style. Available properties are listed in
 -- @{LuaStyle}.
 --
--- <strong><em>elem_mods</em></strong>
+-- **_elem_mods_**
 --
 -- A key -> value dictionary defining modifications to make to the element. Available properties are listed in
 -- @{LuaGuiElement}.
 --
--- <strong><em>handlers</em></strong>
+-- **_handlers_**
 --
 -- A @{string} corresponding to an item in the @{gui.handler_groups} table. The element will be registered to the
 -- handlers in that group, and when the events are raised by the game relating to this element, the corresponding
 -- handlers will be dispatched.
 --
--- <strong><em>save_as</em></strong>
+-- **_save_as_**
 --
 -- A @{string} defining a table path to save this element to, in the first return value of @{gui.build}. This is a
 -- dot-deliminated list of nested table names, followed by a key to save the element as. The module will construct the
 -- output table dynamically based on the contents of `save_as` throughout the structure.
 --
--- <strong><em>children</em></strong>
+-- **_children_**
 --
 -- An array of @{GuiStructure} that will be added as children of this element.
 -- @usage
