@@ -20,8 +20,13 @@ local string = string
 local table = table
 local type = type
 
+--- Functions
+-- @section
+
 --- Initial setup.
--- Must be called during on_init, and during on_configuration_changed if adding the module to an existing mod.
+-- Must be called at the **beginning** of `on_init`.
+--
+-- If adding the module to an existing mod, this must be called in `on_configuration_changed` for that version as well.
 function flib_translation.init()
   if not global.__flib then
     global.__flib = {}
@@ -32,8 +37,10 @@ function flib_translation.init()
   }
 end
 
+-- TODO Nexela Link OnTickEventData to https://lua-api.factorio.com/latest/events.html#on_tick
+
 --- Perform translation operations.
--- Must be called during an on_tick event.
+-- Must be called during an `on_tick` event.
 -- @tparam OnTickEventData event_data
 function flib_translation.iterate_batch(event_data)
   local __translation = global.__flib.translation
@@ -112,10 +119,12 @@ function flib_translation.iterate_batch(event_data)
   end
 end
 
+-- TODO Nexela Link OnStringTranslatedEventData to https://lua-api.factorio.com/latest/events.html#on_string_translated
+
 --- Process a received translation.
--- Must be called during an on_string_translated event.
+-- Must be called during an `on_string_translated` event.
 -- @tparam OnStringTranslatedEventData event_data
--- @treturn table TODO make this a concept
+-- @treturn ResultSortData
 -- @treturn boolean If all of the player's translations are complete.
 function flib_translation.process_result(event_data)
   local __translation = global.__flib.translation
@@ -142,9 +151,8 @@ function flib_translation.process_result(event_data)
   return nil, false
 end
 
---- Add translation requests for the given player, to be requested over the next several ticks.
+--- Add translation requests for the given player, to be performed over the next several ticks.
 -- @tparam uint player_index
--- @tparam string dictionary_name
 -- @tparam StringData[] strings
 function flib_translation.add_requests(player_index, strings)
   local __translation = global.__flib.translation
@@ -199,10 +207,12 @@ end
 
 --- Serialise a localised string into a form readable by the API.
 -- Gives a similar result to serpent.line(), but is much faster.
-function flib_translation.serialise_localised_string(t)
+-- @tparam Concepts.LocalisedString localised_string
+-- @treturn string The serialised @{Concepts.LocalisedString}.
+function flib_translation.serialise_localised_string(localised_string)
   local output = "{"
-  if type(t) == "string" then return t end
-  for _, v in pairs(t) do
+  if type(localised_string) == "string" then return localised_string end
+  for _, v in pairs(localised_string) do
     if type(v) == "table" then
       output = output..flib_translation.serialise_localised_string(v)
     else
@@ -213,7 +223,37 @@ function flib_translation.serialise_localised_string(t)
   return output
 end
 
---- @Concept StringData
--- Table with the following fields:
+--- Concepts
+-- @section
+
+--- A mapping of a translated string's dictionaries and internal names.
+-- Dictionary @{string} -> array of @{string}. Each key is a dictionary name, each value is an array of internal names
+-- that match to the translated string. This greatly eases the process of sorting translations into various
+-- dictionaries.
+-- @usage
+-- {
+--   entities = {"crude-oil"},
+--   fluids = {"crude-oil"}
+-- }
+-- @usage
+-- {
+--   entities = {"iron-ore"},
+--   items = {"iron-ore"},
+--   recipes = {"iron-ore"}
+-- }
+-- @Concept ResultSortData
+
+--- A registry of strings to translate.
+-- This is an array of tables, each of which contain the following fields:
+-- @tfield string dictionary The dictionary that this string belongs to.
+-- @tfield string internal The internal name that will be used to reference this string.
+-- @tfield Concepts.LocalisedString localised The localised string to translate.
+-- @usage
+-- {
+--   {dictionary="fluids", internal="crude-oil", localised={"fluid-name.crude-oil"}},
+--   {dictionary="items", internal="iron-ore", localised={"item-name.iron-ore"}},
+--   {dictionary="gui", internal="search-ellipses", localised={"demo-gui.search-ellipses"}}
+-- }
+-- @Concept StringData
 
 return flib_translation
