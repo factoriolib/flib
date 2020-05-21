@@ -4,7 +4,7 @@
 -- @usage local gui = require("__flib__.gui")
 local flib_gui = {}
 
-local util = require("util")
+local util = require("__core__.lualib.util")
 
 local string_gmatch = string.gmatch
 local string_gsub = string.gsub
