@@ -711,7 +711,7 @@ return flib_gui
 -- and key -> @{LuaGuiElement} pairs.
 -- @Concept GuiOutputTable
 
---- Second output of @{gui.build}, contains a handler_name -> filters mapping.
+--- Second output of @{gui.build}, containing a handler_name -> filters mapping.
 -- This is useful for knowing which filters are assigned to which handlers for this specific structure, so you can
 -- remove them later using @{gui.update_filters}.
 -- @Concept GuiOutputFiltersTable
