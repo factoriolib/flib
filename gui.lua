@@ -621,24 +621,41 @@ return flib_gui
 -- <strong><em>children</em></strong>
 --
 -- An array of @{GuiStructure} that will be added as children of this element.
+-- @usage
+-- {type="frame", style="dialog_frame", direction="vertical", handlers="window", save_as="window", children={
+--   {type="flow", children={
+--     {type="label", style="frame_title", caption="Menu"},
+--     {template="drag_handle", style_mods={horizontally_stretchable=true, height=24},
+--       save_as="titlebar.drag_handle"},
+--     {type="condition", condition=(not is_dialog_frame), children={
+--       {template="frame_action_button", sprite="utility/close_white", handlers="titlebar.close_button",
+--         save_as="titlebar.close_button"}
+--     }}
+--   }},
+--   {type="frame", style="inside_shallow_frame_with_padding", children={
+--     {type="table", style="slot_table", column_count=10, save_as="content.slot_table"}
+--   }},
+--   {type="condition", condition=is_dialog_frame, children={
+--     {type="flow", children={
+--       {type="button", style="back_button", caption={"gui.back"}, handlers="footer.back_button"},
+--       {template="drag_handle", style_mods={horizontally_stretchable=true, height=32}, save_as="footer.drag_handle"}
+--     }}
+--   }}
+-- }}
 
 --- @Concept GuiOutputTable
 -- A table with a custom structure as defined in @{GuiStructure}.save_as. Consists of nested tables and key ->
 -- @{LuaGuiElement} pairs.
 
 --- @Concept GuiOutputFiltersTable
--- Dictionary @{event.EventId} -> (Dictionary @{GuiFilter} -> string). A mapping of event IDs to the filters assigned
--- to it by this structure, using @{GuiStructure}.handlers.
+-- Dictionary string -> array of @{GuiFilter}. A mapping of handler names to the filters assigned to them by this
+-- structure, using @{GuiStructure}.handlers.
+--
+-- This is useful for knowing which filters are assigned to which handlers for this specific structure, so you can
+-- remove them later using @{gui.update_filters}.
 -- @usage
 -- {
---   [defines.events.on_gui_closed] = {
---     [23] = "window.on_gui_closed"
---   },
---   [defines.events.on_gui_click] = {
---     [21] = "titlebar.close_button.on_gui_click",
---     [30] = "content_pane.ingredients_list.ingredient_button.on_gui_click"
---   },
---   [custom_mod_event] = {
---     [31] = "content_pane.something_or_another"
---   }
+--   ["window.on_gui_closed"] = {23},
+--   ["content_pane.ingredients_list.ingredient_button.on_gui_click"] = {"demo_ingredient_button", 30},
+--   ["titlebar.close_button.on_gui_click"] = {21}
 -- }
