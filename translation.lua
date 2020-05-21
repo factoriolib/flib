@@ -17,7 +17,6 @@ local math = math
 local next = next
 local pairs = pairs
 local string = string
-local table = table
 local type = type
 
 --- Functions
@@ -223,6 +222,8 @@ function flib_translation.serialise_localised_string(localised_string)
   return output
 end
 
+return flib_translation
+
 --- Concepts
 -- @section
 
@@ -255,5 +256,3 @@ end
 --   {dictionary="gui", internal="search-ellipses", localised={"demo-gui.search-ellipses"}}
 -- }
 -- @Concept StringData
-
-return flib_translation
