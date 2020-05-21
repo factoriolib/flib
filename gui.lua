@@ -555,18 +555,19 @@ return flib_gui
 --- Concepts
 -- @section
 
---- @Concept GuiFilter
--- One of the following:
+--- An index or string used for filtering GUI handlers on specific elements.
+-- Defined as one of the following:
 -- <ul>
 --   <li>A @{string} corresponding to an element's name. Partial names may be matched by separating the common section
 --   from the unique section with two underscores `__`.</li>
 --   <li>A @{uint} corresponding to an element's index.</li>
 -- </ul>
+-- @Concept GuiFilter
 
---- @Concept GuiStructure
--- A @{GuiStructure} is an extension of a @{LuaGuiElement}, providing new features and options.
+--- A series of nested tables used to build a GUI.
+-- This is an extension of @{LuaGuiElement}, providing new features and options.
 --
--- A @{GuiStructure} inherits all required properties from its base @{LuaGuiElement}, i.e. if the `type` field is
+-- This inherits all required properties from its base @{LuaGuiElement}, i.e. if the `type` field is
 -- `sprite-button`, the @{GuiStructure} must contain all the fields that a `sprite-button` @{LuaGuiElement} requires.
 --
 -- There are two new types that are exposed, each of which restrict what parameters can be added:
@@ -642,17 +643,17 @@ return flib_gui
 --     }}
 --   }}
 -- }}
+-- @Concept GuiStructure
 
---- @Concept GuiOutputTable
--- A table with a custom structure as defined in @{GuiStructure}.save_as. Consists of nested tables and key ->
--- @{LuaGuiElement} pairs.
+--- First output of @{gui.build}, containing saved elements.
+-- The layout of this table is defined in the @{GuiStructure} using the `save_as` parameter. Consists of nested tables
+-- and key -> @{LuaGuiElement} pairs.
+-- @Concept GuiOutputTable
 
---- @Concept GuiOutputFiltersTable
--- Dictionary string -> array of @{GuiFilter}. A mapping of handler names to the filters assigned to them by this
--- structure, using @{GuiStructure}.handlers.
---
+--- Second output of @{gui.build}, contains a handler_name -> filters mapping.
 -- This is useful for knowing which filters are assigned to which handlers for this specific structure, so you can
 -- remove them later using @{gui.update_filters}.
+-- @Concept GuiOutputFiltersTable
 -- @usage
 -- {
 --   ["window.on_gui_closed"] = {23},
