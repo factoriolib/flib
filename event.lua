@@ -17,6 +17,9 @@ for name, id in pairs(defines.events) do
   end
 end
 
+--- Functions
+-- @section
+
 --- Register or deregister a handler to be run during mod init.
 -- @tparam function handler The handler to register, or `nil` to deregister the registered handler.
 -- @usage
@@ -108,8 +111,6 @@ end
 --- Retrieve the handler for an event, if one exists.
 -- @tparam EventId id
 -- @treturn function The registered handler, or `nil` if one isn't registered.
--- @usage
--- local existing_handler = event.get_handler(defines.events.on_gui_click)
 function flib_event.get_handler(id)
   return script.get_event_handler(id)
 end
@@ -127,8 +128,6 @@ end
 
 --- Retrieve the mod event order.
 -- @treturn string
--- @usage
--- local event_order = event.get_order()
 function flib_event.get_order()
   return script.get_event_order()
 end
@@ -162,18 +161,19 @@ end
 --- Retrieve the filters for the given event.
 -- @tparam EventId id
 -- @treturn EventFilters filters The filters, or `nil` if there are none defined.
--- @usage
--- local filters = event.get_filters(defines.events.on_built_entity)
 function flib_event.get_filters(id)
   return script.get_event_filter(id)
 end
+
+--- Concepts
+-- @section
 
 --- @Concept EventId
 -- One of the following:
 -- <ul>
 --   <li>A member of @{defines.events}.</li>
 --   <li>A positive @{uint} corresponding to a custom event ID.</li>
---   <li>For @{event.register} only - a @{string} corresponding to a custom-input name.</li>
+--   <li>A @{string} corresponding to a custom-input name.</li>
 -- </ul>
 
 return flib_event
