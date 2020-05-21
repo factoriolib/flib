@@ -113,4 +113,30 @@ function flib_data_util.get_energy_value(energy_string)
   end
 end
 
+--- Build an icon.
+-- @tparam string name
+-- @tparam Concepts.Position position
+-- @tparam string filename
+-- @tparam Concepts.Vector size
+-- @tparam uint mipmap_count
+-- @tparam table mods
+-- @treturn Types.SpriteSpecification
+function flib_data_util.build_icon(name, position, filename, size, mipmap_count, mods)
+  local def = {
+    type = "sprite",
+    name = name,
+    filename = filename,
+    position = position,
+    size = size,
+    mipmap_count = mipmap_count,
+    flags = {"icon"}
+  }
+  if mods then
+    for k,v in pairs(mods) do
+      def[k] = v
+    end
+  end
+  return def
+end
+
 return flib_data_util
