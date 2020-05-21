@@ -4,7 +4,14 @@
 -- @usage local translation = require("__flib__.translation")
 local flib_translation = {}
 
-local util = require("__core__.lualib.util")
+-- TODO implement this in the table module
+local function shallow_copy(tbl)
+  local new_tbl = {}
+  for k, v in pairs(tbl) do
+    new_tbl[k] = v
+  end
+  return new_tbl
+end
 
 local math = math
 local next = next
@@ -152,7 +159,7 @@ function flib_translation.add_requests(player_index, strings)
       player_table.sort.last_index = nil
     else
       player_table.sort = {
-        strings = table.deepcopy(strings),
+        strings = shallow_copy(strings),
         last_index = nil
       }
     end
@@ -162,7 +169,7 @@ function flib_translation.add_requests(player_index, strings)
       state = "sort",
       -- sort
       sort = {
-        strings = table.deepcopy(strings),
+        strings = shallow_copy(strings),
         next_index = next(strings)
       },
       -- translate
