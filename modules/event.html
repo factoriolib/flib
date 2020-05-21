@@ -1,0 +1,939 @@
+
+
+    <!doctype html>
+    <html class="no-js" lang="">
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>event module</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../spectre.min.css" type="text/css" />
+    <link rel="stylesheet" href="../spectre-icons.min.css" type="text/css" />
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+    </head>
+    <body>
+
+    <div class="container grid-1280">
+    <div class="columns">
+
+    <!-- sidebar start -->
+
+    <div id="sidebar" class="column col-3 col-sm-12">
+
+    <div class="sidebar-custom">
+
+    <div class="project-infobox">
+
+    <!-- project title -->
+
+    <a href="../index.html"><h1>Factorio Library</h1></a>
+
+    <!-- project description -->
+    <p class="project-desc">Factorio Library</p>
+
+    <!-- project full description -->
+    <span>  The Factorio Library aims to extend the Factorio Lua API with well-tested, documented, and easy-to-use functions to make modding easier.</span>
+    </div>
+
+
+    <!-- sidebar navigation -->
+    <ul class="nav nav-modules">
+    <li class="nav-item">
+    <h2>Modules</h2>
+    <ul class="nav">
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/data_util.html"><span class="module-name-item">data_util</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/direction.html"><span class="module-name-item">direction</span></a></div></li>
+    <li class="nav-item active"><div class="nav-item-block-active block"><a href="../modules/event.html"><span class="module-name-item">event</span></a><i class="icon icon-arrow-left icon-arrow-left-custom"></i></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/gui.html"><span class="module-name-item">gui</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/migration.html"><span class="module-name-item">migration</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/misc.html"><span class="module-name-item">misc</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/orientation.html"><span class="module-name-item">orientation</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/reverse_defines.html"><span class="module-name-item">reverse_defines</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/train.html"><span class="module-name-item">train</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/translation.html"><span class="module-name-item">translation</span></a></div></li>
+    </ul>
+    </li>
+    </ul>
+    <ul class="nav nav-modules">
+    <li class="nav-item">
+    <h2>Topics</h2>
+    <ul class="nav">
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/README.md.html"><span class="module-name-item">README.md</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/changelog.txt.html"><span class="module-name-item">changelog.txt</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/LICENSE.html"><span class="module-name-item">LICENSE</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/contributing.md.html"><span class="module-name-item">contributing.md</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/style-guide.md.html"><span class="module-name-item">style-guide.md</span></a></div></li>
+    </ul>
+    </li>
+    </ul>
+
+
+
+    <!-- list of items in a module -->
+    <ul class="nav nav-module-contents">
+    <li class="nav-item">
+    <h4>Contents of <strong>event</strong></h4>
+    <ul class="nav">
+    <li class="nav-item"><a href="#Concepts"><span class="fragment-hashtag">#</span> Concepts</a></li>
+    <li class="nav-item"><a href="#Functions"><span class="fragment-hashtag">#</span> Functions</a></li>
+    </ul>
+    </li>
+    </ul>
+    </div>
+    <div class="up-to-top">
+    <a href="#">Top <i class="icon icon-upward"></i></a>
+    </div>
+    </div>
+    <!-- sidebar end -->
+
+    <!-- content body start -->
+    <div class="column col-9 col-sm-12">
+
+    <!-- module list on the main page start -->
+    <!-- module list on the main page end -->
+
+    <!-- module contents -->
+
+    <!-- module content header start -->
+
+    <h2><span class="body-module-name"><strong><em>event</em></strong></span> module</h2>
+    <p>Syntax sugar for event manipulation.</p>
+    <p> Along with the list of functions below, this module dynamically generates syntax-shortcuts for all <a href="http://lua-api.factorio.com/latest/defines.html#defines.events">defines.events</a>
+ events. These shortcuts are only to be used when registering a handler to a single event. To register a handler to
+ multiple events, use <a href="../modules/event.html#register">event.register</a>.</p>
+
+<p> To use a shortcut, replace <code>event.register(defines.events.on_built_entity, handler, filters)</code> with
+ <code>event.on_built_entity(handler, filters)</code>. You can also deregister the handler using <code>event.on_built_entity(nil)</code>.</p>
+
+
+    <!-- module info start -->
+    <!-- module info end -->
+
+    <!-- module usage start -->
+    <h3>Usage</h3>
+    <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> event = <span class="global">require</span>(<span class="string">"__flib__.event"</span>)</code></pre>
+    <!-- module usage end -->
+
+    <!-- module content header end -->
+
+    <!-- module section list start -->
+    <table class="section-content-list">
+    <thead>
+    <h3><a href="#Concepts">Concepts</a></h3>
+    <span></span>
+    </thead>
+    <tbody>
+    <tr>
+    <td class="name"><a href="#EventId">EventId</a></td>
+    </tr>
+    </tbody>
+    </table>
+    <table class="section-content-list">
+    <thead>
+    <h3><a href="#Functions">Functions</a></h3>
+    <span></span>
+    </thead>
+    <tbody>
+    <tr>
+    <td class="name"><a href="#on_init">on_init(handler)</a></td>
+    <td class="summary">Register or deregister a handler to be run during mod init.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#on_load">on_load(handler)</a></td>
+    <td class="summary">Register or deregister a handler to be run during mod load.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#on_configuration_changed">on_configuration_changed(handler)</a></td>
+    <td class="summary">Register or deregister a handler to be run when mod configuration changes.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#on_nth_tick">on_nth_tick(nth_tick, handler)</a></td>
+    <td class="summary">Register or deregister a handler to run every N ticks.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#register">register(ids, handler[, filters])</a></td>
+    <td class="summary">Register or deregister a handler to or from an event or group of events.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#generate_id">generate_id()</a></td>
+    <td class="summary">Generate a new, unique event ID.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#get_handler">get_handler(id)</a></td>
+    <td class="summary">Retrieve the handler for an event, if one exists.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#raise">raise(id, event_data)</a></td>
+    <td class="summary">Raise an event as if it were actually called.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#get_order">get_order()</a></td>
+    <td class="summary">Retrieve the mod event order.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#set_filters">set_filters(ids, filters)</a></td>
+    <td class="summary">Set the filters for the given event(s).</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#get_filters">get_filters(id)</a></td>
+    <td class="summary">Retrieve the filters for the given event.</td>
+    </tr>
+    </tbody>
+    </table>
+    <!-- module section list end -->
+
+    <br />
+
+    <!-- section start -->
+    <h3><span id="Concepts" class="section-title"><a href="#Concepts">Concepts</a></span></h3>
+    <dl class="section-body-container">
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#EventId" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="EventId">EventId</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">
+</p>
+    <p class="section-item-description"> One of the following:
+ <ul>
+   <li>A member of <a href="http://lua-api.factorio.com/latest/defines.html#defines.events">defines.events</a>.</li>
+   <li>A positive <a href="http://lua-api.factorio.com/latest/Builtin-Types.html#uint">uint</a> corresponding to a custom event ID.</li>
+   <li>For <a href="../modules/event.html#register">event.register</a> only &ndash; a <a href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a> corresponding to a custom-input name.</li>
+ </ul></p>
+
+    <!-- parameters start -->
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    </dl>
+    <h3><span id="Functions" class="section-title"><a href="#Functions">Functions</a></span></h3>
+    <dl class="section-body-container">
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#on_init" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="on_init">on_init(handler)</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Register or deregister a handler to be run during mod init.</p>
+    <p class="section-item-description">
+</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>handler</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.6.html">function</a></span>)
+
+     The handler to register, or <code>nil</code> to deregister the registered handler.
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <strong>Usage:</strong>
+    <pre class="code" data-lang="Lua"><code><span class="comment">-- register a handler to run during mod init
+</span>event.on_init(<span class="keyword">function</span>() log(<span class="string">"on_init"</span>) <span class="keyword">end</span>)
+<span class="comment">-- deregister the registered handler, if one exists
+</span>event.on_init(<span class="keyword">nil</span>)
+</code></pre>
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#on_load" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="on_load">on_load(handler)</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Register or deregister a handler to be run during mod load.</p>
+    <p class="section-item-description">
+</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>handler</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.6.html">function</a></span>)
+
+     The handler to register, or <code>nil</code> to deregister the registered handler.
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <strong>Usage:</strong>
+    <pre class="code" data-lang="Lua"><code><span class="comment">-- register a handler to run during mod load
+</span>event.on_load(<span class="keyword">function</span>() log(<span class="string">"on_load"</span>) <span class="keyword">end</span>)
+<span class="comment">-- deregister the registered handler, if one exists
+</span>event.on_load(<span class="keyword">nil</span>)
+</code></pre>
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#on_configuration_changed" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="on_configuration_changed">on_configuration_changed(handler)</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Register or deregister a handler to be run when mod configuration changes.</p>
+    <p class="section-item-description">
+</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>handler</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.6.html">function</a></span>)
+
+     The handler to register, or <code>nil</code> to deregister the registered handler.
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <strong>Usage:</strong>
+    <pre class="code" data-lang="Lua"><code><span class="comment">-- register a handler to run when mod configuration changes
+</span>event.on_configuration_changed(<span class="keyword">function</span>() log(<span class="string">"on_configuration_changed"</span>) <span class="keyword">end</span>)
+<span class="comment">-- deregister the registered handler, if one exists
+</span>event.on_configuration_changed(<span class="keyword">nil</span>)
+</code></pre>
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#on_nth_tick" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="on_nth_tick">on_nth_tick(nth_tick, handler)</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Register or deregister a handler to run every N ticks.</p>
+    <p class="section-item-description">
+</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>nth_tick</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#uint">uint</a></span>)
+
+
+
+
+    </li>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>handler</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.6.html">function</a></span>)
+
+     The handler to register, or <code>nil</code> to deregister the registered handler.
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <strong>Usage:</strong>
+    <pre class="code" data-lang="Lua"><code><span class="comment">-- register a handler to run every 30 ticks
+</span>event.on_nth_tick(<span class="number">30</span>, <span class="keyword">function</span>(e) log(<span class="string">"30th tick!"</span>) <span class="keyword">end</span>)
+<span class="comment">-- deregister the registered handler, if one exists
+</span>event.on_nth_tick(<span class="number">30</span>, <span class="keyword">nil</span>)
+</code></pre>
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#register" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="register">register(ids, handler[, filters])</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Register or deregister a handler to or from an event or group of events.</p>
+    <p class="section-item-description">
+</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>ids</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="../modules/event.html#EventId">EventId</a> or <a class="type" href="../modules/event.html#EventId">EventId[]</a></span>)
+
+
+
+
+    </li>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>handler</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.6.html">function</a></span>)
+
+     The handler to register, or <code>nil</code> to deregister the registered handler.
+
+    </li>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>filters</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><span class="type">EventFilters</span></span>)
+
+
+
+
+    (<em>optional</em>)
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <strong>Usage:</strong>
+    <pre class="code" data-lang="Lua"><code><span class="comment">-- register a handler to a defines.events event that supports filters
+</span>event.register(defines.events.on_built_entity, <span class="keyword">function</span>(e) log(<span class="string">"ghost built!"</span>) <span class="keyword">end</span>, {{filter=<span class="string">"ghost"</span>}})
+<span class="comment">-- register a handler to a custom-input
+</span>event.register(<span class="string">"my-input"</span>, <span class="keyword">function</span>(e) log(<span class="string">"my-input pressed!"</span>) <span class="keyword">end</span>)
+<span class="comment">-- register a handler to multiple events of different types
+</span>event.register({<span class="string">"my-input"</span>, defines.events.on_lua_shortcut}, <span class="keyword">function</span>(e) log(<span class="string">"do something!"</span>) <span class="keyword">end</span>)
+<span class="comment">-- deregister a handler from a single event, if one is registered
+</span>event.register(<span class="string">"my-input"</span>, <span class="keyword">nil</span>)
+<span class="comment">-- deregister a handler from multiple events, if one is registered
+</span>event.register({<span class="string">"my-input"</span>, defines.events.on_lua_shortcut}, <span class="keyword">nil</span>)
+</code></pre>
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#generate_id" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="generate_id">generate_id()</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Generate a new, unique event ID.</p>
+    <p class="section-item-description">
+</p>
+
+    <!-- parameters start -->
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <strong>Returns:</strong>
+    <ul>
+    <li>
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#uint">uint</a></span>)
+    </li>
+    </ul>
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <strong>Usage:</strong>
+    <pre class="code" data-lang="Lua"><code><span class="comment">-- generate a new event ID
+</span><span class="keyword">local</span> my_event = event.generate_id()
+<span class="comment">-- raise that event with custom parameters
+</span>event.raise(my_event, {whatever_you_want=<span class="keyword">true</span>, ...})
+</code></pre>
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#get_handler" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="get_handler">get_handler(id)</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Retrieve the handler for an event, if one exists.</p>
+    <p class="section-item-description">
+</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>id</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="../modules/event.html#EventId">EventId</a></span>)
+
+
+
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <strong>Returns:</strong>
+    <ul>
+    <li>
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.6.html">function</a></span>)
+    <span class="return-text">The registered handler, or <code>nil</code> if one isn&rsquo;t registered.</span>
+    </li>
+    </ul>
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <strong>Usage:</strong>
+    <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> existing_handler = event.get_handler(defines.events.on_gui_click)</code></pre>
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#raise" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="raise">raise(id, event_data)</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Raise an event as if it were actually called.</p>
+    <p class="section-item-description">
+</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>id</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="../modules/event.html#EventId">EventId</a></span>)
+
+
+
+
+    </li>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>event_data</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><span class="type">EventData</span></span>)
+
+     The event data that will be passed to the handlers.
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <strong>Usage:</strong>
+    <pre class="code" data-lang="Lua"><code>event.raise(defines.events.on_gui_click, {player_index=e.player_index, element=my_button, ...})</code></pre>
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#get_order" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="get_order">get_order()</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Retrieve the mod event order.</p>
+    <p class="section-item-description">
+</p>
+
+    <!-- parameters start -->
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <strong>Returns:</strong>
+    <ul>
+    <li>
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a></span>)
+    </li>
+    </ul>
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <strong>Usage:</strong>
+    <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> event_order = event.get_order()</code></pre>
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#set_filters" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="set_filters">set_filters(ids, filters)</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Set the filters for the given event(s).</p>
+    <p class="section-item-description">
+</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>ids</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="../modules/event.html#EventId">EventId</a> or <a class="type" href="../modules/event.html#EventId">EventId[]</a></span>)
+
+
+
+
+    </li>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>filters</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><span class="type">EventFilters</span></span>)
+
+     The filters to set, or <code>nil</code> to clear the filters.
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <strong>Usage:</strong>
+    <pre class="code" data-lang="Lua"><code><span class="comment">-- set the filters for a single event
+</span>event.set_filters(defines.events.on_built_entity, {
+  {filter=<span class="string">"ghost"</span>},
+  {filter=<span class="string">"type"</span>, <span class="global">type</span>=<span class="string">"assembling-machine"</span>}
+})
+<span class="comment">-- set the filters for multiple events that have compatible formats
+</span>event.set_filters({defines.events.on_built_entity, defines.events.on_robot_built_entity}, {
+  {filter=<span class="string">"ghost"</span>},
+  {filter=<span class="string">"type"</span>, <span class="global">type</span>=<span class="string">"assembling-machine"</span>}
+})
+<span class="comment">-- clear event filters if any are set
+</span>event.set_filters(defines.events.on_robot_built_entity, <span class="keyword">nil</span>)
+</code></pre>
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#get_filters" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="get_filters">get_filters(id)</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Retrieve the filters for the given event.</p>
+    <p class="section-item-description">
+</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>id</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="../modules/event.html#EventId">EventId</a></span>)
+
+
+
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <strong>Returns:</strong>
+    <ul>
+    <li>
+    (<span class="types"><span class="type">EventFilters</span></span>)
+    <span class="return-text">filters The filters, or <code>nil</code> if there are none defined.</span>
+    </li>
+    </ul>
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <strong>Usage:</strong>
+    <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> filters = event.get_filters(defines.events.on_built_entity)</code></pre>
+    <!-- usage end -->
+
+    </dd>
+    </dl>
+
+    <!-- section end -->
+
+    </div>
+    </div>
+    </div>
+
+    <div class="footer container grid-1280">
+    <div class="divider divider-custom"></div>
+    <div class="footer-columns columns">
+    <div class="sidebar-footer column col-3 col-sm-12">
+    <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+    </div>
+    <div class="content-footer column col-9 col-sm-12">
+    <i>Last updated 2020-05-21 00:43:36 UTC</i>
+    </div>
+    </div>
+    </div>
+    </body>
+    </html>
