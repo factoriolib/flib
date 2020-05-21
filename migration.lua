@@ -10,6 +10,9 @@ local table_concat = table.concat
 local version_pattern = "%d+"
 local version_format = "%02d"
 
+--- Functions
+-- @section
+
 --- Normalize version strings for easy comparison.
 -- @tparam string version
 -- @tparam[opt="%02d"] string format
@@ -89,6 +92,11 @@ function flib_migration.on_config_changed(event_data, migrations, mod_name)
   return true
 end
 
+return flib_migration
+
+--- Concepts
+-- @section
+
 --- @Concept MigrationsTable
 -- Dictionary string -> function. Each string is a version number, and each value is a
 -- function that will be run for that version.
@@ -105,5 +113,3 @@ end
 --     global.foo = "bar"
 --   end
 -- }
-
-return flib_migration

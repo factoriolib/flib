@@ -7,6 +7,9 @@ local flib_train = {}
 
 local table = table
 
+--- Functions
+-- @section
+
 --- Get the main locomotive in a given train.
 -- @tparam LuaTrain train
 -- @treturn LuaEntity|nil
@@ -116,11 +119,14 @@ function flib_train.open_gui(player_index, train)
   return false
 end
 
+return flib_train
+
+--- Concepts
+-- @section
+
 --- @Concept TrainCompositionCounts
 -- A @{table} with the following fields:
 -- @tfield uint total The total number of rolling stocks in the train.
 -- @tfield uint wagons The number of wagons in the train.
 -- @tfield uint front_movers The number of front-facing locomotives in the train.
 -- @tfield uint back_movers The number of back-facing locomotives in the train.
-
-return flib_train
