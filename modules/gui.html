@@ -74,10 +74,10 @@
     <li class="nav-item">
     <h4>Contents of <strong>gui</strong></h4>
     <ul class="nav">
-    <li class="nav-item"><a href="#Setup_functions"><span class="fragment-hashtag">#</span> Setup functions </a></li>
     <li class="nav-item"><a href="#Functions"><span class="fragment-hashtag">#</span> Functions </a></li>
-    <li class="nav-item"><a href="#Fields"><span class="fragment-hashtag">#</span> Fields </a></li>
     <li class="nav-item"><a href="#Concepts"><span class="fragment-hashtag">#</span> Concepts </a></li>
+    <li class="nav-item"><a href="#Setup_functions"><span class="fragment-hashtag">#</span> Setup functions </a></li>
+    <li class="nav-item"><a href="#Fields"><span class="fragment-hashtag">#</span> Fields </a></li>
     </ul>
     </li>
     </ul>
@@ -117,6 +117,54 @@
     <!-- module section list start -->
     <table class="section-content-list">
     <thead>
+    <h3><a href="#Functions">Functions </a></h3>
+    <span></span>
+    </thead>
+    <tbody>
+    <tr>
+    <td class="name"><a href="#build">build(parent, structures)</a></td>
+    <td class="summary">Build a GUI structure.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#dispatch_handlers">dispatch_handlers(event_data)</a></td>
+    <td class="summary">Dispatch GUI handlers for the given event.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#update_filters">update_filters(name, player_index, filters, mode)</a></td>
+    <td class="summary">Add or remove GUI filters to or from a handler or group of handlers.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#remove_player_filters">remove_player_filters(player_index)</a></td>
+    <td class="summary">Remove all GUI filters for the given player.</td>
+    </tr>
+    </tbody>
+    </table>
+    <table class="section-content-list">
+    <thead>
+    <h3><a href="#Concepts">Concepts </a></h3>
+    <span></span>
+    </thead>
+    <tbody>
+    <tr>
+    <td class="name"><a href="#GuiFilter">GuiFilter</a></td>
+    <td class="summary">An index or string used for filtering GUI handlers on specific elements.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#GuiStructure">GuiStructure</a></td>
+    <td class="summary">A series of nested tables used to build a GUI.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#GuiOutputTable">GuiOutputTable</a></td>
+    <td class="summary">First output of <a href="../modules/gui.html#build">gui.build</a>, containing saved elements.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#GuiOutputFiltersTable">GuiOutputFiltersTable</a></td>
+    <td class="summary">Second output of <a href="../modules/gui.html#build">gui.build</a>, containing a handler_name &ndash;> filters mapping.</td>
+    </tr>
+    </tbody>
+    </table>
+    <table class="section-content-list">
+    <thead>
     <h3><a href="#Setup_functions">Setup functions </a></h3>
     <span></span>
     </thead>
@@ -140,30 +188,6 @@
     <tr>
     <td class="name"><a href="#add_handlers">add_handlers(input)</a></td>
     <td class="summary">Add content to the <a href="../modules/gui.html#handlers">gui.handlers</a> table.</td>
-    </tr>
-    </tbody>
-    </table>
-    <table class="section-content-list">
-    <thead>
-    <h3><a href="#Functions">Functions </a></h3>
-    <span></span>
-    </thead>
-    <tbody>
-    <tr>
-    <td class="name"><a href="#build">build(parent, structures)</a></td>
-    <td class="summary">Build a GUI structure.</td>
-    </tr>
-    <tr>
-    <td class="name"><a href="#dispatch_handlers">dispatch_handlers(event_data)</a></td>
-    <td class="summary">Dispatch GUI handlers for the given event.</td>
-    </tr>
-    <tr>
-    <td class="name"><a href="#update_filters">update_filters(name, player_index, filters, mode)</a></td>
-    <td class="summary">Add or remove GUI filters to or from a handler or group of handlers.</td>
-    </tr>
-    <tr>
-    <td class="name"><a href="#remove_player_filters">remove_player_filters(player_index)</a></td>
-    <td class="summary">Remove all GUI filters for the given player.</td>
     </tr>
     </tbody>
     </table>
@@ -195,249 +219,11 @@
     </tr>
     </tbody>
     </table>
-    <table class="section-content-list">
-    <thead>
-    <h3><a href="#Concepts">Concepts </a></h3>
-    <span></span>
-    </thead>
-    <tbody>
-    <tr>
-    <td class="name"><a href="#GuiFilter">GuiFilter</a></td>
-    <td class="summary">An index or string used for filtering GUI handlers on specific elements.</td>
-    </tr>
-    <tr>
-    <td class="name"><a href="#GuiStructure">GuiStructure</a></td>
-    <td class="summary">A series of nested tables used to build a GUI.</td>
-    </tr>
-    <tr>
-    <td class="name"><a href="#GuiOutputTable">GuiOutputTable</a></td>
-    <td class="summary">First output of <a href="../modules/gui.html#build">gui.build</a>, containing saved elements.</td>
-    </tr>
-    <tr>
-    <td class="name"><a href="#GuiOutputFiltersTable">GuiOutputFiltersTable</a></td>
-    <td class="summary">Second output of <a href="../modules/gui.html#build">gui.build</a>, contains a handler_name &ndash;> filters mapping.</td>
-    </tr>
-    </tbody>
-    </table>
     <!-- module section list end -->
 
     <br />
 
     <!-- section start -->
-    <h3><span id="Setup_functions" class="section-title"><a href="#Setup_functions">Setup functions </a></span></h3>
-    <dl class="section-body-container">
-    <dt>
-    <div class="divider divider-custom"></div>
-    <div class="block section-item-header">
-    <a href="#init" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="init">init()</span>
-    </div>
-    </dt>
-    <dd>
-    <div class="section-item-body">
-
-    <p class="section-item-summary">Initial setup.</p>
-    <p class="section-item-description"> Must be called at the <strong>beginning</strong> of <code>on_init</code>.</p>
-
-<p> If adding the module to an existing mod, this must be called in <code>on_configuration_changed</code> for that version as well.</p>
-
-    <!-- parameters start -->
-    <!-- parameters end -->
-
-    <!-- returns start -->
-    <!-- returns end -->
-
-
-    <!-- see also start -->
-    <!-- see also end -->
-
-    <!-- usage start -->
-    <!-- usage end -->
-
-    </dd>
-    <dt>
-    <div class="divider divider-custom"></div>
-    <div class="block section-item-header">
-    <a href="#build_lookup_tables" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="build_lookup_tables">build_lookup_tables()</span>
-    </div>
-    </dt>
-    <dd>
-    <div class="section-item-body">
-
-    <p class="section-item-summary">Generate template and handler lookup tables.</p>
-    <p class="section-item-description"> Must be called at the <strong>end</strong> of <code>on_init</code> and <code>on_load</code>.</p>
-
-    <!-- parameters start -->
-    <!-- parameters end -->
-
-    <!-- returns start -->
-    <!-- returns end -->
-
-
-    <!-- see also start -->
-    <!-- see also end -->
-
-    <!-- usage start -->
-    <!-- usage end -->
-
-    </dd>
-    <dt>
-    <div class="divider divider-custom"></div>
-    <div class="block section-item-header">
-    <a href="#register_handlers" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="register_handlers">register_handlers()</span>
-    </div>
-    </dt>
-    <dd>
-    <div class="section-item-body">
-
-    <p class="section-item-summary">Register handlers for all GUI events to pass through the module.</p>
-    <p class="section-item-description"> This is completely optional, but saves you having to create handlers for all GUI events simply to call
- <a href="../modules/gui.html#dispatch_handlers">gui.dispatch_handlers</a>. If custom logic is needed, handlers may be overwritten after calling this.</p>
-
-    <!-- parameters start -->
-    <!-- parameters end -->
-
-    <!-- returns start -->
-    <!-- returns end -->
-
-
-    <!-- see also start -->
-    <!-- see also end -->
-
-    <!-- usage start -->
-    <strong>Usage:</strong>
-    <pre class="code" data-lang="Lua"><code><span class="comment">-- register handlers for all GUI events
-</span>gui.register_handlers()
-
-<span class="comment">-- overwrite a handler to add custom logic
-</span>event.on_gui_opened(<span class="keyword">function</span>(e)
-  <span class="comment">-- pass through the GUI module
-</span>  <span class="keyword">if</span> <span class="keyword">not</span> gui.dispatch_handlers(e) <span class="keyword">then</span>
-    <span class="comment">-- run our custom logic if no handlers were dispatched
-</span>    inventory.on_gui_opened(e)
-  <span class="keyword">end</span>
-<span class="keyword">end</span>)
-</code></pre>
-    <!-- usage end -->
-
-    </dd>
-    <dt>
-    <div class="divider divider-custom"></div>
-    <div class="block section-item-header">
-    <a href="#add_templates" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="add_templates">add_templates(input)</span>
-    </div>
-    </dt>
-    <dd>
-    <div class="section-item-body">
-
-    <p class="section-item-summary">Add content to the <a href="../modules/gui.html#templates">gui.templates</a> table.</p>
-    <p class="section-item-description"> The table you provide will be merged with the current contents of the table.</p>
-
-<p> This table must be complete <strong>before</strong> <a href="../modules/gui.html#build_lookup_tables">gui.build_lookup_tables</a> is run, and must not be changed afterwards.</p>
-
-    <!-- parameters start -->
-    <strong>Parameters:</strong>
-
-    <ul>
-
-
-
-
-
-    <li class="section-subitem-li">
-
-    <strong><em>input</em></strong>
-
-    <strong> : </strong>
-
-    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.5.html">table</a></span>)
-
-
-
-
-    </li>
-
-
-    </ul>
-
-    <!-- parameters end -->
-
-    <!-- returns start -->
-    <!-- returns end -->
-
-
-    <!-- see also start -->
-    <strong>See also:</strong>
-    <ul>
-    <li><a href="../modules/gui.html#templates">gui.templates</a></li>
-    </ul>
-    <!-- see also end -->
-
-    <!-- usage start -->
-    <!-- usage end -->
-
-    </dd>
-    <dt>
-    <div class="divider divider-custom"></div>
-    <div class="block section-item-header">
-    <a href="#add_handlers" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="add_handlers">add_handlers(input)</span>
-    </div>
-    </dt>
-    <dd>
-    <div class="section-item-body">
-
-    <p class="section-item-summary">Add content to the <a href="../modules/gui.html#handlers">gui.handlers</a> table.</p>
-    <p class="section-item-description"> The table you provide will be merged with the current contents of the table.</p>
-
-<p> This table must be complete <strong>before</strong> <a href="../modules/gui.html#build_lookup_tables">gui.build_lookup_tables</a> is run, and must not be changed afterwards.</p>
-
-    <!-- parameters start -->
-    <strong>Parameters:</strong>
-
-    <ul>
-
-
-
-
-
-    <li class="section-subitem-li">
-
-    <strong><em>input</em></strong>
-
-    <strong> : </strong>
-
-    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.5.html">table</a></span>)
-
-
-
-
-    </li>
-
-
-    </ul>
-
-    <!-- parameters end -->
-
-    <!-- returns start -->
-    <!-- returns end -->
-
-
-    <!-- see also start -->
-    <strong>See also:</strong>
-    <ul>
-    <li><a href="../modules/gui.html#handlers">gui.handlers</a></li>
-    </ul>
-    <!-- see also end -->
-
-    <!-- usage start -->
-    <!-- usage end -->
-
-    </dd>
-    </dl>
     <h3><span id="Functions" class="section-title"><a href="#Functions">Functions </a></span></h3>
     <dl class="section-body-container">
     <dt>
@@ -774,6 +560,422 @@
 
     </dd>
     </dl>
+    <h3><span id="Concepts" class="section-title"><a href="#Concepts">Concepts </a></span></h3>
+    <dl class="section-body-container">
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#GuiFilter" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="GuiFilter">GuiFilter</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">An index or string used for filtering GUI handlers on specific elements.</p>
+    <p class="section-item-description"> Defined as one of the following:
+ <ul>
+   <li>A <a href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a> corresponding to an element&rsquo;s name. Partial names may be matched by separating the common section
+   from the unique section with two underscores <code>__</code>.</li>
+   <li>A <a href="http://lua-api.factorio.com/latest/Builtin-Types.html#uint">uint</a> corresponding to an element&rsquo;s index.</li>
+ </ul></p>
+
+    <!-- parameters start -->
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#GuiStructure" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="GuiStructure">GuiStructure</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">A series of nested tables used to build a GUI.</p>
+    <p class="section-item-description"> This is an extension of <a href="http://lua-api.factorio.com/latest/LuaGuiElement.html">LuaGuiElement</a>, providing new features and options.</p>
+
+<p> This inherits all required properties from its base <a href="http://lua-api.factorio.com/latest/LuaGuiElement.html">LuaGuiElement</a>, i.e. if the <code>type</code> field is
+ <code>sprite-button</code>, the <a href="../modules/gui.html#GuiStructure">GuiStructure</a> must contain all the fields that a <code>sprite-button</code> <a href="http://lua-api.factorio.com/latest/LuaGuiElement.html">LuaGuiElement</a> requires.</p>
+
+<p> There are two new types that are exposed, each of which restrict what parameters can be added:
+ <ul>
+   <li><strong>condition:</strong> Accepts the <code>condition</code> and <code>children</code> parameters only.</li>
+   <li><strong>tab-and-content:</strong> Accepts the <code>tab</code> and <code>content</code> parameters only.</li>
+ </ul></p>
+
+<p> In addition there are a number of new, common, fields that can be applied to any <a href="../modules/gui.html#GuiStructure">GuiStructure</a>:</p>
+
+<p> <strong><em>template</em></strong></p>
+
+<p> A <a href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a> corresponding to a <a href="../modules/gui.html#GuiStructure">GuiStructure</a> in the <a href="../modules/gui.html#template_lookup">gui.template_lookup</a> table. The contents of this &ldquo;template&rdquo;
+ will be used as a base, and any other paramters in this <a href="../modules/gui.html#GuiStructure">GuiStructure</a> will overwrite / add to this base.</p>
+
+<p> <strong><em>condition</em></strong></p>
+
+<p> For <code>condition</code> types only. If true, the children of this <a href="../modules/gui.html#GuiStructure">GuiStructure</a> will be added to the parent of this
+ <a href="../modules/gui.html#GuiStructure">GuiStructure</a>. If false, they will not.</p>
+
+<p> <strong><em>tab</em></strong></p>
+
+<p> For <code>tab-and-content</code> types only. A <a href="../modules/gui.html#GuiStructure">GuiStructure</a> defining a tab to be placed in a tabbed-pane.</p>
+
+<p> <strong><em>content</em></strong></p>
+
+<p> For <code>tab-and-content</code> types only. A <a href="../modules/gui.html#GuiStructure">GuiStructure</a> defining the content that will be shown when the corresponding
+ tab is active.</p>
+
+<p> <strong><em>style_mods</em></strong></p>
+
+<p> A key &ndash;> value dictionary defining modifications to make to the element&rsquo;s style. Available properties are listed in
+ <a href="http://lua-api.factorio.com/latest/LuaStyle.html">LuaStyle</a>.</p>
+
+<p> <strong><em>elem_mods</em></strong></p>
+
+<p> A key &ndash;> value dictionary defining modifications to make to the element. Available properties are listed in
+ <a href="http://lua-api.factorio.com/latest/LuaGuiElement.html">LuaGuiElement</a>.</p>
+
+<p> <strong><em>handlers</em></strong></p>
+
+<p> A <a href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a> corresponding to an item in the <a href="../modules/gui.html#handler_groups">gui.handler_groups</a> table. The element will be registered to the
+ handlers in that group, and when the events are raised by the game relating to this element, the corresponding
+ handlers will be dispatched.</p>
+
+<p> <strong><em>save_as</em></strong></p>
+
+<p> A <a href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a> defining a table path to save this element to, in the first return value of <a href="../modules/gui.html#build">gui.build</a>. This is a
+ dot-deliminated list of nested table names, followed by a key to save the element as. The module will construct the
+ output table dynamically based on the contents of <code>save_as</code> throughout the structure.</p>
+
+<p> <strong><em>children</em></strong></p>
+
+<p> An array of <a href="../modules/gui.html#GuiStructure">GuiStructure</a> that will be added as children of this element.</p>
+
+    <!-- parameters start -->
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <strong>Usage:</strong>
+    <pre class="code" data-lang="Lua"><code>{<span class="global">type</span>=<span class="string">"frame"</span>, style=<span class="string">"dialog_frame"</span>, direction=<span class="string">"vertical"</span>, handlers=<span class="string">"window"</span>, save_as=<span class="string">"window"</span>, children={
+  {<span class="global">type</span>=<span class="string">"flow"</span>, children={
+    {<span class="global">type</span>=<span class="string">"label"</span>, style=<span class="string">"frame_title"</span>, caption=<span class="string">"Menu"</span>},
+    {template=<span class="string">"drag_handle"</span>, style_mods={horizontally_stretchable=<span class="keyword">true</span>, height=<span class="number">24</span>},
+      save_as=<span class="string">"titlebar.drag_handle"</span>},
+    {<span class="global">type</span>=<span class="string">"condition"</span>, condition=(<span class="keyword">not</span> is_dialog_frame), children={
+      {template=<span class="string">"frame_action_button"</span>, sprite=<span class="string">"utility/close_white"</span>, handlers=<span class="string">"titlebar.close_button"</span>,
+        save_as=<span class="string">"titlebar.close_button"</span>}
+    }}
+  }},
+  {<span class="global">type</span>=<span class="string">"frame"</span>, style=<span class="string">"inside_shallow_frame_with_padding"</span>, children={
+    {<span class="global">type</span>=<span class="string">"table"</span>, style=<span class="string">"slot_table"</span>, column_count=<span class="number">10</span>, save_as=<span class="string">"content.slot_table"</span>}
+  }},
+  {<span class="global">type</span>=<span class="string">"condition"</span>, condition=is_dialog_frame, children={
+    {<span class="global">type</span>=<span class="string">"flow"</span>, children={
+      {<span class="global">type</span>=<span class="string">"button"</span>, style=<span class="string">"back_button"</span>, caption={<span class="string">"gui.back"</span>}, handlers=<span class="string">"footer.back_button"</span>},
+      {template=<span class="string">"drag_handle"</span>, style_mods={horizontally_stretchable=<span class="keyword">true</span>, height=<span class="number">32</span>}, save_as=<span class="string">"footer.drag_handle"</span>}
+    }}
+  }}
+}}
+</code></pre>
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#GuiOutputTable" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="GuiOutputTable">GuiOutputTable</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">First output of <a href="../modules/gui.html#build">gui.build</a>, containing saved elements.</p>
+    <p class="section-item-description"> The layout of this table is defined in the <a href="../modules/gui.html#GuiStructure">GuiStructure</a> using the <code>save_as</code> parameter. Consists of nested tables
+ and key &ndash;> <a href="http://lua-api.factorio.com/latest/LuaGuiElement.html">LuaGuiElement</a> pairs.</p>
+
+    <!-- parameters start -->
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#GuiOutputFiltersTable" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="GuiOutputFiltersTable">GuiOutputFiltersTable</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Second output of <a href="../modules/gui.html#build">gui.build</a>, containing a handler_name &ndash;> filters mapping.</p>
+    <p class="section-item-description"> This is useful for knowing which filters are assigned to which handlers for this specific structure, so you can
+ remove them later using <a href="../modules/gui.html#update_filters">gui.update_filters</a>.</p>
+
+    <!-- parameters start -->
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <strong>Usage:</strong>
+    <pre class="code" data-lang="Lua"><code>{
+  [<span class="string">"window.on_gui_closed"</span>] = {<span class="number">23</span>},
+  [<span class="string">"content_pane.ingredients_list.ingredient_button.on_gui_click"</span>] = {<span class="string">"demo_ingredient_button"</span>, <span class="number">30</span>},
+  [<span class="string">"titlebar.close_button.on_gui_click"</span>] = {<span class="number">21</span>}
+}</code></pre>
+    <!-- usage end -->
+
+    </dd>
+    </dl>
+    <h3><span id="Setup_functions" class="section-title"><a href="#Setup_functions">Setup functions </a></span></h3>
+    <dl class="section-body-container">
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#init" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="init">init()</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Initial setup.</p>
+    <p class="section-item-description"> Must be called at the <strong>beginning</strong> of <code>on_init</code>.</p>
+
+<p> If adding the module to an existing mod, this must be called in <code>on_configuration_changed</code> for that version as well.</p>
+
+    <!-- parameters start -->
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#build_lookup_tables" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="build_lookup_tables">build_lookup_tables()</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Generate template and handler lookup tables.</p>
+    <p class="section-item-description"> Must be called at the <strong>end</strong> of <code>on_init</code> and <code>on_load</code>.</p>
+
+    <!-- parameters start -->
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#register_handlers" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="register_handlers">register_handlers()</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Register handlers for all GUI events to pass through the module.</p>
+    <p class="section-item-description"> This is completely optional, but saves you having to create handlers for all GUI events simply to call
+ <a href="../modules/gui.html#dispatch_handlers">gui.dispatch_handlers</a>. If custom logic is needed, handlers may be overwritten after calling this.</p>
+
+    <!-- parameters start -->
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <strong>Usage:</strong>
+    <pre class="code" data-lang="Lua"><code><span class="comment">-- register handlers for all GUI events
+</span>gui.register_handlers()
+
+<span class="comment">-- overwrite a handler to add custom logic
+</span>event.on_gui_opened(<span class="keyword">function</span>(e)
+  <span class="comment">-- pass through the GUI module
+</span>  <span class="keyword">if</span> <span class="keyword">not</span> gui.dispatch_handlers(e) <span class="keyword">then</span>
+    <span class="comment">-- run our custom logic if no handlers were dispatched
+</span>    inventory.on_gui_opened(e)
+  <span class="keyword">end</span>
+<span class="keyword">end</span>)
+</code></pre>
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#add_templates" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="add_templates">add_templates(input)</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Add content to the <a href="../modules/gui.html#templates">gui.templates</a> table.</p>
+    <p class="section-item-description"> The table you provide will be merged with the current contents of the table.</p>
+
+<p> This table must be complete <strong>before</strong> <a href="../modules/gui.html#build_lookup_tables">gui.build_lookup_tables</a> is run, and must not be changed afterwards.</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>input</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.5.html">table</a></span>)
+
+
+
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <strong>See also:</strong>
+    <ul>
+    <li><a href="../modules/gui.html#templates">gui.templates</a></li>
+    </ul>
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#add_handlers" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="add_handlers">add_handlers(input)</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Add content to the <a href="../modules/gui.html#handlers">gui.handlers</a> table.</p>
+    <p class="section-item-description"> The table you provide will be merged with the current contents of the table.</p>
+
+<p> This table must be complete <strong>before</strong> <a href="../modules/gui.html#build_lookup_tables">gui.build_lookup_tables</a> is run, and must not be changed afterwards.</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>input</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.5.html">table</a></span>)
+
+
+
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <strong>See also:</strong>
+    <ul>
+    <li><a href="../modules/gui.html#handlers">gui.handlers</a></li>
+    </ul>
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    </dl>
     <h3><span id="Fields" class="section-title"><a href="#Fields">Fields </a></span></h3>
     <dl class="section-body-container">
     <dt>
@@ -1074,208 +1276,6 @@ gui.build(player.gui.screen, {
 
     </dd>
     </dl>
-    <h3><span id="Concepts" class="section-title"><a href="#Concepts">Concepts </a></span></h3>
-    <dl class="section-body-container">
-    <dt>
-    <div class="divider divider-custom"></div>
-    <div class="block section-item-header">
-    <a href="#GuiFilter" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="GuiFilter">GuiFilter</span>
-    </div>
-    </dt>
-    <dd>
-    <div class="section-item-body">
-
-    <p class="section-item-summary">An index or string used for filtering GUI handlers on specific elements.</p>
-    <p class="section-item-description"> Defined as one of the following:
- <ul>
-   <li>A <a href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a> corresponding to an element&rsquo;s name. Partial names may be matched by separating the common section
-   from the unique section with two underscores <code>__</code>.</li>
-   <li>A <a href="http://lua-api.factorio.com/latest/Builtin-Types.html#uint">uint</a> corresponding to an element&rsquo;s index.</li>
- </ul></p>
-
-    <!-- parameters start -->
-    <!-- parameters end -->
-
-    <!-- returns start -->
-    <!-- returns end -->
-
-
-    <!-- see also start -->
-    <!-- see also end -->
-
-    <!-- usage start -->
-    <!-- usage end -->
-
-    </dd>
-    <dt>
-    <div class="divider divider-custom"></div>
-    <div class="block section-item-header">
-    <a href="#GuiStructure" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="GuiStructure">GuiStructure</span>
-    </div>
-    </dt>
-    <dd>
-    <div class="section-item-body">
-
-    <p class="section-item-summary">A series of nested tables used to build a GUI.</p>
-    <p class="section-item-description"> This is an extension of <a href="http://lua-api.factorio.com/latest/LuaGuiElement.html">LuaGuiElement</a>, providing new features and options.</p>
-
-<p> This inherits all required properties from its base <a href="http://lua-api.factorio.com/latest/LuaGuiElement.html">LuaGuiElement</a>, i.e. if the <code>type</code> field is
- <code>sprite-button</code>, the <a href="../modules/gui.html#GuiStructure">GuiStructure</a> must contain all the fields that a <code>sprite-button</code> <a href="http://lua-api.factorio.com/latest/LuaGuiElement.html">LuaGuiElement</a> requires.</p>
-
-<p> There are two new types that are exposed, each of which restrict what parameters can be added:
- <ul>
-   <li><strong>condition:</strong> Accepts the <code>condition</code> and <code>children</code> parameters only.</li>
-   <li><strong>tab-and-content:</strong> Accepts the <code>tab</code> and <code>content</code> parameters only.</li>
- </ul></p>
-
-<p> In addition there are a number of new, common, fields that can be applied to any <a href="../modules/gui.html#GuiStructure">GuiStructure</a>:</p>
-
-<p> <strong><em>template</em></strong></p>
-
-<p> A <a href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a> corresponding to a <a href="../modules/gui.html#GuiStructure">GuiStructure</a> in the <a href="../modules/gui.html#template_lookup">gui.template_lookup</a> table. The contents of this &ldquo;template&rdquo;
- will be used as a base, and any other paramters in this <a href="../modules/gui.html#GuiStructure">GuiStructure</a> will overwrite / add to this base.</p>
-
-<p> <strong><em>condition</em></strong></p>
-
-<p> For <code>condition</code> types only. If true, the children of this <a href="../modules/gui.html#GuiStructure">GuiStructure</a> will be added to the parent of this
- <a href="../modules/gui.html#GuiStructure">GuiStructure</a>. If false, they will not.</p>
-
-<p> <strong><em>tab</em></strong></p>
-
-<p> For <code>tab-and-content</code> types only. A <a href="../modules/gui.html#GuiStructure">GuiStructure</a> defining a tab to be placed in a tabbed-pane.</p>
-
-<p> <strong><em>content</em></strong></p>
-
-<p> For <code>tab-and-content</code> types only. A <a href="../modules/gui.html#GuiStructure">GuiStructure</a> defining the content that will be shown when the corresponding
- tab is active.</p>
-
-<p> <strong><em>style_mods</em></strong></p>
-
-<p> A key &ndash;> value dictionary defining modifications to make to the element&rsquo;s style. Available properties are listed in
- <a href="http://lua-api.factorio.com/latest/LuaStyle.html">LuaStyle</a>.</p>
-
-<p> <strong><em>elem_mods</em></strong></p>
-
-<p> A key &ndash;> value dictionary defining modifications to make to the element. Available properties are listed in
- <a href="http://lua-api.factorio.com/latest/LuaGuiElement.html">LuaGuiElement</a>.</p>
-
-<p> <strong><em>handlers</em></strong></p>
-
-<p> A <a href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a> corresponding to an item in the <a href="../modules/gui.html#handler_groups">gui.handler_groups</a> table. The element will be registered to the
- handlers in that group, and when the events are raised by the game relating to this element, the corresponding
- handlers will be dispatched.</p>
-
-<p> <strong><em>save_as</em></strong></p>
-
-<p> A <a href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a> defining a table path to save this element to, in the first return value of <a href="../modules/gui.html#build">gui.build</a>. This is a
- dot-deliminated list of nested table names, followed by a key to save the element as. The module will construct the
- output table dynamically based on the contents of <code>save_as</code> throughout the structure.</p>
-
-<p> <strong><em>children</em></strong></p>
-
-<p> An array of <a href="../modules/gui.html#GuiStructure">GuiStructure</a> that will be added as children of this element.</p>
-
-    <!-- parameters start -->
-    <!-- parameters end -->
-
-    <!-- returns start -->
-    <!-- returns end -->
-
-
-    <!-- see also start -->
-    <!-- see also end -->
-
-    <!-- usage start -->
-    <strong>Usage:</strong>
-    <pre class="code" data-lang="Lua"><code>{<span class="global">type</span>=<span class="string">"frame"</span>, style=<span class="string">"dialog_frame"</span>, direction=<span class="string">"vertical"</span>, handlers=<span class="string">"window"</span>, save_as=<span class="string">"window"</span>, children={
-  {<span class="global">type</span>=<span class="string">"flow"</span>, children={
-    {<span class="global">type</span>=<span class="string">"label"</span>, style=<span class="string">"frame_title"</span>, caption=<span class="string">"Menu"</span>},
-    {template=<span class="string">"drag_handle"</span>, style_mods={horizontally_stretchable=<span class="keyword">true</span>, height=<span class="number">24</span>},
-      save_as=<span class="string">"titlebar.drag_handle"</span>},
-    {<span class="global">type</span>=<span class="string">"condition"</span>, condition=(<span class="keyword">not</span> is_dialog_frame), children={
-      {template=<span class="string">"frame_action_button"</span>, sprite=<span class="string">"utility/close_white"</span>, handlers=<span class="string">"titlebar.close_button"</span>,
-        save_as=<span class="string">"titlebar.close_button"</span>}
-    }}
-  }},
-  {<span class="global">type</span>=<span class="string">"frame"</span>, style=<span class="string">"inside_shallow_frame_with_padding"</span>, children={
-    {<span class="global">type</span>=<span class="string">"table"</span>, style=<span class="string">"slot_table"</span>, column_count=<span class="number">10</span>, save_as=<span class="string">"content.slot_table"</span>}
-  }},
-  {<span class="global">type</span>=<span class="string">"condition"</span>, condition=is_dialog_frame, children={
-    {<span class="global">type</span>=<span class="string">"flow"</span>, children={
-      {<span class="global">type</span>=<span class="string">"button"</span>, style=<span class="string">"back_button"</span>, caption={<span class="string">"gui.back"</span>}, handlers=<span class="string">"footer.back_button"</span>},
-      {template=<span class="string">"drag_handle"</span>, style_mods={horizontally_stretchable=<span class="keyword">true</span>, height=<span class="number">32</span>}, save_as=<span class="string">"footer.drag_handle"</span>}
-    }}
-  }}
-}}
-</code></pre>
-    <!-- usage end -->
-
-    </dd>
-    <dt>
-    <div class="divider divider-custom"></div>
-    <div class="block section-item-header">
-    <a href="#GuiOutputTable" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="GuiOutputTable">GuiOutputTable</span>
-    </div>
-    </dt>
-    <dd>
-    <div class="section-item-body">
-
-    <p class="section-item-summary">First output of <a href="../modules/gui.html#build">gui.build</a>, containing saved elements.</p>
-    <p class="section-item-description"> The layout of this table is defined in the <a href="../modules/gui.html#GuiStructure">GuiStructure</a> using the <code>save_as</code> parameter. Consists of nested tables
- and key &ndash;> <a href="http://lua-api.factorio.com/latest/LuaGuiElement.html">LuaGuiElement</a> pairs.</p>
-
-    <!-- parameters start -->
-    <!-- parameters end -->
-
-    <!-- returns start -->
-    <!-- returns end -->
-
-
-    <!-- see also start -->
-    <!-- see also end -->
-
-    <!-- usage start -->
-    <!-- usage end -->
-
-    </dd>
-    <dt>
-    <div class="divider divider-custom"></div>
-    <div class="block section-item-header">
-    <a href="#GuiOutputFiltersTable" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="GuiOutputFiltersTable">GuiOutputFiltersTable</span>
-    </div>
-    </dt>
-    <dd>
-    <div class="section-item-body">
-
-    <p class="section-item-summary">Second output of <a href="../modules/gui.html#build">gui.build</a>, contains a handler_name &ndash;> filters mapping.</p>
-    <p class="section-item-description"> This is useful for knowing which filters are assigned to which handlers for this specific structure, so you can
- remove them later using <a href="../modules/gui.html#update_filters">gui.update_filters</a>.</p>
-
-    <!-- parameters start -->
-    <!-- parameters end -->
-
-    <!-- returns start -->
-    <!-- returns end -->
-
-
-    <!-- see also start -->
-    <!-- see also end -->
-
-    <!-- usage start -->
-    <strong>Usage:</strong>
-    <pre class="code" data-lang="Lua"><code>{
-  [<span class="string">"window.on_gui_closed"</span>] = {<span class="number">23</span>},
-  [<span class="string">"content_pane.ingredients_list.ingredient_button.on_gui_click"</span>] = {<span class="string">"demo_ingredient_button"</span>, <span class="number">30</span>},
-  [<span class="string">"titlebar.close_button.on_gui_click"</span>] = {<span class="number">21</span>}
-}</code></pre>
-    <!-- usage end -->
-
-    </dd>
-    </dl>
 
     <!-- section end -->
 
@@ -1290,7 +1290,7 @@ gui.build(player.gui.screen, {
     <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
     </div>
     <div class="content-footer column col-9 col-sm-12">
-    <i>Last updated 2020-05-21 00:43:36 UTC</i>
+    <i>Last updated 2020-05-22 04:26:55 UTC</i>
     </div>
     </div>
     </div>

@@ -74,8 +74,8 @@
     <li class="nav-item">
     <h4>Contents of <strong>translation</strong></h4>
     <ul class="nav">
-    <li class="nav-item"><a href="#Concepts"><span class="fragment-hashtag">#</span> Concepts</a></li>
-    <li class="nav-item"><a href="#Functions"><span class="fragment-hashtag">#</span> Functions</a></li>
+    <li class="nav-item"><a href="#Functions"><span class="fragment-hashtag">#</span> Functions </a></li>
+    <li class="nav-item"><a href="#Concepts"><span class="fragment-hashtag">#</span> Concepts </a></li>
     </ul>
     </li>
     </ul>
@@ -115,18 +115,7 @@
     <!-- module section list start -->
     <table class="section-content-list">
     <thead>
-    <h3><a href="#Concepts">Concepts</a></h3>
-    <span></span>
-    </thead>
-    <tbody>
-    <tr>
-    <td class="name"><a href="#StringData">StringData</a></td>
-    </tr>
-    </tbody>
-    </table>
-    <table class="section-content-list">
-    <thead>
-    <h3><a href="#Functions">Functions</a></h3>
+    <h3><a href="#Functions">Functions </a></h3>
     <span></span>
     </thead>
     <tbody>
@@ -143,16 +132,32 @@
     <td class="summary">Process a received translation.</td>
     </tr>
     <tr>
-    <td class="name"><a href="#add_requests">add_requests(player_index, dictionary_name, strings)</a></td>
-    <td class="summary">Add translation requests for the given player, to be requested over the next several ticks.</td>
+    <td class="name"><a href="#add_requests">add_requests(player_index, strings)</a></td>
+    <td class="summary">Add translation requests for the given player, to be performed over the next several ticks.</td>
     </tr>
     <tr>
     <td class="name"><a href="#cancel">cancel(player_index)</a></td>
     <td class="summary">Cancel a player&rsquo;s translations.</td>
     </tr>
     <tr>
-    <td class="name"><a href="#serialise_localised_string">serialise_localised_string(t)</a></td>
+    <td class="name"><a href="#serialise_localised_string">serialise_localised_string(localised_string)</a></td>
     <td class="summary">Serialise a localised string into a form readable by the API.</td>
+    </tr>
+    </tbody>
+    </table>
+    <table class="section-content-list">
+    <thead>
+    <h3><a href="#Concepts">Concepts </a></h3>
+    <span></span>
+    </thead>
+    <tbody>
+    <tr>
+    <td class="name"><a href="#ResultSortData">ResultSortData</a></td>
+    <td class="summary">A mapping of a translated string&rsquo;s dictionaries and internal names.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#StringData">StringData</a></td>
+    <td class="summary">A registry of strings to translate.</td>
     </tr>
     </tbody>
     </table>
@@ -161,38 +166,7 @@
     <br />
 
     <!-- section start -->
-    <h3><span id="Concepts" class="section-title"><a href="#Concepts">Concepts</a></span></h3>
-    <dl class="section-body-container">
-    <dt>
-    <div class="divider divider-custom"></div>
-    <div class="block section-item-header">
-    <a href="#StringData" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="StringData">StringData</span>
-    </div>
-    </dt>
-    <dd>
-    <div class="section-item-body">
-
-    <p class="section-item-summary">
-</p>
-    <p class="section-item-description"> Table with the following fields:</p>
-
-    <!-- parameters start -->
-    <!-- parameters end -->
-
-    <!-- returns start -->
-    <!-- returns end -->
-
-
-    <!-- see also start -->
-    <!-- see also end -->
-
-    <!-- usage start -->
-    <!-- usage end -->
-
-    </dd>
-    </dl>
-    <h3><span id="Functions" class="section-title"><a href="#Functions">Functions</a></span></h3>
+    <h3><span id="Functions" class="section-title"><a href="#Functions">Functions </a></span></h3>
     <dl class="section-body-container">
     <dt>
     <div class="divider divider-custom"></div>
@@ -205,7 +179,9 @@
     <div class="section-item-body">
 
     <p class="section-item-summary">Initial setup.</p>
-    <p class="section-item-description"> Must be called during on_init, and during on_configuration_changed if adding the module to an existing mod.</p>
+    <p class="section-item-description"> Must be called at the <strong>beginning</strong> of <code>on_init</code>.</p>
+
+<p> If adding the module to an existing mod, this must be called in <code>on_configuration_changed</code> for that version as well.</p>
 
     <!-- parameters start -->
     <!-- parameters end -->
@@ -232,7 +208,7 @@
     <div class="section-item-body">
 
     <p class="section-item-summary">Perform translation operations.</p>
-    <p class="section-item-description"> Must be called during an on_tick event.</p>
+    <p class="section-item-description"> Must be called during an <code>on_tick</code> event.</p>
 
     <!-- parameters start -->
     <strong>Parameters:</strong>
@@ -283,7 +259,7 @@
     <div class="section-item-body">
 
     <p class="section-item-summary">Process a received translation.</p>
-    <p class="section-item-description"> Must be called during an on_string_translated event.</p>
+    <p class="section-item-description"> Must be called during an <code>on_string_translated</code> event.</p>
 
     <!-- parameters start -->
     <strong>Parameters:</strong>
@@ -316,8 +292,7 @@
     <strong>Returns:</strong>
     <ul>
     <li>
-    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.5.html">table</a></span>)
-    <span class="return-text">TODO make this a concept</span>
+    (<span class="types"><a class="type" href="../modules/translation.html#ResultSortData">ResultSortData</a></span>)
     </li>
     <li>
     (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#boolean">boolean</a></span>)
@@ -338,13 +313,13 @@
     <div class="divider divider-custom"></div>
     <div class="block section-item-header">
     <a href="#add_requests" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="add_requests">add_requests(player_index, dictionary_name, strings)</span>
+    <span class="section-item-title" id="add_requests">add_requests(player_index, strings)</span>
     </div>
     </dt>
     <dd>
     <div class="section-item-body">
 
-    <p class="section-item-summary">Add translation requests for the given player, to be requested over the next several ticks.</p>
+    <p class="section-item-summary">Add translation requests for the given player, to be performed over the next several ticks.</p>
     <p class="section-item-description">
 </p>
 
@@ -364,23 +339,6 @@
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#uint">uint</a></span>)
-
-
-
-
-    </li>
-
-
-
-
-
-    <li class="section-subitem-li">
-
-    <strong><em>dictionary_name</em></strong>
-
-    <strong> : </strong>
-
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a></span>)
 
 
 
@@ -476,7 +434,7 @@
     <div class="divider divider-custom"></div>
     <div class="block section-item-header">
     <a href="#serialise_localised_string" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="serialise_localised_string">serialise_localised_string(t)</span>
+    <span class="section-item-title" id="serialise_localised_string">serialise_localised_string(localised_string)</span>
     </div>
     </dt>
     <dd>
@@ -496,12 +454,146 @@
 
     <li class="section-subitem-li">
 
-    <strong><em>t</em></strong>
+    <strong><em>localised_string</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Concepts.html#LocalisedString">LocalisedString</a></span>)
+
+
+
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <strong>Returns:</strong>
+    <ul>
+    <li>
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a></span>)
+    <span class="return-text">The serialised <a href="http://lua-api.factorio.com/latest/Concepts.html#LocalisedString">LocalisedString</a>.</span>
+    </li>
+    </ul>
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    </dl>
+    <h3><span id="Concepts" class="section-title"><a href="#Concepts">Concepts </a></span></h3>
+    <dl class="section-body-container">
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#ResultSortData" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="ResultSortData">ResultSortData</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">A mapping of a translated string&rsquo;s dictionaries and internal names.</p>
+    <p class="section-item-description"> Dictionary <a href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a> &ndash;> array of <a href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a>. Each key is a dictionary name, each value is an array of internal names
+ that match to the translated string. This greatly eases the process of sorting translations into various
+ dictionaries.</p>
+
+    <!-- parameters start -->
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <strong>Usage:</strong>
+    <pre class="code" data-lang="Lua"><code>{
+  entities = {<span class="string">"crude-oil"</span>},
+  fluids = {<span class="string">"crude-oil"</span>}
+}
+</code></pre>
+    <pre class="code" data-lang="Lua"><code>{
+  entities = {<span class="string">"iron-ore"</span>},
+  items = {<span class="string">"iron-ore"</span>},
+  recipes = {<span class="string">"iron-ore"</span>}
+}
+</code></pre>
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#StringData" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="StringData">StringData</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">A registry of strings to translate.</p>
+    <p class="section-item-description"> This is an array of tables, each of which contain the following fields:</p>
+
+    <!-- parameters start -->
+
+    <ul>
 
 
 
 
 
+    <li class="section-subitem-module-field-li">
+
+    <strong><em>dictionary</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a></span>)
+
+     The dictionary that this string belongs to.
+
+    </li>
+
+
+
+
+
+    <li class="section-subitem-module-field-li">
+
+    <strong><em>internal</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a></span>)
+
+     The internal name that will be used to reference this string.
+
+    </li>
+
+
+
+
+
+    <li class="section-subitem-module-field-li">
+
+    <strong><em>localised</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Concepts.html#LocalisedString">LocalisedString</a></span>)
+
+     The localised string to translate.
 
     </li>
 
@@ -518,6 +610,13 @@
     <!-- see also end -->
 
     <!-- usage start -->
+    <strong>Usage:</strong>
+    <pre class="code" data-lang="Lua"><code>{
+  {dictionary=<span class="string">"fluids"</span>, internal=<span class="string">"crude-oil"</span>, localised={<span class="string">"fluid-name.crude-oil"</span>}},
+  {dictionary=<span class="string">"items"</span>, internal=<span class="string">"iron-ore"</span>, localised={<span class="string">"item-name.iron-ore"</span>}},
+  {dictionary=<span class="string">"gui"</span>, internal=<span class="string">"search-ellipses"</span>, localised={<span class="string">"demo-gui.search-ellipses"</span>}}
+}
+</code></pre>
     <!-- usage end -->
 
     </dd>
@@ -536,7 +635,7 @@
     <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
     </div>
     <div class="content-footer column col-9 col-sm-12">
-    <i>Last updated 2020-05-21 00:43:36 UTC</i>
+    <i>Last updated 2020-05-22 04:26:55 UTC</i>
     </div>
     </div>
     </div>
