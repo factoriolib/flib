@@ -54,7 +54,7 @@ function flib_train.rotate_carriage(entity)
 end
 
 --- Create a string representing train composition.
--- L for locomotives, C for cargo wagons, F for fluid wagons, A for artillery wagon.
+-- '<L<' and '>L>' for locomotives, 'C' for cargo wagons, 'F' for fluid wagons, 'A' for artillery wagon.
 -- @tparam LuaTrain train
 -- @treturn string|nil
 -- @treturn TrainCompositionCounts|nil
