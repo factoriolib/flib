@@ -113,15 +113,15 @@ function flib_data_util.get_energy_value(energy_string)
   end
 end
 
---- Build an icon.
--- @tparam string name
--- @tparam Concepts.Position position
--- @tparam string filename
--- @tparam Concepts.Vector size
--- @tparam uint mipmap_count
--- @tparam table mods
+--- Build a sprite.
+-- @tparam[opt] string name
+-- @tparam[opt] Concepts.Position position
+-- @tparam[opt] string filename
+-- @tparam[opt] Concepts.Vector size
+-- @tparam[opt] uint mipmap_count
+-- @tparam[opt] table mods
 -- @treturn Types.SpriteSpecification
-function flib_data_util.build_icon(name, position, filename, size, mipmap_count, mods)
+function flib_data_util.build_sprite(name, position, filename, size, mipmap_count, mods)
   local def = {
     type = "sprite",
     name = name,
@@ -138,5 +138,14 @@ function flib_data_util.build_icon(name, position, filename, size, mipmap_count,
   end
   return def
 end
+
+--- An empty image. This image is 8x8 to facilitate usage with GUI styles.
+flib_data_util.empty_image = "__flib__/graphics/empty.png"
+
+--- A black image, for use with tool backgrounds. This image is 1x1.
+flib_data_util.black_image = "__flib__/graphics/black.png"
+
+--- A desaturated planner image. Tint this sprite to easily add your own planners.
+flib_data_util.planner_base_image = "__flib__/graphics/planner.png"
 
 return flib_data_util
