@@ -75,6 +75,7 @@
     <h4>Contents of <strong>data_util</strong></h4>
     <ul class="nav">
     <li class="nav-item"><a href="#Functions"><span class="fragment-hashtag">#</span> Functions</a></li>
+    <li class="nav-item"><a href="#Fields"><span class="fragment-hashtag">#</span> Fields</a></li>
     </ul>
     </li>
     </ul>
@@ -131,8 +132,28 @@
     <td class="summary">Convert an energy string to base unit value + suffix.</td>
     </tr>
     <tr>
-    <td class="name"><a href="#build_icon">build_icon(name, position, filename, size, mipmap_count, mods)</a></td>
-    <td class="summary">Build an icon.</td>
+    <td class="name"><a href="#build_sprite">build_sprite([name][, position][, filename][, size][, mipmap_count][, mods])</a></td>
+    <td class="summary">Build a sprite.</td>
+    </tr>
+    </tbody>
+    </table>
+    <table class="section-content-list">
+    <thead>
+    <h3><a href="#Fields">Fields</a></h3>
+    <span></span>
+    </thead>
+    <tbody>
+    <tr>
+    <td class="name"><a href="#empty_image">empty_image</a></td>
+    <td class="summary">An empty image.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#black_image">black_image</a></td>
+    <td class="summary">A black image, for use with tool backgrounds.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#planner_base_image">planner_base_image</a></td>
+    <td class="summary">A desaturated planner image.</td>
     </tr>
     </tbody>
     </table>
@@ -374,14 +395,14 @@
     <dt>
     <div class="divider divider-custom"></div>
     <div class="block section-item-header">
-    <a href="#build_icon" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="build_icon">build_icon(name, position, filename, size, mipmap_count, mods)</span>
+    <a href="#build_sprite" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="build_sprite">build_sprite([name][, position][, filename][, size][, mipmap_count][, mods])</span>
     </div>
     </dt>
     <dd>
     <div class="section-item-body">
 
-    <p class="section-item-summary">Build an icon.</p>
+    <p class="section-item-summary">Build a sprite.</p>
     <p class="section-item-description">
 </p>
 
@@ -405,6 +426,7 @@
 
 
 
+    (<em>optional</em>)
     </li>
 
 
@@ -422,6 +444,7 @@
 
 
 
+    (<em>optional</em>)
     </li>
 
 
@@ -439,6 +462,7 @@
 
 
 
+    (<em>optional</em>)
     </li>
 
 
@@ -456,6 +480,7 @@
 
 
 
+    (<em>optional</em>)
     </li>
 
 
@@ -473,6 +498,7 @@
 
 
 
+    (<em>optional</em>)
     </li>
 
 
@@ -490,6 +516,7 @@
 
 
 
+    (<em>optional</em>)
     </li>
 
 
@@ -515,6 +542,90 @@
 
     </dd>
     </dl>
+    <h3><span id="Fields" class="section-title"><a href="#Fields">Fields</a></span></h3>
+    <dl class="section-body-container">
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#empty_image" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="empty_image">empty_image</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">An empty image.</p>
+    <p class="section-item-description"> This image is 8x8 to facilitate usage with GUI styles.</p>
+
+    <!-- parameters start -->
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#black_image" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="black_image">black_image</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">A black image, for use with tool backgrounds.</p>
+    <p class="section-item-description"> This image is 1x1.</p>
+
+    <!-- parameters start -->
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#planner_base_image" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="planner_base_image">planner_base_image</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">A desaturated planner image.</p>
+    <p class="section-item-description"> Tint this sprite to easily add your own planners.</p>
+
+    <!-- parameters start -->
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    </dl>
 
     <!-- section end -->
 
@@ -529,7 +640,7 @@
     <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
     </div>
     <div class="content-footer column col-9 col-sm-12">
-    <i>Last updated 2020-05-22 04:26:55 UTC</i>
+    <i>Last updated 2020-05-24 18:20:04 UTC</i>
     </div>
     </div>
     </div>
