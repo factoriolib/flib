@@ -157,6 +157,9 @@ end
 -- The table you provide will be merged with the current contents of the table.
 --
 -- This table must be complete **before** @{gui.build_lookup_tables} is run, and must not be changed afterwards.
+--
+-- **NOTE:** In order to be detected properly, a template must include either a `type` key or another `template` key.
+-- If both of these are omitted, the template will not be added to the lookup table and will be unusable.
 -- @tparam table input
 -- @see gui.templates
 function flib_gui.add_templates(input)
@@ -648,7 +651,7 @@ return flib_gui
 --   <li><strong>tab-and-content:</strong> Accepts the `tab` and `content` parameters only.</li>
 -- </ul>
 --
--- In addition there are a number of new, common, fields that can be applied to any @{GuiStructure}:
+-- In addition there are a number of new, fields that can be applied to a @{GuiStructure} depending on the type:
 --
 -- **_template_**
 --
