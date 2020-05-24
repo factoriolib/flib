@@ -21,7 +21,7 @@ local function generate_template_lookup(t, template_string)
   for k, v in pairs(t) do
     if k ~= "extend" and type(v) == "table" then
       local new_string = template_string..k
-      if v.type then
+      if v.type or v.template then
         template_lookup[new_string] = v
       else
         generate_template_lookup(v, new_string..".")
@@ -179,9 +179,20 @@ end
 -- navigate a structure to build a GUI
 local function recursive_build(parent, structure, output, filters, player_index)
   -- load template
-  if structure.template then
-    for k,v in pairs(template_lookup[structure.template]) do
-      structure[k] = structure[k] or v
+  local structure_template = structure.template
+  if structure_template then
+    local loaded_template_names = {}
+    -- recursively apply templates until there are none left
+    while structure_template do
+      if loaded_template_names[structure_template] then
+        error("Template loop detected in ["..structure_template.."]")
+      end
+      loaded_template_names[structure_template] = true
+      structure.template = nil
+      for k,v in pairs(template_lookup[structure_template]) do
+        structure[k] = structure[k] or v
+      end
+      structure_template = structure.template
     end
   end
 
