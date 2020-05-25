@@ -45,7 +45,7 @@ end
 --- Add new icon layers to a prototype icon or icons.
 -- @tparam PrototypeBase prototype
 -- @tparam Types.IconSpecification[] new_layers
--- @return Types.IconSpecification[]|nil
+-- @treturn Types.IconSpecification[]|nil
 function flib_data_util.create_icons(prototype, new_layers)
   for _,new_layer in pairs(new_layers) do
     if not new_layer.icon or not new_layer.icon_size then
