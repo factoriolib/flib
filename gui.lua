@@ -102,8 +102,8 @@ function flib_gui.init()
 end
 
 --- Generate template and handler lookup tables.
--- Must be called during`on_init` and `on_load` **after** @{gui.init}, and **after** all templates and handlers have
--- been added, but **before** any structures are built.
+-- Must be called during `on_init` **after** @{gui.init}, and during `on_init` and `on_load` **after** all templates and
+-- handlers have been added, but **before** any structures are built.
 function flib_gui.build_lookup_tables()
   generate_template_lookup(templates, "")
   -- go one level deep before calling the function, to avoid adding an unnecessary prefix to all group names
