@@ -90,7 +90,7 @@ end
 -- @section
 
 --- Initial setup.
--- Must be called at the **beginning** of `on_init`.
+-- Must be called during `on_init` **before** any structures are built.
 --
 -- If adding the module to an existing mod, this must be called in `on_configuration_changed` for that version as well.
 function flib_gui.init()
@@ -102,7 +102,8 @@ function flib_gui.init()
 end
 
 --- Generate template and handler lookup tables.
--- Must be called at the **end** of `on_init` and `on_load`.
+-- Must be called during`on_init` and `on_load` **after** @{gui.init}, and **after** all templates and handlers have
+-- been added, but **before** any structures are built.
 function flib_gui.build_lookup_tables()
   generate_template_lookup(templates, "")
   -- go one level deep before calling the function, to avoid adding an unnecessary prefix to all group names
@@ -117,6 +118,8 @@ end
 --- Register handlers for all GUI events to pass through the module.
 -- This is completely optional, but saves you having to create handlers for all GUI events simply to call
 -- @{gui.dispatch_handlers}. If custom logic is needed, handlers may be overwritten after calling this.
+--
+-- This function, if used, should be called in the root scope.
 -- @usage
 -- -- register handlers for all GUI events
 -- gui.register_handlers()
