@@ -89,14 +89,22 @@ function flib_data_util.create_icons(prototype, new_layers)
 end
 
 local exponent_multipliers = {
+  ['y'] = 0.000000000000000000000001,
+  ['z'] = 0.000000000000000000001,
+  ['a'] = 0.000000000000000001,
+  ['f'] = 0.000000000000001,
+  ['p'] = 0.000000000001,
   ['n'] = 0.000000001,
-  ['u'] = 0.000001,
+  ['u'] = 0.000001, -- μ is invalid
   ['m'] = 0.001,
   ['k'] = 1000,
   ['M'] = 1000000,
   ['G'] = 1000000000,
   ['T'] = 1000000000000,
   ['P'] = 1000000000000000,
+  ['E'] = 1000000000000000000,
+  ['Z'] = 1000000000000000000000,
+  ['Y'] = 1000000000000000000000000,
 }
 
 --- Convert an energy string to base unit value + suffix.
@@ -105,7 +113,7 @@ local exponent_multipliers = {
 -- @treturn string
 function flib_data_util.get_energy_value(energy_string)
   if type(energy_string) == "string" then
-    local v, _, exp, unit = string.match(energy_string, "([%-+]?[0-9]*%.?[0-9]+)(([kMGTP]?)([WJ]))")
+    local v, _, exp, unit = string.match(energy_string, "([%-+]?[0-9]*%.?[0-9]+)(([yzafpnumkMGTPEZY]?)([WJ]))")
     local value = tonumber(v)
     if value and exp and exponent_multipliers[exp] then
       value = value * exponent_multipliers[exp]
