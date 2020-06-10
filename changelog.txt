@@ -1,8 +1,10 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.1
-Date: 2020-06-09
+Date: 2020-06-10
+  Features:
+    - get_energy_value supports exponents from 10^-24 to 10^24
   Bugfixes:
-    - get_energy_value would return string, string instead of nil when unable to parse exponent
+    - get_energy_value returned string, string instead of nil when unable to parse exponent
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.0
 Date: 2020-05-24
