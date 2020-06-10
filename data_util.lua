@@ -97,6 +97,11 @@ local exponent_multipliers = {
   ['n'] = 0.000000001,
   ['u'] = 0.000001, -- μ is invalid
   ['m'] = 0.001,
+  ['c'] = 0.01,
+  ['d'] = 0.1,
+  [''] = 1,
+  ['da'] = 10,
+  ['h'] = 100,
   ['k'] = 1000,
   ['M'] = 1000000,
   ['G'] = 1000000000,
@@ -113,7 +118,7 @@ local exponent_multipliers = {
 -- @treturn string
 function flib_data_util.get_energy_value(energy_string)
   if type(energy_string) == "string" then
-    local v, _, exp, unit = string.match(energy_string, "([%-+]?[0-9]*%.?[0-9]+)(([yzafpnumkMGTPEZY]?)([WJ]))")
+    local v, _, exp, unit = string.match(energy_string, "([%-+]?[0-9]*%.?[0-9]+)((%D*)([WJ]))")
     local value = tonumber(v)
     if value and exp and exponent_multipliers[exp] then
       value = value * exponent_multipliers[exp]
