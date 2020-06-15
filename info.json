@@ -1,6 +1,6 @@
 {
   "name": "flib",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "title": "Factorio Library",
   "author": "Raiguard, Optera, justarandomgeek, Nexela",
   "contact": "https://github.com/factoriolib/flib",
@@ -9,9 +9,6 @@
   "factorio_version": "0.18",
   "dependencies": ["base >= 0.18.19"],
   "package": {
-    "ignore": [
-      "*.code-workspace",
-      "docs/**"
-    ]
+    "ignore": ["*.code-workspace", "docs/**"]
   }
 }
