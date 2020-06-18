@@ -163,21 +163,21 @@ function flib_translation.add_requests(player_index, strings)
       for i=1, #strings do
         strings_to_sort[#strings_to_sort+1] = strings[i]
       end
-      player_table.sort.last_index = nil
+      player_table.sort.next_index = 1
     else
       player_table.sort = {
         strings = shallow_copy(strings),
-        last_index = nil
+        next_index = 1
       }
     end
-    player_table.translate.last_key = nil
+    player_table.translate.next_key = nil
   else
     __translation.players[player_index] = {
       state = "sort",
       -- sort
       sort = {
         strings = shallow_copy(strings),
-        next_index = next(strings)
+        next_index = 1
       },
       -- translate
       translate = {
