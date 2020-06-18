@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.4
-Date: ????
+Date: 2020-06-18
   Bugfixes:
     - Fixed a crash with the translation module related to old code having incorrect variable names
 ---------------------------------------------------------------------------------------------------
