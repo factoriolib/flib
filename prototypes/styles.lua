@@ -21,7 +21,6 @@ local function gen_slot(x, y, is_selected)
     disabled_graphical_set = { -- identical to default graphical set
       base = {border=4, position={x + default_offset, y}, size=80, filename=slot_tileset},
     },
-    left_click_sound = {{filename="__core__/sound/gui-inventory-slot-button.ogg", volume=0.6}}
   }
 end
 
@@ -48,7 +47,6 @@ local function gen_slot_button(x, y, default_offset, glow)
       base = {border=4, position={x + default_offset, y}, size=80, filename=slot_tileset},
       shadow = offset_by_2_rounded_corners_glow(default_dirt_color),
     },
-    left_click_sound = {{filename="__core__/sound/gui-inventory-slot-button.ogg", volume=0.6}}
   }
 end
 
@@ -74,7 +72,6 @@ local function gen_standalone_slot_button(x, y, default_offset)
       base = {border=4, position={x + default_offset, y}, size=80, filename=slot_tileset},
       shadow = offset_by_4_rounded_corners_subpanel_inset
     },
-    left_click_sound = {{filename="__core__/sound/gui-inventory-slot-button.ogg", volume=0.6}}
   }
 end
 

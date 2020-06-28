@@ -3,6 +3,8 @@ Version: 0.1.5
 Date: 2020-06-26
   Changes:
     - moved styles into ptototypes/styles
+  Bugfixes:
+    - use parent to inherit sounds from core #13
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.4
 Date: 2020-06-18
