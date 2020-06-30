@@ -3,7 +3,7 @@
 local slot_tileset = "__flib__/graphics/slots.png"
 local styles = data.raw["gui-style"].default
 
-local function gen_slot(x, y, is_selected)
+local function gen_slot(x, y, default_offset)
   local default_offset = default_offset or 0
   return {
     type = "button_style",
@@ -20,7 +20,7 @@ local function gen_slot(x, y, is_selected)
     },
     disabled_graphical_set = { -- identical to default graphical set
       base = {border=4, position={x + default_offset, y}, size=80, filename=slot_tileset},
-    },
+    }
   }
 end
 
@@ -46,7 +46,7 @@ local function gen_slot_button(x, y, default_offset, glow)
     disabled_graphical_set = { -- identical to default graphical set
       base = {border=4, position={x + default_offset, y}, size=80, filename=slot_tileset},
       shadow = offset_by_2_rounded_corners_glow(default_dirt_color),
-    },
+    }
   }
 end
 
@@ -71,7 +71,7 @@ local function gen_standalone_slot_button(x, y, default_offset)
     disabled_graphical_set = { -- identical to default graphical set
       base = {border=4, position={x + default_offset, y}, size=80, filename=slot_tileset},
       shadow = offset_by_4_rounded_corners_subpanel_inset
-    },
+    }
   }
 end
 
