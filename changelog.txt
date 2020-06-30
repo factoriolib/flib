@@ -1,10 +1,10 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.5
-Date: 2020-06-26
+Date: 2020-06-30
   Changes:
-    - moved styles into ptototypes/styles
+    - Moved styles into prototypes/styles
   Bugfixes:
-    - use parent to inherit sounds from core #13
+    - Fixed nonexistent sound file error by inheriting from parent #13
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.4
 Date: 2020-06-18
