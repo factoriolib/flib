@@ -7,7 +7,7 @@
   "homepage": "https://github.com/factoriolib/flib",
   "description": "Factorio modding library, containing several high-quality and well-tested modules to make modding easier. Contributions are welcome!",
   "factorio_version": "0.18",
-  "dependencies": ["base >= 0.18.19"],
+  "dependencies": ["base >= 0.18.35"],
   "package": {
     "ignore": ["*.code-workspace", "docs/**"]
   }
