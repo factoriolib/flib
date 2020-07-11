@@ -1,3 +1,5 @@
+local flib_misc = require("misc")
+
 --- Functions for working with trains.
 -- @module train
 -- @alias flib_train
@@ -6,6 +8,7 @@
 local flib_train = {}
 
 local table = table
+local rail_direction = defines.rail_direction
 
 --- Functions
 -- @section
@@ -31,17 +34,17 @@ end
 -- @tparam LuaEntity entity
 -- @treturn boolean Whether or not the rotation was successful.
 function flib_train.rotate_carriage(entity)
-  local disconnected_back = entity.disconnect_rolling_stock(defines.rail_direction.back)
-  local disconnected_front = entity.disconnect_rolling_stock(defines.rail_direction.front)
+  local disconnected_back = entity.disconnect_rolling_stock(rail_direction.back)
+  local disconnected_front = entity.disconnect_rolling_stock(rail_direction.front)
   entity.rotate()
   -- Only reconnect the side that was disconnected
   local reconnected_front = disconnected_front
   local reconnected_back = disconnected_back
   if disconnected_back then
-    reconnected_back = entity.connect_rolling_stock(defines.rail_direction.front)
+    reconnected_back = entity.connect_rolling_stock(rail_direction.front)
   end
   if disconnected_front then
-    reconnected_front= entity.connect_rolling_stock(defines.rail_direction.back)
+    reconnected_front= entity.connect_rolling_stock(rail_direction.back)
   end
 
   if disconnected_front and not reconnected_front then
@@ -117,6 +120,30 @@ function flib_train.open_gui(player_index, train)
     end
   end
   return false
+end
+
+function flib_train.get_real_front(train, stationpos)
+  if flib_misc.get_distance(train.front_stock.position, stationpos) < flib_misc.get_distance(train.back_stock.position, stationpos) then
+    return train.front_stock
+  else
+    return train.back_stock
+  end
+end
+
+function flib_train.get_real_back(train, stationpos)
+  if flib_misc.get_distance(train.front_stock.position, stationpos) < flib_misc.get_distance(train.back_stock.position, stationpos) then
+    return train.back_stock
+  else
+    return train.front_stock
+  end
+end
+
+function flib_train.swap_rail_direction(raildirection)
+  if raildirection == rail_direction.front then
+    return rail_direction.back
+  else
+    return rail_direction.front
+  end
 end
 
 return flib_train

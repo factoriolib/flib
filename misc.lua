@@ -7,6 +7,9 @@ local flib_misc = {}
 local math_sqrt = math.sqrt
 local math_floor = math.floor
 local string_format = string.format
+local wire_type = defines.wire_type
+local type = type
+local tonumber = tonumber
 
 --- Calculate the distance in tiles between two positions.
 -- @tparam Concepts.Position pos1
@@ -49,6 +52,41 @@ function flib_misc.ticks_to_timestring(tick)
   else
     return string_format(format_string_1, minutes, seconds)
   end
+end
+
+function flib_misc.get_signal_value(entity, signal)
+  local red = entity.get_circuit_network(wire_type.red)
+  local green = entity.get_circuit_network(wire_type.green)
+  local value = 0
+  if red then
+    value = red.get_signal_value(signal)
+  end
+  if green then
+    value = value + green.get_signal_value(signal)
+  end
+  return value
+end
+
+function flib_misc.check_signal(signal, blacklist_table)
+  if type(signal) == "table" then
+    local name = signal.name
+    local signaltype = signal.type
+    if blacklist_table[name] or (signaltype == "fluid" and not game.fluid_prototypes[name]) or (signaltype == "item" and not game.item_prototypes[name]) or signaltype == "virtual" and not game.virtual_signal_prototypes[name] then
+      return nil
+    end
+    return signal
+  else
+    return nil
+  end
+end
+
+function flib_misc.color_to_hex(color)
+  return string.format("#%.2X%.2X%.2X", color.r or color[1], color.g or color[2], color.b or color[3])
+end
+
+function flib_misc.hex_to_color(hex)
+  hex = hex:gsub("#", "")
+  return {r = tonumber("0x"..hex:sub(1, 2)), g = tonumber("0x"..hex:sub(3, 4)), b = tonumber("0x"..hex:sub(5,6))}
 end
 
 return flib_misc

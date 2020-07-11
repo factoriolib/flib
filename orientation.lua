@@ -23,6 +23,9 @@ flib_orientation.southeast = defines.direction.southeast / 8
 flib_orientation.southwest = defines.direction.southwest / 8
 
 local floor = math.floor
+local atan2 = math.atan2
+local pi = math.pi
+local abs = math.abs
 
 --- Returns a 4way or 8way direction from an orientation.
 -- @tparam float orientation
@@ -47,6 +50,16 @@ end
 -- @treturn float the orientations added together
 function flib_orientation.add(orientation1, orientation2)
   return (orientation1 + orientation2) % 1
+end
+
+function flib_orientation.get_orientation(entitypos, targetpos)
+  local x = targetpos.x or targetpos[1] - entitypos.x or entitypos[1]
+  local y = targetpos.y or targetpos[2] - entitypos.y or entitypos[2]
+  return (atan2(y, x) / 2 / pi + 0.25) % 1
+end
+
+function flib_orientation.orientation_match(orientation1, orientation2)
+  return abs(orientation1 - orientation2) < 0.25 or abs(orientation1 - orientation2) > 0.75
 end
 
 return flib_orientation
