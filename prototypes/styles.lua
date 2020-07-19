@@ -1,10 +1,11 @@
+local styles = data.raw["gui-style"].default
+
 -- SLOT BUTTON STYLES
 
 local slot_tileset = "__flib__/graphics/slots.png"
-local styles = data.raw["gui-style"].default
 
 local function gen_slot(x, y, default_offset)
-  local default_offset = default_offset or 0
+  default_offset = default_offset or 0
   return {
     type = "button_style",
     parent = "slot",
@@ -25,7 +26,7 @@ local function gen_slot(x, y, default_offset)
 end
 
 local function gen_slot_button(x, y, default_offset, glow)
-  local default_offset = default_offset or 0
+  default_offset = default_offset or 0
   return {
     type = "button_style",
     parent = "slot_button",
@@ -51,7 +52,7 @@ local function gen_slot_button(x, y, default_offset, glow)
 end
 
 local function gen_standalone_slot_button(x, y, default_offset)
-  local default_offset = default_offset or 0
+  default_offset = default_offset or 0
   return {
     type = "button_style",
     parent = "slot_button",
@@ -94,3 +95,37 @@ for _, data in pairs(slot_data) do
   styles["flib_standalone_slot_button_"..data.name] = gen_standalone_slot_button(240, data.y)
   styles["flib_selected_standalone_slot_button_"..data.name] = gen_standalone_slot_button(240, data.y, 80)
 end
+
+-- EMPTY-WIDGET STYLES
+
+styles.flib_dialog_footer_drag_handle = {
+  type = "empty_widget_style",
+  parent = "draggable_space",
+  height = 32,
+  horizontally_stretchable = "on"
+}
+
+styles.flib_dialog_titlebar_drag_handle = {
+  type = "empty_widget_style",
+  parent = "flib_titlebar_drag_handle",
+  right_margin = 0
+}
+
+styles.flib_horizontal_pusher = {
+  type = "empty_widget_style",
+  horizontally_stretchable = "on"
+}
+
+styles.flib_titlebar_drag_handle = {
+  type = "empty_widget_style",
+  parent = "draggable_space",
+  left_margin = 4,
+  right_margin = 4,
+  height = 24,
+  horizontally_stretchable = "on"
+}
+
+styles.flib_vertical_pusher = {
+  type = "empty_widget_style",
+  vertically_stretchable = "on"
+}
