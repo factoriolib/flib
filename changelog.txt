@@ -7,6 +7,7 @@ Date: ????
     - The base mod is now marked as optional, to allow compatibility with total overhaul mods
   Bugfixes:
     - Fixed a crash with the GUI module when a handler was removed between mod versions while being registered in global
+    - Fixed that gui.remove_player_filters() would not update lookup tables
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.5
 Date: 2020-06-30
