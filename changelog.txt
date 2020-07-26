@@ -3,6 +3,8 @@ Version: 0.1.6
 Date: ????
   Features:
     - Added gui.check_filter_validity(), which is a new REQUIRED setup function for the GUI module
+    - Added translation.is_translating(), which checks whether the given player is actively translating
+    - Added translation.translating_players_count(), which returns the number of players that are actively translating
     - Added several button and empty-widget styles, see "styles.md" topic in docs
   Changes:
     - The base mod is now marked as optional, to allow compatibility with total overhaul mods

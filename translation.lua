@@ -204,6 +204,19 @@ function flib_translation.cancel(player_index)
   __translation.translating_players_count = __translation.translating_players_count - 1
 end
 
+--- Check whether a player is actively translating.
+-- @tparam uint player_index
+-- @treturn boolean
+function flib_translation.is_translating(player_index)
+  return global.__flib.translation.players[player_index] and true or false
+end
+
+--- Check the number of players currently translating.
+-- @treturn uint
+function flib_translation.translating_players_count()
+  return global.__flib.translation.translating_players_count
+end
+
 --- Serialise a localised string into a form readable by the API.
 -- Gives a similar result to serpent.line(), but is much faster.
 -- @tparam Concepts.LocalisedString localised_string
