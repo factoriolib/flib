@@ -71,13 +71,16 @@ local function generate_filter_lookup()
       if player_index ~= "__size" then
         for filter, handler_name in pairs(filters) do
           if filter ~= "__size" then
-            local handler_filters = handler_lookup[handler_name].filters
-            local player_filters = handler_filters[player_index]
-            if player_filters then
-              player_filters[filter] = filter
-              player_filters.__size = player_filters.__size + 1
-            else
-              handler_filters[player_index] = {__size=1, [filter]=filter}
+            local handler_table = handler_lookup[handler_name]
+            if handler_table then
+              local handler_filters = handler_table.filters
+              local player_filters = handler_filters[player_index]
+              if player_filters then
+                player_filters[filter] = filter
+                player_filters.__size = player_filters.__size + 1
+              else
+                handler_filters[player_index] = {__size=1, [filter]=filter}
+              end
             end
           end
         end
