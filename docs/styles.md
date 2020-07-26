@@ -2,39 +2,39 @@ FLib includes several GUI styles for your use and convenience. For help and info
 
 **IMPORTANT:** Modifying these styles in any way will modify them for all mods using them. Therefore, unless you are specifically creating a GUI skin mod, **DO NOT MODIFY THESE STYLES!** Instead, create your own new styles using these styles as parents, then modify those new styles as you wish.
 
-## Button styles
+### Button styles
 
-### flib_selected_frame_action_button
+**flib_selected_frame_action_button**
 
 A "selected" frame action button. Use when a frame action button can "toggle" on and off.
 
-### flib_selected_tool_button
+**flib_selected_tool_button**
 
 A "selected" tool button. Use when a tool button can "toggle" on and off.
 
-## Empty widget styles
+### Empty widget styles
 
-### flib_dialog_footer_drag_handle
+**flib_dialog_footer_drag_handle**
 
 A drag handle suitable for placement in the footer of a **dialog** window.
 
-### flib_dialog_titlebar_drag_handle
+**flib_dialog_titlebar_drag_handle**
 
 A drag handle suitable for placement in the titlebar of a **dialog** window.
 
-### flib_horizontal_pusher
+**flib_horizontal_pusher**
 
 An invisible element that has `horizontally_stretchable` set, thereby "pushing" everything to the right.
 
-### flib_titlebar_drag_handle
+**flib_titlebar_drag_handle**
 
 A drag handle suitable for placement in the titlebar of a **standard** window (a window with a close button, or any other frame action buttons in the titlebar).
 
-### flib_vertical_pusher
+**flib_vertical_pusher**
 
 An invisible element that has `vertically_stretchable` set, thereby "pushing" everything to the bottom.
 
-## Slot styles
+### Slot styles
 
 FLib includes a myriad of colored slot styles for use with `sprite-button`s:
 
