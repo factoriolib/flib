@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------------------------------
-Version: 0.1.6
+Version: 0.2.0
 Date: ????
   Features:
     - Added gui.check_filter_validity(), which is a new REQUIRED setup function for the GUI module
