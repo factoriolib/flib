@@ -1,6 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.6
 Date: ????
+  Features:
+    - Added gui.check_filter_validity(), which is a new REQUIRED setup function for the GUI module. See GUI module docs for more information
   Changes:
     - The base mod is now marked as optional, to allow compatibility with total overhaul mods
   Bugfixes:

@@ -118,6 +118,36 @@ function flib_gui.build_lookup_tables()
   end
 end
 
+--- Purge all filters tied to non-existent handlers from `global`.
+-- Must be called during `on_configuration_changed`.
+-- This function is necessary in order to prevent crashes when a handler was removed between mod versions, but still has
+-- filters assigned to it stored in `global`.
+function flib_gui.check_filter_validity()
+  local filters_table = global.__flib.gui
+  for event_name, event_filters in pairs(filters_table) do
+    for player_index, player_filters in pairs(event_filters) do
+      if player_index ~= "__size" then
+        for filter, handler_name in pairs(player_filters) do
+          if filter ~= "__size" then
+            local handler_data = handler_lookup[handler_name]
+            if not handler_data then
+              player_filters[filter] = nil
+              player_filters.__size = player_filters.__size - 1
+            end
+          end
+        end
+        if player_filters.__size == 0 then
+          event_filters[player_index] = nil
+          event_filters.__size = event_filters.__size - 1
+          if event_filters.__size == 0 then
+            filters_table[event_name] = nil
+          end
+      end
+      end
+    end
+  end
+end
+
 --- Register handlers for all GUI events to pass through the module.
 -- This is completely optional, but saves you having to create handlers for all GUI events simply to call
 -- @{gui.dispatch_handlers}. If custom logic is needed, handlers may be overwritten after calling this.
