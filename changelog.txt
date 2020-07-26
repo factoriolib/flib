@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.2.0
-Date: ????
+Date: 2020-07-26
   Features:
     - Added gui.check_filter_validity(), which is a new REQUIRED setup function for the GUI module
     - Added translation.is_translating(), which checks whether the given player is actively translating
