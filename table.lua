@@ -2,6 +2,10 @@
 --
 -- Extends the [Lua 5.2 table library](https://www.lua.org/manual/5.2/manual.html#6.5). As such, all functions available
 -- there are also available here.
+--
+-- **NOTE:** Several functions in this module will only work with [arrays](https://www.lua.org/pil/11.1.html), which are
+-- tables with sequentially numbered keys. All table functions will work with arrays as well, but array functions
+-- **will not** work with tables.
 -- @module table
 -- @alias flib_table
 -- @usage local table = require('__flib__.table')
@@ -251,5 +255,60 @@ end
 -- @tparam table tbl
 -- @treturn uint Size of the table.
 flib_table.size = table_size
+
+--- Retrieve a shallow copy of a portion of an array, selected from `start` to `end` inclusive.
+--
+-- The original array **will not** be modified.
+-- @tparam array arr
+-- @tparam[opt=1] int start
+-- @tparam[opt=#arr] int stop Stop at this index. If negative, will stop `n` items from the end of the array.
+-- @treturn array A new array with the copied values.
+function flib_table.slice(arr, start, stop)
+  local output = {}
+  local n = #arr
+
+  start = start or 1
+  stop = stop or n
+  stop = stop < 0 and (n + stop + 1) or stop
+
+  if start < 1 or start > n then
+    return {}
+  end
+
+  local k = 1
+  for i = start, stop do
+    output[k] = arr[i]
+    k = k + 1
+  end
+  return output
+end
+
+--- Extract a portion of an array, selected from `start` to `end` inclusive.
+--
+-- The original array **will** be modified.
+-- @tparam array arr
+-- @tparam[opt=1] int start
+-- @tparam[opt=#arr] int stop Stop at this index. If negative, will stop `n` items from the end of the array.
+-- @treturn array A new array with the extracted values.
+function flib_table.splice(arr, start, stop)
+  local output = {}
+  local n = #arr
+
+  start = start or 1
+  stop = stop or n
+  stop = stop < 0 and (n + stop + 1) or stop
+
+  if start < 1 or start > n then
+    return {}
+  end
+
+  local k = 1
+  for _ = start, stop do
+    output[k] = arr[start]
+    table.remove(arr, start)
+    k = k + 1
+  end
+  return output
+end
 
 return flib_table
