@@ -1,4 +1,7 @@
 --- Functions for working with arrays and tables.
+--
+-- Extends the [Lua 5.2 table library](https://www.lua.org/manual/5.2/manual.html#6.5). As such, all functions available
+-- there are also available here.
 -- @module table
 -- @alias flib_table
 -- @usage local table = require('__flib__.table')
@@ -7,6 +10,27 @@ local flib_table = {}
 -- import lua table functions
 for name, func in pairs(table) do
   flib_table[name] = func
+end
+
+--- Recursively compare two tables for inner equality.
+--
+-- Does not compare metatables.
+-- @tparam table tbl1
+-- @tparam table tbl2
+-- @treturn boolean If the tables are the same.
+function flib_table.deep_compare(tbl1, tbl2)
+  if tbl1 == tbl2 then return true end
+  for k, v in pairs( tbl1 ) do
+    if  type(v) == "table" and type(tbl2[k]) == "table" then
+      if not flib_table.deep_compare( v, tbl2[k] )  then return false end
+    else
+      if ( v ~= tbl2[k] ) then return false end
+    end
+  end
+  for k, v in pairs( tbl2 ) do
+    if tbl1[k] == nil then return false end
+  end
+  return true
 end
 
 --- Recursively copy the contents of a table into a new table.
@@ -63,26 +87,43 @@ function flib_table.deep_merge(tables)
   return output
 end
 
---- Iterate over a set number of items in a table, returning the next starting key and the results of `body`.
+--- Call the given function for each item in the table.
 --
--- Runs `body(value, key)` over `n` items from `tbl`, starting after `from_k`.
+-- If the callback returns a truthy value, iteration is aborted.
+-- @tparam table tbl
+-- @tparam function callback Receives `value` and `key` as parameters.
+-- @treturn table The table where the callback has been applied to its elements.
+function flib_table.for_each(tbl, callback)
+  for k, v in pairs(tbl) do
+    if callback(v, k) then
+      break
+    end
+  end
+  return tbl
+end
+
+--- Call the given function on a set number of items in a table, returning the next starting key and the results of the
+-- callback.
 --
--- The first return value of each invocation of `body` will be collected and returned in a table keyed by the current
--- item's key.
+-- Calls `callback(value, key)` over `n` items from `tbl`, starting after `from_k`.
 --
--- The second return value of `body` is a flag requesting deletion of the current item.
+-- The first return value of each invocation of `callback` will be collected and returned in a table keyed by the
+-- current item's key.
 --
--- **DO NOT** delete entires from `tbl` from within `body`, this will break the iteration.
+-- The second return value of `callback` is a flag requesting deletion of the current item.
+--
+-- **DO NOT** delete entires from `tbl` from within `callback`, this will break the iteration. Use the deletion flag
+-- return instead.
 ---@tparam table tbl The table to iterate over.
 ---@tparam any|nil from_k The key to start iteration at, or `nil` to start at the beginning of `tbl`. If the key does
 -- not exist in `tbl`, it will be treated as `nil`.
 ---@tparam uint n The number of items to iterate.
----@tparam function body Callback that will be run for each element in `tbl`.
+---@tparam function callback Receives `value` and `key` parameters.
 ---@tparam[opt] function _next A custom `next()` function. If not provided, the default `next()` will be used.
 ---@treturn any|nil Where the iteration ended. Can be any valid table key, or `nil` if the end of `tbl` was reached.
 -- Pass this as `from_k` in the next call to `for_n_of` for `tbl`.
----@treturn table The results compiled from the first return of `body`.
-function flib_table.for_n_of(tbl, from_k, n, body, _next)
+---@treturn table The results compiled from the first return of `callback`.
+function flib_table.for_n_of(tbl, from_k, n, callback, _next)
   -- allow non-default `next` function
   -- use `next` if unspecified
   if not _next then _next = next end
@@ -107,7 +148,7 @@ function flib_table.for_n_of(tbl, from_k, n, body, _next)
     end
 
     if v then
-      result[from_k],delete = body(v, from_k)
+      result[from_k],delete = callback(v, from_k)
       if delete then
         delete = from_k
       end
@@ -140,6 +181,19 @@ function flib_table.filter(tbl, filter)
   return output
 end
 
+--- Invert the given table such that `[value] = key`.
+--
+-- Non-unique values are overwritten based on the ordering from `pairs()`.
+-- @tparam table tbl
+-- @treturn table The inverted table.
+function flib_table.invert(tbl)
+  local inverted = {}
+  for k, v in pairs(tbl) do
+    inverted[v] = k
+  end
+  return inverted
+end
+
 --- Create a transformed table using the output of a mapper function.
 --
 -- Calls `mapper(value, key)` on each element in the table, using the return as the new value for the key.
@@ -170,5 +224,32 @@ function flib_table.reduce(arr, reducer, initial_value)
   end
   return accumulator
 end
+
+--- Shallowly copy the contents of a table into a new table.
+--
+-- The parent table will have a new table reference, but any subtables within it will still have the same table
+-- reference.
+-- @tparam table tbl
+-- @tparam boolean use_rawset Use rawset to set the values (ignores .__index metamethod).
+-- @treturn table The copied table.
+function flib_table.shallow_copy(tbl, use_rawset)
+  local output = {}
+  for k, v in pairs(tbl) do
+    if use_rawset then
+      rawset(tbl, k, v)
+    else
+      output[k] = v
+    end
+  end
+  return output
+end
+
+--- Retrieve the size of a table.
+-- @function size
+--
+-- Uses Factorio's built-in `table_size` function.
+-- @tparam table tbl
+-- @treturn uint Size of the table.
+flib_table.size = table_size
 
 return flib_table
