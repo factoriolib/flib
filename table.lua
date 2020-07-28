@@ -22,14 +22,14 @@ end
 -- @treturn boolean If the tables are the same.
 function flib_table.deep_compare(tbl1, tbl2)
   if tbl1 == tbl2 then return true end
-  for k, v in pairs( tbl1 ) do
+  for k, v in pairs(tbl1) do
     if  type(v) == "table" and type(tbl2[k]) == "table" then
       if not flib_table.deep_compare( v, tbl2[k] )  then return false end
     else
-      if ( v ~= tbl2[k] ) then return false end
+      if v ~= tbl2[k] then return false end
     end
   end
-  for k, v in pairs( tbl2 ) do
+  for k in pairs(tbl2) do
     if tbl1[k] == nil then return false end
   end
   return true
@@ -75,8 +75,8 @@ function flib_table.deep_merge(tables)
   local output = {}
   for _, tbl in ipairs(tables) do
     for k, v in pairs(tbl) do
-      if (type(v) == "table") then
-        if (type(output[k] or false) == "table") then
+      if type(v) == "table" then
+        if type(output[k] or false) == "table" then
           output[k] = flib_table.merge{output[k], v}
         else
           output[k] = table.deepcopy(v)
