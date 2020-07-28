@@ -1,7 +1,5 @@
---- Functions for working with arrays and tables.
---
--- Extends the [Lua 5.2 table library](https://www.lua.org/manual/5.2/manual.html#6.5). As such, all functions available
--- there are also available here.
+--- Extends the [Lua 5.2 table library](https://www.lua.org/manual/5.2/manual.html#6.5), adding more capabilities and
+-- functions.
 --
 -- **NOTE:** Several functions in this module will only work with [arrays](https://www.lua.org/pil/11.1.html), which are
 -- tables with sequentially numbered keys. All table functions will work with arrays as well, but array functions
@@ -168,24 +166,32 @@ function flib_table.for_n_of(tbl, from_k, n, callback, _next)
   return from_k, result
 end
 
---- Filter a table based on the result of a filter function.
+--- Create a filtered version of a table based on the results of a filter function.
 --
 -- Calls `filter(value, key)` on each element in the table, returning a new table with only pairs for which
 -- `filter` returned a truthy value.
 -- @tparam table tbl
 -- @tparam function filter Takes in `value` and `key` as parameters.
+-- @tparam[opt] boolean If true, the result will be constructed as an array of values that matched the filter. Key
+-- references will be lost.
 -- @treturn table A new table containing only the filtered values.
-function flib_table.filter(tbl, filter)
+function flib_table.filter(tbl, filter, array_insert)
   local output = {}
+  local i = 0
   for k, v in pairs(tbl) do
     if filter(v, k) then
-      output[k] = v
+      if array_insert then
+        i = i + 1
+        output[i] = v
+      else
+        output[k] = v
+      end
     end
   end
   return output
 end
 
---- Invert the given table such that `[value] = key`.
+--- Invert the given table such that `[value] = key`, returning a new table.
 --
 -- Non-unique values are overwritten based on the ordering from `pairs()`.
 -- @tparam table tbl
@@ -233,6 +239,8 @@ end
 --
 -- The parent table will have a new table reference, but any subtables within it will still have the same table
 -- reference.
+--
+-- Does not copy metatables.
 -- @tparam table tbl
 -- @tparam boolean use_rawset Use rawset to set the values (ignores .__index metamethod).
 -- @treturn table The copied table.
@@ -240,7 +248,7 @@ function flib_table.shallow_copy(tbl, use_rawset)
   local output = {}
   for k, v in pairs(tbl) do
     if use_rawset then
-      rawset(tbl, k, v)
+      rawset(output, k, v)
     else
       output[k] = v
     end
@@ -304,8 +312,7 @@ function flib_table.splice(arr, start, stop)
 
   local k = 1
   for _ = start, stop do
-    output[k] = arr[start]
-    table.remove(arr, start)
+    output[k] = table.remove(arr, start)
     k = k + 1
   end
   return output
