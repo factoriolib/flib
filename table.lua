@@ -77,9 +77,9 @@ function flib_table.deep_merge(tables)
     for k, v in pairs(tbl) do
       if type(v) == "table" then
         if type(output[k] or false) == "table" then
-          output[k] = flib_table.merge{output[k], v}
+          output[k] = flib_table.deep_merge{output[k], v}
         else
-          output[k] = table.deepcopy(v)
+          output[k] = flib_table.deep_copy(v)
         end
       else
         output[k] = v
