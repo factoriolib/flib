@@ -150,12 +150,12 @@ function flib_table.for_n_of(tbl, from_k, n, callback, _next)
     end
 
     if v then
-      result[from_k],delete = callback(v, from_k)
+      result[from_k], delete = callback(v, from_k)
       if delete then
         delete = from_k
       end
     else
-      return from_k,result
+      return from_k, result
     end
   end
 
