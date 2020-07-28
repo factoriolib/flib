@@ -172,8 +172,8 @@ end
 -- `filter` returned a truthy value.
 -- @tparam table tbl
 -- @tparam function filter Takes in `value` and `key` as parameters.
--- @tparam[opt] boolean If true, the result will be constructed as an array of values that matched the filter. Key
--- references will be lost.
+-- @tparam[opt] boolean array_insert If true, the result will be constructed as an array of values that matched the
+-- filter. Key references will be lost.
 -- @treturn table A new table containing only the filtered values.
 function flib_table.filter(tbl, filter, array_insert)
   local output = {}
