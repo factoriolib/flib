@@ -71,6 +71,13 @@ end
 -- Non-merged tables are deep-copied, so the result is brand-new.
 -- @tparam array tables An array of tables to merge.
 -- @treturn table The merged tables.
+-- @usage
+-- local tbl = {foo = "bar"}
+-- log(tbl.foo) -- logs "bar"
+-- log (tbl.bar) -- errors (key is nil)
+-- tbl = table.merge{tbl, {foo = "baz", set = 3}}
+-- log(tbl.foo) -- logs "baz"
+-- log(tbl.bar) -- logs "3"
 function flib_table.deep_merge(tables)
   local output = {}
   for _, tbl in ipairs(tables) do
@@ -89,19 +96,28 @@ function flib_table.deep_merge(tables)
   return output
 end
 
---- Call the given function for each item in the table.
+--- Call the given function for each item in the table, abort if the function returns truthy.
 --
--- If the callback returns a truthy value, iteration is aborted.
+-- Calls `callback(value, key, tbl)` for each item in the table, and immediately ceases iteration if the callback
+-- returns a truthy value.
 -- @tparam table tbl
--- @tparam function callback Receives `value` and `key` as parameters.
--- @treturn table The table where the callback has been applied to its elements.
+-- @tparam function callback Receives `value`, `key`, and `tbl` as parameters.
+-- @treturn boolean Whether the callback returned true for any one item, and thus halted iteration.
+-- @usage
+-- local tbl = {1, 2, 3, 4, 5}
+-- -- run a function for each item (identical to a standard FOR loop)
+-- table.for_each(tbl, function(v) game.print(v) end)
+-- -- determine if any value in the table passes the test
+-- local value_is_even = table.for_each(tbl, function(v) return v % 2 == 0 end)
+-- -- determine if ALL values in the table pass the test (invert the test result and function return)
+-- local all_values_less_than_six = not table.for_each(tbl, function(v) return not (v < 6) end)
 function flib_table.for_each(tbl, callback)
   for k, v in pairs(tbl) do
-    if callback(v, k) then
-      break
+    if callback(v, k, tbl) then
+      return true
     end
   end
-  return tbl
+  return false
 end
 
 --- Call the given function on a set number of items in a table, returning the next starting key and the results of the
@@ -120,11 +136,23 @@ end
 ---@tparam any|nil from_k The key to start iteration at, or `nil` to start at the beginning of `tbl`. If the key does
 -- not exist in `tbl`, it will be treated as `nil`.
 ---@tparam uint n The number of items to iterate.
----@tparam function callback Receives `value` and `key` parameters.
+---@tparam function callback Receives `value` and `key` as parameters.
 ---@tparam[opt] function _next A custom `next()` function. If not provided, the default `next()` will be used.
 ---@treturn any|nil Where the iteration ended. Can be any valid table key, or `nil` if the end of `tbl` was reached.
 -- Pass this as `from_k` in the next call to `for_n_of` for `tbl`.
 ---@treturn table The results compiled from the first return of `callback`.
+-- @usage
+-- local extremely_large_table = {
+--   [1000] = 1,
+--   [999] = 2,
+--   [998] = 3,
+--   ...,
+--   [2] = 999,
+--   [1] = 1000,
+-- }
+-- event.on_tick(function()
+--   global.from_k = table.for_n_of(extremely_large_table, global.from_k, 10, function(v) game.print(v) end)
+-- end)
 function flib_table.for_n_of(tbl, from_k, n, callback, _next)
   -- allow non-default `next` function
   -- use `next` if unspecified
@@ -168,13 +196,17 @@ end
 
 --- Create a filtered version of a table based on the results of a filter function.
 --
--- Calls `filter(value, key)` on each element in the table, returning a new table with only pairs for which
+-- Calls `filter(value, key, tbl)` on each element in the table, returning a new table with only pairs for which
 -- `filter` returned a truthy value.
 -- @tparam table tbl
--- @tparam function filter Takes in `value` and `key` as parameters.
+-- @tparam function filter Takes in `value`, `key`, and `tbl` as parameters.
 -- @tparam[opt] boolean array_insert If true, the result will be constructed as an array of values that matched the
 -- filter. Key references will be lost.
 -- @treturn table A new table containing only the filtered values.
+-- @usage
+-- local tbl = {1, 2, 3, 4, 5, 6}
+-- local just_evens = table.filter(tbl, function(v) return v % 2 == 0 end) -- {[2] = 2, [4] = 4, [6] = 6}
+-- local just_evens_arr = table.filter(tbl, function(v) return v % 2 == 0 end, true) -- {2, 4, 6}
 function flib_table.filter(tbl, filter, array_insert)
   local output = {}
   local i = 0
@@ -196,6 +228,9 @@ end
 -- Non-unique values are overwritten based on the ordering from `pairs()`.
 -- @tparam table tbl
 -- @treturn table The inverted table.
+-- @usage
+-- local tbl = {"foo", "bar", "baz", set = "baz"}
+-- local inverted = table.invert(tbl) -- {foo = 1, bar = 2, baz = "set"}
 function flib_table.invert(tbl)
   local inverted = {}
   for k, v in pairs(tbl) do
@@ -206,10 +241,13 @@ end
 
 --- Create a transformed table using the output of a mapper function.
 --
--- Calls `mapper(value, key)` on each element in the table, using the return as the new value for the key.
+-- Calls `mapper(value, key, tbl)` on each element in the table, using the return as the new value for the key.
 -- @tparam table tbl
--- @tparam function mapper Takes in `value` and `key` as parameters.
+-- @tparam function mapper Takes in `value`, `key`, and `tbl` as parameters.
 -- @treturn table A new table containing the transformed values.
+-- @usage
+-- local tbl = {1, 2, 3, 4, 5}
+-- local tbl_times_ten = table.map(tbl, function(v) return v * 10 end) -- {10, 20, 30, 40, 50}
 function flib_table.map(tbl, mapper)
   local output = {}
   for k, v in pairs(tbl) do
@@ -227,6 +265,10 @@ end
 -- the array will be used as the initial `accumulator` value and skipped as `index`. Calling `reduce()` on an empty
 -- array without an `initial_value` will cause a crash.
 -- @treturn any The accumulated value.
+-- @usage
+-- local tbl = {10, 20, 30, 40, 50}
+-- local sum = table.reduce(tbl, function(acc, v) return acc + v end)
+-- local sum_minus_ten = table.reduce(tbl, function(acc, v) return acc + v end, -10)
 function flib_table.reduce(arr, reducer, initial_value)
   local accumulator = initial_value or arr[1]
   for i = (initial_value and 1 or 2), #arr do
@@ -271,6 +313,10 @@ flib_table.size = table_size
 -- @tparam[opt=1] int start
 -- @tparam[opt=#arr] int stop Stop at this index. If negative, will stop `n` items from the end of the array.
 -- @treturn array A new array with the copied values.
+-- @usage
+-- local arr = {10, 20, 30, 40, 50, 60, 70, 80, 90}
+-- local sliced = table.slice(arr, 3, 7) -- {30, 40, 50, 60, 70}
+-- log(serpent.line(arr)) -- {10, 20, 30, 40, 50, 60, 70, 80, 90} (unchanged)
 function flib_table.slice(arr, start, stop)
   local output = {}
   local n = #arr
@@ -298,6 +344,10 @@ end
 -- @tparam[opt=1] int start
 -- @tparam[opt=#arr] int stop Stop at this index. If negative, will stop `n` items from the end of the array.
 -- @treturn array A new array with the extracted values.
+-- @usage
+-- local arr = {10, 20, 30, 40, 50, 60, 70, 80, 90}
+-- local spliced = table.splice(arr, 3, 7) -- {30, 40, 50, 60, 70}
+-- log(serpent.line(arr)) -- {10, 20, 80, 90} (values were removed)
 function flib_table.splice(arr, start, stop)
   local output = {}
   local n = #arr
