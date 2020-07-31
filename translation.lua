@@ -23,9 +23,9 @@ local type = type
 -- @section
 
 --- Initial setup.
--- Must be called at the **beginning** of `on_init`.
+-- Must be called at the **beginning** of `on_init`, and during `on_configuration_changed` **before** any translations are started.
 --
--- If adding the module to an existing mod, this must be called in `on_configuration_changed` for that version as well.
+-- This function will effectively cancel all running translations, so if that functionality is desired, this function is a good fit for it.
 function flib_translation.init()
   if not global.__flib then
     global.__flib = {}
