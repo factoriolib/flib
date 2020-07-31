@@ -374,12 +374,16 @@ end
 -- end)
 function flib_gui.dispatch_handlers(event_data)
   if not event_data.element or not event_data.player_index then return false end
-  local element = event_data.element
-  local element_name = string_gsub(element.name, "__.*", "")
+
   local event_filters = global.__flib.gui[event_data.name]
   if not event_filters then return false end
+
   local player_filters = event_filters[event_data.player_index]
   if not player_filters then return false end
+
+  local element = event_data.element
+  local element_name = string_gsub(element.name, "__.*", "")
+
   local handler_name = player_filters[element.index] or player_filters[element_name]
   if handler_name then
     handler_lookup[handler_name].handler(event_data)
