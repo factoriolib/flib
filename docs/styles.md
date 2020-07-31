@@ -12,6 +12,18 @@ A "selected" frame action button. Use when a frame action button can "toggle" on
 
 A "selected" tool button. Use when a tool button can "toggle" on and off.
 
+#### Slot styles
+
+FLib includes a myriad of colored slot styles for use with `sprite-button`s:
+
+![](https://raw.githubusercontent.com/factoriolib/flib/a4eb6f47828cad98b63d8bed78b9af6106891c45/docs/assets/slot-style-examples.png)
+
+There are three categories of style, from top to bottom: `slot`, `slot_button`, and `standalone_slot_button`. From left to right, the colors are `default`, `red`, `yellow`, `green`, `cyan`, `blue`, `purple`, and `pink`.
+
+The styles are formatted as `flib_CATEGORY_COLOR`. For example, if I want a pink standalone slot button (bottom-right on the preview image), I would use `flib_standalone_slot_button_pink`.
+
+Each slot style also has a `selected` variant, which uses the hovered graphics as default. This is intended to let a user "select" a button, and to let the mod visually distinguish it from other buttons around it. To use these styles, replace `flib_` with `flib_selected_` in the style you wish to use (e.g. `flib_selected_slot_button_green`).
+
 ### Empty widget styles
 
 **flib_dialog_footer_drag_handle**
@@ -34,14 +46,12 @@ A drag handle suitable for placement in the titlebar of a **standard** window (a
 
 An invisible element that has `vertically_stretchable` set, thereby "pushing" everything to the bottom.
 
-### Slot styles
+### Scroll pane styles
 
-FLib includes a myriad of colored slot styles for use with `sprite-button`s:
+**flib_naked_scroll_pane**
 
-![](https://raw.githubusercontent.com/factoriolib/flib/a4eb6f47828cad98b63d8bed78b9af6106891c45/docs/assets/slot-style-examples.png)
+A marginless scroll pane for use inside of content panes. When activated, it draws a shadow around its edges to give a more "inset" effect, to make it more obviously scrollable. The content is given an automatic 12px padding.
 
-There are three categories of style, from top to bottom: `slot`, `slot_button`, and `standalone_slot_button`. From left to right, the colors are `default`, `red`, `yellow`, `green`, `cyan`, `blue`, `purple`, and `pink`.
+**flib_naked_scroll_pane_under_tabs**
 
-The styles are formatted as `flib_CATEGORY_COLOR`. For example, if I want a pink standalone slot button (bottom-right on the preview image), I would use `flib_standalone_slot_button_pink`.
-
-Each slot style also has a `selected` variant, which uses the hovered graphics as default. This is intended to let a user "select" a button, and to let the mod visually distinguish it from other buttons around it. To use these styles, replace `flib_` with `flib_selected_` in the style you wish to use (e.g. `flib_selected_slot_button_green`).
+Identical to `flib_naked_scroll_pane`, but has an inset on the top side when activated. Designed for use inside of a `tabbed_pane_with_no_side_padding` when not using a toolbar.

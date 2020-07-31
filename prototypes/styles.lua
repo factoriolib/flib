@@ -161,3 +161,35 @@ styles.flib_vertical_pusher = {
   type = "empty_widget_style",
   vertically_stretchable = "on"
 }
+
+-- SCROLL-PANE STYLES
+
+styles.flib_naked_scroll_pane = {
+  type = "scroll_pane_style",
+  extra_padding_when_activated = 0,
+  padding = 0,
+  vertically_stretchable = "on",
+  graphical_set = {
+    shadow = default_inner_shadow
+  },
+  horizontal_flow_style = {
+    type = "horizontal_flow_style",
+    padding = 12
+  },
+  vertical_flow_style = {
+    type = "vertical_flow_style",
+    padding = 12
+  }
+}
+
+styles.flib_naked_scroll_pane_under_tabs = {
+  type = "scroll_pane_style",
+  parent = "flib_naked_scroll_pane",
+  graphical_set = {
+    base = {
+      top = {position = {93, 0}, size = {1, 8}},
+      draw_type = "outer"
+    },
+    shadow = default_inner_shadow
+  }
+}
