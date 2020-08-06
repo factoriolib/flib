@@ -4,7 +4,7 @@
 -- @usage local gui = require("__flib__.gui")
 local flib_gui = {}
 
-local util = require("__core__.lualib.util")
+local table = require("__flib__.table")
 
 local string_gmatch = string.gmatch
 local string_gsub = string.gsub
@@ -19,7 +19,7 @@ local handler_groups = {}
 
 local function generate_template_lookup(t, template_string)
   for k, v in pairs(t) do
-    if k ~= "extend" and type(v) == "table" then
+    if type(v) == "table" then
       local new_string = template_string..k
       if v.type or v.template then
         template_lookup[new_string] = v
@@ -45,7 +45,7 @@ local function generate_handler_lookup(t, event_string, groups)
       if v.handler then
         v.id = v.id or defines.events[k] or k
         v.filters = {}
-        v.groups = table.deepcopy(groups)
+        v.groups = table.deep_copy(groups)
         handler_lookup[new_string] = v
         -- assign handler to groups
         for i=1,#groups do
@@ -173,22 +173,6 @@ function flib_gui.register_handlers()
   end
 end
 
--- merge tables
-local function extend_table(self, t, do_return)
-  for k, v in pairs(t) do
-    if (type(v) == "table") then
-      if (type(self[k] or false) == "table") then
-        self[k] = extend_table(self[k], v, true)
-      else
-        self[k] = table.deepcopy(v)
-      end
-    else
-      self[k] = v
-    end
-  end
-  if do_return then return self end
-end
-
 --- Add content to the @{gui.templates} table.
 -- The table you provide will be merged with the current contents of the table.
 --
@@ -199,7 +183,9 @@ end
 -- @tparam table input
 -- @see gui.templates
 function flib_gui.add_templates(input)
-  extend_table(templates, input)
+  templates = table.deep_merge{templates, input}
+  -- because the reference is lost...
+  flib_gui.templates = templates
 end
 
 --- Add content to the @{gui.handlers} table.
@@ -209,7 +195,9 @@ end
 -- @tparam table input
 -- @see gui.handlers
 function flib_gui.add_handlers(input)
-  extend_table(handlers, input)
+  handlers = table.deep_merge{handlers, input}
+  -- because the reference is lost...
+  flib_gui.handlers = handlers
 end
 
 --- Functions
