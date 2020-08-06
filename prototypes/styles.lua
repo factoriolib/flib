@@ -78,13 +78,15 @@ end
 
 local slot_data = {
   {name="default", y=0, glow=default_glow_color},
-  {name="red", y=80, glow={230, 135, 135}},
-  {name="yellow", y=160, glow={230, 218, 135}},
-  {name="green", y=240, glow={153, 230, 135}},
-  {name="cyan", y=320, glow={135, 230, 230}},
-  {name="blue", y=400, glow={135, 186, 230}},
-  {name="purple", y=480, glow={188, 135, 230}},
-  {name="pink", y=560, glow={230, 135, 230}}
+  {name="white", y=80, glow=default_glow_color},
+  {name="red", y=160, glow={230, 135, 135}},
+  {name="orange", y=240, glow={216, 169, 122}}, -- CHANGE GLOW
+  {name="yellow", y=320, glow={230, 218, 135}},
+  {name="green", y=400, glow={153, 230, 135}},
+  {name="cyan", y=480, glow={135, 230, 230}},
+  {name="blue", y=560, glow={135, 186, 230}},
+  {name="purple", y=640, glow={188, 135, 230}},
+  {name="pink", y=720, glow={230, 135, 230}}
 }
 
 for _, data in pairs(slot_data) do

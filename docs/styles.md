@@ -18,7 +18,7 @@ FLib includes a myriad of colored slot styles for use with `sprite-button`s:
 
 ![](https://raw.githubusercontent.com/factoriolib/flib/a4eb6f47828cad98b63d8bed78b9af6106891c45/docs/assets/slot-style-examples.png)
 
-There are three categories of style, from top to bottom: `slot`, `slot_button`, and `standalone_slot_button`. From left to right, the colors are `default`, `red`, `yellow`, `green`, `cyan`, `blue`, `purple`, and `pink`.
+There are three categories of style, from top to bottom: `slot`, `slot_button`, and `standalone_slot_button`. From left to right, the colors are `default`, `white`, `red`, `orange`, `yellow`, `green`, `cyan`, `blue`, `purple`, and `pink`.
 
 The styles are formatted as `flib_CATEGORY_COLOR`. For example, if I want a pink standalone slot button (bottom-right on the preview image), I would use `flib_standalone_slot_button_pink`.
 

@@ -2,7 +2,9 @@
 Version: 0.2.1
 Date: ????
   Features:
+    - Added "white" and "orange" colored slot button styles
     - Added two new scroll-pane GUI styles
+    - Added "table" module for working with tables
   Changes:
     - translation.init() is now required to be run during on_configuration_changed, in addition to on_init
       - This is to prevent the module translating and returning strings for things that may not exist anymore
