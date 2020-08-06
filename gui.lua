@@ -382,6 +382,8 @@ function flib_gui.dispatch_handlers(event_data)
 end
 
 --- Add or remove GUI filters to or from a handler or group of handlers.
+-- When destroying a GUI element with a filter, be certain to call this function destroying that filter, to avoid
+-- memory leaks.
 -- @tparam string name The handler name, or group name.
 -- @tparam uint player_index
 -- @tparam GuiFilter[]|nil filters An array of filters, or `nil` to clear all filters when in `remove` mode.
