@@ -78,9 +78,9 @@ end
 
 local slot_data = {
   {name="default", y=0, glow=default_glow_color},
-  {name="white", y=80, glow=default_glow_color},
+  {name="grey", y=80, glow=default_glow_color},
   {name="red", y=160, glow={230, 135, 135}},
-  {name="orange", y=240, glow={216, 169, 122}}, -- CHANGE GLOW
+  {name="orange", y=240, glow={216, 169, 122}},
   {name="yellow", y=320, glow={230, 218, 135}},
   {name="green", y=400, glow={153, 230, 135}},
   {name="cyan", y=480, glow={135, 230, 230}},

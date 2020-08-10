@@ -2,7 +2,7 @@
 Version: 0.3.0
 Date: ????
   Features:
-    - Added "white" and "orange" colored slot button styles
+    - Added "grey" and "orange" colored slot button styles
     - Added two new scroll-pane GUI styles
     - Added "table" module for working with tables
   Changes:
