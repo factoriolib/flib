@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.0
-Date: ????
+Date: 2020-08-11
   Features:
     - Added "grey" and "orange" colored slot button styles
     - Added two new scroll-pane GUI styles
