@@ -96,7 +96,7 @@ function flib_table.deep_merge(tables)
   return output
 end
 
---- Call the given function for each item in the table, abort if the function returns truthy.
+--- Call the given function for each item in the table, and abort if the function returns truthy.
 --
 -- Calls `callback(value, key, tbl)` for each item in the table, and immediately ceases iteration if the callback
 -- returns a truthy value.
