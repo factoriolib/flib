@@ -51,4 +51,18 @@ function flib_misc.ticks_to_timestring(tick)
   end
 end
 
+--- Splits the given string, converting the results to the number-type if applicable
+-- @tparam string string The string to split
+-- @tparam string separator The separator to split along
+-- @treturn table The array containing the resulting substrings
+function flib_misc.split_string(string, separator)
+  local split_string = {}
+  for token in string.gmatch(string, "[^" .. separator .. "]+") do
+    local number_token = tonumber(token)
+    token = number_token or token
+    table.insert(split_string, token)
+  end
+  return split_string
+end
+
 return flib_misc
