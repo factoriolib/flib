@@ -5,6 +5,7 @@
 local flib_migration = {}
 
 local string_format = string.format
+local string_gmatch = string.gmatch
 local table_concat = table.concat
 
 local version_pattern = "%d+"
@@ -24,7 +25,7 @@ function flib_migration.format_version(version, format)
   if version then
     format = format or version_format
     local tbl = {}
-    for v in string.gmatch(version, version_pattern) do
+    for v in string_gmatch(version, version_pattern) do
       tbl[#tbl+1] = string_format(format, v)
     end
     if next(tbl) then
