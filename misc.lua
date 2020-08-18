@@ -4,10 +4,8 @@
 -- @usage local misc = require("__flib__.misc")
 local flib_misc = {}
 
-local math_sqrt = math.sqrt
-local math_floor = math.floor
-local string_format = string.format
-
+local math = math
+local string = string
 --- Calculate the distance in tiles between two positions.
 -- @tparam Concepts.Position pos1
 -- @tparam Concepts.Position pos2
@@ -17,7 +15,7 @@ function flib_misc.get_distance(pos1, pos2)
   local y1 = pos1.y or pos1[2]
   local x2 = pos2.x or pos2[1]
   local y2 = pos2.y or pos2[2]
-  return math_sqrt((x1-x2)^2 + (y1-y2)^2)
+  return math.sqrt((x1-x2)^2 + (y1-y2)^2)
 end
 
 --- Calculate the squared distance in tiles between two positions.
@@ -39,15 +37,15 @@ local format_string_2 = "%d:%02d:%02d"
 -- @tparam[opt=game.tick] uint tick
 -- @treturn string
 function flib_misc.ticks_to_timestring(tick)
-  local total_seconds = math_floor((tick or game.tick)/60)
+  local total_seconds = math.floor((tick or game.tick)/60)
   local seconds = total_seconds % 60
-  local minutes = math_floor(total_seconds/60)
+  local minutes = math.floor(total_seconds/60)
   if minutes > 59 then
     minutes = minutes % 60
-    local hours = math_floor(total_seconds/3600)
-    return string_format(format_string_2, hours, minutes, seconds)
+    local hours = math.floor(total_seconds/3600)
+    return string.format(format_string_2, hours, minutes, seconds)
   else
-    return string_format(format_string_1, minutes, seconds)
+    return string.format(format_string_1, minutes, seconds)
   end
 end
 
