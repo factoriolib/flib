@@ -195,3 +195,12 @@ styles.flib_naked_scroll_pane_under_tabs = {
     shadow = default_inner_shadow
   }
 }
+
+styles.flib_naked_scroll_pane_no_padding = {
+  type = "scroll_pane_style",
+  extra_padding_when_activated = 0,
+  padding = 0,
+  graphical_set = {
+    shadow = default_inner_shadow
+  }
+}

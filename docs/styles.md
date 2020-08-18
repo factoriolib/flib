@@ -55,3 +55,7 @@ A marginless scroll pane for use inside of content panes. When activated, it dra
 **flib_naked_scroll_pane_under_tabs**
 
 Identical to `flib_naked_scroll_pane`, but has an inset on the top side when activated. Designed for use inside of a `tabbed_pane_with_no_side_padding` when not using a toolbar.
+
+**flib_naked_scroll_pane_no_padding**
+
+Identical to `flib_naked_scroll_pane`, but has no padding for the content that's put inside. Useful for wrapping a table in a scroll pane, for example.
