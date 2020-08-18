@@ -1,23 +1,27 @@
-krastorio.entities = {}
+--- Data-stage functions for working with entities.
+-- @module entity
+-- @alias flib_entity
+local flib_entity = {}
 
--- -- -- TO DO
+-- TODO remove all pcalls
 
--- -- -- GETTING(READ) FUNCTIONS
+--- Data-stage functions
+-- @section
 
 --@ category_name
 --@ entity_name
-function krastorio.entities.getEntity(category_name, entity_name)
+function flib_entity.get(category_name, entity_name)
 	local no_err, entity = pcall(function() return data.raw[category_name][entity_name] end)
 	if no_err and entity ~= nil and next(entity) ~= nil then
 		return entity
 	end
-	return nil 
+	return nil
 end
 
 --@ category_name
 --@ entity_name
-function krastorio.entities.exist(category_name, entity_name)
-	local entity = krastorio.entities.getEntity(category_name, entity_name)
+function flib_entity.exists(category_name, entity_name)
+	local entity = flib_entity.get(category_name, entity_name)
 	return entity and type(entity) == "table"
 end
 
@@ -26,8 +30,8 @@ end
 --@ category_name
 --@ entity_name
 --@ to_remove_mask_name
-function krastorio.entities.removeCollisionMaskOnEntity(category_name, entity_name, to_remove_mask_name)
-	local entity = krastorio.entities.getEntity(category_name, entity_name)
+function flib_entity.remove_collision_mask(category_name, entity_name, to_remove_mask_name)
+	local entity = flib_entity.get(category_name, entity_name)
 	if entity then
 		local no_err, collision_mask = pcall(function() return entity.collision_mask end)
 		if no_err and collision_mask ~= nil then
@@ -45,8 +49,8 @@ end
 --@ category_name
 --@ entity_name
 --@ to_add_mask_name
-function krastorio.entities.addCollisionMaskOnEntity(category_name, entity_name, to_add_mask_name)
-	local entity = krastorio.entities.getEntity(category_name, entity_name)
+function flib_entity.add_collision_mask(category_name, entity_name, to_add_mask_name)
+	local entity = flib_entity.get(category_name, entity_name)
 	if entity then
 		local no_err, collision_mask = pcall(function() return entity.collision_mask end)
 		if no_err and collision_mask ~= nil then
@@ -62,8 +66,8 @@ end
 --@ category_name
 --@ entity_name
 --@ to_add_crafting_category
-function krastorio.entities.addCraftingCategory(category_name, entity_name, to_add_crafting_category)
-	local entity = krastorio.entities.getEntity(category_name, entity_name)
+function flib_entity.add_crafting_category(category_name, entity_name, to_add_crafting_category)
+	local entity = flib_entity.get(category_name, entity_name)
 	if entity and (entity.type == "assembling-machine" or entity.type == "furnace" or entity.type == "rocket-silo") and data.raw["recipe-category"][to_add_crafting_category] then
 		if entity.crafting_categories then
 			table.insert(entity.crafting_categories, to_add_crafting_category)
@@ -78,8 +82,8 @@ end
 --@ category_name
 --@ entity_name
 --@ to_remove_crafting_category
-function krastorio.entities.removeCraftingCategory(category_name, entity_name, to_remove_crafting_category)
-	local entity = krastorio.entities.getEntity(category_name, entity_name)
+function flib_entity.remove_crafting_category(category_name, entity_name, to_remove_crafting_category)
+	local entity = flib_entity.get(category_name, entity_name)
 	if entity and (entity.type == "assembling-machine" or entity.type == "furnace" or entity.type == "rocket-silo") and entity.crafting_categories then
 		for i, crafting_category in pairs(entity.crafting_categories) do
 			if crafting_category == to_remove_crafting_category then
@@ -91,28 +95,28 @@ function krastorio.entities.removeCraftingCategory(category_name, entity_name, t
 	return false
 end
 
-function krastorio.entities.getLabInputs(lab_name)
+function flib_entity.get_lab_inputs(lab_name)
 	if data.raw["lab"][lab_name] then
 		if data.raw["lab"][lab_name].inputs == nil then
 			data.raw["lab"][lab_name].inputs = {}
 		end
-		
+
 		return data.raw["lab"][lab_name].inputs
 	end
 	return nil
 end
 
-function krastorio.entities.addLabInput(lab_name, input_name)
-	local inputs = krastorio.entities.getLabInputs(lab_name)
+function flib_entity.add_lab_input(lab_name, input_name)
+	local inputs = flib_entity.get_lab_inputs(lab_name)
 	if inputs then
-		local finded = false
+		local found = false
 		for _, input in pairs(inputs) do
 			if input_name == input then
-				finded = true
+				found = true
 				break
 			end
 		end
-		if not finded then
+		if not found then
 			table.insert(inputs, input_name)
 			return true
 		end
@@ -120,45 +124,27 @@ function krastorio.entities.addLabInput(lab_name, input_name)
 	return false
 end
 
-function krastorio.entities.removeLabInput(lab_name, input_name)
-	local inputs = krastorio.entities.getLabInputs(lab_name)
+function flib_entity.remove_lab_input(lab_name, input_name)
+	local inputs = flib_entity.get_lab_inputs(lab_name)
 	if inputs then
-		local finded = false
+		local found = false
 		for i, input in pairs(inputs) do
 			if input_name == input then
-				finded = i
+				found = i
 				break
 			end
 		end
-		if finded then
-			table.remove(inputs, i, input_name)
+		if found then
+			table.remove(inputs, found)
 			return true
 		end
 	end
 	return false
 end
 
--- This should be used in control,
--- check if the entities is valid for be used.
--- @entity, entity
-function krastorio.entities.isValid(entity)
-	return entity and entity.valid ~= nil
-end
+function flib_entity.remove_fuel_category(category_name, entity_name, fuel_category)
+	local entity = flib_entity.get(category_name, entity_name)
 
--- This should be used in control,
--- check if entity has fluidbox,
--- check that if entity is not null too
--- @entity, entity to check fluidbox
-function krastorio.entities.entityHasFluidbox(entity)
-	if entity and type(entity) == "table" then
-		local fluidbox = entity.fluidbox
-		return fluidbox and #fluidbox > 0
-	end
-end
-
-function krastorio.entities.removeFuelCategory(category_name, entity_name, fuel_category)
-	local entity = krastorio.entities.getEntity(category_name, entity_name)
-	
 	if entity and type(entity) == "table" then
 		if entity.energy_source and entity.energy_source.type == "burner" then
 			if entity.energy_source.fuel_category and entity.energy_source.fuel_category == fuel_category then
@@ -175,8 +161,8 @@ function krastorio.entities.removeFuelCategory(category_name, entity_name, fuel_
 	end
 end
 
-function krastorio.entities.addFuelCategory(category_name, entity_name, fuel_category)
-	local entity = krastorio.entities.getEntity(category_name, entity_name)
+function flib_entity.add_fuel_category(category_name, entity_name, fuel_category)
+	local entity = flib_entity.get(category_name, entity_name)
 
 	if entity and type(entity) == "table" then
 		if entity.energy_source and entity.energy_source.type == "burner" then
@@ -191,8 +177,8 @@ function krastorio.entities.addFuelCategory(category_name, entity_name, fuel_cat
 	end
 end
 
-function krastorio.entities.overrideMiningResult(category_name, entity_name, mining_result)
-	local entity = krastorio.entities.getEntity(category_name, entity_name)
+function flib_entity.override_mining_result(category_name, entity_name, mining_result)
+	local entity = flib_entity.get(category_name, entity_name)
 
 	if entity and type(entity) == "table" then
 		entity.minable = mining_result
