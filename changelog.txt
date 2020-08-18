@@ -1,7 +1,10 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.1
 Date: ????
+  Features:
+    - Added flib_naked_scroll_pane_no_padding
   Changes:
+    - Removed vertically_stretchable from flib_naked_scroll_pane to fix zero-height issue in non-fixed-height containers
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.0
 Date: 2020-08-11

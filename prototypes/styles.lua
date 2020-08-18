@@ -169,18 +169,9 @@ styles.flib_vertical_pusher = {
 styles.flib_naked_scroll_pane = {
   type = "scroll_pane_style",
   extra_padding_when_activated = 0,
-  padding = 0,
-  vertically_stretchable = "on",
+  padding = 12,
   graphical_set = {
     shadow = default_inner_shadow
-  },
-  horizontal_flow_style = {
-    type = "horizontal_flow_style",
-    padding = 12
-  },
-  vertical_flow_style = {
-    type = "vertical_flow_style",
-    padding = 12
   }
 }
 
@@ -198,9 +189,6 @@ styles.flib_naked_scroll_pane_under_tabs = {
 
 styles.flib_naked_scroll_pane_no_padding = {
   type = "scroll_pane_style",
-  extra_padding_when_activated = 0,
-  padding = 0,
-  graphical_set = {
-    shadow = default_inner_shadow
-  }
+  parent = "flib_naked_scroll_pane",
+  padding = 0
 }
