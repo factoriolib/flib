@@ -109,11 +109,11 @@ styles.flib_selected_frame_action_button = {
   },
   hovered_graphical_set = {
     base = {position = {369, 17}, corner_size = 8},
-    shadow = default_dirt
+    shadow = {position = {440, 24}, corner_size = 8, draw_type = "outer"}
   },
   clicked_graphical_set = {
     base = {position = {352, 17}, corner_size = 8},
-    shadow = default_dirt
+    shadow = {position = {440, 24}, corner_size = 8, draw_type = "outer"}
   }
 }
 
