@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.1
-Date: ????
+Date: 2020-08-24
   Features:
     - Added event.register_on_entity_destroyed()
     - Added flib_naked_scroll_pane_no_padding GUI style
