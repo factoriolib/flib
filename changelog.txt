@@ -5,6 +5,7 @@ Date: ????
     - Added event.register_on_entity_destroyed()
     - Added flib_naked_scroll_pane_no_padding GUI style
   Changes:
+    - Updated to Factorio 1.0
     - Renamed data_util to data-util and reverse_defines to reverse-defines
       - The old paths will still work until v0.4.0, but will print deprecation warnings
     - Removed vertically_stretchable from the flib_naked_scroll_pane GUI style to fix zero-height issue in non-fixed-height containers
