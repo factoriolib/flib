@@ -5,7 +5,7 @@
     <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>orientation module</title>
+    <title>data-util module</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../spectre.min.css" type="text/css" />
     <link rel="stylesheet" href="../spectre-icons.min.css" type="text/css" />
@@ -41,13 +41,13 @@
     <li class="nav-item">
     <h2>Modules</h2>
     <ul class="nav">
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/data-util.html"><span class="module-name-item">data-util</span></a></div></li>
+    <li class="nav-item active"><div class="nav-item-block-active block"><a href="../modules/data-util.html"><span class="module-name-item">data-util</span></a><i class="icon icon-arrow-left icon-arrow-left-custom"></i></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/direction.html"><span class="module-name-item">direction</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/event.html"><span class="module-name-item">event</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/gui.html"><span class="module-name-item">gui</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/migration.html"><span class="module-name-item">migration</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/misc.html"><span class="module-name-item">misc</span></a></div></li>
-    <li class="nav-item active"><div class="nav-item-block-active block"><a href="../modules/orientation.html"><span class="module-name-item">orientation</span></a><i class="icon icon-arrow-left icon-arrow-left-custom"></i></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/orientation.html"><span class="module-name-item">orientation</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/reverse-defines.html"><span class="module-name-item">reverse-defines</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/table.html"><span class="module-name-item">table</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/train.html"><span class="module-name-item">train</span></a></div></li>
@@ -74,7 +74,7 @@
     <!-- list of items in a module -->
     <ul class="nav nav-module-contents">
     <li class="nav-item">
-    <h4>Contents of <strong>orientation</strong></h4>
+    <h4>Contents of <strong>data-util</strong></h4>
     <ul class="nav">
     <li class="nav-item"><a href="#Functions"><span class="fragment-hashtag">#</span> Functions</a></li>
     <li class="nav-item"><a href="#Fields"><span class="fragment-hashtag">#</span> Fields</a></li>
@@ -98,8 +98,8 @@
 
     <!-- module content header start -->
 
-    <h2><span class="body-module-name"><strong><em>orientation</em></strong></span> module</h2>
-    <p>Functions for working with orientations.</p>
+    <h2><span class="body-module-name"><strong><em>data-util</em></strong></span> module</h2>
+    <p>Misc functions for data stage prototype manipulation.</p>
     <p>
 </p>
 
@@ -109,7 +109,7 @@
 
     <!-- module usage start -->
     <h3>Usage</h3>
-    <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> orientation = <span class="global">require</span>(<span class="string">'__flib__.orientation'</span>)</code></pre>
+    <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> data_util = <span class="global">require</span>(<span class="string">'__flib__.data-util'</span>)</code></pre>
     <!-- module usage end -->
 
     <!-- module content header end -->
@@ -122,16 +122,20 @@
     </thead>
     <tbody>
     <tr>
-    <td class="name"><a href="#to_direction">to_direction(orientation[, eight_way=false])</a></td>
-    <td class="summary">Returns a 4way or 8way direction from an orientation.</td>
+    <td class="name"><a href="#copy_prototype">copy_prototype(prototype, new_name[, remove_icon=false])</a></td>
+    <td class="summary">Copy a prototype, assign new name and minable properties.</td>
     </tr>
     <tr>
-    <td class="name"><a href="#opposite">opposite(orientation)</a></td>
-    <td class="summary">Returns the opposite orientation.</td>
+    <td class="name"><a href="#create_icons">create_icons(prototype, new_layers)</a></td>
+    <td class="summary">Add new icon layers to a prototype icon or icons.</td>
     </tr>
     <tr>
-    <td class="name"><a href="#add">add(orientation1, orientation2)</a></td>
-    <td class="summary">Add two orientations together.</td>
+    <td class="name"><a href="#get_energy_value">get_energy_value(energy_string)</a></td>
+    <td class="summary">Convert an energy string to base unit value + suffix.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#build_sprite">build_sprite([name][, position][, filename][, size][, mipmap_count][, mods])</a></td>
+    <td class="summary">Build a sprite.</td>
     </tr>
     </tbody>
     </table>
@@ -142,36 +146,16 @@
     </thead>
     <tbody>
     <tr>
-    <td class="name"><a href="#north">north</a></td>
-    <td class="summary">north orientation</td>
+    <td class="name"><a href="#empty_image">empty_image</a></td>
+    <td class="summary">An empty image.</td>
     </tr>
     <tr>
-    <td class="name"><a href="#east">east</a></td>
-    <td class="summary">east orientation</td>
+    <td class="name"><a href="#black_image">black_image</a></td>
+    <td class="summary">A black image, for use with tool backgrounds.</td>
     </tr>
     <tr>
-    <td class="name"><a href="#west">west</a></td>
-    <td class="summary">west orientation</td>
-    </tr>
-    <tr>
-    <td class="name"><a href="#south">south</a></td>
-    <td class="summary">south orientation</td>
-    </tr>
-    <tr>
-    <td class="name"><a href="#northeast">northeast</a></td>
-    <td class="summary">northeast orientation</td>
-    </tr>
-    <tr>
-    <td class="name"><a href="#northwest">northwest</a></td>
-    <td class="summary">northwest orientation</td>
-    </tr>
-    <tr>
-    <td class="name"><a href="#southeast">southeast</a></td>
-    <td class="summary">southeast orientation</td>
-    </tr>
-    <tr>
-    <td class="name"><a href="#southwest">southwest</a></td>
-    <td class="summary">southwest orientation</td>
+    <td class="name"><a href="#planner_base_image">planner_base_image</a></td>
+    <td class="summary">A desaturated planner image.</td>
     </tr>
     </tbody>
     </table>
@@ -185,14 +169,14 @@
     <dt>
     <div class="divider divider-custom"></div>
     <div class="block section-item-header">
-    <a href="#to_direction" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="to_direction">to_direction(orientation[, eight_way=false])</span>
+    <a href="#copy_prototype" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="copy_prototype">copy_prototype(prototype, new_name[, remove_icon=false])</span>
     </div>
     </dt>
     <dd>
     <div class="section-item-body">
 
-    <p class="section-item-summary">Returns a 4way or 8way direction from an orientation.</p>
+    <p class="section-item-summary">Copy a prototype, assign new name and minable properties.</p>
     <p class="section-item-description">
 </p>
 
@@ -207,11 +191,11 @@
 
     <li class="section-subitem-li">
 
-    <strong><em>orientation</em></strong>
+    <strong><em>prototype</em></strong>
 
     <strong> : </strong>
 
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#float">float</a></span>)
+    (<span class="types"><a class="type" href="https://wiki.factorio.com/PrototypeBase">PrototypeBase</a></span>)
 
 
 
@@ -224,7 +208,23 @@
 
     <li class="section-subitem-li">
 
-    <strong><em>eight_way</em></strong>
+    <strong><em>new_name</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a></span>)
+
+     string
+
+    </li>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>remove_icon</em></strong>
 
     <strong> : </strong>
 
@@ -245,7 +245,7 @@
     <strong>Returns:</strong>
     <ul>
     <li>
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/defines.html#defines.direction">defines.direction</a></span>)
+    (<span class="types"><a class="type" href="https://wiki.factorio.com/PrototypeBase">PrototypeBase</a></span>)
     </li>
     </ul>
     <!-- returns end -->
@@ -261,14 +261,14 @@
     <dt>
     <div class="divider divider-custom"></div>
     <div class="block section-item-header">
-    <a href="#opposite" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="opposite">opposite(orientation)</span>
+    <a href="#create_icons" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="create_icons">create_icons(prototype, new_layers)</span>
     </div>
     </dt>
     <dd>
     <div class="section-item-body">
 
-    <p class="section-item-summary">Returns the opposite orientation.</p>
+    <p class="section-item-summary">Add new icon layers to a prototype icon or icons.</p>
     <p class="section-item-description">
 </p>
 
@@ -283,11 +283,28 @@
 
     <li class="section-subitem-li">
 
-    <strong><em>orientation</em></strong>
+    <strong><em>prototype</em></strong>
 
     <strong> : </strong>
 
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#float">float</a></span>)
+    (<span class="types"><a class="type" href="https://wiki.factorio.com/PrototypeBase">PrototypeBase</a></span>)
+
+
+
+
+    </li>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>new_layers</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://wiki.factorio.com/Types/IconSpecification">Types.IconSpecification[]</a></span>)
 
 
 
@@ -303,8 +320,7 @@
     <strong>Returns:</strong>
     <ul>
     <li>
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#float">float</a></span>)
-    <span class="return-text">the opposite orientation</span>
+    (<span class="types"><a class="type" href="https://wiki.factorio.com/Types/IconSpecification">Types.IconSpecification[]</a> or <a class="type" href="https://www.lua.org/pil/2.1.html">nil</a></span>)
     </li>
     </ul>
     <!-- returns end -->
@@ -320,14 +336,14 @@
     <dt>
     <div class="divider divider-custom"></div>
     <div class="block section-item-header">
-    <a href="#add" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="add">add(orientation1, orientation2)</span>
+    <a href="#get_energy_value" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="get_energy_value">get_energy_value(energy_string)</span>
     </div>
     </dt>
     <dd>
     <div class="section-item-body">
 
-    <p class="section-item-summary">Add two orientations together.</p>
+    <p class="section-item-summary">Convert an energy string to base unit value + suffix.</p>
     <p class="section-item-description">
 </p>
 
@@ -342,28 +358,11 @@
 
     <li class="section-subitem-li">
 
-    <strong><em>orientation1</em></strong>
+    <strong><em>energy_string</em></strong>
 
     <strong> : </strong>
 
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#float">float</a></span>)
-
-
-
-
-    </li>
-
-
-
-
-
-    <li class="section-subitem-li">
-
-    <strong><em>orientation2</em></strong>
-
-    <strong> : </strong>
-
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#float">float</a></span>)
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a></span>)
 
 
 
@@ -379,8 +378,159 @@
     <strong>Returns:</strong>
     <ul>
     <li>
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#float">float</a></span>)
-    <span class="return-text">the orientations added together</span>
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#float">float</a> or <a class="type" href="https://www.lua.org/pil/2.1.html">nil</a></span>)
+    </li>
+    <li>
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a></span>)
+    </li>
+    </ul>
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#build_sprite" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="build_sprite">build_sprite([name][, position][, filename][, size][, mipmap_count][, mods])</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Build a sprite.</p>
+    <p class="section-item-description">
+</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>name</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a></span>)
+
+
+
+
+    (<em>optional</em>)
+    </li>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>position</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Concepts.html#Position">Position</a></span>)
+
+
+
+
+    (<em>optional</em>)
+    </li>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>filename</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a></span>)
+
+
+
+
+    (<em>optional</em>)
+    </li>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>size</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Concepts.html#Vector">Vector</a></span>)
+
+
+
+
+    (<em>optional</em>)
+    </li>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>mipmap_count</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#uint">uint</a></span>)
+
+
+
+
+    (<em>optional</em>)
+    </li>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>mods</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.5.html">table</a></span>)
+
+
+
+
+    (<em>optional</em>)
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <strong>Returns:</strong>
+    <ul>
+    <li>
+    (<span class="types"><a class="type" href="https://wiki.factorio.com/Types/SpriteSpecification">SpriteSpecification</a></span>)
     </li>
     </ul>
     <!-- returns end -->
@@ -399,16 +549,15 @@
     <dt>
     <div class="divider divider-custom"></div>
     <div class="block section-item-header">
-    <a href="#north" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="north">north</span>
+    <a href="#empty_image" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="empty_image">empty_image</span>
     </div>
     </dt>
     <dd>
     <div class="section-item-body">
 
-    <p class="section-item-summary">north orientation</p>
-    <p class="section-item-description">
-</p>
+    <p class="section-item-summary">An empty image.</p>
+    <p class="section-item-description"> This image is 8x8 to facilitate usage with GUI styles.</p>
 
     <!-- parameters start -->
     <!-- parameters end -->
@@ -427,16 +576,15 @@
     <dt>
     <div class="divider divider-custom"></div>
     <div class="block section-item-header">
-    <a href="#east" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="east">east</span>
+    <a href="#black_image" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="black_image">black_image</span>
     </div>
     </dt>
     <dd>
     <div class="section-item-body">
 
-    <p class="section-item-summary">east orientation</p>
-    <p class="section-item-description">
-</p>
+    <p class="section-item-summary">A black image, for use with tool backgrounds.</p>
+    <p class="section-item-description"> This image is 1x1.</p>
 
     <!-- parameters start -->
     <!-- parameters end -->
@@ -455,156 +603,15 @@
     <dt>
     <div class="divider divider-custom"></div>
     <div class="block section-item-header">
-    <a href="#west" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="west">west</span>
+    <a href="#planner_base_image" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="planner_base_image">planner_base_image</span>
     </div>
     </dt>
     <dd>
     <div class="section-item-body">
 
-    <p class="section-item-summary">west orientation</p>
-    <p class="section-item-description">
-</p>
-
-    <!-- parameters start -->
-    <!-- parameters end -->
-
-    <!-- returns start -->
-    <!-- returns end -->
-
-
-    <!-- see also start -->
-    <!-- see also end -->
-
-    <!-- usage start -->
-    <!-- usage end -->
-
-    </dd>
-    <dt>
-    <div class="divider divider-custom"></div>
-    <div class="block section-item-header">
-    <a href="#south" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="south">south</span>
-    </div>
-    </dt>
-    <dd>
-    <div class="section-item-body">
-
-    <p class="section-item-summary">south orientation</p>
-    <p class="section-item-description">
-</p>
-
-    <!-- parameters start -->
-    <!-- parameters end -->
-
-    <!-- returns start -->
-    <!-- returns end -->
-
-
-    <!-- see also start -->
-    <!-- see also end -->
-
-    <!-- usage start -->
-    <!-- usage end -->
-
-    </dd>
-    <dt>
-    <div class="divider divider-custom"></div>
-    <div class="block section-item-header">
-    <a href="#northeast" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="northeast">northeast</span>
-    </div>
-    </dt>
-    <dd>
-    <div class="section-item-body">
-
-    <p class="section-item-summary">northeast orientation</p>
-    <p class="section-item-description">
-</p>
-
-    <!-- parameters start -->
-    <!-- parameters end -->
-
-    <!-- returns start -->
-    <!-- returns end -->
-
-
-    <!-- see also start -->
-    <!-- see also end -->
-
-    <!-- usage start -->
-    <!-- usage end -->
-
-    </dd>
-    <dt>
-    <div class="divider divider-custom"></div>
-    <div class="block section-item-header">
-    <a href="#northwest" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="northwest">northwest</span>
-    </div>
-    </dt>
-    <dd>
-    <div class="section-item-body">
-
-    <p class="section-item-summary">northwest orientation</p>
-    <p class="section-item-description">
-</p>
-
-    <!-- parameters start -->
-    <!-- parameters end -->
-
-    <!-- returns start -->
-    <!-- returns end -->
-
-
-    <!-- see also start -->
-    <!-- see also end -->
-
-    <!-- usage start -->
-    <!-- usage end -->
-
-    </dd>
-    <dt>
-    <div class="divider divider-custom"></div>
-    <div class="block section-item-header">
-    <a href="#southeast" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="southeast">southeast</span>
-    </div>
-    </dt>
-    <dd>
-    <div class="section-item-body">
-
-    <p class="section-item-summary">southeast orientation</p>
-    <p class="section-item-description">
-</p>
-
-    <!-- parameters start -->
-    <!-- parameters end -->
-
-    <!-- returns start -->
-    <!-- returns end -->
-
-
-    <!-- see also start -->
-    <!-- see also end -->
-
-    <!-- usage start -->
-    <!-- usage end -->
-
-    </dd>
-    <dt>
-    <div class="divider divider-custom"></div>
-    <div class="block section-item-header">
-    <a href="#southwest" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="southwest">southwest</span>
-    </div>
-    </dt>
-    <dd>
-    <div class="section-item-body">
-
-    <p class="section-item-summary">southwest orientation</p>
-    <p class="section-item-description">
-</p>
+    <p class="section-item-summary">A desaturated planner image.</p>
+    <p class="section-item-description"> Tint this sprite to easily add your own planners.</p>
 
     <!-- parameters start -->
     <!-- parameters end -->
