@@ -1,7 +1,7 @@
 --- Misc functions for data stage prototype manipulation.
--- @module data_util
+-- @module data-util
 -- @alias flib_data_util
--- @usage local data_util = require('__flib__.data_util')
+-- @usage local data_util = require('__flib__.data-util')
 local flib_data_util = {}
 
 --- Copy a prototype, assign new name and minable properties.
