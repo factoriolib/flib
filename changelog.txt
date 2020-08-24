@@ -2,10 +2,11 @@
 Version: 0.3.1
 Date: ????
   Features:
-    - Added flib_naked_scroll_pane_no_padding
+    - Added event.register_on_entity_destroyed()
+    - Added flib_naked_scroll_pane_no_padding GUI style
   Changes:
     - Renamed data_util to data-util and reverse_defines to reverse-defines
-      - The old paths will still work for a limited time, but will print deprecation warnings
+      - The old paths will still work until v0.4.0, but will print deprecation warnings
     - Removed vertically_stretchable from flib_naked_scroll_pane to fix zero-height issue in non-fixed-height containers
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.0

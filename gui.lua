@@ -676,7 +676,7 @@ return flib_gui
 --   <li><strong>tab-and-content:</strong> Accepts the `tab` and `content` parameters only.</li>
 -- </ul>
 --
--- In addition there are a number of new, fields that can be applied to a @{GuiStructure} depending on the type:
+-- There are a number of new fields that can be applied to a @{GuiStructure} depending on the type:
 --
 -- **_template_**
 --
