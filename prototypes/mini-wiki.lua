@@ -40,13 +40,13 @@ styles.flib_mw_pages_scroll_pane = {
   }
 }
 
--- styles.flib_mw_list_box_item = {
---   type = "button_style",
---   parent = "list_box_item",
---   left_padding = 4,
---   right_padding = 4,
---   horizontally_squashable = "on",
---   horizontally_stretchable = "on",
---   disabled_graphical_set = styles.button.selected_graphical_set,
---   disabled_font_color = styles.button.selected_font_color
--- }
+styles.flib_mw_list_box_item = {
+  type = "button_style",
+  parent = "list_box_item",
+  left_padding = 4,
+  right_padding = 4,
+  horizontally_squashable = "on",
+  horizontally_stretchable = "on",
+  disabled_graphical_set = styles.button.selected_graphical_set,
+  disabled_font_color = styles.button.selected_font_color
+}
