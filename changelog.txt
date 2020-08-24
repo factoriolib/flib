@@ -7,7 +7,7 @@ Date: ????
   Changes:
     - Renamed data_util to data-util and reverse_defines to reverse-defines
       - The old paths will still work until v0.4.0, but will print deprecation warnings
-    - Removed vertically_stretchable from flib_naked_scroll_pane to fix zero-height issue in non-fixed-height containers
+    - Removed vertically_stretchable from the flib_naked_scroll_pane GUI style to fix zero-height issue in non-fixed-height containers
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.0
 Date: 2020-08-11
