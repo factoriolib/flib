@@ -68,6 +68,8 @@ end
 -- TODO Nexela link EventFilters to https://lua-api.factorio.com/latest/Event-Filters.html
 
 --- Register or deregister a handler to or from an event or group of events.
+-- Unlike `script.on_event`, `event.register` supports adding compatible filters to multiple events at once.
+-- Additionally, `event.register` supports registering to custom-inputs and other events simultaneously.
 -- @tparam EventId|EventId[] ids
 -- @tparam function handler The handler to register, or `nil` to deregister the registered handler.
 -- @tparam[opt] EventFilters filters
@@ -98,7 +100,7 @@ function flib_event.register(ids, handler, filters)
 end
 
 --- Register an entity to raise `on_entity_destroyed` when it's destroyed.
---
+-- @function register_on_entity_destroyed
 -- Once an entity is registered it's registered forever (until it's destroyed) and persists through save/load.
 --
 -- Registered is global across all mods: once an entity is registered the event will be fired for all mods when its destroyed.
@@ -108,7 +110,6 @@ end
 -- Depending on when a given entity is destroyed on_entity_destroyed will be fired at the end of the current tick or end of the next tick.
 -- @tparam LuaEntity entity The entity to register.
 -- @treturn uint The registration number.
--- @function register_on_entity_destroyed
 flib_event.register_on_entity_destroyed = script.register_on_entity_destroyed
 
 --- Generate a new, unique event ID.
@@ -132,6 +133,7 @@ end
 -- TODO Nexela link EventData to https://lua-api.factorio.com/latest/events.html
 
 --- Raise an event as if it were actually called.
+-- This will only work for events that actually support being raised, and custom mod events.
 -- @tparam EventId id
 -- @tparam EventData event_data The event data that will be passed to the handlers.
 -- @usage
