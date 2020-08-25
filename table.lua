@@ -154,14 +154,16 @@ end
 --   global.from_k = table.for_n_of(extremely_large_table, global.from_k, 10, function(v) game.print(v) end)
 -- end)
 function flib_table.for_n_of(tbl, from_k, n, callback, _next)
-  -- allow non-default `next` function
-  -- use `next` if unspecified
-  if not _next then _next = next end
-
-  -- verify start key exists, else start from scratch
-  if from_k and not tbl[from_k] then
-    from_k = nil
+  -- bypass if a custom `next` function was provided
+  if not _next then
+    -- verify start key exists, else start from scratch
+    if from_k and not tbl[from_k] then
+      from_k = nil
+    end
+    -- use default `next`
+    _next = next
   end
+
   local delete
   local prev
   local result = {}

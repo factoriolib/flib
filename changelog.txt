@@ -2,6 +2,7 @@
 Version: 0.3.2
 Date: ????
   Changes:
+    - Passing a custom `next` function to `table.for_n_of()` will bypass the key existence check
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.1
 Date: 2020-08-24
