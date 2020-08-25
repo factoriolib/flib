@@ -14,6 +14,17 @@ for name, func in pairs(table) do
   flib_table[name] = func
 end
 
+--- Copy an array's values into a new array.
+-- @tparam array arr
+-- @treturn array The copied array.
+function flib_table.array_copy(arr)
+  local new_arr = {}
+  for i = 1, #arr do
+    new_arr[i] = arr[i]
+  end
+  return new_arr
+end
+
 --- Recursively compare two tables for inner equality.
 --
 -- Does not compare metatables.
