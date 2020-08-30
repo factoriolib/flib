@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.2
-Date: ????
+Date: 2020-08-30
   Features:
     - Added `table.array_copy()`
     - Added `table.partial_sort()` for sorting an array over multiple ticks
