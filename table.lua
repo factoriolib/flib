@@ -272,21 +272,20 @@ function flib_table.map(tbl, mapper)
 end
 
 local function default_comp(a, b) return a < b end
---- Sort an array over multiple ticks.
+--- Partially sort an array.
 --
 -- This function utilitizes [insertion sort](https://en.wikipedia.org/wiki/Insertion_sort), which is _extremely_
 -- inefficient with large data sets. However, you can spread the sorting over multiple ticks, reducing the performance
 -- impact. Only use this function if `table.sort` is too slow.
 -- @tparam array arr
--- @tparam uint from_index The index to start iteration at (inclusive). Pass `nil` to begin at the start of the array.
--- Passing `1` to this parameter will cause a crash.
+-- @tparam uint from_index The index to start iteration at (inclusive). Pass `nil` or a number less than `2` to begin at the start of the array.
 -- @tparam uint iterations The number of iterations to perform. Higher is more performance-heavy. This number should be
 -- adjusted based on the performance impact of the custom `comp` function (if any) and the size of the array.
 -- @tparam[opt] function comp A comparison function for sorting. Must return truthy if `a < b`.
 -- @treturn uint|nil The index to start the next iteration at, or `nil` if the end was reached.
 function flib_table.partial_sort(arr, from_index, iterations, comp)
   comp = comp or default_comp
-  local start_index = from_index or 2
+  local start_index = (from_index and from_index > 2) and from_index or 2
   local end_index = start_index + (iterations - 1)
 
   for j = start_index, end_index do
