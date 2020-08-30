@@ -16,7 +16,7 @@ end
 
 --- Shallow copy an array's values into a new array.
 --
--- This function is optimized specifically for arrays, and should be used in place of @{table.shallow_copy} whenever possible.
+-- This function is optimized specifically for arrays, and should be used in place of @{table.shallow_copy} for arrays.
 -- @tparam array arr
 -- @treturn array The copied array.
 function flib_table.array_copy(arr)
