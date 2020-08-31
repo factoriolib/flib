@@ -110,7 +110,7 @@
 
     <!-- module usage start -->
     <h3>Usage</h3>
-    <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> <span class="global">table</span> = <span class="global">require</span>(<span class="string">'__flib__.table'</span>)</code></pre>
+    <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> <span class="global">table</span> = <span class="global">require</span>(<span class="string">"__flib__.table"</span>)</code></pre>
     <!-- module usage end -->
 
     <!-- module content header end -->
@@ -122,6 +122,10 @@
     <span></span>
     </thead>
     <tbody>
+    <tr>
+    <td class="name"><a href="#array_copy">array_copy(arr)</a></td>
+    <td class="summary">Shallow copy an array&rsquo;s values into a new array.</td>
+    </tr>
     <tr>
     <td class="name"><a href="#deep_compare">deep_compare(tbl1, tbl2)</a></td>
     <td class="summary">Recursively compare two tables for inner equality.</td>
@@ -156,6 +160,10 @@
     <td class="summary">Create a transformed table using the output of a mapper function.</td>
     </tr>
     <tr>
+    <td class="name"><a href="#partial_sort">partial_sort(arr, from_index, iterations[, comp])</a></td>
+    <td class="summary">Partially sort an array.</td>
+    </tr>
+    <tr>
     <td class="name"><a href="#reduce">reduce(arr, reducer[, initial_value])</a></td>
     <td class="summary">&ldquo;Reduce&rdquo; an array&rsquo;s values into a single output value, using the results of a reducer function.</td>
     </tr>
@@ -184,6 +192,64 @@
     <!-- section start -->
     <h3><span id="Functions" class="section-title"><a href="#Functions">Functions</a></span></h3>
     <dl class="section-body-container">
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#array_copy" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="array_copy">array_copy(arr)</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Shallow copy an array&rsquo;s values into a new array.</p>
+    <p class="section-item-description"> This function is optimized specifically for arrays, and should be used in place of <a href="../modules/table.html#shallow_copy">table.shallow_copy</a> for arrays.</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>arr</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/11.1.html">array</a></span>)
+
+
+
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <strong>Returns:</strong>
+    <ul>
+    <li>
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/11.1.html">array</a></span>)
+    <span class="return-text">The copied array.</span>
+    </li>
+    </ul>
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
     <dt>
     <div class="divider divider-custom"></div>
     <div class="block section-item-header">
@@ -395,7 +461,7 @@ log(tbl.foo) <span class="comment">-- logs "baz"
 
     <p class="section-item-summary">Call the given function for each item in the table, and abort if the function returns truthy.</p>
     <p class="section-item-description"> Calls <code>callback(value, key, tbl)</code> for each item in the table, and immediately ceases iteration if the callback
- returns a truthy value.</p>
+ returns truthy.</p>
 
     <!-- parameters start -->
     <strong>Parameters:</strong>
@@ -445,7 +511,7 @@ log(tbl.foo) <span class="comment">-- logs "baz"
     <ul>
     <li>
     (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#boolean">boolean</a></span>)
-    <span class="return-text">Whether the callback returned true for any one item, and thus halted iteration.</span>
+    <span class="return-text">Whether the callback returned truthy for any one item, and thus halted iteration.</span>
     </li>
     </ul>
     <!-- returns end -->
@@ -523,7 +589,7 @@ log(tbl.foo) <span class="comment">-- logs "baz"
     (<span class="types"><span class="type">any</span> or <a class="type" href="https://www.lua.org/pil/2.1.html">nil</a></span>)
 
      The key to start iteration at, or <code>nil</code> to start at the beginning of <code>tbl</code>. If the key does
- not exist in <code>tbl</code>, it will be treated as <code>nil</code>.
+ not exist in <code>tbl</code>, it will be treated as <code>nil</code>, <em>unless</em> a custom <code>_next</code> function is used.
 
     </li>
 
@@ -855,6 +921,116 @@ event.on_tick(<span class="keyword">function</span>()
     <dt>
     <div class="divider divider-custom"></div>
     <div class="block section-item-header">
+    <a href="#partial_sort" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="partial_sort">partial_sort(arr, from_index, iterations[, comp])</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Partially sort an array.</p>
+    <p class="section-item-description"> This function utilitizes <a href="https://en.wikipedia.org/wiki/Insertion_sort">insertion sort</a>, which is <em>extremely</em>
+ inefficient with large data sets. However, you can spread the sorting over multiple ticks, reducing the performance
+ impact. Only use this function if <code>table.sort</code> is too slow.</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>arr</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/11.1.html">array</a></span>)
+
+
+
+
+    </li>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>from_index</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#uint">uint</a></span>)
+
+     The index to start iteration at (inclusive). Pass <code>nil</code> or a number less than <code>2</code> to begin at the start of the array.
+
+    </li>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>iterations</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#uint">uint</a></span>)
+
+     The number of iterations to perform. Higher is more performance-heavy. This number should be
+ adjusted based on the performance impact of the custom <code>comp</code> function (if any) and the size of the array.
+
+    </li>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>comp</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.6.html">function</a></span>)
+
+     A comparison function for sorting. Must return truthy if <code>a &lt; b</code>.
+
+    (<em>optional</em>)
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <strong>Returns:</strong>
+    <ul>
+    <li>
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#uint">uint</a> or <a class="type" href="https://www.lua.org/pil/2.1.html">nil</a></span>)
+    <span class="return-text">The index to start the next iteration at, or <code>nil</code> if the end was reached.</span>
+    </li>
+    </ul>
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
     <a href="#reduce" class="fragment-hashtag">#</a>
     <span class="section-item-title" id="reduce">reduce(arr, reducer[, initial_value])</span>
     </div>
@@ -1001,7 +1177,7 @@ event.on_tick(<span class="keyword">function</span>()
 
     (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#boolean">boolean</a></span>)
 
-     Use rawset to set the values (ignores .__index metamethod).
+     Use rawset to set the values (ignores metamethods).
 
     </li>
 
@@ -1295,7 +1471,7 @@ event.on_tick(<span class="keyword">function</span>()
     <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
     </div>
     <div class="content-footer column col-9 col-sm-12">
-    <i>Last updated 2020-08-24 16:51:40 UTC</i>
+    <i>Last updated 2020-08-31 01:33:47 UTC</i>
     </div>
     </div>
     </div>
