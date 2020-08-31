@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.3
-Date: ????
+Date: 2020-08-31
   Features:
     - Added a map setting to adjust translation speed (avoid multiplayer drops for those with slow internet speeds)
 ---------------------------------------------------------------------------------------------------
