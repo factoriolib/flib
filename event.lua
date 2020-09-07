@@ -160,7 +160,7 @@ function flib_event.set_filters(ids, filters)
   if type(ids) ~= "table" then
     ids = {ids}
   end
-  for i=1,#ids do
+  for i = 1, #ids do
     script.set_event_filter(ids[i], filters)
   end
   return
