@@ -21,39 +21,37 @@ end
 -- @section
 
 --- Register or deregister a handler to be run during mod init.
+-- @function on_init
 -- @tparam function handler The handler to register, or `nil` to deregister the registered handler.
 -- @usage
 -- -- register a handler to run during mod init
 -- event.on_init(function() log("on_init") end)
 -- -- deregister the registered handler, if one exists
 -- event.on_init(nil)
-function flib_event.on_init(handler)
-  return script.on_init(handler)
-end
+flib_event.on_init = script.on_init
 
 --- Register or deregister a handler to be run during mod load.
+-- @function on_load
 -- @tparam function handler The handler to register, or `nil` to deregister the registered handler.
 -- @usage
 -- -- register a handler to run during mod load
 -- event.on_load(function() log("on_load") end)
 -- -- deregister the registered handler, if one exists
 -- event.on_load(nil)
-function flib_event.on_load(handler)
-  return script.on_load(handler)
-end
+flib_event.on_load = script.on_load
 
 --- Register or deregister a handler to be run when mod configuration changes.
+-- @function on_configuration_changed
 -- @tparam function handler The handler to register, or `nil` to deregister the registered handler.
 -- @usage
 -- -- register a handler to run when mod configuration changes
 -- event.on_configuration_changed(function() log("on_configuration_changed") end)
 -- -- deregister the registered handler, if one exists
 -- event.on_configuration_changed(nil)
-function flib_event.on_configuration_changed(handler)
-  return script.on_configuration_changed(handler)
-end
+flib_event.on_configuration_changed = script.on_configuration_changed
 
 --- Register or deregister a handler to run every N ticks.
+-- @function on_nth_tick
 -- @tparam uint nth_tick
 -- @tparam function handler The handler to register, or `nil` to deregister the registered handler.
 -- @usage
@@ -61,9 +59,7 @@ end
 -- event.on_nth_tick(30, function(e) log("30th tick!") end)
 -- -- deregister the registered handler, if one exists
 -- event.on_nth_tick(30, nil)
-function flib_event.on_nth_tick(nth_tick, handler)
-  return script.on_nth_tick(nth_tick, handler)
-end
+flib_event.on_nth_tick = script.on_nth_tick
 
 -- TODO Nexela link EventFilters to https://lua-api.factorio.com/latest/Event-Filters.html
 
@@ -88,8 +84,8 @@ function flib_event.register(ids, handler, filters)
   if type(ids) ~= "table" then
     ids = {ids}
   end
-  for i=1,#ids do
-    -- dumb workaround - the game doesn't like you passing filters, even if it's nil
+  for i = 1, #ids do
+    -- the game doesn't like you passing filters to events that don't support them, even if they're `nil`
     if filters then
       script.on_event(ids[i], handler, filters)
     else
@@ -113,40 +109,36 @@ end
 flib_event.register_on_entity_destroyed = script.register_on_entity_destroyed
 
 --- Generate a new, unique event ID.
+-- @function generate_id
 -- @treturn uint
 -- @usage
 -- -- generate a new event ID
 -- local my_event = event.generate_id()
 -- -- raise that event with custom parameters
 -- event.raise(my_event, {whatever_you_want=true, ...})
-function flib_event.generate_id()
-  return script.generate_event_name()
-end
+flib_event.generate_id = script.generate_event_name
 
 --- Retrieve the handler for an event, if one exists.
+-- @function get_handler
 -- @tparam EventId id
 -- @treturn function The registered handler, or `nil` if one isn't registered.
-function flib_event.get_handler(id)
-  return script.get_event_handler(id)
-end
+flib_event.get_handler =  script.get_event_handler
 
 -- TODO Nexela link EventData to https://lua-api.factorio.com/latest/events.html
 
 --- Raise an event as if it were actually called.
+-- @function raise
 -- This will only work for events that actually support being raised, and custom mod events.
 -- @tparam EventId id
 -- @tparam EventData event_data The event data that will be passed to the handlers.
 -- @usage
 -- event.raise(defines.events.on_gui_click, {player_index=e.player_index, element=my_button, ...})
-function flib_event.raise(id, event_data)
-  return script.raise_event(id, event_data)
-end
+flib_event.raise = script.raise_event
 
 --- Retrieve the mod event order.
+-- @function get_order
 -- @treturn string
-function flib_event.get_order()
-  return script.get_event_order()
-end
+flib_event.get_order = script.get_event_order
 
 --- Set the filters for the given event(s).
 -- @tparam EventId|EventId[] ids
@@ -175,11 +167,10 @@ function flib_event.set_filters(ids, filters)
 end
 
 --- Retrieve the filters for the given event.
+-- @function get_filters
 -- @tparam EventId id
 -- @treturn EventFilters filters The filters, or `nil` if there are none defined.
-function flib_event.get_filters(id)
-  return script.get_event_filter(id)
-end
+flib_event.get_filter = script.get_event_filter
 
 --- Concepts
 -- @section
