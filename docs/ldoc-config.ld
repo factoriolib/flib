@@ -22,7 +22,7 @@ format = 'discount'
 examples = {'./docs/examples'}
 topics = {'./README.md', './changelog.txt', './LICENSE', './docs/contributing.md', './docs/style-guide.md', './docs/styles.md'}
 
-new_type('event', 'Events', false, 'Event Parameters')
+new_type('Concept', 'Concepts', false)
 
 local api_url = 'http://lua-api.factorio.com/latest/%s.html%s'
 
@@ -210,5 +210,3 @@ custom_see_handler(
     return 'pattern', lua_url:format('20.2', '')
   end
 )
-
-new_type('Concept', 'Concepts', false)
