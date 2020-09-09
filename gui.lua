@@ -313,23 +313,30 @@ end
 -- @treturn GuiOutputFiltersTable filters
 -- @usage
 -- gui.build(player.gui.screen, {
---   {type="frame", style="dialog_frame", direction="vertical", handlers="window", save_as="window", children={
---     {type="flow", children={
---       {type="label", style="frame_title", caption="Menu"},
---       {template="drag_handle", style_mods={horizontally_stretchable=true, height=24},
---         save_as="titlebar.drag_handle"},
+--   {type="frame", direction="vertical", handlers="window", save_as="window", children={
+--     -- titlebar
+--     {type="flow", save_as="titlebar_flow", children={
+--       {type="label", style="frame_title", caption="Menu", elem_mods={ignored_by_interaction=true}},
+--       {type="empty-widget", style="flib_titlebar_drag_handle", elem_mods={ignored_by_interaction=true}},
 --       {type="condition", condition=(not is_dialog_frame), children={
---         {template="frame_action_button", sprite="utility/close_white", handlers="titlebar.close_button",
---           save_as="titlebar.close_button"}
+--         {template="frame_action_button",
+--           sprite="utility/close_white",
+--           handlers="titlebar.close_button",
+--           save_as="titlebar.close_button"
+--         }
 --       }}
 --     }},
 --     {type="frame", style="inside_shallow_frame_with_padding", children={
 --       {type="table", style="slot_table", column_count=10, save_as="content.slot_table"}
 --     }},
 --     {type="condition", condition=is_dialog_frame, children={
---       {type="flow", children={
+--       {type="flow", style="dialog_buttons_horizontal_flow", children={
 --         {type="button", style="back_button", caption={"gui.back"}, handlers="footer.back_button"},
---         {template="drag_handle", style_mods={horizontally_stretchable=true, height=32}, save_as="footer.drag_handle"}
+--         {type="empty-widget",
+--           style="flib_dialog_footer_drag_handle",
+--           style_mods={right_margin=0},
+--           save_as="footer.drag_handle"
+--         }
 --       }}
 --     }}
 --   }}
@@ -491,14 +498,10 @@ end
 --     titlebar = {
 --       -- this is a handler group for a specific GUI element
 --       close_button = {
---         -- if using a defines.events event, this shortcut syntax is used:
+--         -- name of `defines.events` event -> handler function
 --         on_gui_click = function(e)
---           __DebugAdapter.print(e)
---         end,
---         -- for direct event IDs, nest the function inside a table:
---         my_custom_event = {id=constants.my_custom_event, handler=function(e)
---           __DebugAdapter.print(e)
---         }
+--           log(serpent.block(e))
+--         end
 --       }
 --     }
 --   }
@@ -506,7 +509,11 @@ end
 --
 -- -- use the handlers
 -- gui.build(player.gui.screen, {
---   {type="sprite-button", style="frame_action_button", sprite="utility/close_white", handlers="base.titlebar.close_button"}
+--   {type="sprite-button",
+--     style="frame_action_button",
+--     sprite="utility/close_white",
+--     handlers="base.titlebar.close_button"
+--   }
 -- })
 flib_gui.handlers = handlers
 
@@ -521,14 +528,18 @@ flib_gui.handlers = handlers
 --     titlebar = {
 --       close_button = {
 --         on_gui_click = function(e)
---           __DebugAdapter.print(e)
+--           log(serpent.block(e))
 --         end
 --       }
 --     }
 --   }
 -- }
 -- gui.build(player.gui.screen, {
---   {type="sprite-button", style="frame_action_button", sprite="utility/close_white", handlers="base.titlebar.close_button"}
+--   {type="sprite-button",
+--     style="frame_action_button",
+--     sprite="utility/close_white",
+--     handlers="base.titlebar.close_button"
+--   }
 -- })
 --
 -- -- contents of gui.handler_lookup will be:
@@ -562,17 +573,17 @@ flib_gui.handler_lookup = handler_lookup
 --     titlebar = {
 --       close_button = {
 --         on_gui_click = function(e)
---           __DebugAdapter.print(e)
+--           log(serpent.block(e))
 --         end,
 --         my_custom_event = {id=constants.my_custom_event, handler=function(e)
---           __DebugAdapter.print(e)
+--           log(serpent.block(e))
 --         }
 --       }
 --     },
 --     content = {
 --       item_button = {
 --         on_gui_click = function(e)
---           __DebugAdapter.print(e)
+--           log(serpent.block(e))
 --         end
 --       }
 --     }
@@ -630,6 +641,7 @@ flib_gui.handler_groups = handler_groups
 --   {template="pushers.horizontal"},
 --   {template="frame_action_button", sprite="utility/close_white"},
 --   -- use function templates by calling them directly
+--   -- you do not necessarily need to keep function templates in the `templates` table, but the module supports doing so
 --   gui.templates.list_box_with_label("ingredients"),
 --   gui.templates.list_box_with_label("products")
 -- })
