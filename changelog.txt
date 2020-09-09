@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------------------------------
-Version: 0.3.4
+Version: 0.4.0
 Date: ????
   Changes:
     - `gui.add_handlers()` now only supports `on_gui` defines.events events
