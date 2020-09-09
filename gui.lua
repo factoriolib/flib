@@ -397,7 +397,7 @@ end
 -- When destroying a GUI element with a filter, be certain to call this function destroying that filter, to avoid
 -- memory leaks.
 -- @tparam string name The handler name, or group name.
--- @tparam uint player_index
+-- @tparam number player_index
 -- @tparam GuiFilter[]|nil filters An array of filters, or `nil` to clear all filters when in `remove` mode.
 -- @tparam string mode One of "add" or "remove".
 -- @usage
@@ -476,7 +476,7 @@ function flib_gui.update_filters(name, player_index, filters, mode)
 end
 
 --- Remove all GUI filters for the given player.
--- @tparam uint player_index
+-- @tparam number player_index
 function flib_gui.remove_player_filters(player_index)
   for group_name in pairs(handler_groups) do
     -- check for a level-1 group to minimize calls to update_filters()

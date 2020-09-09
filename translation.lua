@@ -147,7 +147,7 @@ function flib_translation.process_result(event_data)
 end
 
 --- Add translation requests for the given player, to be performed over the next several ticks.
--- @tparam uint player_index
+-- @tparam number player_index
 -- @tparam StringData[] strings
 function flib_translation.add_requests(player_index, strings)
   local __translation = global.__flib.translation
@@ -188,7 +188,7 @@ function flib_translation.add_requests(player_index, strings)
 end
 
 --- Cancel a player's translations.
--- @tparam uint player_index
+-- @tparam number player_index
 function flib_translation.cancel(player_index)
   local __translation = global.__flib.translation
   local player_table = __translation.players[player_index]
@@ -201,14 +201,14 @@ function flib_translation.cancel(player_index)
 end
 
 --- Check whether a player is actively translating.
--- @tparam uint player_index
+-- @tparam number player_index
 -- @treturn boolean
 function flib_translation.is_translating(player_index)
   return global.__flib.translation.players[player_index] and true or false
 end
 
 --- Check the number of players currently translating.
--- @treturn uint
+-- @treturn number
 function flib_translation.translating_players_count()
   return global.__flib.translation.translating_players_count
 end

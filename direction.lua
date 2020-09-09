@@ -35,7 +35,7 @@ end
 
 --- Returns an orientation from a direction.
 -- @tparam defines.direction direction
--- @treturn float
+-- @treturn number
 function flib_direction.to_orientation(direction)
   return direction / 8
 end
@@ -72,8 +72,8 @@ end
 --
 -- Only supports cardinal (four-way) directions.
 -- @tparam defines.direction direction
--- @tparam float longitudinal Distance to move in the specified direction.
--- @tparam float orthogonal Distance to move perpendicular to the specified direction. A negative distance will move
+-- @tparam number longitudinal Distance to move in the specified direction.
+-- @tparam number orthogonal Distance to move perpendicular to the specified direction. A negative distance will move
 -- "left" and a positive distance will move "right" from the perspective of the direction.
 -- @treturn Concepts.Position
 function flib_direction.to_vector_2d(direction, longitudinal, orthogonal)
