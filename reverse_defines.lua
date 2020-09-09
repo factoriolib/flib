@@ -1,2 +1,0 @@
-log("FLIB DEPRECATION WARNING: reverse_defines was renamed to reverse-defines in v0.3.1. Please update your require paths. The old path will cease to work in v0.4.0.")
-return require("__flib__.reverse-defines")
