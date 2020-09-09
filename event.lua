@@ -22,7 +22,7 @@ end
 
 --- Register or deregister a handler to be run during mod init.
 -- @function on_init
--- @tparam function handler The handler to register, or `nil` to deregister the registered handler.
+-- @tparam function|nil handler The handler to register, or `nil` to deregister the registered handler.
 -- @usage
 -- -- register a handler to run during mod init
 -- event.on_init(function() log("on_init") end)
@@ -32,7 +32,7 @@ flib_event.on_init = script.on_init
 
 --- Register or deregister a handler to be run during mod load.
 -- @function on_load
--- @tparam function handler The handler to register, or `nil` to deregister the registered handler.
+-- @tparam function|nil handler The handler to register, or `nil` to deregister the registered handler.
 -- @usage
 -- -- register a handler to run during mod load
 -- event.on_load(function() log("on_load") end)
@@ -42,7 +42,7 @@ flib_event.on_load = script.on_load
 
 --- Register or deregister a handler to be run when mod configuration changes.
 -- @function on_configuration_changed
--- @tparam function handler The handler to register, or `nil` to deregister the registered handler.
+-- @tparam function|nil handler The handler to register, or `nil` to deregister the registered handler.
 -- @usage
 -- -- register a handler to run when mod configuration changes
 -- event.on_configuration_changed(function() log("on_configuration_changed") end)
@@ -53,7 +53,7 @@ flib_event.on_configuration_changed = script.on_configuration_changed
 --- Register or deregister a handler to run every N ticks.
 -- @function on_nth_tick
 -- @tparam uint nth_tick
--- @tparam function handler The handler to register, or `nil` to deregister the registered handler.
+-- @tparam function|nil handler The handler to register, or `nil` to deregister the registered handler.
 -- @usage
 -- -- register a handler to run every 30 ticks
 -- event.on_nth_tick(30, function(e) log("30th tick!") end)
@@ -67,7 +67,7 @@ flib_event.on_nth_tick = script.on_nth_tick
 -- Unlike `script.on_event`, `event.register` supports adding compatible filters to multiple events at once.
 -- Additionally, `event.register` supports registering to custom-inputs and other events simultaneously.
 -- @tparam EventId|EventId[] ids
--- @tparam function handler The handler to register, or `nil` to deregister the registered handler.
+-- @tparam function|nil handler The handler to register, or `nil` to deregister the registered handler.
 -- @tparam[opt] EventFilters filters
 -- @usage
 -- -- register a handler to a defines.events event that supports filters
@@ -99,11 +99,13 @@ end
 -- @function register_on_entity_destroyed
 -- Once an entity is registered it's registered forever (until it's destroyed) and persists through save/load.
 --
--- Registered is global across all mods: once an entity is registered the event will be fired for all mods when its destroyed.
+-- Registered is global across all mods: once an entity is registered the event will be fired for all mods when its
+-- destroyed.
 --
 -- An entity registered multiple times will only fire the event once and gives back the same registration number.
 --
--- Depending on when a given entity is destroyed on_entity_destroyed will be fired at the end of the current tick or end of the next tick.
+-- Depending on when a given entity is destroyed on_entity_destroyed will be fired at the end of the current tick or end
+-- of the next tick.
 -- @tparam LuaEntity entity The entity to register.
 -- @treturn uint The registration number.
 flib_event.register_on_entity_destroyed = script.register_on_entity_destroyed
