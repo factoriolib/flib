@@ -740,23 +740,30 @@ return flib_gui
 --
 -- An array of @{GuiStructure} that will be added as children of this element.
 -- @usage
--- {type="frame", style="dialog_frame", direction="vertical", handlers="window", save_as="window", children={
---   {type="flow", children={
---     {type="label", style="frame_title", caption="Menu"},
---     {template="drag_handle", style_mods={horizontally_stretchable=true, height=24},
---       save_as="titlebar.drag_handle"},
+-- {type="frame", direction="vertical", handlers="window", save_as="window", children={
+--   -- titlebar
+--   {type="flow", save_as="titlebar_flow", children={
+--     {type="label", style="frame_title", caption="Menu", elem_mods={ignored_by_interaction=true}},
+--     {type="empty-widget", style="flib_titlebar_drag_handle", elem_mods={ignored_by_interaction=true}},
 --     {type="condition", condition=(not is_dialog_frame), children={
---       {template="frame_action_button", sprite="utility/close_white", handlers="titlebar.close_button",
---         save_as="titlebar.close_button"}
+--       {template="frame_action_button",
+--         sprite="utility/close_white",
+--         handlers="titlebar.close_button",
+--         save_as="titlebar.close_button"
+--       }
 --     }}
 --   }},
 --   {type="frame", style="inside_shallow_frame_with_padding", children={
 --     {type="table", style="slot_table", column_count=10, save_as="content.slot_table"}
 --   }},
 --   {type="condition", condition=is_dialog_frame, children={
---     {type="flow", children={
+--     {type="flow", style="dialog_buttons_horizontal_flow", children={
 --       {type="button", style="back_button", caption={"gui.back"}, handlers="footer.back_button"},
---       {template="drag_handle", style_mods={horizontally_stretchable=true, height=32}, save_as="footer.drag_handle"}
+--       {type="empty-widget",
+--         style="flib_dialog_footer_drag_handle",
+--         style_mods={right_margin=0},
+--         save_as="footer.drag_handle"
+--       }
 --     }}
 --   }}
 -- }}
