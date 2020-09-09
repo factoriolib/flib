@@ -6,23 +6,6 @@
 
 local flib_direction = {}
 
---- defines.direction.north
-flib_direction.north = defines.direction.north
---- defines.direction.east
-flib_direction.east = defines.direction.east
---- defines.direction.west
-flib_direction.west = defines.direction.west
---- defines.direction.south
-flib_direction.south = defines.direction.south
---- defines.direction.northeast
-flib_direction.northeast = defines.direction.northeast
---- defines.direction.northwest
-flib_direction.northwest = defines.direction.northwest
---- defines.direction.southeast
-flib_direction.southeast = defines.direction.southeast
---- defines.direction.southwest
-flib_direction.southwest = defines.direction.southwest
-
 --- Returns the opposite direction
 -- @tparam defines.direction direction the direction
 -- @treturn defines.direction the opposite direction

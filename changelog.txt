@@ -3,6 +3,7 @@ Version: 0.3.4
 Date: ????
   Changes:
     - `gui.add_handlers()` now only supports `on_gui` defines.events events
+    - Removed pointless direction fields (use defines.direction instead)
   Bugfixes:
     - Fixed that using `gui.init()` to reset all filters did not update lookup tables
 ---------------------------------------------------------------------------------------------------
