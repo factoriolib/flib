@@ -1,8 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.4
 Date: ????
-  Features:
-    - Added optional `middleware` argument to `gui.register_handlers()`
+  Changes:
+    - `gui.add_handlers()` now only supports `on_gui` defines.events events
   Bugfixes:
     - Fixed that using `gui.init()` to reset all filters did not update lookup tables
 ---------------------------------------------------------------------------------------------------

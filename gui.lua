@@ -31,24 +31,27 @@ local function generate_template_lookup(t, template_string)
 end
 
 local function generate_handler_lookup(t, event_string, groups)
+  local events = defines.events
   groups[#groups+1] = event_string
   for k, v in pairs(t) do
     if k ~= "extend" then
       local new_string = event_string.."."..k
-      -- shortcut syntax: key is a defines.events or a custom-input name, value is just the handler
       if type(v) == "function" then
-        v = {
-          id = defines.events[k] or k,
-          handler = v
+        -- validate that it's a GUI event
+        if string_sub(k, 1, 6) ~= "on_gui" or not events[k] then
+          error("Only `on_gui` defines.events events may be used for GUI handlers.")
+        end
+
+        -- save to lookup table
+        handler_lookup[new_string] = {
+          id = events[k],
+          handler = v,
+          groups = table.deep_copy(groups),
+          filters = {}
         }
-      end
-      if v.handler then
-        v.id = v.id or defines.events[k] or k
-        v.filters = {}
-        v.groups = table.deep_copy(groups)
-        handler_lookup[new_string] = v
-        -- assign handler to groups
-        for i=1,#groups do
+
+        -- add handler to groups
+        for i = 1, #groups do
           local group = handler_groups[groups[i]]
           if group then
             group[#group+1] = new_string
