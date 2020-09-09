@@ -8,7 +8,7 @@ This guide makes use of styles provided by flib. See [gui-styles](gui-styles.md.
 
 ## Window
 
-![](https://raw.githubusercontent.com/factoriolib/flib/master/docs/assets/window-types.png)
+![](https://raw.githubusercontent.com/factoriolib/flib/master/docs/assets/gui-style-guide/window-types.png)
 
 > The different window types.
 
@@ -39,7 +39,7 @@ There are not the only kinds of windows that can exist - is also a type that I l
 
 ### Titlebar
 
-![](https://raw.githubusercontent.com/factoriolib/flib/master/docs/assets/dialog-types.png)
+![](https://raw.githubusercontent.com/factoriolib/flib/master/docs/assets/gui-style-guide/dialog-types.png)
 
 > Draggable vs. non-draggable windows.
 
@@ -80,7 +80,7 @@ However, if you are creating a **standard window**, follow these guidelines:
 
 ### Content frame
 
-![](https://raw.githubusercontent.com/factoriolib/flib/master/docs/assets/content-frame-with-padding.png)
+![](https://raw.githubusercontent.com/factoriolib/flib/master/docs/assets/gui-style-guide/content-frame-with-padding.png)
 
 > An example of `inside_shallow_frame_with_padding`, demonstrating the built-in 12px padding.
 
@@ -90,7 +90,7 @@ Content frames are created using the `inside_shallow_frame_with_padding` style. 
 
 It is good practice to separate different "purposes" in a GUI with different content panes:
 
-![](https://raw.githubusercontent.com/factoriolib/flib/master/docs/assets/content-frame-separation.png)
+![](https://raw.githubusercontent.com/factoriolib/flib/master/docs/assets/gui-style-guide/content-frame-separation.png)
 
 > Separating content panes by "purpose". The left pane is dedicated to search functionality, and the right is dedicated to displaying the object information. These "purposes" are consistent throughout usage of the mod.
 
