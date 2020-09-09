@@ -20,7 +20,7 @@ merge = false
 backtick_references = false
 format = 'discount'
 examples = {'./docs/examples'}
-topics = {'./README.md', './changelog.txt', './LICENSE', './docs/contributing.md', './docs/style-guide.md', './docs/styles.md'}
+topics = {'./README.md', './changelog.txt', './LICENSE', './docs/contributing.md', './docs/gui-style-guide.md', './docs/gui-styles.md'}
 
 new_type('event', 'Events', false, 'Event Parameters')
 
