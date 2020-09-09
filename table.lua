@@ -278,7 +278,8 @@ local function default_comp(a, b) return a < b end
 -- inefficient with large data sets. However, you can spread the sorting over multiple ticks, reducing the performance
 -- impact. Only use this function if `table.sort` is too slow.
 -- @tparam array arr
--- @tparam uint from_index The index to start iteration at (inclusive). Pass `nil` or a number less than `2` to begin at the start of the array.
+-- @tparam uint from_index The index to start iteration at (inclusive). Pass `nil` or a number less than `2` to begin at
+-- the start of the array.
 -- @tparam uint iterations The number of iterations to perform. Higher is more performance-heavy. This number should be
 -- adjusted based on the performance impact of the custom `comp` function (if any) and the size of the array.
 -- @tparam[opt] function comp A comparison function for sorting. Must return truthy if `a < b`.

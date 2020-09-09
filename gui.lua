@@ -156,8 +156,8 @@ end
 -- @{gui.dispatch_handlers}. If custom logic is needed, handlers may be overwritten after calling this.
 --
 -- This function, if used, should be called in the root scope.
--- @tparam[opt] function middleware A function to be run before @{gui.dispatch_handlers}. If the function returns falsy, @{gui.dispatch_handlers} will not be
--- run.
+-- @tparam[opt] function middleware A function to be run before @{gui.dispatch_handlers}. If the function returns falsy,
+-- @{gui.dispatch_handlers} will not be run.
 -- @usage
 -- -- register handlers for all GUI events
 -- gui.register_handlers()

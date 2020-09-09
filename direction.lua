@@ -33,7 +33,8 @@ end
 --- Returns the next direction.
 --> For entities that only support two directions, see @{opposite}.
 -- @tparam defines.direction direction the starting direction
--- @tparam[opt=false] boolean eight_way true to get the next direction in 8-way (note: not many prototypes support 8-way)
+-- @tparam[opt=false] boolean eight_way true to get the next direction in 8-way (note: not many prototypes support
+-- 8-way)
 -- @treturn defines.direction the next direction
 function flib_direction.next(direction, eight_way)
   return (direction + (eight_way and 1 or 2)) % 8
@@ -42,7 +43,8 @@ end
 --- Returns the previous direction.
 --> For entities that only support two directions, see @{opposite}.
 -- @tparam defines.direction direction the starting direction
--- @tparam[opt=false] boolean eight_way true to get the previous direction in 8-way (note: not many prototypes support 8-way)
+-- @tparam[opt=false] boolean eight_way true to get the previous direction in 8-way (note: not many prototypes support
+-- 8-way)
 -- @treturn defines.direction the next direction
 function flib_direction.previous(direction, eight_way)
   return (direction + (eight_way and -1 or -2)) % 8
