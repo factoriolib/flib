@@ -43,28 +43,49 @@ end
 --- Returns a vector from a direction.
 -- @tparam defines.direction direction
 -- @tparam[opt = 1] number distance
--- @treturn Position
+-- @treturn Concepts.Position
 function flib_direction.to_vector(direction, distance)
+  local directions = defines.direction
   distance = distance or 1
   local x, y = 0, 0
-  if direction == flib_direction.north then
+  if direction == directions.north then
     y = y - distance
-  elseif direction == flib_direction.northeast then
+  elseif direction == directions.northeast then
     x, y = x + distance, y - distance
-  elseif direction == flib_direction.east then
+  elseif direction == directions.east then
     x = x + distance
-  elseif direction == flib_direction.southeast then
+  elseif direction == directions.southeast then
     x, y = x + distance, y + distance
-  elseif direction == flib_direction.south then
+  elseif direction == directions.south then
     y = y + distance
-  elseif direction == flib_direction.southwest then
+  elseif direction == directions.southwest then
     x, y = x - distance, y + distance
-  elseif direction == flib_direction.west then
+  elseif direction == directions.west then
     x = x - distance
-  elseif direction == flib_direction.northwest then
+  elseif direction == directions.northwest then
     x, y = x - distance, y - distance
   end
   return {x = x, y = y}
+end
+
+--- Returns a two-dimensional vector from a cardinal direction.
+--
+-- Only supports cardinal (four-way) directions.
+-- @tparam defines.direction direction
+-- @tparam float longitudinal Distance to move in the specified direction.
+-- @tparam float orthogonal Distance to move perpendicular to the specified direction. A negative distance will move
+-- "left" and a positive distance will move "right" from the perspective of the direction.
+-- @treturn Concepts.Position
+function flib_direction.to_vector_2d(direction, longitudinal, orthogonal)
+  if direction == defines.direction.north then
+    return {x=orthogonal, y=-longitudinal}
+  elseif direction == defines.direction.south then
+    return {x=-orthogonal, y=longitudinal}
+  elseif direction == defines.direction.east then
+    return {x=longitudinal, y=orthogonal}
+  elseif direction == defines.direction.west then
+    return {x=-longitudinal, y=-orthogonal}
+  end
 end
 
 return flib_direction

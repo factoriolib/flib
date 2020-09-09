@@ -1,9 +1,12 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.4.0
 Date: ????
+  Features:
+    - Added `direction.to_vector_2d`
   Changes:
     - `gui.add_handlers()` now only supports `on_gui` defines.events events
-    - Removed pointless direction fields (use defines.direction instead)
+    - Removed direction fields (use defines.direction instead)
+    - Removed orientation fields
   Bugfixes:
     - Fixed that using `gui.init()` to reset all filters did not update lookup tables
 ---------------------------------------------------------------------------------------------------
