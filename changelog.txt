@@ -1,7 +1,10 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.4
 Date: ????
-  Changes:
+  Features:
+    - Added optional `middleware` argument to `gui.register_handlers()`
+  Bugfixes:
+    - Fixed that using `gui.init()` to reset all filters did not update lookup tables
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.3
 Date: 2020-08-31

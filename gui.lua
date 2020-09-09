@@ -101,6 +101,9 @@ function flib_gui.init()
     global.__flib = {gui={}}
   else
     global.__flib.gui = {}
+    for _, data in pairs(handler_lookup) do
+      data.filters = {}
+    end
   end
 end
 
@@ -153,6 +156,8 @@ end
 -- @{gui.dispatch_handlers}. If custom logic is needed, handlers may be overwritten after calling this.
 --
 -- This function, if used, should be called in the root scope.
+-- @tparam[opt] function middleware A function to be run before @{gui.dispatch_handlers}. If the function returns falsy, @{gui.dispatch_handlers} will not be
+-- run.
 -- @usage
 -- -- register handlers for all GUI events
 -- gui.register_handlers()
@@ -165,10 +170,13 @@ end
 --     inventory.on_gui_opened(e)
 --   end
 -- end)
-function flib_gui.register_handlers()
+function flib_gui.register_handlers(middleware)
   for name, id in pairs(defines.events) do
     if string_sub(name, 1, 6) == "on_gui" then
-      script.on_event(id, function(e) flib_gui.dispatch_handlers(e) end)
+      script.on_event(id, function(e)
+        if middleware and not middleware(e) then return end
+        flib_gui.dispatch_handlers(e)
+      end)
     end
   end
 end
