@@ -152,12 +152,9 @@ function flib_gui.check_filter_validity()
 end
 
 --- Register handlers for all GUI events to pass through the module.
--- This is completely optional, but saves you having to create handlers for all GUI events simply to call
--- @{gui.dispatch_handlers}. If custom logic is needed, handlers may be overwritten after calling this.
+-- This will loop through all GUI-related `defines.events` events and register them to @{gui.dispatch_handlers}.
 --
--- This function, if used, should be called in the root scope.
--- @tparam[opt] function middleware A function to be run before @{gui.dispatch_handlers}. If the function returns falsy,
--- @{gui.dispatch_handlers} will not be run.
+-- This function should be called in the root scope.
 -- @usage
 -- -- register handlers for all GUI events
 -- gui.register_handlers()
@@ -170,13 +167,10 @@ end
 --     inventory.on_gui_opened(e)
 --   end
 -- end)
-function flib_gui.register_handlers(middleware)
+function flib_gui.register_handlers()
   for name, id in pairs(defines.events) do
     if string_sub(name, 1, 6) == "on_gui" then
-      script.on_event(id, function(e)
-        if middleware and not middleware(e) then return end
-        flib_gui.dispatch_handlers(e)
-      end)
+      script.on_event(id, flib_gui.dispatch_handlers)
     end
   end
 end
