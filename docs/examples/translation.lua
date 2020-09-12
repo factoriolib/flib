@@ -92,8 +92,16 @@ event.on_init(function()
 
   -- create player data
   global.players = {}
-  for i in pairs(game.players) do
+  for i, player in pairs(game.players) do
     init_player(i)
+
+    -- the player must be connected in order for translations to be processed
+    -- if they're connected, start immediately, else set a flag to begin when they join
+    if player.connected then
+      start_translations(i)
+    else
+      global.players[i].flags.translate_on_join = true
+    end
   end
 end)
 
@@ -123,9 +131,8 @@ event.on_configuration_changed(function(e)
       -- reset the player's translations table
       player_table.translations = table.shallow_copy(empty_translation_tables)
 
-      -- the player must be online in order for translations to be processed
-      -- if they're online, start immediately, else set a flag to begin when they join
-      if player.online then
+      -- start translations or set the flag to do so when they join
+      if player.connected then
         start_translations(i)
       else
         global.players[i].flags.translate_on_join = true
@@ -186,7 +193,7 @@ event.on_player_left_game(function(e)
   -- if the player is currently translating
   if translation.is_translating(e.player_index) then
     -- cancel the translations
-    translation.cancel_requests(e.player_index)
+    translation.cancel(e.player_index)
     -- reset the player's translation tables
     local player_table = global.players[e.player_index]
     player_table.translations = table.shallow_copy(empty_translation_tables)
@@ -199,7 +206,7 @@ event.on_player_removed(function(e)
   -- if the player is currently translating
   if translation.is_translating(e.player_index) then
     -- cancel the translations
-    translation.cancel_requests(e.player_index)
+    translation.cancel(e.player_index)
   end
   -- destroy the player's data
   global.players[e.player_index] = nil
