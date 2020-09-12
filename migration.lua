@@ -71,15 +71,12 @@ end
 -- @tparam Concepts.ConfigurationChangedData event_data
 -- @tparam MigrationsTable migrations
 -- @tparam[opt] string mod_name The mod to check against, defaults to the current mod.
--- @treturn boolean If true, run generic migrations. If false, run post-init setup.
+-- @treturn boolean If true, run generic migrations.
 -- @usage
 -- -- In on_configuration_changed:
 -- if migration.on_config_changed(e, migrations) then
 --   -- run generic (non-init) migrations
 --   rebuild_prototype_data()
--- else
---   -- run post-init setup
---   unlock_recipes_for_cheating_forces()
 -- end
 function flib_migration.on_config_changed(event_data, migrations, mod_name)
   local changes = event_data.mod_changes[mod_name or script.mod_name]

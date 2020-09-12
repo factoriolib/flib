@@ -21,9 +21,7 @@ event.on_configuration_changed(function(e)
   if migration.on_config_changed(e, migrations) then
     -- if the result is true, perform "generic migrations", i.e. refreshing a GUI with the latest item prototypes
     -- this chunk will run on every call *except* for right after `on_init`, where the other chunk will run instead
-  else
-    -- if the result is false, run "post-init setup"
-    -- this chunk will only run once, directly after `on_init`
-    -- use this chunk to run code that doesn't work in `on_init` for whatever reason
   end
+  -- if the result is false, that means that this mod was just added, so migrations shouldn't be performed
+  -- if you have code that absolutely must run despite this, put it here
 end)
