@@ -62,7 +62,7 @@ flib_math.max_uint64 = 18446744073709551615
 --
 -- From [lua-users.org](http://lua-users.org/wiki/SimpleRound).
 -- @tparam number num
--- @treturn int
+-- @treturn number
 function flib_math.round(num)
   if num >= 0 then return flib_math.floor(num + 0.5)
   else return flib_math.ceil(num - 0.5) end
