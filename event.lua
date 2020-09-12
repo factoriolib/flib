@@ -8,6 +8,7 @@
 -- @module event
 -- @alias flib_event
 -- @usage local event = require("__flib__.event")
+-- @see event.lua
 local flib_event = {}
 
 -- generate syntax shortcuts

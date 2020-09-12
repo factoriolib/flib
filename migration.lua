@@ -2,6 +2,7 @@
 -- @module migration
 -- @alias flib_migration
 -- @usage local migration = require("__flib__.migration")
+-- @see migration.lua
 local flib_migration = {}
 
 local string = string
@@ -80,7 +81,6 @@ end
 --   -- run post-init setup
 --   unlock_recipes_for_cheating_forces()
 -- end
--- @see migration.lua
 function flib_migration.on_config_changed(event_data, migrations, mod_name)
   local changes = event_data.mod_changes[mod_name or script.mod_name]
   if changes then

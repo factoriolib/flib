@@ -2,6 +2,7 @@
 -- @module gui
 -- @alias flib_gui
 -- @usage local gui = require("__flib__.gui")
+-- @see gui.lua
 local flib_gui = {}
 
 local table = require("__flib__.table")
