@@ -68,7 +68,7 @@ end
 --- Determine if migrations need to be run for this mod, then run them if needed.
 -- @tparam Concepts.ConfigurationChangedData event_data
 -- @tparam MigrationsTable migrations
--- @tparam[opt] string mod_name The mod to check against, defaults to the mod this is used in.
+-- @tparam[opt] string mod_name The mod to check against, defaults to the current mod.
 -- @treturn boolean If true, run generic migrations. If false, run post-init setup.
 -- @usage
 -- -- In on_configuration_changed:
@@ -79,6 +79,7 @@ end
 --   -- run post-init setup
 --   unlock_recipes_for_cheating_forces()
 -- end
+-- @see migration.lua
 function flib_migration.on_config_changed(event_data, migrations, mod_name)
   local changes = event_data.mod_changes[mod_name or script.mod_name]
   if changes then
@@ -97,10 +98,11 @@ return flib_migration
 --- Concepts
 -- @section
 
---- @Concept MigrationsTable
--- Dictionary string -> function. Each string is a version number, and each value is a
--- function that will be run for that version.
--- @tparam {[string]=function,...} ...
+--- A table of migrations to run for given versions.
+-- Dictionary @{string} -> @{function}. Each string is a version number, and each function is logic to run for that
+-- version. When passed into @{migration.run} or @{migration.on_config_changed}, the module will check `old_version`
+-- against each version in this table, and for any that are newer, will run that version's corresponding logic.
+-- @Concept MigrationsTable
 -- @usage
 -- {
 --   ["1.0.1"] = function()
