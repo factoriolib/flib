@@ -3,6 +3,7 @@ Version: 0.4.0
 Date: ????
   Features:
     - Added `direction.to_vector_2d`
+    - Additional arguments passed to `migration.run` will be passed on to the version functions within the migrations table
     - Added `math` module
   Changes:
     - `gui.add_handlers()` now only supports `on_gui` defines.events events

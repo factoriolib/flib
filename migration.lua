@@ -55,12 +55,13 @@ end
 -- @tparam string old_version
 -- @tparam MigrationsTable migrations
 -- @tparam[opt="%02d"] string format
-function flib_migration.run(old_version, migrations, format)
+-- @tparam[opt] any ... Any additional arguments will be passed to each function within `migrations`.
+function flib_migration.run(old_version, migrations, format, ...)
   local migrate = false
   for version, func in pairs(migrations) do
     if migrate or flib_migration.is_newer_version(old_version, version, format) then
       migrate = true
-      func()
+      func(...)
     end
   end
 end
@@ -102,6 +103,8 @@ return flib_migration
 -- Dictionary @{string} -> @{function}. Each string is a version number, and each function is logic to run for that
 -- version. When passed into @{migration.run} or @{migration.on_config_changed}, the module will check `old_version`
 -- against each version in this table, and for any that are newer, will run that version's corresponding logic.
+--
+-- A version function can accept arguments that are passed in through @{migration.run}.
 -- @Concept MigrationsTable
 -- @usage
 -- {
@@ -111,7 +114,7 @@ return flib_migration
 --       player_table.bar = "Lorem ipsum"
 --     end
 --   end,
---   ["1.1.0"] = function()
---     global.foo = "bar"
+--   ["1.1.0"] = function(arg)
+--     global.foo = arg
 --   end
 -- }
