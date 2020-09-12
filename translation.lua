@@ -2,6 +2,7 @@
 -- @module translation
 -- @alias flib_translation
 -- @usage local translation = require("__flib__.translation")
+-- @see translation.lua
 local flib_translation = {}
 
 local table = require("__flib__.table")
@@ -238,8 +239,7 @@ return flib_translation
 
 --- A mapping of a translated string's dictionaries and internal names.
 -- Dictionary @{string} -> array of @{string}. Each key is a dictionary name, each value is an array of internal names
--- that match to the translated string. This greatly eases the process of sorting translations into various
--- dictionaries.
+-- that the translation matches. Use this data to sort the translation into its appropriate locations.
 -- @usage
 -- {
 --   entities = {"crude-oil"},
@@ -253,9 +253,8 @@ return flib_translation
 -- }
 -- @Concept ResultSortData
 
---- A registry of strings to translate.
--- This is an array of tables, each of which contain the following fields:
--- @tfield string dictionary The dictionary that this string belongs to.
+--- Dictioanry data for a localised string.
+-- @tfield string dictionary The "dictionary" (subtable) that this string belongs to.
 -- @tfield string internal The internal name that will be used to reference this string.
 -- @tfield Concepts.LocalisedString localised The localised string to translate.
 -- @usage

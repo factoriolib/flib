@@ -100,6 +100,8 @@ end
 -- Must be called during `on_init` **before** any structures are built.
 --
 -- If adding the module to an existing mod, this must be called in `on_configuration_changed` for that version as well.
+--
+-- This function can also be used to wipe all GUI filters for all players.
 function flib_gui.init()
   if not global.__flib then
     global.__flib = {gui={}}
