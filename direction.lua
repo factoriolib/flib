@@ -60,26 +60,25 @@ end
 --- Returns a vector from a direction.
 -- @tparam defines.direction direction
 -- @tparam[opt = 1] number distance
--- @treturn Concepts.Position
+-- @treturn Position
 function flib_direction.to_vector(direction, distance)
-  local directions = defines.direction
   distance = distance or 1
   local x, y = 0, 0
-  if direction == directions.north then
+  if direction == flib_direction.north then
     y = y - distance
-  elseif direction == directions.northeast then
+  elseif direction == flib_direction.northeast then
     x, y = x + distance, y - distance
-  elseif direction == directions.east then
+  elseif direction == flib_direction.east then
     x = x + distance
-  elseif direction == directions.southeast then
+  elseif direction == flib_direction.southeast then
     x, y = x + distance, y + distance
-  elseif direction == directions.south then
+  elseif direction == flib_direction.south then
     y = y + distance
-  elseif direction == directions.southwest then
+  elseif direction == flib_direction.southwest then
     x, y = x - distance, y + distance
-  elseif direction == directions.west then
+  elseif direction == flib_direction.west then
     x = x - distance
-  elseif direction == directions.northwest then
+  elseif direction == flib_direction.northwest then
     x, y = x - distance, y - distance
   end
   return {x = x, y = y}
