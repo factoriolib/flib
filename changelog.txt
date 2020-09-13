@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.4.0
-Date: ????
+Date: 2020-09-13
   Features:
     - Added `direction.to_vector_2d`
     - Additional arguments passed to `migration.run` will be passed on to the version functions within the migrations table
