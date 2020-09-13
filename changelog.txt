@@ -5,10 +5,6 @@ Date: ????
     - Added `direction.to_vector_2d`
     - Additional arguments passed to `migration.run` will be passed on to the version functions within the migrations table
     - Added `math` module
-  Changes:
-    - Removed direction fields (use defines.direction instead)
-    - Removed orientation fields
-    - Removed old require paths for renamed modules
   Bugfixes:
     - Fixed that using `gui.init()` to reset all filters did not update lookup tables
 ---------------------------------------------------------------------------------------------------
