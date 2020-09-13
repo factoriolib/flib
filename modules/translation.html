@@ -29,10 +29,9 @@
     <a href="../index.html"><h1>Factorio Library</h1></a>
 
     <!-- project description -->
-    <p class="project-desc">Factorio Library</p>
 
     <!-- project full description -->
-    <span>  The Factorio Library aims to extend the Factorio Lua API with well-tested, documented, and easy-to-use functions to make modding easier.</span>
+    <span>  The Factorio Library (flib) is a set of high-quality, commonly-used utilities for creating Factorio mods.</span>
     </div>
 
 
@@ -45,6 +44,7 @@
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/direction.html"><span class="module-name-item">direction</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/event.html"><span class="module-name-item">event</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/gui.html"><span class="module-name-item">gui</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/math.html"><span class="module-name-item">math</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/migration.html"><span class="module-name-item">migration</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/misc.html"><span class="module-name-item">misc</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/orientation.html"><span class="module-name-item">orientation</span></a></div></li>
@@ -60,11 +60,19 @@
     <h2>Topics</h2>
     <ul class="nav">
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/README.md.html"><span class="module-name-item">README.md</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/changelog.txt.html"><span class="module-name-item">changelog.txt</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/LICENSE.html"><span class="module-name-item">LICENSE</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/contributing.md.html"><span class="module-name-item">contributing.md</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/style-guide.md.html"><span class="module-name-item">style-guide.md</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/styles.md.html"><span class="module-name-item">styles.md</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/gui-styles.md.html"><span class="module-name-item">gui-styles.md</span></a></div></li>
+    </ul>
+    </li>
+    </ul>
+    <ul class="nav nav-modules">
+    <li class="nav-item">
+    <h2>Examples</h2>
+    <ul class="nav">
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/event.lua.html"><span class="module-name-item">event.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/gui.lua.html"><span class="module-name-item">gui.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/migration.lua.html"><span class="module-name-item">migration.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/translation.lua.html"><span class="module-name-item">translation.lua</span></a></div></li>
     </ul>
     </li>
     </ul>
@@ -108,6 +116,10 @@
     <!-- module info end -->
 
     <!-- module usage start -->
+    <h3>See also</h3>
+    <ul class="module-see-also">
+    <li><a href="../examples/translation.lua.html#">translation.lua</a></li>
+    </ul>
     <h3>Usage</h3>
     <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> translation = <span class="global">require</span>(<span class="string">"__flib__.translation"</span>)</code></pre>
     <!-- module usage end -->
@@ -167,7 +179,7 @@
     </tr>
     <tr>
     <td class="name"><a href="#StringData">StringData</a></td>
-    <td class="summary">A registry of strings to translate.</td>
+    <td class="summary">Dictioanry data for a localised string.</td>
     </tr>
     </tbody>
     </table>
@@ -189,9 +201,11 @@
     <div class="section-item-body">
 
     <p class="section-item-summary">Initial setup.</p>
-    <p class="section-item-description"> Must be called at the <strong>beginning</strong> of <code>on_init</code>, and during <code>on_configuration_changed</code> <strong>before</strong> any translations are started.</p>
+    <p class="section-item-description"> Must be called at the <strong>beginning</strong> of <code>on_init</code>, and during <code>on_configuration_changed</code> <strong>before</strong> any translations
+ are started.</p>
 
-<p> This function will effectively cancel all running translations, so if that functionality is desired, this function is a good fit for it.</p>
+<p> This function will effectively cancel all running translations, so if that functionality is desired, this function is
+ a good fit for it.</p>
 
     <!-- parameters start -->
     <!-- parameters end -->
@@ -348,7 +362,7 @@
 
     <strong> : </strong>
 
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#uint">uint</a></span>)
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.3.html">number</a></span>)
 
 
 
@@ -417,7 +431,7 @@
 
     <strong> : </strong>
 
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#uint">uint</a></span>)
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.3.html">number</a></span>)
 
 
 
@@ -469,7 +483,7 @@
 
     <strong> : </strong>
 
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#uint">uint</a></span>)
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.3.html">number</a></span>)
 
 
 
@@ -519,7 +533,7 @@
     <strong>Returns:</strong>
     <ul>
     <li>
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#uint">uint</a></span>)
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.3.html">number</a></span>)
     </li>
     </ul>
     <!-- returns end -->
@@ -605,8 +619,7 @@
 
     <p class="section-item-summary">A mapping of a translated string&rsquo;s dictionaries and internal names.</p>
     <p class="section-item-description"> Dictionary <a href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a> &ndash;> array of <a href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a>. Each key is a dictionary name, each value is an array of internal names
- that match to the translated string. This greatly eases the process of sorting translations into various
- dictionaries.</p>
+ that the translation matches. Use this data to sort the translation into its appropriate locations.</p>
 
     <!-- parameters start -->
     <!-- parameters end -->
@@ -644,8 +657,9 @@
     <dd>
     <div class="section-item-body">
 
-    <p class="section-item-summary">A registry of strings to translate.</p>
-    <p class="section-item-description"> This is an array of tables, each of which contain the following fields:</p>
+    <p class="section-item-summary">Dictioanry data for a localised string.</p>
+    <p class="section-item-description">
+</p>
 
     <!-- parameters start -->
 
@@ -663,7 +677,7 @@
 
     (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a></span>)
 
-     The dictionary that this string belongs to.
+     The &ldquo;dictionary&rdquo; (subtable) that this string belongs to.
 
     </li>
 
@@ -737,7 +751,7 @@
     <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
     </div>
     <div class="content-footer column col-9 col-sm-12">
-    <i>Last updated 2020-08-31 01:33:47 UTC</i>
+    <i>Last updated 2020-09-13 18:41:55 UTC</i>
     </div>
     </div>
     </div>

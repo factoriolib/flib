@@ -1,0 +1,351 @@
+
+
+    <!doctype html>
+    <html class="no-js" lang="">
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>translation.lua example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../spectre.min.css" type="text/css" />
+    <link rel="stylesheet" href="../spectre-icons.min.css" type="text/css" />
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+    </head>
+    <body>
+
+    <div class="container grid-1280">
+    <div class="columns">
+
+    <!-- sidebar start -->
+
+    <div id="sidebar" class="column col-3 col-sm-12">
+
+    <div class="sidebar-custom">
+
+    <div class="project-infobox">
+
+    <!-- project title -->
+
+    <a href="../index.html"><h1>Factorio Library</h1></a>
+
+    <!-- project description -->
+
+    <!-- project full description -->
+    <span>  The Factorio Library (flib) is a set of high-quality, commonly-used utilities for creating Factorio mods.</span>
+    </div>
+
+
+    <!-- sidebar navigation -->
+    <ul class="nav nav-modules">
+    <li class="nav-item">
+    <h2>Examples</h2>
+    <ul class="nav">
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/event.lua.html"><span class="module-name-item">event.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/gui.lua.html"><span class="module-name-item">gui.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/migration.lua.html"><span class="module-name-item">migration.lua</span></a></div></li>
+    <li class="nav-item active"><div class="nav-item-block-active block"><a href="../examples/translation.lua.html"><span class="module-name-item">translation.lua</span></a><i class="icon icon-arrow-left icon-arrow-left-custom"></i></div></li>
+    </ul>
+    </li>
+    </ul>
+    <ul class="nav nav-modules">
+    <li class="nav-item">
+    <h2>Modules</h2>
+    <ul class="nav">
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/data-util.html"><span class="module-name-item">data-util</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/direction.html"><span class="module-name-item">direction</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/event.html"><span class="module-name-item">event</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/gui.html"><span class="module-name-item">gui</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/math.html"><span class="module-name-item">math</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/migration.html"><span class="module-name-item">migration</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/misc.html"><span class="module-name-item">misc</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/orientation.html"><span class="module-name-item">orientation</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/reverse-defines.html"><span class="module-name-item">reverse-defines</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/table.html"><span class="module-name-item">table</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/train.html"><span class="module-name-item">train</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/translation.html"><span class="module-name-item">translation</span></a></div></li>
+    </ul>
+    </li>
+    </ul>
+    <ul class="nav nav-modules">
+    <li class="nav-item">
+    <h2>Topics</h2>
+    <ul class="nav">
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/README.md.html"><span class="module-name-item">README.md</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/LICENSE.html"><span class="module-name-item">LICENSE</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/gui-styles.md.html"><span class="module-name-item">gui-styles.md</span></a></div></li>
+    </ul>
+    </li>
+    </ul>
+
+
+
+    <!-- list of items in a module -->
+    </div>
+    <div class="up-to-top">
+    <a href="#">Top <i class="icon icon-upward"></i></a>
+    </div>
+    </div>
+    <!-- sidebar end -->
+
+    <!-- content body start -->
+    <div class="column col-9 col-sm-12">
+
+    <!-- module list on the main page start -->
+    <!-- module list on the main page end -->
+
+    <!-- module contents -->
+
+    <!-- module content header start -->
+
+    <h2><span class="body-module-name"><strong><em>translation.lua</em></strong></span> example</h2>
+    <p></p>
+    <p></p>
+
+    <pre class="code" data-lang="Lua"><code><span class="comment">--[[
+  TRANSLATION MODULE USAGE EXAMPLE
+
+  This example demonstrates the use of the translation module like the other examples do, but it also shows the
+  recommended implementation of the module as well. This code accounts for all known edge cases with a player's
+  online status and multiplayer sessions. It is recommended that you follow this pattern when implementing the module.
+]]</span>
+
+<span class="keyword">local</span> event = <span class="global">require</span>(<span class="string">"__flib__.event"</span>)
+<span class="keyword">local</span> migration = <span class="global">require</span>(<span class="string">"__flib__.migration"</span>)
+<span class="keyword">local</span> translation = <span class="global">require</span>(<span class="string">"__flib__.translation"</span>)
+<span class="keyword">local</span> <span class="global">table</span> = <span class="global">require</span>(<span class="string">"__flib__.table"</span>)
+
+<span class="comment">-- the structure of a player's translations table
+</span><span class="comment">-- this is likely more dictionaries than a mod will actually need - there are a lot of them to facilitate the example
+</span><span class="comment">-- strive to translate as few strings as possible to save space in `global`
+</span><span class="keyword">local</span> empty_translation_tables = {
+  achievement = {},
+  entity = {},
+  equipment = {},
+  fluid = {},
+  item = {},
+  recipe = {},
+  technology = {},
+  tile = {}
+}
+
+<span class="comment">-- build the array of strings to translate
+</span><span class="keyword">local</span> <span class="keyword">function</span> build_strings()
+  <span class="keyword">local</span> strings = {}
+  <span class="keyword">local</span> i = <span class="number">0</span>
+  <span class="comment">-- for demo purposes, we add a LOT of strings by looping through a large amount of game prototypes
+</span>  <span class="keyword">for</span> category <span class="keyword">in</span> <span class="global">pairs</span>(empty_translation_tables) <span class="keyword">do</span>
+    <span class="keyword">for</span> name, prototype <span class="keyword">in</span> <span class="global">pairs</span>(game[category..<span class="string">"_prototypes"</span>]) <span class="keyword">do</span>
+      i = i + <span class="number">1</span>
+      <span class="comment">-- StringData - a table containing `dictionary`, `internal`, and `localised` keys
+</span>      <span class="comment">-- `dictionary` - the dictionary (subtable) that the string belongs to
+</span>      <span class="comment">-- `internal` - a string that the translation will be keyed by, e.g. "iron-plate"
+</span>      <span class="comment">-- `localised` - the actual localised string that needs to be translated
+</span>      strings[i] = {dictionary=category, internal=name, localised=prototype.localised_name}
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+  <span class="comment">-- save to global
+</span>  global.strings = strings
+<span class="keyword">end</span>
+
+<span class="comment">-- conditionally registered `on_tick` handler
+</span><span class="keyword">local</span> <span class="keyword">function</span> on_tick_handler(e)
+  <span class="comment">-- if any players are translating, call the function, else deregister from on_tick to save performance
+</span>  <span class="keyword">if</span> translation.translating_players_count() &gt; <span class="number">0</span> <span class="keyword">then</span>
+    <span class="comment">-- iterate_batch - performs translation operations over multiple ticks
+</span>    translation.iterate_batch(e)
+  <span class="keyword">else</span>
+    event.on_tick(<span class="keyword">nil</span>)
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">-- register the `on_tick` handler if it needs to be registered
+</span><span class="keyword">local</span> <span class="keyword">function</span> register_on_tick()
+  <span class="comment">-- if any players are translating, register the handler
+</span>  <span class="keyword">if</span> translation.translating_players_count() &gt; <span class="number">0</span> <span class="keyword">then</span>
+    event.on_tick(on_tick_handler)
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">-- create player data
+</span><span class="keyword">local</span> <span class="keyword">function</span> init_player(player_index)
+  global.players[player_index] = {
+    flags = {
+      <span class="comment">-- if true, start translations for the player when they join
+</span>      <span class="comment">-- players must be online in order for translations to be processed
+</span>      translate_on_join = <span class="keyword">false</span>
+    },
+    <span class="comment">-- holds the player's translations for use throughout the mod
+</span>    translations = <span class="global">table</span>.shallow_copy(empty_translation_tables)
+  }
+<span class="keyword">end</span>
+
+<span class="keyword">local</span> <span class="keyword">function</span> start_translations(player_index)
+  <span class="comment">-- add_requests - adds the StringData array to the player's table and starts translation
+</span>  translation.add_requests(player_index, global.strings)
+  <span class="comment">-- register the `on_tick` handler
+</span>  register_on_tick()
+<span class="keyword">end</span>
+
+event.on_init(<span class="keyword">function</span>()
+  <span class="comment">-- set up the module
+</span>  translation.init()
+
+  <span class="comment">-- build the array of StringData that the players will translate
+</span>  build_strings()
+
+  <span class="comment">-- create player data
+</span>  global.players = {}
+  <span class="keyword">for</span> i, player <span class="keyword">in</span> <span class="global">pairs</span>(game.players) <span class="keyword">do</span>
+    init_player(i)
+
+    <span class="comment">-- the player must be connected in order for translations to be processed
+</span>    <span class="comment">-- if they're connected, start immediately, else set a flag to begin when they join
+</span>    <span class="keyword">if</span> player.connected <span class="keyword">then</span>
+      start_translations(i)
+    <span class="keyword">else</span>
+      global.players[i].flags.translate_on_join = <span class="keyword">true</span>
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>)
+
+<span class="comment">-- re-register the `on_tick` handler if it needs to be registered
+</span>event.on_load(<span class="keyword">function</span>()
+  register_on_tick()
+<span class="keyword">end</span>)
+
+event.on_configuration_changed(<span class="keyword">function</span>(e)
+  <span class="comment">-- if generic migrations are necessary
+</span>  <span class="keyword">if</span> migration.on_config_changed(e, {}) <span class="keyword">then</span>
+    <span class="comment">-- cancel all translations and do a complete reset
+</span>    <span class="comment">-- this is necessary because the contents of each dictionary may have changed due to game or mod changes
+</span>    translation.init()
+
+    <span class="comment">-- re-build the array of StringData that the players will translate
+</span>    build_strings()
+
+    <span class="comment">-- iterate players
+</span>    <span class="keyword">for</span> i, player <span class="keyword">in</span> <span class="global">pairs</span>(game.players) <span class="keyword">do</span>
+      <span class="comment">-- the player is guaranteed to not be translating anymore, since we did a complete module reset
+</span>
+      <span class="keyword">local</span> player_table = global.players[e.player_index]
+
+      <span class="comment">-- reset the translate_on_join flag
+</span>      player_table.flags.translate_on_join = <span class="keyword">false</span>
+      <span class="comment">-- reset the player's translations table
+</span>      player_table.translations = <span class="global">table</span>.shallow_copy(empty_translation_tables)
+
+      <span class="comment">-- start translations or set the flag to do so when they join
+</span>      <span class="keyword">if</span> player.connected <span class="keyword">then</span>
+        start_translations(i)
+      <span class="keyword">else</span>
+        global.players[i].flags.translate_on_join = <span class="keyword">true</span>
+      <span class="keyword">end</span>
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>)
+
+event.on_string_translated(<span class="keyword">function</span>(e)
+  <span class="comment">-- process_result - retrieves the sort data for the string, and whether or not the player is finished translating
+</span>  <span class="keyword">local</span> sort_data, finished = translation.process_result(e)
+
+  <span class="comment">-- `sort_data` can be `nil` if another mod requested translations as well, so check for it
+</span>  <span class="keyword">if</span> sort_data <span class="keyword">then</span>
+    <span class="keyword">local</span> player_table = global.players[e.player_index]
+    <span class="keyword">local</span> translations = player_table.translations
+    <span class="comment">-- iterate the ResultSortData
+</span>    <span class="keyword">for</span> dictionary_name, internal_names <span class="keyword">in</span> <span class="global">pairs</span>(sort_data) <span class="keyword">do</span>
+      <span class="comment">-- insert into the corresponding dictionary in the player's table
+</span>      <span class="keyword">local</span> dictionary = translations[dictionary_name]
+      <span class="comment">-- for each internal name
+</span>      <span class="keyword">for</span> i = <span class="number">1</span>, #internal_names <span class="keyword">do</span>
+        <span class="keyword">local</span> internal_name = internal_names[i]
+        <span class="comment">-- if the translation did not succeed, fall back on the internal name
+</span>        <span class="comment">-- another valid option is to not add anything if it failed, in which case this logic would be different
+</span>        <span class="keyword">local</span> result = e.translated <span class="keyword">and</span> e.result <span class="keyword">or</span> internal_name
+        <span class="comment">-- add the translation or internal name to the dictionary, keyed by the internal name
+</span>        dictionary[internal_name] = result
+      <span class="keyword">end</span>
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+
+  <span class="comment">-- run some logic when the player is finished translating
+</span>  <span class="comment">-- this is where you would build your GUI if it depends on the translations existing
+</span>  <span class="keyword">if</span> finished <span class="keyword">then</span>
+    game.<span class="global">print</span>(<span class="string">"Player ["</span>..game.get_player(e.player_index).name..<span class="string">"] has finished translations"</span>)
+  <span class="keyword">end</span>
+<span class="keyword">end</span>)
+
+event.on_player_created(<span class="keyword">function</span>(e)
+  init_player(e.player_index)
+  <span class="comment">-- the player is already connected when this event runs, so it's safe to start translations immediately
+</span>  start_translations(e.player_index)
+<span class="keyword">end</span>)
+
+event.on_player_joined_game(<span class="keyword">function</span>(e)
+  <span class="keyword">local</span> player_flags = global.players[e.player_index].flags
+  <span class="comment">-- if the translate_on_join flag is set
+</span>  <span class="keyword">if</span> player_flags.translate_on_join <span class="keyword">then</span>
+    <span class="comment">-- unset the flag so this only happens once
+</span>    player_flags.translate_on_join = <span class="keyword">false</span>
+    <span class="comment">-- start translating
+</span>    start_translations(e.player_index)
+  <span class="keyword">end</span>
+<span class="keyword">end</span>)
+
+event.on_player_left_game(<span class="keyword">function</span>(e)
+  <span class="comment">-- if the player is currently translating
+</span>  <span class="keyword">if</span> translation.is_translating(e.player_index) <span class="keyword">then</span>
+    <span class="comment">-- cancel the translations
+</span>    translation.cancel(e.player_index)
+    <span class="comment">-- reset the player's translation tables
+</span>    <span class="keyword">local</span> player_table = global.players[e.player_index]
+    player_table.translations = <span class="global">table</span>.shallow_copy(empty_translation_tables)
+    <span class="comment">-- re-set the flag so the translations will restart when they re-join
+</span>    player_table.flags.translate_on_join = <span class="keyword">true</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>)
+
+event.on_player_removed(<span class="keyword">function</span>(e)
+  <span class="comment">-- if the player is currently translating
+</span>  <span class="keyword">if</span> translation.is_translating(e.player_index) <span class="keyword">then</span>
+    <span class="comment">-- cancel the translations
+</span>    translation.cancel(e.player_index)
+  <span class="keyword">end</span>
+  <span class="comment">-- destroy the player's data
+</span>  global.players[e.player_index] = <span class="keyword">nil</span>
+<span class="keyword">end</span>)</code></pre>
+
+    <!-- module info start -->
+    <!-- module info end -->
+
+    <!-- module usage start -->
+    <!-- module usage end -->
+
+    <!-- module content header end -->
+
+    <!-- module section list start -->
+    <!-- module section list end -->
+
+    <br />
+
+    <!-- section start -->
+
+    <!-- section end -->
+
+    </div>
+    </div>
+    </div>
+
+    <div class="footer container grid-1280">
+    <div class="divider divider-custom"></div>
+    <div class="footer-columns columns">
+    <div class="sidebar-footer column col-3 col-sm-12">
+    <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+    </div>
+    <div class="content-footer column col-9 col-sm-12">
+    <i>Last updated 2020-09-13 18:41:55 UTC</i>
+    </div>
+    </div>
+    </div>
+    </body>
+    </html>

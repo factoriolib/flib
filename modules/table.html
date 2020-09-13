@@ -29,10 +29,9 @@
     <a href="../index.html"><h1>Factorio Library</h1></a>
 
     <!-- project description -->
-    <p class="project-desc">Factorio Library</p>
 
     <!-- project full description -->
-    <span>  The Factorio Library aims to extend the Factorio Lua API with well-tested, documented, and easy-to-use functions to make modding easier.</span>
+    <span>  The Factorio Library (flib) is a set of high-quality, commonly-used utilities for creating Factorio mods.</span>
     </div>
 
 
@@ -45,6 +44,7 @@
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/direction.html"><span class="module-name-item">direction</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/event.html"><span class="module-name-item">event</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/gui.html"><span class="module-name-item">gui</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/math.html"><span class="module-name-item">math</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/migration.html"><span class="module-name-item">migration</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/misc.html"><span class="module-name-item">misc</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/orientation.html"><span class="module-name-item">orientation</span></a></div></li>
@@ -60,11 +60,19 @@
     <h2>Topics</h2>
     <ul class="nav">
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/README.md.html"><span class="module-name-item">README.md</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/changelog.txt.html"><span class="module-name-item">changelog.txt</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/LICENSE.html"><span class="module-name-item">LICENSE</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/contributing.md.html"><span class="module-name-item">contributing.md</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/style-guide.md.html"><span class="module-name-item">style-guide.md</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/styles.md.html"><span class="module-name-item">styles.md</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/gui-styles.md.html"><span class="module-name-item">gui-styles.md</span></a></div></li>
+    </ul>
+    </li>
+    </ul>
+    <ul class="nav nav-modules">
+    <li class="nav-item">
+    <h2>Examples</h2>
+    <ul class="nav">
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/event.lua.html"><span class="module-name-item">event.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/gui.lua.html"><span class="module-name-item">gui.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/migration.lua.html"><span class="module-name-item">migration.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/translation.lua.html"><span class="module-name-item">translation.lua</span></a></div></li>
     </ul>
     </li>
     </ul>
@@ -603,7 +611,7 @@ log(tbl.foo) <span class="comment">-- logs "baz"
 
     <strong> : </strong>
 
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#uint">uint</a></span>)
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.3.html">number</a></span>)
 
      The number of items to iterate.
 
@@ -965,9 +973,10 @@ event.on_tick(<span class="keyword">function</span>()
 
     <strong> : </strong>
 
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#uint">uint</a></span>)
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.3.html">number</a></span>)
 
-     The index to start iteration at (inclusive). Pass <code>nil</code> or a number less than <code>2</code> to begin at the start of the array.
+     The index to start iteration at (inclusive). Pass <code>nil</code> or a number less than <code>2</code> to begin at
+ the start of the array.
 
     </li>
 
@@ -981,7 +990,7 @@ event.on_tick(<span class="keyword">function</span>()
 
     <strong> : </strong>
 
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#uint">uint</a></span>)
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.3.html">number</a></span>)
 
      The number of iterations to perform. Higher is more performance-heavy. This number should be
  adjusted based on the performance impact of the custom <code>comp</code> function (if any) and the size of the array.
@@ -1014,7 +1023,7 @@ event.on_tick(<span class="keyword">function</span>()
     <strong>Returns:</strong>
     <ul>
     <li>
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#uint">uint</a> or <a class="type" href="https://www.lua.org/pil/2.1.html">nil</a></span>)
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.3.html">number</a> or <a class="type" href="https://www.lua.org/pil/2.1.html">nil</a></span>)
     <span class="return-text">The index to start the next iteration at, or <code>nil</code> if the end was reached.</span>
     </li>
     </ul>
@@ -1248,7 +1257,7 @@ event.on_tick(<span class="keyword">function</span>()
     <strong>Returns:</strong>
     <ul>
     <li>
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#uint">uint</a></span>)
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.3.html">number</a></span>)
     <span class="return-text">Size of the table.</span>
     </li>
     </ul>
@@ -1471,7 +1480,7 @@ event.on_tick(<span class="keyword">function</span>()
     <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
     </div>
     <div class="content-footer column col-9 col-sm-12">
-    <i>Last updated 2020-08-31 01:33:47 UTC</i>
+    <i>Last updated 2020-09-13 18:41:55 UTC</i>
     </div>
     </div>
     </div>

@@ -29,10 +29,9 @@
     <a href="../index.html"><h1>Factorio Library</h1></a>
 
     <!-- project description -->
-    <p class="project-desc">Factorio Library</p>
 
     <!-- project full description -->
-    <span>  The Factorio Library aims to extend the Factorio Lua API with well-tested, documented, and easy-to-use functions to make modding easier.</span>
+    <span>  The Factorio Library (flib) is a set of high-quality, commonly-used utilities for creating Factorio mods.</span>
     </div>
 
 
@@ -45,6 +44,7 @@
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/direction.html"><span class="module-name-item">direction</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/event.html"><span class="module-name-item">event</span></a></div></li>
     <li class="nav-item active"><div class="nav-item-block-active block"><a href="../modules/gui.html"><span class="module-name-item">gui</span></a><i class="icon icon-arrow-left icon-arrow-left-custom"></i></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/math.html"><span class="module-name-item">math</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/migration.html"><span class="module-name-item">migration</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/misc.html"><span class="module-name-item">misc</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/orientation.html"><span class="module-name-item">orientation</span></a></div></li>
@@ -60,11 +60,19 @@
     <h2>Topics</h2>
     <ul class="nav">
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/README.md.html"><span class="module-name-item">README.md</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/changelog.txt.html"><span class="module-name-item">changelog.txt</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/LICENSE.html"><span class="module-name-item">LICENSE</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/contributing.md.html"><span class="module-name-item">contributing.md</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/style-guide.md.html"><span class="module-name-item">style-guide.md</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/styles.md.html"><span class="module-name-item">styles.md</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/gui-styles.md.html"><span class="module-name-item">gui-styles.md</span></a></div></li>
+    </ul>
+    </li>
+    </ul>
+    <ul class="nav nav-modules">
+    <li class="nav-item">
+    <h2>Examples</h2>
+    <ul class="nav">
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/event.lua.html"><span class="module-name-item">event.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/gui.lua.html"><span class="module-name-item">gui.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/migration.lua.html"><span class="module-name-item">migration.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/translation.lua.html"><span class="module-name-item">translation.lua</span></a></div></li>
     </ul>
     </li>
     </ul>
@@ -110,6 +118,10 @@
     <!-- module info end -->
 
     <!-- module usage start -->
+    <h3>See also</h3>
+    <ul class="module-see-also">
+    <li><a href="../examples/gui.lua.html#">gui.lua</a></li>
+    </ul>
     <h3>Usage</h3>
     <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> gui = <span class="global">require</span>(<span class="string">"__flib__.gui"</span>)</code></pre>
     <!-- module usage end -->
@@ -311,23 +323,30 @@
     <!-- usage start -->
     <strong>Usage:</strong>
     <pre class="code" data-lang="Lua"><code>gui.build(player.gui.screen, {
-  {<span class="global">type</span>=<span class="string">"frame"</span>, style=<span class="string">"dialog_frame"</span>, direction=<span class="string">"vertical"</span>, handlers=<span class="string">"window"</span>, save_as=<span class="string">"window"</span>, children={
-    {<span class="global">type</span>=<span class="string">"flow"</span>, children={
-      {<span class="global">type</span>=<span class="string">"label"</span>, style=<span class="string">"frame_title"</span>, caption=<span class="string">"Menu"</span>},
-      {template=<span class="string">"drag_handle"</span>, style_mods={horizontally_stretchable=<span class="keyword">true</span>, height=<span class="number">24</span>},
-        save_as=<span class="string">"titlebar.drag_handle"</span>},
+  {<span class="global">type</span>=<span class="string">"frame"</span>, direction=<span class="string">"vertical"</span>, handlers=<span class="string">"window"</span>, save_as=<span class="string">"window"</span>, children={
+    <span class="comment">-- titlebar
+</span>    {<span class="global">type</span>=<span class="string">"flow"</span>, save_as=<span class="string">"titlebar_flow"</span>, children={
+      {<span class="global">type</span>=<span class="string">"label"</span>, style=<span class="string">"frame_title"</span>, caption=<span class="string">"Menu"</span>, elem_mods={ignored_by_interaction=<span class="keyword">true</span>}},
+      {<span class="global">type</span>=<span class="string">"empty-widget"</span>, style=<span class="string">"flib_titlebar_drag_handle"</span>, elem_mods={ignored_by_interaction=<span class="keyword">true</span>}},
       {<span class="global">type</span>=<span class="string">"condition"</span>, condition=(<span class="keyword">not</span> is_dialog_frame), children={
-        {template=<span class="string">"frame_action_button"</span>, sprite=<span class="string">"utility/close_white"</span>, handlers=<span class="string">"titlebar.close_button"</span>,
-          save_as=<span class="string">"titlebar.close_button"</span>}
+        {template=<span class="string">"frame_action_button"</span>,
+          sprite=<span class="string">"utility/close_white"</span>,
+          handlers=<span class="string">"titlebar.close_button"</span>,
+          save_as=<span class="string">"titlebar.close_button"</span>
+        }
       }}
     }},
     {<span class="global">type</span>=<span class="string">"frame"</span>, style=<span class="string">"inside_shallow_frame_with_padding"</span>, children={
       {<span class="global">type</span>=<span class="string">"table"</span>, style=<span class="string">"slot_table"</span>, column_count=<span class="number">10</span>, save_as=<span class="string">"content.slot_table"</span>}
     }},
     {<span class="global">type</span>=<span class="string">"condition"</span>, condition=is_dialog_frame, children={
-      {<span class="global">type</span>=<span class="string">"flow"</span>, children={
+      {<span class="global">type</span>=<span class="string">"flow"</span>, style=<span class="string">"dialog_buttons_horizontal_flow"</span>, children={
         {<span class="global">type</span>=<span class="string">"button"</span>, style=<span class="string">"back_button"</span>, caption={<span class="string">"gui.back"</span>}, handlers=<span class="string">"footer.back_button"</span>},
-        {template=<span class="string">"drag_handle"</span>, style_mods={horizontally_stretchable=<span class="keyword">true</span>, height=<span class="number">32</span>}, save_as=<span class="string">"footer.drag_handle"</span>}
+        {<span class="global">type</span>=<span class="string">"empty-widget"</span>,
+          style=<span class="string">"flib_dialog_footer_drag_handle"</span>,
+          style_mods={right_margin=<span class="number">0</span>},
+          save_as=<span class="string">"footer.drag_handle"</span>
+        }
       }}
     }}
   }}
@@ -448,7 +467,7 @@
 
     <strong> : </strong>
 
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#uint">uint</a></span>)
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.3.html">number</a></span>)
 
 
 
@@ -542,7 +561,7 @@
 
     <strong> : </strong>
 
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#uint">uint</a></span>)
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.3.html">number</a></span>)
 
 
 
@@ -681,23 +700,30 @@
 
     <!-- usage start -->
     <strong>Usage:</strong>
-    <pre class="code" data-lang="Lua"><code>{<span class="global">type</span>=<span class="string">"frame"</span>, style=<span class="string">"dialog_frame"</span>, direction=<span class="string">"vertical"</span>, handlers=<span class="string">"window"</span>, save_as=<span class="string">"window"</span>, children={
-  {<span class="global">type</span>=<span class="string">"flow"</span>, children={
-    {<span class="global">type</span>=<span class="string">"label"</span>, style=<span class="string">"frame_title"</span>, caption=<span class="string">"Menu"</span>},
-    {template=<span class="string">"drag_handle"</span>, style_mods={horizontally_stretchable=<span class="keyword">true</span>, height=<span class="number">24</span>},
-      save_as=<span class="string">"titlebar.drag_handle"</span>},
+    <pre class="code" data-lang="Lua"><code>{<span class="global">type</span>=<span class="string">"frame"</span>, direction=<span class="string">"vertical"</span>, handlers=<span class="string">"window"</span>, save_as=<span class="string">"window"</span>, children={
+  <span class="comment">-- titlebar
+</span>  {<span class="global">type</span>=<span class="string">"flow"</span>, save_as=<span class="string">"titlebar_flow"</span>, children={
+    {<span class="global">type</span>=<span class="string">"label"</span>, style=<span class="string">"frame_title"</span>, caption=<span class="string">"Menu"</span>, elem_mods={ignored_by_interaction=<span class="keyword">true</span>}},
+    {<span class="global">type</span>=<span class="string">"empty-widget"</span>, style=<span class="string">"flib_titlebar_drag_handle"</span>, elem_mods={ignored_by_interaction=<span class="keyword">true</span>}},
     {<span class="global">type</span>=<span class="string">"condition"</span>, condition=(<span class="keyword">not</span> is_dialog_frame), children={
-      {template=<span class="string">"frame_action_button"</span>, sprite=<span class="string">"utility/close_white"</span>, handlers=<span class="string">"titlebar.close_button"</span>,
-        save_as=<span class="string">"titlebar.close_button"</span>}
+      {template=<span class="string">"frame_action_button"</span>,
+        sprite=<span class="string">"utility/close_white"</span>,
+        handlers=<span class="string">"titlebar.close_button"</span>,
+        save_as=<span class="string">"titlebar.close_button"</span>
+      }
     }}
   }},
   {<span class="global">type</span>=<span class="string">"frame"</span>, style=<span class="string">"inside_shallow_frame_with_padding"</span>, children={
     {<span class="global">type</span>=<span class="string">"table"</span>, style=<span class="string">"slot_table"</span>, column_count=<span class="number">10</span>, save_as=<span class="string">"content.slot_table"</span>}
   }},
   {<span class="global">type</span>=<span class="string">"condition"</span>, condition=is_dialog_frame, children={
-    {<span class="global">type</span>=<span class="string">"flow"</span>, children={
+    {<span class="global">type</span>=<span class="string">"flow"</span>, style=<span class="string">"dialog_buttons_horizontal_flow"</span>, children={
       {<span class="global">type</span>=<span class="string">"button"</span>, style=<span class="string">"back_button"</span>, caption={<span class="string">"gui.back"</span>}, handlers=<span class="string">"footer.back_button"</span>},
-      {template=<span class="string">"drag_handle"</span>, style_mods={horizontally_stretchable=<span class="keyword">true</span>, height=<span class="number">32</span>}, save_as=<span class="string">"footer.drag_handle"</span>}
+      {<span class="global">type</span>=<span class="string">"empty-widget"</span>,
+        style=<span class="string">"flib_dialog_footer_drag_handle"</span>,
+        style_mods={right_margin=<span class="number">0</span>},
+        save_as=<span class="string">"footer.drag_handle"</span>
+      }
     }}
   }}
 }}
@@ -785,6 +811,8 @@
 
 <p> If adding the module to an existing mod, this must be called in <code>on_configuration_changed</code> for that version as well.</p>
 
+<p> This function can also be used to wipe all GUI filters for all players.</p>
+
     <!-- parameters start -->
     <!-- parameters end -->
 
@@ -867,10 +895,9 @@
     <div class="section-item-body">
 
     <p class="section-item-summary">Register handlers for all GUI events to pass through the module.</p>
-    <p class="section-item-description"> This is completely optional, but saves you having to create handlers for all GUI events simply to call
- <a href="../modules/gui.html#dispatch_handlers">gui.dispatch_handlers</a>. If custom logic is needed, handlers may be overwritten after calling this.</p>
+    <p class="section-item-description"> This will loop through all GUI-related <code>defines.events</code> events and register them to <a href="../modules/gui.html#dispatch_handlers">gui.dispatch_handlers</a>.</p>
 
-<p> This function, if used, should be called in the root scope.</p>
+<p> This function should be called in the root scope.</p>
 
     <!-- parameters start -->
     <!-- parameters end -->
@@ -1052,14 +1079,10 @@
     titlebar = {
       <span class="comment">-- this is a handler group for a specific GUI element
 </span>      close_button = {
-        <span class="comment">-- if using a defines.events event, this shortcut syntax is used:
+        <span class="comment">-- name of `defines.events` event -&gt; handler function
 </span>        on_gui_click = <span class="keyword">function</span>(e)
-          __DebugAdapter.<span class="global">print</span>(e)
-        <span class="keyword">end</span>,
-        <span class="comment">-- for direct event IDs, nest the function inside a table:
-</span>        my_custom_event = {id=constants.my_custom_event, handler=<span class="keyword">function</span>(e)
-          __DebugAdapter.<span class="global">print</span>(e)
-        }
+          log(serpent.block(e))
+        <span class="keyword">end</span>
       }
     }
   }
@@ -1067,7 +1090,11 @@
 
 <span class="comment">-- use the handlers
 </span>gui.build(player.gui.screen, {
-  {<span class="global">type</span>=<span class="string">"sprite-button"</span>, style=<span class="string">"frame_action_button"</span>, sprite=<span class="string">"utility/close_white"</span>, handlers=<span class="string">"base.titlebar.close_button"</span>}
+  {<span class="global">type</span>=<span class="string">"sprite-button"</span>,
+    style=<span class="string">"frame_action_button"</span>,
+    sprite=<span class="string">"utility/close_white"</span>,
+    handlers=<span class="string">"base.titlebar.close_button"</span>
+  }
 })
 </code></pre>
     <!-- usage end -->
@@ -1106,14 +1133,18 @@
     titlebar = {
       close_button = {
         on_gui_click = <span class="keyword">function</span>(e)
-          __DebugAdapter.<span class="global">print</span>(e)
+          log(serpent.block(e))
         <span class="keyword">end</span>
       }
     }
   }
 }
 gui.build(player.gui.screen, {
-  {<span class="global">type</span>=<span class="string">"sprite-button"</span>, style=<span class="string">"frame_action_button"</span>, sprite=<span class="string">"utility/close_white"</span>, handlers=<span class="string">"base.titlebar.close_button"</span>}
+  {<span class="global">type</span>=<span class="string">"sprite-button"</span>,
+    style=<span class="string">"frame_action_button"</span>,
+    sprite=<span class="string">"utility/close_white"</span>,
+    handlers=<span class="string">"base.titlebar.close_button"</span>
+  }
 })
 
 <span class="comment">-- contents of gui.handler_lookup will be:
@@ -1171,17 +1202,17 @@ gui.build(player.gui.screen, {
     titlebar = {
       close_button = {
         on_gui_click = <span class="keyword">function</span>(e)
-          __DebugAdapter.<span class="global">print</span>(e)
+          log(serpent.block(e))
         <span class="keyword">end</span>,
         my_custom_event = {id=constants.my_custom_event, handler=<span class="keyword">function</span>(e)
-          __DebugAdapter.<span class="global">print</span>(e)
+          log(serpent.block(e))
         }
       }
     },
     content = {
       item_button = {
         on_gui_click = <span class="keyword">function</span>(e)
-          __DebugAdapter.<span class="global">print</span>(e)
+          log(serpent.block(e))
         <span class="keyword">end</span>
       }
     }
@@ -1265,6 +1296,7 @@ gui.build(player.gui.screen, {
 </span>  {template=<span class="string">"pushers.horizontal"</span>},
   {template=<span class="string">"frame_action_button"</span>, sprite=<span class="string">"utility/close_white"</span>},
   <span class="comment">-- use function templates by calling them directly
+</span>  <span class="comment">-- you do not necessarily need to keep function templates in the `templates` table, but the module supports doing so
 </span>  gui.templates.list_box_with_label(<span class="string">"ingredients"</span>),
   gui.templates.list_box_with_label(<span class="string">"products"</span>)
 })
@@ -1331,7 +1363,7 @@ gui.build(player.gui.screen, {
     <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
     </div>
     <div class="content-footer column col-9 col-sm-12">
-    <i>Last updated 2020-08-31 01:33:47 UTC</i>
+    <i>Last updated 2020-09-13 18:41:55 UTC</i>
     </div>
     </div>
     </div>

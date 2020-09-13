@@ -5,7 +5,7 @@
     <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>LICENSE topic</title>
+    <title>gui-styles.md topic</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../spectre.min.css" type="text/css" />
     <link rel="stylesheet" href="../spectre-icons.min.css" type="text/css" />
@@ -41,8 +41,8 @@
     <h2>Topics</h2>
     <ul class="nav">
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/README.md.html"><span class="module-name-item">README.md</span></a></div></li>
-    <li class="nav-item active"><div class="nav-item-block-active block"><a href="../topics/LICENSE.html"><span class="module-name-item">LICENSE</span></a><i class="icon icon-arrow-left icon-arrow-left-custom"></i></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/gui-styles.md.html"><span class="module-name-item">gui-styles.md</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/LICENSE.html"><span class="module-name-item">LICENSE</span></a></div></li>
+    <li class="nav-item active"><div class="nav-item-block-active block"><a href="../topics/gui-styles.md.html"><span class="module-name-item">gui-styles.md</span></a><i class="icon icon-arrow-left icon-arrow-left-custom"></i></div></li>
     </ul>
     </li>
     </ul>
@@ -94,32 +94,100 @@
 
     <!-- module content header start -->
 
-    <h2><span class="body-module-name"><strong><em>LICENSE</em></strong></span> topic</h2>
+    <h2><span class="body-module-name"><strong><em>gui-styles.md</em></strong></span> topic</h2>
     <p></p>
     <p></p>
 
-    <p>MIT License</p></p>
+    <p>FLib includes several GUI styles for your use and convenience. For help and information on how to use these styles effectively, refer to the <a href="https://github.com/raiguard/Factorio-SmallMods/wiki/GUI-Style-Guide">work-in-progress GUI style guide</a>.</p></p>
 
-<p>Copyright &copy; 2020 raiguard</p>
+<p><strong>IMPORTANT:</strong> Modifying these styles in any way will modify them for all mods using them. Therefore, unless you are specifically creating a GUI skin mod, <strong>DO NOT MODIFY THESE STYLES!</strong> Instead, create your own new styles using these styles as parents, then modify those new styles as you wish.</p>
 
 
-<p>Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the &ldquo;Software&rdquo;), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:</p>
+<h3>Button styles</h3>
 
-<p>The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.</p>
 
-<p>THE SOFTWARE IS PROVIDED &ldquo;AS IS&rdquo;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+<p><strong>flib_selected_frame_action_button</strong></p>
+
+
+<p>A &ldquo;selected&rdquo; frame action button. Use when a frame action button can &ldquo;toggle&rdquo; on and off.</p>
+
+
+<p><strong>flib_selected_tool_button</strong></p>
+
+
+<p>A &ldquo;selected&rdquo; tool button. Use when a tool button can &ldquo;toggle&rdquo; on and off.</p>
+
+
+<h4>Slot styles</h4>
+
+
+<p>FLib includes a myriad of colored slot styles for use with <code>sprite-button</code>s:</p>
+
+
+<p><img src="https://raw.githubusercontent.com/factoriolib/flib/master/docs/assets/slot-style-examples.png" alt="" /></p>
+
+
+<p>There are three categories of style, from top to bottom: <code>slot</code>, <code>slot_button</code>, and <code>standalone_slot_button</code>. From left to right, the colors are <code>default</code>, <code>grey</code>, <code>red</code>, <code>orange</code>, <code>yellow</code>, <code>green</code>, <code>cyan</code>, <code>blue</code>, <code>purple</code>, and <code>pink</code>.</p>
+
+
+<p>The styles are formatted as <code>flib_CATEGORY_COLOR</code>. For example, if I want a pink standalone slot button (bottom-right on the preview image), I would use <code>flib_standalone_slot_button_pink</code>.</p>
+
+
+<p>Each slot style also has a <code>selected</code> variant, which uses the hovered graphics as default. This is intended to let a user &ldquo;select&rdquo; a button, and to let the mod visually distinguish it from other buttons around it. To use these styles, replace <code>flib_</code> with <code>flib_selected_</code> in the style you wish to use (e.g. <code>flib_selected_slot_button_green</code>).</p>
+
+
+<h3>Empty widget styles</h3>
+
+
+<p><strong>flib_dialog_footer_drag_handle</strong></p>
+
+
+<p>A drag handle suitable for placement in the footer of a <strong>dialog</strong> window.</p>
+
+
+<p><strong>flib_dialog_titlebar_drag_handle</strong></p>
+
+
+<p>A drag handle suitable for placement in the titlebar of a <strong>dialog</strong> window.</p>
+
+
+<p><strong>flib_horizontal_pusher</strong></p>
+
+
+<p>An invisible element that has <code>horizontally_stretchable</code> set, thereby &ldquo;pushing&rdquo; everything to the right.</p>
+
+
+<p><strong>flib_titlebar_drag_handle</strong></p>
+
+
+<p>A drag handle suitable for placement in the titlebar of a <strong>standard</strong> window (a window with a close button, or any other frame action buttons in the titlebar).</p>
+
+
+<p><strong>flib_vertical_pusher</strong></p>
+
+
+<p>An invisible element that has <code>vertically_stretchable</code> set, thereby &ldquo;pushing&rdquo; everything to the bottom.</p>
+
+
+<h3>Scroll pane styles</h3>
+
+
+<p><strong>flib_naked_scroll_pane</strong></p>
+
+
+<p>A marginless scroll pane for use inside of content panes. When activated, it draws a shadow around its edges to give a more &ldquo;inset&rdquo; effect, to make it more obviously scrollable. The content is given an automatic 12px padding.</p>
+
+
+<p><strong>flib_naked_scroll_pane_under_tabs</strong></p>
+
+
+<p>Identical to <code>flib_naked_scroll_pane</code>, but has an inset on the top side when activated. Designed for use inside of a <code>tabbed_pane_with_no_side_padding</code> when not using a toolbar.</p>
+
+
+<p><strong>flib_naked_scroll_pane_no_padding</strong></p>
+
+
+<p>Identical to <code>flib_naked_scroll_pane</code>, but has no padding for the content that&rsquo;s put inside. Useful for wrapping a table in a scroll pane, for example.
 
 
 

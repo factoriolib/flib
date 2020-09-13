@@ -29,10 +29,9 @@
     <a href="../index.html"><h1>Factorio Library</h1></a>
 
     <!-- project description -->
-    <p class="project-desc">Factorio Library</p>
 
     <!-- project full description -->
-    <span>  The Factorio Library aims to extend the Factorio Lua API with well-tested, documented, and easy-to-use functions to make modding easier.</span>
+    <span>  The Factorio Library (flib) is a set of high-quality, commonly-used utilities for creating Factorio mods.</span>
     </div>
 
 
@@ -45,6 +44,7 @@
     <li class="nav-item active"><div class="nav-item-block-active block"><a href="../modules/direction.html"><span class="module-name-item">direction</span></a><i class="icon icon-arrow-left icon-arrow-left-custom"></i></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/event.html"><span class="module-name-item">event</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/gui.html"><span class="module-name-item">gui</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/math.html"><span class="module-name-item">math</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/migration.html"><span class="module-name-item">migration</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/misc.html"><span class="module-name-item">misc</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/orientation.html"><span class="module-name-item">orientation</span></a></div></li>
@@ -60,11 +60,19 @@
     <h2>Topics</h2>
     <ul class="nav">
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/README.md.html"><span class="module-name-item">README.md</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/changelog.txt.html"><span class="module-name-item">changelog.txt</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/LICENSE.html"><span class="module-name-item">LICENSE</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/contributing.md.html"><span class="module-name-item">contributing.md</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/style-guide.md.html"><span class="module-name-item">style-guide.md</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/styles.md.html"><span class="module-name-item">styles.md</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/gui-styles.md.html"><span class="module-name-item">gui-styles.md</span></a></div></li>
+    </ul>
+    </li>
+    </ul>
+    <ul class="nav nav-modules">
+    <li class="nav-item">
+    <h2>Examples</h2>
+    <ul class="nav">
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/event.lua.html"><span class="module-name-item">event.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/gui.lua.html"><span class="module-name-item">gui.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/migration.lua.html"><span class="module-name-item">migration.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/translation.lua.html"><span class="module-name-item">translation.lua</span></a></div></li>
     </ul>
     </li>
     </ul>
@@ -144,6 +152,10 @@
     <tr>
     <td class="name"><a href="#to_vector">to_vector(direction, distance)</a></td>
     <td class="summary">Returns a vector from a direction.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#to_vector_2d">to_vector_2d(direction, longitudinal, orthogonal)</a></td>
+    <td class="summary">Returns a two-dimensional vector from a cardinal direction.</td>
     </tr>
     </tbody>
     </table>
@@ -299,7 +311,8 @@
 
     (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#boolean">boolean</a></span>)
 
-     true to get the next direction in 8-way (note: not many prototypes support 8-way)
+     true to get the next direction in 8-way (note: not many prototypes support
+ 8-way)
 
     (<em>default</em>: false)
     </li>
@@ -374,7 +387,8 @@
 
     (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#boolean">boolean</a></span>)
 
-     true to get the previous direction in 8-way (note: not many prototypes support 8-way)
+     true to get the previous direction in 8-way (note: not many prototypes support
+ 8-way)
 
     (<em>default</em>: false)
     </li>
@@ -447,7 +461,7 @@
     <strong>Returns:</strong>
     <ul>
     <li>
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#float">float</a></span>)
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.3.html">number</a></span>)
     </li>
     </ul>
     <!-- returns end -->
@@ -523,6 +537,96 @@
     <ul>
     <li>
     (<span class="types"><span class="type">Position</span></span>)
+    </li>
+    </ul>
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#to_vector_2d" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="to_vector_2d">to_vector_2d(direction, longitudinal, orthogonal)</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Returns a two-dimensional vector from a cardinal direction.</p>
+    <p class="section-item-description"> Only supports cardinal (four-way) directions.</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>direction</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/defines.html#defines.direction">defines.direction</a></span>)
+
+
+
+
+    </li>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>longitudinal</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.3.html">number</a></span>)
+
+     Distance to move in the specified direction.
+
+    </li>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>orthogonal</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.3.html">number</a></span>)
+
+     Distance to move perpendicular to the specified direction. A negative distance will move
+ &ldquo;left&rdquo; and a positive distance will move &ldquo;right&rdquo; from the perspective of the direction.
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <strong>Returns:</strong>
+    <ul>
+    <li>
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Concepts.html#Position">Position</a></span>)
     </li>
     </ul>
     <!-- returns end -->
@@ -777,7 +881,7 @@
     <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
     </div>
     <div class="content-footer column col-9 col-sm-12">
-    <i>Last updated 2020-08-31 01:33:47 UTC</i>
+    <i>Last updated 2020-09-13 18:41:55 UTC</i>
     </div>
     </div>
     </div>

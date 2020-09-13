@@ -5,7 +5,7 @@
     <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>reverse-defines module</title>
+    <title>migration.lua example</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../spectre.min.css" type="text/css" />
     <link rel="stylesheet" href="../spectre-icons.min.css" type="text/css" />
@@ -38,6 +38,17 @@
     <!-- sidebar navigation -->
     <ul class="nav nav-modules">
     <li class="nav-item">
+    <h2>Examples</h2>
+    <ul class="nav">
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/event.lua.html"><span class="module-name-item">event.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/gui.lua.html"><span class="module-name-item">gui.lua</span></a></div></li>
+    <li class="nav-item active"><div class="nav-item-block-active block"><a href="../examples/migration.lua.html"><span class="module-name-item">migration.lua</span></a><i class="icon icon-arrow-left icon-arrow-left-custom"></i></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/translation.lua.html"><span class="module-name-item">translation.lua</span></a></div></li>
+    </ul>
+    </li>
+    </ul>
+    <ul class="nav nav-modules">
+    <li class="nav-item">
     <h2>Modules</h2>
     <ul class="nav">
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/data-util.html"><span class="module-name-item">data-util</span></a></div></li>
@@ -48,7 +59,7 @@
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/migration.html"><span class="module-name-item">migration</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/misc.html"><span class="module-name-item">misc</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/orientation.html"><span class="module-name-item">orientation</span></a></div></li>
-    <li class="nav-item active"><div class="nav-item-block-active block"><a href="../modules/reverse-defines.html"><span class="module-name-item">reverse-defines</span></a><i class="icon icon-arrow-left icon-arrow-left-custom"></i></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/reverse-defines.html"><span class="module-name-item">reverse-defines</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/table.html"><span class="module-name-item">table</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/train.html"><span class="module-name-item">train</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/translation.html"><span class="module-name-item">translation</span></a></div></li>
@@ -62,17 +73,6 @@
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/README.md.html"><span class="module-name-item">README.md</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/LICENSE.html"><span class="module-name-item">LICENSE</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/gui-styles.md.html"><span class="module-name-item">gui-styles.md</span></a></div></li>
-    </ul>
-    </li>
-    </ul>
-    <ul class="nav nav-modules">
-    <li class="nav-item">
-    <h2>Examples</h2>
-    <ul class="nav">
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/event.lua.html"><span class="module-name-item">event.lua</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/gui.lua.html"><span class="module-name-item">gui.lua</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/migration.lua.html"><span class="module-name-item">migration.lua</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/translation.lua.html"><span class="module-name-item">translation.lua</span></a></div></li>
     </ul>
     </li>
     </ul>
@@ -97,24 +97,42 @@
 
     <!-- module content header start -->
 
-    <h2><span class="body-module-name"><strong><em>reverse-defines</em></strong></span> module</h2>
-    <p>Defines reverse lookup table.</p>
-    <p>
-</p>
+    <h2><span class="body-module-name"><strong><em>migration.lua</em></strong></span> example</h2>
+    <p></p>
+    <p></p>
 
+    <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> event = <span class="global">require</span>(<span class="string">"__flib__.event"</span>)
+<span class="keyword">local</span> migration = <span class="global">require</span>(<span class="string">"__flib__.migration"</span>)
+
+<span class="comment">-- the migrations table - this will probably go into its own file
+</span><span class="keyword">local</span> migrations = {
+  <span class="comment">-- each function will be run when upgrading from a version older than it
+</span>  <span class="comment">-- for example, if we were upgraing from 1.0.3 to 1.1.0, the last two functions would run, but not the first
+</span>  [<span class="string">"1.0.3"</span>] = <span class="keyword">function</span>()
+    <span class="comment">-- logic specific to changes made in 1.0.3
+</span>  <span class="keyword">end</span>,
+  [<span class="string">"1.0.4"</span>] = <span class="keyword">function</span>()
+    <span class="comment">-- logic specific to changes made in 1.0.4
+</span>  <span class="keyword">end</span>,
+  [<span class="string">"1.1.0"</span>] = <span class="keyword">function</span>()
+    <span class="comment">-- logic specific to changes made in 1.1.0
+</span>  <span class="keyword">end</span>
+}
+
+event.on_configuration_changed(<span class="keyword">function</span>(e)
+  <span class="comment">-- `on_config_changed` will check the event data and apply any migrations in the migrations table that need to be
+</span>  <span class="keyword">if</span> migration.on_config_changed(e, migrations) <span class="keyword">then</span>
+    <span class="comment">-- if the result is true, perform "generic migrations", i.e. refreshing a GUI with the latest item prototypes
+</span>    <span class="comment">-- this chunk will run on every call *except* for right after `on_init`, where the other chunk will run instead
+</span>  <span class="keyword">end</span>
+  <span class="comment">-- if the result is false, that means that this mod was just added, so migrations shouldn't be performed
+</span>  <span class="comment">-- if you have code that absolutely must run despite this, put it here
+</span><span class="keyword">end</span>)</code></pre>
 
     <!-- module info start -->
     <!-- module info end -->
 
     <!-- module usage start -->
-    <h3>Usage</h3>
-    <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> reverse_defines = <span class="global">require</span>(<span class="string">'__flib__.reverse-defines'</span>)
-
-event.on_built_entity(<span class="keyword">function</span>(e)
-  <span class="keyword">local</span> player = game.get_player(e.player_index)
-  <span class="keyword">local</span> controller_name = reverse_defines.controllers[player.controller_type]
-<span class="keyword">end</span>)
-</code></pre>
     <!-- module usage end -->
 
     <!-- module content header end -->

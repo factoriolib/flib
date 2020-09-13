@@ -1,0 +1,344 @@
+
+
+    <!doctype html>
+    <html class="no-js" lang="">
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>gui.lua example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../spectre.min.css" type="text/css" />
+    <link rel="stylesheet" href="../spectre-icons.min.css" type="text/css" />
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+    </head>
+    <body>
+
+    <div class="container grid-1280">
+    <div class="columns">
+
+    <!-- sidebar start -->
+
+    <div id="sidebar" class="column col-3 col-sm-12">
+
+    <div class="sidebar-custom">
+
+    <div class="project-infobox">
+
+    <!-- project title -->
+
+    <a href="../index.html"><h1>Factorio Library</h1></a>
+
+    <!-- project description -->
+
+    <!-- project full description -->
+    <span>  The Factorio Library (flib) is a set of high-quality, commonly-used utilities for creating Factorio mods.</span>
+    </div>
+
+
+    <!-- sidebar navigation -->
+    <ul class="nav nav-modules">
+    <li class="nav-item">
+    <h2>Examples</h2>
+    <ul class="nav">
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/event.lua.html"><span class="module-name-item">event.lua</span></a></div></li>
+    <li class="nav-item active"><div class="nav-item-block-active block"><a href="../examples/gui.lua.html"><span class="module-name-item">gui.lua</span></a><i class="icon icon-arrow-left icon-arrow-left-custom"></i></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/migration.lua.html"><span class="module-name-item">migration.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/translation.lua.html"><span class="module-name-item">translation.lua</span></a></div></li>
+    </ul>
+    </li>
+    </ul>
+    <ul class="nav nav-modules">
+    <li class="nav-item">
+    <h2>Modules</h2>
+    <ul class="nav">
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/data-util.html"><span class="module-name-item">data-util</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/direction.html"><span class="module-name-item">direction</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/event.html"><span class="module-name-item">event</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/gui.html"><span class="module-name-item">gui</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/math.html"><span class="module-name-item">math</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/migration.html"><span class="module-name-item">migration</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/misc.html"><span class="module-name-item">misc</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/orientation.html"><span class="module-name-item">orientation</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/reverse-defines.html"><span class="module-name-item">reverse-defines</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/table.html"><span class="module-name-item">table</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/train.html"><span class="module-name-item">train</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/translation.html"><span class="module-name-item">translation</span></a></div></li>
+    </ul>
+    </li>
+    </ul>
+    <ul class="nav nav-modules">
+    <li class="nav-item">
+    <h2>Topics</h2>
+    <ul class="nav">
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/README.md.html"><span class="module-name-item">README.md</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/LICENSE.html"><span class="module-name-item">LICENSE</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/gui-styles.md.html"><span class="module-name-item">gui-styles.md</span></a></div></li>
+    </ul>
+    </li>
+    </ul>
+
+
+
+    <!-- list of items in a module -->
+    </div>
+    <div class="up-to-top">
+    <a href="#">Top <i class="icon icon-upward"></i></a>
+    </div>
+    </div>
+    <!-- sidebar end -->
+
+    <!-- content body start -->
+    <div class="column col-9 col-sm-12">
+
+    <!-- module list on the main page start -->
+    <!-- module list on the main page end -->
+
+    <!-- module contents -->
+
+    <!-- module content header start -->
+
+    <h2><span class="body-module-name"><strong><em>gui.lua</em></strong></span> example</h2>
+    <p></p>
+    <p></p>
+
+    <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> event = <span class="global">require</span>(<span class="string">"__flib__.event"</span>)
+<span class="keyword">local</span> gui = <span class="global">require</span>(<span class="string">"__flib__.gui"</span>)
+<span class="keyword">local</span> migration = <span class="global">require</span>(<span class="string">"__flib__.migration"</span>)
+<span class="keyword">local</span> mod_gui = <span class="global">require</span>(<span class="string">"__core__.lualib.mod-gui"</span>)
+
+<span class="comment">-- add structure templates. this can be multiple levels deep, but this example only uses one level
+</span><span class="comment">-- in order to be usable, a template must have a `type` or another `template` key
+</span>gui.add_templates{
+  mouse_filter = {<span class="global">type</span>=<span class="string">"button"</span>, mouse_button_filter={<span class="string">"left"</span>}},
+  <span class="comment">-- elem mods - allows changing properties on an element immediately after creation
+</span>  <span class="comment">-- available modifications are listen in the LuaGuiElement docs
+</span>  drag_handle = {<span class="global">type</span>=<span class="string">"empty-widget"</span>, style=<span class="string">"flib_titlebar_drag_handle"</span>, elem_mods={ignored_by_interaction=<span class="keyword">true</span>}},
+  <span class="comment">-- a template that depends on another template will load that template first, then apply its own properties on top
+</span>  frame_action_button = {template=<span class="string">"mouse_filter"</span>, style=<span class="string">"frame_action_button"</span>}
+}
+
+<span class="comment">-- add handlers to be usable in `gui.build`
+</span>gui.add_handlers{
+  <span class="comment">--[[
+    organize the handlers however you like. in this example, the handlers for the inventory window elements are kept in
+    their own subtable, while the handler for the location button is separate
+  ]]</span>
+  inventory = {
+    <span class="comment">-- a handler group - contains `defines.events` event name -&gt; handler function pairs
+</span>    titlebar_button = {
+      <span class="comment">-- only `on_gui` events can be used in this table
+</span>      <span class="comment">-- a handler group can have multiple events, but this example only has one
+</span>      on_gui_click = <span class="keyword">function</span>(e)
+        game.get_player(e.player_index).<span class="global">print</span>(<span class="string">"You clicked one of the titlebar buttons!"</span>)
+      <span class="keyword">end</span>
+    },
+    slot_button = {
+      on_gui_click = <span class="keyword">function</span>(e)
+        <span class="keyword">local</span> _, _, name = <span class="global">string</span>.find(e.element.sprite, <span class="string">"item/(.*)"</span>)
+        game.get_player(e.player_index).<span class="global">print</span>(<span class="string">"You clicked the "</span>..name..<span class="string">" slot button!"</span>)
+      <span class="keyword">end</span>
+    },
+    window = {
+      <span class="comment">-- any `on_gui` event can be used
+</span>      on_gui_location_changed = <span class="keyword">function</span>(e)
+        <span class="keyword">local</span> location = e.element.location
+        global.players[e.player_index].gui.location.caption = location.x..<span class="string">", "</span>..location.y
+      <span class="keyword">end</span>
+    }
+  },
+  location = {
+    on_gui_click = <span class="keyword">function</span>(e)
+      global.players[e.player_index].gui.inventory.window.force_auto_center()
+    <span class="keyword">end</span>
+  }
+}
+
+<span class="comment">-- create the GUIs
+</span><span class="keyword">local</span> <span class="keyword">function</span> create_guis(player)
+  <span class="comment">-- location button - kept in the `mod-gui` button flow
+</span>  <span class="keyword">local</span> location_elems = gui.build(mod_gui.get_button_flow(player), {
+    {<span class="global">type</span>=<span class="string">"button"</span>, style=mod_gui.button_style, caption=<span class="string">"0, 0"</span>, handlers=<span class="string">"location"</span>, save_as=<span class="string">"label"</span>}
+  })
+
+  <span class="comment">-- inventory GUI - kept in `screen`
+</span>  <span class="keyword">local</span> inventory_elems = gui.build(player.gui.screen, {
+    <span class="comment">-- handlers - dot-deliminated path to a handler group table in `gui.handlers`
+</span>    <span class="comment">-- children - an array of GuiStructures to add as children of this element
+</span>    {<span class="global">type</span>=<span class="string">"frame"</span>, direction=<span class="string">"vertical"</span>, handlers=<span class="string">"inventory.window"</span>, save_as=<span class="string">"window"</span>, children={
+      <span class="comment">-- save_as - dot-deliminated path to save this element to in `inventory_elems`
+</span>      {<span class="global">type</span>=<span class="string">"flow"</span>, save_as=<span class="string">"titlebar.flow"</span>, children={
+        {<span class="global">type</span>=<span class="string">"label"</span>, style=<span class="string">"frame_title"</span>, caption=<span class="string">"Demo GUI"</span>, elem_mods={ignored_by_interaction=<span class="keyword">true</span>}},
+        {template=<span class="string">"drag_handle"</span>},
+        <span class="comment">-- you can assign multiple elements to the same handler group
+</span>        {template=<span class="string">"frame_action_button"</span>, handlers=<span class="string">"inventory.titlebar_button"</span>},
+        {template=<span class="string">"frame_action_button"</span>, handlers=<span class="string">"inventory.titlebar_button"</span>},
+        {template=<span class="string">"frame_action_button"</span>, handlers=<span class="string">"inventory.titlebar_button"</span>}
+      }},
+      <span class="comment">-- style mods - change style properties on an element immediately after creation
+</span>      <span class="comment">-- available properties are listen in the LuaStyle docs
+</span>      {<span class="global">type</span>=<span class="string">"frame"</span>, style=<span class="string">"inside_shallow_frame_with_padding"</span>, style_mods={padding=<span class="number">12</span>}, children={
+        {<span class="global">type</span>=<span class="string">"frame"</span>, style=<span class="string">"slot_button_deep_frame"</span>, children={
+          {<span class="global">type</span>=<span class="string">"scroll-pane"</span>, style=<span class="string">"flib_naked_scroll_pane_no_padding"</span>, style_mods={height=<span class="number">200</span>}, children={
+            {<span class="global">type</span>=<span class="string">"table"</span>, style=<span class="string">"slot_table"</span>, style_mods={width=<span class="number">400</span>}, column_count=<span class="number">10</span>, save_as=<span class="string">"slot_table"</span>}
+          }}
+        }}
+      }}
+    }}
+  })
+
+  <span class="comment">-- inventory_elems was built using the structure defined in the `save_as` keys
+</span>  <span class="comment">-- the titlebar flow was saved to the `titlebar` subtable
+</span>  inventory_elems.titlebar.flow.drag_target = inventory_elems.window
+  inventory_elems.window.force_auto_center()
+
+  <span class="comment">-- update_filters - add or remove filters to or from a handler group
+</span>  <span class="comment">-- string filters are valid to be used as a filter as well
+</span>  <span class="comment">-- if the name contains two adjacent underscores `__`, they and everything after them will be ignored
+</span>  <span class="comment">-- this string filter is what will be matched, we will use `__` on element names later on
+</span>  gui.update_filters(<span class="string">"inventory.slot_button"</span>, player.index, {<span class="string">"demo_slot_button"</span>}, <span class="string">"add"</span>)
+
+  global.players[player.index].gui = {inventory=inventory_elems, location=location_elems.label}
+<span class="keyword">end</span>
+
+<span class="keyword">local</span> <span class="keyword">function</span> destroy_guis(player, player_table)
+  <span class="comment">-- destroy parents for both GUIs and clean up tables
+</span>  player_table.gui.inventory.window.destroy()
+  player_table.gui.location.destroy()
+  player_table.gui = <span class="keyword">nil</span>
+
+  <span class="comment">-- use update_filters to remove all stored filters for each group
+</span>  <span class="comment">-- passing `nil` as the third argument will remove everything in that group
+</span>  <span class="comment">-- in this case, you could also use `gui.remove_player_filters(player.index)` to accomplish the same thing
+</span>  gui.update_filters(<span class="string">"inventory"</span>, player.index, <span class="keyword">nil</span>, <span class="string">"remove"</span>)
+  gui.update_filters(<span class="string">"location"</span>, player.index, <span class="keyword">nil</span>, <span class="string">"remove"</span>)
+<span class="keyword">end</span>
+
+event.on_init(<span class="keyword">function</span>()
+  gui.init()
+  gui.build_lookup_tables()
+
+  <span class="comment">-- players setup
+</span>  global.players = {}
+  <span class="keyword">for</span> i, player <span class="keyword">in</span> <span class="global">pairs</span>(game.players) <span class="keyword">do</span>
+    global.players[i] = {}
+    create_guis(player)
+  <span class="keyword">end</span>
+<span class="keyword">end</span>)
+
+event.on_load(<span class="keyword">function</span>()
+  gui.build_lookup_tables()
+<span class="keyword">end</span>)
+
+event.on_configuration_changed(<span class="keyword">function</span>(e)
+  <span class="keyword">if</span> migration.on_config_changed(e, {}) <span class="keyword">then</span>
+    gui.check_filter_validity()
+
+    <span class="comment">-- refresh all GUIs
+</span>    <span class="keyword">for</span> i, player <span class="keyword">in</span> <span class="global">pairs</span>(game.players) <span class="keyword">do</span>
+      <span class="comment">-- destroy and recreate GUIs
+</span>      <span class="comment">-- destroying and recreating GUIs on a mod update is the best way to avoid edge cases
+</span>      destroy_guis(player, global.players[i])
+      create_guis(player)
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>)
+
+<span class="comment">-- this registers `gui.dispatch_handlers()` to all GUI events
+</span>gui.register_handlers()
+
+<span class="comment">-- if custom logic is needed, a handler may be overwritten after calling `gui.register_handlers()`
+</span>event.on_gui_click(<span class="keyword">function</span>(e)
+  <span class="comment">-- dispatch_handlers - will run handlers for matched GUI filters, assigned using `handlers` in a GuiStructure
+</span>  <span class="comment">-- the function will return whether or not a handler was dispatched
+</span>  <span class="keyword">if</span> <span class="keyword">not</span> gui.dispatch_handlers(e) <span class="keyword">then</span>
+    game.<span class="global">print</span>(<span class="string">"custom logic here"</span>)
+  <span class="keyword">end</span>
+<span class="keyword">end</span>)
+
+<span class="comment">-- create GUIs for any players that join
+</span>event.on_player_created(<span class="keyword">function</span>(e)
+  global.players[e.player_index] = {}
+  <span class="keyword">local</span> player = game.get_player(e.player_index)
+  create_guis(player)
+<span class="keyword">end</span>)
+
+<span class="comment">-- remove global data and remove all filters for any players that leave
+</span>event.on_player_removed(<span class="keyword">function</span>(e)
+  global.players[e.player_index] = <span class="keyword">nil</span>
+  gui.remove_player_filters(e.player_index)
+<span class="keyword">end</span>)
+
+<span class="comment">-- update inventory GUI when the player's inventory changes
+</span>event.on_player_main_inventory_changed(<span class="keyword">function</span>(e)
+  <span class="keyword">local</span> player = game.get_player(e.player_index)
+
+  <span class="comment">-- get the inventory table and its children
+</span>  <span class="keyword">local</span> <span class="global">table</span> = global.players[e.player_index].gui.inventory.slot_table
+  <span class="keyword">local</span> children = <span class="global">table</span>.children
+
+  <span class="comment">-- iterate over the player's inventory contents
+</span>  <span class="keyword">local</span> i = <span class="number">0</span>
+  <span class="keyword">for</span> name, count <span class="keyword">in</span> <span class="global">pairs</span>(player.get_main_inventory().get_contents()) <span class="keyword">do</span>
+    i = i + <span class="number">1</span>
+
+    <span class="comment">-- check for child - if it exists, just update it, otherwise create it
+</span>    <span class="keyword">local</span> child = children[i]
+    <span class="keyword">if</span> child <span class="keyword">then</span>
+      child.sprite = <span class="string">"item/"</span>..name
+      child.number = count
+    <span class="keyword">else</span>
+      <span class="global">table</span>.add{
+        <span class="global">type</span> = <span class="string">"sprite-button"</span>,
+        <span class="comment">-- double underscore - only `demo_slot_button` will be matched, the rest will be ignored
+</span>        <span class="comment">--[[
+          this allows all generated inventory buttons to be assigned to the same handler, without needing to call
+          `gui.build` on all of them
+        ]]</span>
+        name = <span class="string">"demo_slot_button__"</span>..i,
+        style = <span class="string">"slot_button"</span>,
+        sprite = <span class="string">"item/"</span>..name,
+        number = count
+      }
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+
+  <span class="comment">-- remove any extra buttons
+</span>  <span class="keyword">for</span> j = i + <span class="number">1</span>, #children <span class="keyword">do</span>
+    children[j].destroy()
+  <span class="keyword">end</span>
+<span class="keyword">end</span>)</code></pre>
+
+    <!-- module info start -->
+    <!-- module info end -->
+
+    <!-- module usage start -->
+    <!-- module usage end -->
+
+    <!-- module content header end -->
+
+    <!-- module section list start -->
+    <!-- module section list end -->
+
+    <br />
+
+    <!-- section start -->
+
+    <!-- section end -->
+
+    </div>
+    </div>
+    </div>
+
+    <div class="footer container grid-1280">
+    <div class="divider divider-custom"></div>
+    <div class="footer-columns columns">
+    <div class="sidebar-footer column col-3 col-sm-12">
+    <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+    </div>
+    <div class="content-footer column col-9 col-sm-12">
+    <i>Last updated 2020-09-13 18:41:55 UTC</i>
+    </div>
+    </div>
+    </div>
+    </body>
+    </html>

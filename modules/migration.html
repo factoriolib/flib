@@ -29,10 +29,9 @@
     <a href="../index.html"><h1>Factorio Library</h1></a>
 
     <!-- project description -->
-    <p class="project-desc">Factorio Library</p>
 
     <!-- project full description -->
-    <span>  The Factorio Library aims to extend the Factorio Lua API with well-tested, documented, and easy-to-use functions to make modding easier.</span>
+    <span>  The Factorio Library (flib) is a set of high-quality, commonly-used utilities for creating Factorio mods.</span>
     </div>
 
 
@@ -45,6 +44,7 @@
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/direction.html"><span class="module-name-item">direction</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/event.html"><span class="module-name-item">event</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/gui.html"><span class="module-name-item">gui</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/math.html"><span class="module-name-item">math</span></a></div></li>
     <li class="nav-item active"><div class="nav-item-block-active block"><a href="../modules/migration.html"><span class="module-name-item">migration</span></a><i class="icon icon-arrow-left icon-arrow-left-custom"></i></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/misc.html"><span class="module-name-item">misc</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/orientation.html"><span class="module-name-item">orientation</span></a></div></li>
@@ -60,11 +60,19 @@
     <h2>Topics</h2>
     <ul class="nav">
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/README.md.html"><span class="module-name-item">README.md</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/changelog.txt.html"><span class="module-name-item">changelog.txt</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/LICENSE.html"><span class="module-name-item">LICENSE</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/contributing.md.html"><span class="module-name-item">contributing.md</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/style-guide.md.html"><span class="module-name-item">style-guide.md</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/styles.md.html"><span class="module-name-item">styles.md</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/gui-styles.md.html"><span class="module-name-item">gui-styles.md</span></a></div></li>
+    </ul>
+    </li>
+    </ul>
+    <ul class="nav nav-modules">
+    <li class="nav-item">
+    <h2>Examples</h2>
+    <ul class="nav">
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/event.lua.html"><span class="module-name-item">event.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/gui.lua.html"><span class="module-name-item">gui.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/migration.lua.html"><span class="module-name-item">migration.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/translation.lua.html"><span class="module-name-item">translation.lua</span></a></div></li>
     </ul>
     </li>
     </ul>
@@ -108,6 +116,10 @@
     <!-- module info end -->
 
     <!-- module usage start -->
+    <h3>See also</h3>
+    <ul class="module-see-also">
+    <li><a href="../examples/migration.lua.html#">migration.lua</a></li>
+    </ul>
     <h3>Usage</h3>
     <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> migration = <span class="global">require</span>(<span class="string">"__flib__.migration"</span>)</code></pre>
     <!-- module usage end -->
@@ -130,7 +142,7 @@
     <td class="summary">Check if current_version is newer than old_version.</td>
     </tr>
     <tr>
-    <td class="name"><a href="#run">run(old_version, migrations[, format="%02d"])</a></td>
+    <td class="name"><a href="#run">run(old_version, migrations[, format="%02d"][, ...])</a></td>
     <td class="summary">Run migrations against the given version.</td>
     </tr>
     <tr>
@@ -147,6 +159,7 @@
     <tbody>
     <tr>
     <td class="name"><a href="#MigrationsTable">MigrationsTable</a></td>
+    <td class="summary">A table of migrations to run for given versions.</td>
     </tr>
     </tbody>
     </table>
@@ -334,7 +347,7 @@ migration.format_version(<span class="string">"3"</span>, <span class="string">"
     <div class="divider divider-custom"></div>
     <div class="block section-item-header">
     <a href="#run" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="run">run(old_version, migrations[, format="%02d"])</span>
+    <span class="section-item-title" id="run">run(old_version, migrations[, format="%02d"][, ...])</span>
     </div>
     </dt>
     <dd>
@@ -399,6 +412,23 @@ migration.format_version(<span class="string">"3"</span>, <span class="string">"
 
 
     (<em>default</em>: "%02d")
+    </li>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>...</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><span class="type">any</span></span>)
+
+     Any additional arguments will be passed to each function within <code>migrations</code>.
+
+    (<em>optional</em>)
     </li>
 
 
@@ -482,7 +512,7 @@ migration.format_version(<span class="string">"3"</span>, <span class="string">"
 
     (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a></span>)
 
-     The mod to check against, defaults to the mod this is used in.
+     The mod to check against, defaults to the current mod.
 
     (<em>optional</em>)
     </li>
@@ -497,7 +527,7 @@ migration.format_version(<span class="string">"3"</span>, <span class="string">"
     <ul>
     <li>
     (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#boolean">boolean</a></span>)
-    <span class="return-text">If true, run generic migrations. If false, run post-init setup.</span>
+    <span class="return-text">If true, run generic migrations.</span>
     </li>
     </ul>
     <!-- returns end -->
@@ -512,9 +542,6 @@ migration.format_version(<span class="string">"3"</span>, <span class="string">"
 </span><span class="keyword">if</span> migration.on_config_changed(e, migrations) <span class="keyword">then</span>
   <span class="comment">-- run generic (non-init) migrations
 </span>  rebuild_prototype_data()
-<span class="keyword">else</span>
-  <span class="comment">-- run post-init setup
-</span>  unlock_recipes_for_cheating_forces()
 <span class="keyword">end</span>
 </code></pre>
     <!-- usage end -->
@@ -533,35 +560,14 @@ migration.format_version(<span class="string">"3"</span>, <span class="string">"
     <dd>
     <div class="section-item-body">
 
-    <p class="section-item-summary">
-</p>
-    <p class="section-item-description"> Dictionary string &ndash;> function. Each string is a version number, and each value is a
- function that will be run for that version.</p>
+    <p class="section-item-summary">A table of migrations to run for given versions.</p>
+    <p class="section-item-description"> Dictionary <a href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a> &ndash;> <a href="https://www.lua.org/pil/2.6.html">function</a>. Each string is a version number, and each function is logic to run for that
+ version. When passed into <a href="../modules/migration.html#run">migration.run</a> or <a href="../modules/migration.html#on_config_changed">migration.on_config_changed</a>, the module will check <code>old_version</code>
+ against each version in this table, and for any that are newer, will run that version&rsquo;s corresponding logic.</p>
+
+<p> A version function can accept arguments that are passed in through <a href="../modules/migration.html#run">migration.run</a>.</p>
 
     <!-- parameters start -->
-
-    <ul>
-
-
-
-
-
-    <li class="section-subitem-module-field-li">
-
-    <strong><em>...</em></strong>
-
-    <strong> : </strong>
-
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">{[string]=function,...}</a></span>)
-
-
-
-
-    </li>
-
-
-    </ul>
-
     <!-- parameters end -->
 
     <!-- returns start -->
@@ -580,8 +586,8 @@ migration.format_version(<span class="string">"3"</span>, <span class="string">"
       player_table.bar = <span class="string">"Lorem ipsum"</span>
     <span class="keyword">end</span>
   <span class="keyword">end</span>,
-  [<span class="string">"1.1.0"</span>] = <span class="keyword">function</span>()
-    global.foo = <span class="string">"bar"</span>
+  [<span class="string">"1.1.0"</span>] = <span class="keyword">function</span>(arg)
+    global.foo = arg
   <span class="keyword">end</span>
 }</code></pre>
     <!-- usage end -->
@@ -602,7 +608,7 @@ migration.format_version(<span class="string">"3"</span>, <span class="string">"
     <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
     </div>
     <div class="content-footer column col-9 col-sm-12">
-    <i>Last updated 2020-08-31 01:33:47 UTC</i>
+    <i>Last updated 2020-09-13 18:41:55 UTC</i>
     </div>
     </div>
     </div>
