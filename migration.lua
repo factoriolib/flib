@@ -2,6 +2,7 @@
 -- @module migration
 -- @alias flib_migration
 -- @usage local migration = require("__flib__.migration")
+-- @see migration.lua
 local flib_migration = {}
 
 local string = string
@@ -55,12 +56,13 @@ end
 -- @tparam string old_version
 -- @tparam MigrationsTable migrations
 -- @tparam[opt="%02d"] string format
-function flib_migration.run(old_version, migrations, format)
+-- @tparam[opt] any ... Any additional arguments will be passed to each function within `migrations`.
+function flib_migration.run(old_version, migrations, format, ...)
   local migrate = false
   for version, func in pairs(migrations) do
     if migrate or flib_migration.is_newer_version(old_version, version, format) then
       migrate = true
-      func()
+      func(...)
     end
   end
 end
@@ -68,16 +70,13 @@ end
 --- Determine if migrations need to be run for this mod, then run them if needed.
 -- @tparam Concepts.ConfigurationChangedData event_data
 -- @tparam MigrationsTable migrations
--- @tparam[opt] string mod_name The mod to check against, defaults to the mod this is used in.
--- @treturn boolean If true, run generic migrations. If false, run post-init setup.
+-- @tparam[opt] string mod_name The mod to check against, defaults to the current mod.
+-- @treturn boolean If true, run generic migrations.
 -- @usage
 -- -- In on_configuration_changed:
 -- if migration.on_config_changed(e, migrations) then
 --   -- run generic (non-init) migrations
 --   rebuild_prototype_data()
--- else
---   -- run post-init setup
---   unlock_recipes_for_cheating_forces()
 -- end
 function flib_migration.on_config_changed(event_data, migrations, mod_name)
   local changes = event_data.mod_changes[mod_name or script.mod_name]
@@ -97,10 +96,13 @@ return flib_migration
 --- Concepts
 -- @section
 
---- @Concept MigrationsTable
--- Dictionary string -> function. Each string is a version number, and each value is a
--- function that will be run for that version.
--- @tparam {[string]=function,...} ...
+--- A table of migrations to run for given versions.
+-- Dictionary @{string} -> @{function}. Each string is a version number, and each function is logic to run for that
+-- version. When passed into @{migration.run} or @{migration.on_config_changed}, the module will check `old_version`
+-- against each version in this table, and for any that are newer, will run that version's corresponding logic.
+--
+-- A version function can accept arguments that are passed in through @{migration.run}.
+-- @Concept MigrationsTable
 -- @usage
 -- {
 --   ["1.0.1"] = function()
@@ -109,7 +111,7 @@ return flib_migration
 --       player_table.bar = "Lorem ipsum"
 --     end
 --   end,
---   ["1.1.0"] = function()
---     global.foo = "bar"
+--   ["1.1.0"] = function(arg)
+--     global.foo = arg
 --   end
 -- }

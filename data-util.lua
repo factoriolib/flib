@@ -114,7 +114,7 @@ local exponent_multipliers = {
 
 --- Convert an energy string to base unit value + suffix.
 -- @tparam string energy_string
--- @treturn float|nil
+-- @treturn number|nil
 -- @treturn string
 function flib_data_util.get_energy_value(energy_string)
   if type(energy_string) == "string" then
@@ -133,7 +133,7 @@ end
 -- @tparam[opt] Concepts.Position position
 -- @tparam[opt] string filename
 -- @tparam[opt] Concepts.Vector size
--- @tparam[opt] uint mipmap_count
+-- @tparam[opt] number mipmap_count
 -- @tparam[opt] table mods
 -- @treturn Types.SpriteSpecification
 function flib_data_util.build_sprite(name, position, filename, size, mipmap_count, mods)

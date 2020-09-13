@@ -8,6 +8,7 @@
 -- @module event
 -- @alias flib_event
 -- @usage local event = require("__flib__.event")
+-- @see event.lua
 local flib_event = {}
 
 -- generate syntax shortcuts
@@ -52,7 +53,7 @@ flib_event.on_configuration_changed = script.on_configuration_changed
 
 --- Register or deregister a handler to run every N ticks.
 -- @function on_nth_tick
--- @tparam uint nth_tick
+-- @tparam number nth_tick
 -- @tparam function|nil handler The handler to register, or `nil` to deregister the registered handler.
 -- @usage
 -- -- register a handler to run every 30 ticks
@@ -107,12 +108,12 @@ end
 -- Depending on when a given entity is destroyed on_entity_destroyed will be fired at the end of the current tick or end
 -- of the next tick.
 -- @tparam LuaEntity entity The entity to register.
--- @treturn uint The registration number.
+-- @treturn number The registration number.
 flib_event.register_on_entity_destroyed = script.register_on_entity_destroyed
 
 --- Generate a new, unique event ID.
 -- @function generate_id
--- @treturn uint
+-- @treturn number
 -- @usage
 -- -- generate a new event ID
 -- local my_event = event.generate_id()
@@ -132,7 +133,7 @@ flib_event.get_handler =  script.get_event_handler
 -- @function raise
 -- This will only work for events that actually support being raised, and custom mod events.
 -- @tparam EventId id
--- @tparam EventData event_data The event data that will be passed to the handlers.
+-- @tparam table event_data The event data that will be passed to the handlers.
 -- @usage
 -- event.raise(defines.events.on_gui_click, {player_index=e.player_index, element=my_button, ...})
 flib_event.raise = script.raise_event
@@ -181,7 +182,7 @@ flib_event.get_filter = script.get_event_filter
 -- One of the following:
 -- <ul>
 --   <li>A member of @{defines.events}.</li>
---   <li>A positive @{uint} corresponding to a custom event ID.</li>
+--   <li>A positive @{number} corresponding to a custom event ID.</li>
 --   <li>A @{string} corresponding to a custom-input name.</li>
 -- </ul>
 

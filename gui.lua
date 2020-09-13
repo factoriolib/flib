@@ -2,6 +2,7 @@
 -- @module gui
 -- @alias flib_gui
 -- @usage local gui = require("__flib__.gui")
+-- @see gui.lua
 local flib_gui = {}
 
 local table = require("__flib__.table")
@@ -96,6 +97,8 @@ end
 -- Must be called during `on_init` **before** any structures are built.
 --
 -- If adding the module to an existing mod, this must be called in `on_configuration_changed` for that version as well.
+--
+-- This function can also be used to wipe all GUI filters for all players.
 function flib_gui.init()
   if not global.__flib then
     global.__flib = {gui={}}
@@ -310,23 +313,30 @@ end
 -- @treturn GuiOutputFiltersTable filters
 -- @usage
 -- gui.build(player.gui.screen, {
---   {type="frame", style="dialog_frame", direction="vertical", handlers="window", save_as="window", children={
---     {type="flow", children={
---       {type="label", style="frame_title", caption="Menu"},
---       {template="drag_handle", style_mods={horizontally_stretchable=true, height=24},
---         save_as="titlebar.drag_handle"},
+--   {type="frame", direction="vertical", handlers="window", save_as="window", children={
+--     -- titlebar
+--     {type="flow", save_as="titlebar_flow", children={
+--       {type="label", style="frame_title", caption="Menu", elem_mods={ignored_by_interaction=true}},
+--       {type="empty-widget", style="flib_titlebar_drag_handle", elem_mods={ignored_by_interaction=true}},
 --       {type="condition", condition=(not is_dialog_frame), children={
---         {template="frame_action_button", sprite="utility/close_white", handlers="titlebar.close_button",
---           save_as="titlebar.close_button"}
+--         {template="frame_action_button",
+--           sprite="utility/close_white",
+--           handlers="titlebar.close_button",
+--           save_as="titlebar.close_button"
+--         }
 --       }}
 --     }},
 --     {type="frame", style="inside_shallow_frame_with_padding", children={
 --       {type="table", style="slot_table", column_count=10, save_as="content.slot_table"}
 --     }},
 --     {type="condition", condition=is_dialog_frame, children={
---       {type="flow", children={
+--       {type="flow", style="dialog_buttons_horizontal_flow", children={
 --         {type="button", style="back_button", caption={"gui.back"}, handlers="footer.back_button"},
---         {template="drag_handle", style_mods={horizontally_stretchable=true, height=32}, save_as="footer.drag_handle"}
+--         {type="empty-widget",
+--           style="flib_dialog_footer_drag_handle",
+--           style_mods={right_margin=0},
+--           save_as="footer.drag_handle"
+--         }
 --       }}
 --     }}
 --   }}
@@ -387,7 +397,7 @@ end
 -- When destroying a GUI element with a filter, be certain to call this function destroying that filter, to avoid
 -- memory leaks.
 -- @tparam string name The handler name, or group name.
--- @tparam uint player_index
+-- @tparam number player_index
 -- @tparam GuiFilter[]|nil filters An array of filters, or `nil` to clear all filters when in `remove` mode.
 -- @tparam string mode One of "add" or "remove".
 -- @usage
@@ -466,7 +476,7 @@ function flib_gui.update_filters(name, player_index, filters, mode)
 end
 
 --- Remove all GUI filters for the given player.
--- @tparam uint player_index
+-- @tparam number player_index
 function flib_gui.remove_player_filters(player_index)
   for group_name in pairs(handler_groups) do
     -- check for a level-1 group to minimize calls to update_filters()
@@ -488,14 +498,10 @@ end
 --     titlebar = {
 --       -- this is a handler group for a specific GUI element
 --       close_button = {
---         -- if using a defines.events event, this shortcut syntax is used:
+--         -- name of `defines.events` event -> handler function
 --         on_gui_click = function(e)
---           __DebugAdapter.print(e)
---         end,
---         -- for direct event IDs, nest the function inside a table:
---         my_custom_event = {id=constants.my_custom_event, handler=function(e)
---           __DebugAdapter.print(e)
---         }
+--           log(serpent.block(e))
+--         end
 --       }
 --     }
 --   }
@@ -503,7 +509,11 @@ end
 --
 -- -- use the handlers
 -- gui.build(player.gui.screen, {
---   {type="sprite-button", style="frame_action_button", sprite="utility/close_white", handlers="base.titlebar.close_button"}
+--   {type="sprite-button",
+--     style="frame_action_button",
+--     sprite="utility/close_white",
+--     handlers="base.titlebar.close_button"
+--   }
 -- })
 flib_gui.handlers = handlers
 
@@ -518,14 +528,18 @@ flib_gui.handlers = handlers
 --     titlebar = {
 --       close_button = {
 --         on_gui_click = function(e)
---           __DebugAdapter.print(e)
+--           log(serpent.block(e))
 --         end
 --       }
 --     }
 --   }
 -- }
 -- gui.build(player.gui.screen, {
---   {type="sprite-button", style="frame_action_button", sprite="utility/close_white", handlers="base.titlebar.close_button"}
+--   {type="sprite-button",
+--     style="frame_action_button",
+--     sprite="utility/close_white",
+--     handlers="base.titlebar.close_button"
+--   }
 -- })
 --
 -- -- contents of gui.handler_lookup will be:
@@ -559,17 +573,17 @@ flib_gui.handler_lookup = handler_lookup
 --     titlebar = {
 --       close_button = {
 --         on_gui_click = function(e)
---           __DebugAdapter.print(e)
+--           log(serpent.block(e))
 --         end,
 --         my_custom_event = {id=constants.my_custom_event, handler=function(e)
---           __DebugAdapter.print(e)
+--           log(serpent.block(e))
 --         }
 --       }
 --     },
 --     content = {
 --       item_button = {
 --         on_gui_click = function(e)
---           __DebugAdapter.print(e)
+--           log(serpent.block(e))
 --         end
 --       }
 --     }
@@ -627,6 +641,7 @@ flib_gui.handler_groups = handler_groups
 --   {template="pushers.horizontal"},
 --   {template="frame_action_button", sprite="utility/close_white"},
 --   -- use function templates by calling them directly
+--   -- you do not necessarily need to keep function templates in the `templates` table, but the module supports doing so
 --   gui.templates.list_box_with_label("ingredients"),
 --   gui.templates.list_box_with_label("products")
 -- })
@@ -725,23 +740,30 @@ return flib_gui
 --
 -- An array of @{GuiStructure} that will be added as children of this element.
 -- @usage
--- {type="frame", style="dialog_frame", direction="vertical", handlers="window", save_as="window", children={
---   {type="flow", children={
---     {type="label", style="frame_title", caption="Menu"},
---     {template="drag_handle", style_mods={horizontally_stretchable=true, height=24},
---       save_as="titlebar.drag_handle"},
+-- {type="frame", direction="vertical", handlers="window", save_as="window", children={
+--   -- titlebar
+--   {type="flow", save_as="titlebar_flow", children={
+--     {type="label", style="frame_title", caption="Menu", elem_mods={ignored_by_interaction=true}},
+--     {type="empty-widget", style="flib_titlebar_drag_handle", elem_mods={ignored_by_interaction=true}},
 --     {type="condition", condition=(not is_dialog_frame), children={
---       {template="frame_action_button", sprite="utility/close_white", handlers="titlebar.close_button",
---         save_as="titlebar.close_button"}
+--       {template="frame_action_button",
+--         sprite="utility/close_white",
+--         handlers="titlebar.close_button",
+--         save_as="titlebar.close_button"
+--       }
 --     }}
 --   }},
 --   {type="frame", style="inside_shallow_frame_with_padding", children={
 --     {type="table", style="slot_table", column_count=10, save_as="content.slot_table"}
 --   }},
 --   {type="condition", condition=is_dialog_frame, children={
---     {type="flow", children={
+--     {type="flow", style="dialog_buttons_horizontal_flow", children={
 --       {type="button", style="back_button", caption={"gui.back"}, handlers="footer.back_button"},
---       {template="drag_handle", style_mods={horizontally_stretchable=true, height=32}, save_as="footer.drag_handle"}
+--       {type="empty-widget",
+--         style="flib_dialog_footer_drag_handle",
+--         style_mods={right_margin=0},
+--         save_as="footer.drag_handle"
+--       }
 --     }}
 --   }}
 -- }}

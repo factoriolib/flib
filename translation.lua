@@ -2,6 +2,7 @@
 -- @module translation
 -- @alias flib_translation
 -- @usage local translation = require("__flib__.translation")
+-- @see translation.lua
 local flib_translation = {}
 
 local table = require("__flib__.table")
@@ -147,7 +148,7 @@ function flib_translation.process_result(event_data)
 end
 
 --- Add translation requests for the given player, to be performed over the next several ticks.
--- @tparam uint player_index
+-- @tparam number player_index
 -- @tparam StringData[] strings
 function flib_translation.add_requests(player_index, strings)
   local __translation = global.__flib.translation
@@ -188,7 +189,7 @@ function flib_translation.add_requests(player_index, strings)
 end
 
 --- Cancel a player's translations.
--- @tparam uint player_index
+-- @tparam number player_index
 function flib_translation.cancel(player_index)
   local __translation = global.__flib.translation
   local player_table = __translation.players[player_index]
@@ -201,14 +202,14 @@ function flib_translation.cancel(player_index)
 end
 
 --- Check whether a player is actively translating.
--- @tparam uint player_index
+-- @tparam number player_index
 -- @treturn boolean
 function flib_translation.is_translating(player_index)
   return global.__flib.translation.players[player_index] and true or false
 end
 
 --- Check the number of players currently translating.
--- @treturn uint
+-- @treturn number
 function flib_translation.translating_players_count()
   return global.__flib.translation.translating_players_count
 end
@@ -238,8 +239,7 @@ return flib_translation
 
 --- A mapping of a translated string's dictionaries and internal names.
 -- Dictionary @{string} -> array of @{string}. Each key is a dictionary name, each value is an array of internal names
--- that match to the translated string. This greatly eases the process of sorting translations into various
--- dictionaries.
+-- that the translation matches. Use this data to sort the translation into its appropriate locations.
 -- @usage
 -- {
 --   entities = {"crude-oil"},
@@ -253,9 +253,8 @@ return flib_translation
 -- }
 -- @Concept ResultSortData
 
---- A registry of strings to translate.
--- This is an array of tables, each of which contain the following fields:
--- @tfield string dictionary The dictionary that this string belongs to.
+--- Dictioanry data for a localised string.
+-- @tfield string dictionary The "dictionary" (subtable) that this string belongs to.
 -- @tfield string internal The internal name that will be used to reference this string.
 -- @tfield Concepts.LocalisedString localised The localised string to translate.
 -- @usage

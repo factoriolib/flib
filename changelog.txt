@@ -1,8 +1,10 @@
 ---------------------------------------------------------------------------------------------------
-Version: 0.3.4
+Version: 0.4.0
 Date: ????
   Features:
-    - Added optional `middleware` argument to `gui.register_handlers()`
+    - Added `direction.to_vector_2d`
+    - Additional arguments passed to `migration.run` will be passed on to the version functions within the migrations table
+    - Added `math` module
   Bugfixes:
     - Fixed that using `gui.init()` to reset all filters did not update lookup tables
 ---------------------------------------------------------------------------------------------------

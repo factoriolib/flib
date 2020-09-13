@@ -9,7 +9,7 @@ local string = string
 --- Calculate the distance in tiles between two positions.
 -- @tparam Concepts.Position pos1
 -- @tparam Concepts.Position pos2
--- @treturn double
+-- @treturn number
 function flib_misc.get_distance(pos1, pos2)
   local x1 = pos1.x or pos1[1]
   local y1 = pos1.y or pos1[2]
@@ -21,7 +21,7 @@ end
 --- Calculate the squared distance in tiles between two positions.
 -- @tparam Concepts.Position pos1
 -- @tparam Concepts.Position pos2
--- @treturn double
+-- @treturn number
 function flib_misc.get_distance_squared(pos1, pos2)
   local x1 = pos1.x or pos1[1]
   local y1 = pos1.y or pos1[2]
@@ -34,7 +34,7 @@ local format_string_1 = "%d:%02d"
 local format_string_2 = "%d:%02d:%02d"
 
 --- Convert given tick or game.tick into "[hh:]mm:ss" format.
--- @tparam[opt=game.tick] uint tick
+-- @tparam[opt=game.tick] number tick
 -- @treturn string
 function flib_misc.ticks_to_timestring(tick)
   local total_seconds = math.floor((tick or game.tick)/60)

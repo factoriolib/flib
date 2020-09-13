@@ -148,7 +148,7 @@ end
 ---@tparam table tbl The table to iterate over.
 ---@tparam any|nil from_k The key to start iteration at, or `nil` to start at the beginning of `tbl`. If the key does
 -- not exist in `tbl`, it will be treated as `nil`, _unless_ a custom `_next` function is used.
----@tparam uint n The number of items to iterate.
+---@tparam number n The number of items to iterate.
 ---@tparam function callback Receives `value` and `key` as parameters.
 ---@tparam[opt] function _next A custom `next()` function. If not provided, the default `next()` will be used.
 ---@treturn any|nil Where the iteration ended. Can be any valid table key, or `nil` if the end of `tbl` was reached.
@@ -278,12 +278,12 @@ local function default_comp(a, b) return a < b end
 -- inefficient with large data sets. However, you can spread the sorting over multiple ticks, reducing the performance
 -- impact. Only use this function if `table.sort` is too slow.
 -- @tparam array arr
--- @tparam uint from_index The index to start iteration at (inclusive). Pass `nil` or a number less than `2` to begin at
+-- @tparam number from_index The index to start iteration at (inclusive). Pass `nil` or a number less than `2` to begin at
 -- the start of the array.
--- @tparam uint iterations The number of iterations to perform. Higher is more performance-heavy. This number should be
+-- @tparam number iterations The number of iterations to perform. Higher is more performance-heavy. This number should be
 -- adjusted based on the performance impact of the custom `comp` function (if any) and the size of the array.
 -- @tparam[opt] function comp A comparison function for sorting. Must return truthy if `a < b`.
--- @treturn uint|nil The index to start the next iteration at, or `nil` if the end was reached.
+-- @treturn number|nil The index to start the next iteration at, or `nil` if the end was reached.
 function flib_table.partial_sort(arr, from_index, iterations, comp)
   comp = comp or default_comp
   local start_index = (from_index and from_index > 2) and from_index or 2
@@ -352,7 +352,7 @@ end
 --
 -- Uses Factorio's built-in `table_size` function.
 -- @tparam table tbl
--- @treturn uint Size of the table.
+-- @treturn number Size of the table.
 flib_table.size = table_size
 
 --- Retrieve a shallow copy of a portion of an array, selected from `start` to `end` inclusive.

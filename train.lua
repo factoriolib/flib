@@ -109,7 +109,7 @@ function flib_train.get_composition_string(train)
 end
 
 --- Open train GUI for one player.
--- @param player_index uint
+-- @param player_index number
 -- @tparam LuaTrain train
 -- @treturn boolean If the GUI was opened.
 function flib_train.open_gui(player_index, train)
@@ -130,7 +130,7 @@ return flib_train
 
 --- @Concept TrainCompositionCounts
 -- A @{table} with the following fields:
--- @tfield uint total The total number of rolling stocks in the train.
--- @tfield uint wagons The number of wagons in the train.
--- @tfield uint front_movers The number of front-facing locomotives in the train.
--- @tfield uint back_movers The number of back-facing locomotives in the train.
+-- @tfield number total The total number of rolling stocks in the train.
+-- @tfield number wagons The number of wagons in the train.
+-- @tfield number front_movers The number of front-facing locomotives in the train.
+-- @tfield number back_movers The number of back-facing locomotives in the train.
