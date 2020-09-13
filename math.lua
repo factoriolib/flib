@@ -24,8 +24,6 @@ flib_math.deg_to_rad = flib_math.pi / 180
 -- local deg = rad x flib_math.rad_to_deg -- 57.2958
 flib_math.rad_to_deg = 180 / flib_math.pi
 
---- 1.121039e-44
-flib_math.epsilon = 1.121039e-44
 --- 127
 flib_math.max_int8 = 127
 --- -128
@@ -33,26 +31,25 @@ flib_math.min_int8 = -128
 --- 255
 flib_math.max_uint8 = 255
 
---- 32,768
-flib_math.max_int16 = 32768
+--- 32,767
+flib_math.max_int16 = 32767
 --- -32,768
 flib_math.min_int16 = -32768
 --- 65,535
 flib_math.max_uint16 = 65535
 
---- 2,147,483,648
-flib_math.max_int = 2147483648
+--- 2,147,483,647
+flib_math.max_int = 2147483647
 --- -2,147,483,648
 flib_math.min_int = -2147483648
 --- 4,294,967,296
 flib_math.max_uint = 4294967296
 
---- 9,223,372,036,854,775,808
-flib_math.max_int64 = 9223372036854775808
---- -9,223,372,036,854,775,808
-flib_math.min_int64 = -9223372036854775808
---- 18,446,744,073,709,551,615
-flib_math.max_uint64 = 18446744073709551615
+--- 9,007,199,254,740,991
+flib_math.max_int53 = 0x1FFFFFFFFFFFFF
+--- -9,007,199,254,740,992
+flib_math.min_int53 = -0x20000000000000
+
 
 --- Functions
 -- @section
