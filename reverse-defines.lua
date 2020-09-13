@@ -3,20 +3,10 @@
 -- @alias flib_reverse_defines
 -- @usage local reverse_defines = require('__flib__.reverse-defines')
 --
--- event.register(
---   {
---     defines.events.on_built_entity,
---     defines.events.on_robot_built_entity,
---     defines.events.on_entity_cloned,
---     defines.events.script_raised_built
---   },
---   function(e)
---     local id = e.name
---     if reverse_defines.events[id] == "on_entity_cloned" then
---       -- special logic
---     end
---   end
--- )
+-- event.on_built_entity(function(e)
+--   local player = game.get_player(e.player_index)
+--   local controller_name = reverse_defines.controllers[player.controller_type]
+-- end)
 local flib_reverse_defines = {}
 
 local function build_reverse_defines(lookup_table, base_table)
