@@ -411,8 +411,8 @@ end
 -- gui.update_filters("main.titlebar.drag_handle.on_gui_click", player_index, {elems.drag_handle.index}, "add")
 function flib_gui.update_filters(name, player_index, filters, mode)
   local handler_names = handler_groups[name] or {name}
-  for hi=1,#handler_names do
-    local handler_name = handler_names[hi]
+  for i = 1, #handler_names do
+    local handler_name = handler_names[i]
     local handler_data = handler_lookup[handler_name]
     if not handler_data then error("GUI handler ["..handler_name.."] does not exist!") end
     local id = handler_data.id

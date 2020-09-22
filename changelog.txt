@@ -1,7 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.4.1
 Date: ????
-  Changes:
+  Features:
+    - Added a third return value to the callback of `table.for_n_of`, which is a flag requesting an immediate iteration abort
 ---------------------------------------------------------------------------------------------------
 Version: 0.4.0
 Date: 2020-09-13

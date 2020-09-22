@@ -143,6 +143,11 @@ end
 --
 -- The second return value of `callback` is a flag requesting deletion of the current item.
 --
+-- The third return value of `callback` is a flag requesting that the iteration be immediately aborted. Use this flag to
+-- early return in `callback` should some required data be invalid or otherwise unusable on the current tick. When using
+-- this flag, `for_n_of` will return the previous key as `from_k`, so the next iteration will begin on the same key that
+-- was aborted on, or the next one if the aborted key was also deleted.
+--
 -- **DO NOT** delete entires from `tbl` from within `callback`, this will break the iteration. Use the deletion flag
 -- return instead.
 ---@tparam table tbl The table to iterate over.
@@ -179,6 +184,7 @@ function flib_table.for_n_of(tbl, from_k, n, callback, _next)
 
   local delete
   local prev
+  local abort
   local result = {}
 
   -- run `n` times
@@ -193,10 +199,11 @@ function flib_table.for_n_of(tbl, from_k, n, callback, _next)
     end
 
     if v then
-      result[from_k], delete = callback(v, from_k)
+      result[from_k], delete, abort = callback(v, from_k)
       if delete then
         delete = from_k
       end
+      if abort then break end
     else
       return from_k, result
     end
@@ -204,6 +211,8 @@ function flib_table.for_n_of(tbl, from_k, n, callback, _next)
 
   if delete then
     tbl[delete] = nil
+    from_k = prev
+  elseif abort then
     from_k = prev
   end
   return from_k, result
@@ -278,10 +287,10 @@ local function default_comp(a, b) return a < b end
 -- inefficient with large data sets. However, you can spread the sorting over multiple ticks, reducing the performance
 -- impact. Only use this function if `table.sort` is too slow.
 -- @tparam array arr
--- @tparam number from_index The index to start iteration at (inclusive). Pass `nil` or a number less than `2` to begin at
--- the start of the array.
--- @tparam number iterations The number of iterations to perform. Higher is more performance-heavy. This number should be
--- adjusted based on the performance impact of the custom `comp` function (if any) and the size of the array.
+-- @tparam number from_index The index to start iteration at (inclusive). Pass `nil` or a number less than `2` to begin
+-- at the start of the array.
+-- @tparam number iterations The number of iterations to perform. Higher is more performance-heavy. This number should
+-- be adjusted based on the performance impact of the custom `comp` function (if any) and the size of the array.
 -- @tparam[opt] function comp A comparison function for sorting. Must return truthy if `a < b`.
 -- @treturn number|nil The index to start the next iteration at, or `nil` if the end was reached.
 function flib_table.partial_sort(arr, from_index, iterations, comp)
