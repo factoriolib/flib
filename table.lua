@@ -133,8 +133,7 @@ function flib_table.for_each(tbl, callback)
   return false
 end
 
---- Call the given function on a set number of items in a table, returning the next starting key and the results of the
--- callback.
+--- Call the given function on a set number of items in a table, returning the next starting key.
 --
 -- Calls `callback(value, key)` over `n` items from `tbl`, starting after `from_k`.
 --
@@ -144,21 +143,21 @@ end
 -- The second return value of `callback` is a flag requesting deletion of the current item.
 --
 -- The third return value of `callback` is a flag requesting that the iteration be immediately aborted. Use this flag to
--- early return in `callback` should some required data be invalid or otherwise unusable on the current tick. When using
--- this flag, `for_n_of` will return the previous key as `from_k`, so the next iteration will begin on the same key that
--- was aborted on, or the next one if the aborted key was also deleted.
+-- early return on some condition in `callback`. When aborted, `for_n_of` will return the previous key as `from_k`, so
+-- the next call to `for_n_of` will restart on the key that was aborted (unless it was also deleted).
 --
 -- **DO NOT** delete entires from `tbl` from within `callback`, this will break the iteration. Use the deletion flag
--- return instead.
----@tparam table tbl The table to iterate over.
----@tparam any|nil from_k The key to start iteration at, or `nil` to start at the beginning of `tbl`. If the key does
+-- instead.
+-- @tparam table tbl The table to iterate over.
+-- @tparam any|nil from_k The key to start iteration at, or `nil` to start at the beginning of `tbl`. If the key does
 -- not exist in `tbl`, it will be treated as `nil`, _unless_ a custom `_next` function is used.
----@tparam number n The number of items to iterate.
----@tparam function callback Receives `value` and `key` as parameters.
----@tparam[opt] function _next A custom `next()` function. If not provided, the default `next()` will be used.
----@treturn any|nil Where the iteration ended. Can be any valid table key, or `nil` if the end of `tbl` was reached.
+-- @tparam number n The number of items to iterate.
+-- @tparam function callback Receives `value` and `key` as parameters.
+-- @tparam[opt] function _next A custom `next()` function. If not provided, the default `next()` will be used.
+-- @treturn any|nil Where the iteration ended. Can be any valid table key, or `nil`.
 -- Pass this as `from_k` in the next call to `for_n_of` for `tbl`.
----@treturn table The results compiled from the first return of `callback`.
+-- @treturn table The results compiled from the first return of `callback`.
+-- @treturn boolean Whether or not the end of the table was reached on this iteration.
 -- @usage
 -- local extremely_large_table = {
 --   [1000] = 1,
@@ -198,14 +197,14 @@ function flib_table.for_n_of(tbl, from_k, n, callback, _next)
       tbl[delete] = nil
     end
 
-    if v then
+    if from_k then
       result[from_k], delete, abort = callback(v, from_k)
       if delete then
         delete = from_k
       end
       if abort then break end
     else
-      return from_k, result
+      return from_k, result, true
     end
   end
 
@@ -215,7 +214,7 @@ function flib_table.for_n_of(tbl, from_k, n, callback, _next)
   elseif abort then
     from_k = prev
   end
-  return from_k, result
+  return from_k, result, false
 end
 
 --- Create a filtered version of a table based on the results of a filter function.
