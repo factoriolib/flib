@@ -4,6 +4,7 @@ Date: ????
   Features:
     - Added a third return value to `table.for_n_of` signifying whether or not the end of the table was reached
     - Added a third return value to the callback of `table.for_n_of`, which is a flag requesting an immediate iteration abort
+    - Added `flib_tool_button_light_green` button style
   Changes:
     - `table.for_n_of` now checks against the first (key) return of `next()` rather than the second (value) return
       - This changes how custom `next()` functions will behave, and brings it into consistency with the rest of Lua

@@ -12,6 +12,10 @@ A "selected" frame action button. Use when a frame action button can "toggle" on
 
 A "selected" tool button. Use when a tool button can "toggle" on and off.
 
+**flib_tool_button_light_green**
+
+A light green tool button. Similar to the `item_and_count_select_confirm` style, but has margin and padding fixes to match other tool buttons.
+
 #### Slot styles
 
 FLib includes a myriad of colored slot styles for use with `sprite-button`s:

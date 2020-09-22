@@ -130,6 +130,13 @@ styles.flib_selected_tool_button = {
   clicked_graphical_set = btn.selected_clicked_graphical_set
 }
 
+styles.flib_tool_button_light_green = {
+  type = "button_style",
+  parent = "item_and_count_select_confirm",
+  padding = 2,
+  top_margin = 0
+}
+
 -- EMPTY-WIDGET STYLES
 
 styles.flib_dialog_footer_drag_handle = {
