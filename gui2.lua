@@ -124,7 +124,11 @@ local elem_style_keys = {
   badge_horizontal_spacing = {},
   default_badge_font_color = {},
   selected_badge_font_color = {},
-  disabled_badge_font_color = {}
+  disabled_badge_font_color = {},
+  width = {write_only = true},
+  height = {write_only = true},
+  padding = {write_only = true},
+  margin = {write_only = true}
 }
 
 -- convert message if it was shortcutted
@@ -203,13 +207,16 @@ local function diff(component_data, parent, view, index, refs, assigned_handlers
   local elem_index = elem.index
   for key, value in pairs(view) do
     local event_id = event_keys[key]
+    local style_data = elem_style_keys[key]
     if key ~= "children" then
       if key == "style" then
         if elem.style.name ~= value then
           elem.style = value
         end
-      elseif elem_style_keys[key] then
-        elem.style[key] = value
+      elseif style_data then
+        if style_data.write_only or elem.style[key] ~= value then
+          elem.style[key] = value
+        end
       elseif elem_functions[key] then
         elem[key](table.unpack(value))
       elseif event_id then
