@@ -56,13 +56,16 @@ local function create_component(self, parent, identifier)
     error("State must be a table.")
   end
 
-  local component_tbl = {
-    state = initial_state
+  local component_data = {
+    identifier = identifier,
+    name = component_name,
+    state = initial_state,
+    parent = parent
   }
 
-  component_tbl.parent = diff(parent, self.view(component_tbl.state))
+  component_data.root = diff(parent, self.view(component_data.state))
 
-  component_registry[component_name] = component_tbl
+  component_registry[component_name] = component_data
 end
 
 -- retrieves and returns a component's state table
@@ -77,10 +80,24 @@ local function get_component_state(self, identifier)
   end
 end
 
+-- updates state and view for the component
+-- only usable on root components
+local function update_and_diff_component(self, msg, identifier)
+  local component_data = global.__flib.gui.components[get_component_name(self.name, identifier)]
+
+  if component_data then
+    local state = component_data.state
+    self.update(msg, state, identifier)
+    diff(component_data.root, self.view(state, identifier))
+  else
+    error("`update_and_diff()` is only callable on 'root' components.")
+  end
+end
+
 local component_mt = {
-  __call = function(self, ...)
-    local view = self.view(...)
-    view.__componentname = self.name
+  __call = function(self, state, identifier)
+    local view = self.view(state, identifier)
+    view.__componentname = get_component_name(self.name, identifier)
     return view
   end,
   -- __newindex = function(self, k, v)
@@ -105,7 +122,8 @@ function flib_gui.component(name)
   local component = {
     create = create_component,
     get_state = get_component_state,
-    name = name
+    name = name,
+    update_and_diff = update_and_diff_component
   }
   setmetatable(component, component_mt)
 
@@ -123,6 +141,32 @@ function flib_gui.init()
     global.__flib.gui = base
   else
     global.__flib = {gui = base}
+  end
+end
+
+function flib_gui.dispatch(event_data)
+  local element = event_data.element
+  local player_index = event_data.player_index
+  if not element or not player_index then return false end
+
+  local player_data = global.__flib.gui[player_index]
+  if not player_data then return false end
+
+  local event_handlers = player_data.handlers[event_data.name]
+  if not event_handlers then return false end
+
+  local handler_data = event_handlers[element.index]
+  if handler_data then
+    local component_name = handler_data.component
+    local component = components[component_name]
+    local component_data = player_data.components[component_name]
+    if not component_data then
+      error("GUI handlers may only be called for 'root' components.")
+    end
+    component:update_and_diff(handler_data.msg, component_data.identifier)
+    return true
+  else
+    return false
   end
 end
 
