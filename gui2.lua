@@ -40,6 +40,93 @@ end
 
 -- UTILITY FUNCTIONS
 
+local elem_functions = {
+  clear_items = true,
+  -- get_item = true,
+  set_item = true,
+  add_item = true,
+  remove_item = true,
+  -- get_slider_minimum = true,
+  -- get_slider_maximum = true,
+  -- get_slider_minimum_maximum = true,
+  -- get_slider_value_step = true,
+  -- get_slider_discrete_slider = true,
+  -- get_slider_discrete_values = true,
+  focus = true,
+  scroll_to_top = true,
+  scroll_to_bottom = true,
+  scroll_to_left = true,
+  scroll_to_right = true,
+  scroll_to_element = true,
+  select_all = true,
+  select = true,
+  -- add_tab = true,
+  -- remove_tab = true,
+  force_auto_center = true,
+  scroll_to_item = true
+}
+
+local elem_style_keys = {
+  -- gui = {readOnly = true},
+  -- name = {readOnly = true},
+  minimal_width = {},
+  maximal_width = {},
+  minimal_height = {},
+  maximal_height = {},
+  natural_width = {},
+  natural_height = {},
+  top_padding = {},
+  right_padding = {},
+  bottom_padding = {},
+  left_padding = {},
+  top_margin = {},
+  right_margin = {},
+  bottom_margin = {},
+  left_margin = {},
+  horizontal_align = {},
+  vertical_align = {},
+  font_color = {},
+  font = {},
+  top_cell_padding = {},
+  right_cell_padding = {},
+  bottom_cell_padding = {},
+  left_cell_padding = {},
+  horizontally_stretchable = {},
+  vertically_stretchable = {},
+  horizontally_squashable = {},
+  vertically_squashable = {},
+  rich_text_setting = {},
+  hovered_font_color = {},
+  clicked_font_color = {},
+  disabled_font_color = {},
+  pie_progress_color = {},
+  clicked_vertical_offset = {},
+  selected_font_color = {},
+  selected_hovered_font_color = {},
+  selected_clicked_font_color = {},
+  strikethrough_color = {},
+  horizontal_spacing = {},
+  vertical_spacing = {},
+  use_header_filler = {},
+  color = {},
+  -- column_alignments = {readOnly = true},
+  single_line = {},
+  extra_top_padding_when_activated = {},
+  extra_bottom_padding_when_activated = {},
+  extra_left_padding_when_activated = {},
+  extra_right_padding_when_activated = {},
+  extra_top_margin_when_activated = {},
+  extra_bottom_margin_when_activated = {},
+  extra_left_margin_when_activated = {},
+  extra_right_margin_when_activated = {},
+  stretch_image_to_widget_size = {},
+  badge_font = {},
+  badge_horizontal_spacing = {},
+  default_badge_font_color = {},
+  selected_badge_font_color = {},
+  disabled_badge_font_color = {}
+}
+
 -- convert message if it was shortcutted
 local function standardize_msg(msg)
   if type(msg) == "string" then
@@ -101,7 +188,7 @@ local function get_component_name(base, identifier)
   end
 end
 
-local function diff(component_data, parent, view, index, assigned_handlers)
+local function diff(component_data, parent, view, index, refs, assigned_handlers)
   local children = parent.children
   local elem = children[index]
   if not elem then
@@ -121,6 +208,10 @@ local function diff(component_data, parent, view, index, assigned_handlers)
         if elem.style.name ~= value then
           elem.style = value
         end
+      elseif elem_style_keys[key] then
+        elem.style[key] = value
+      elseif elem_functions[key] then
+        elem[key](table.unpack(value))
       elseif event_id then
         add_or_change_handler(elem_index, event_id, component_data, standardize_msg(value))
         local elem_handlers = assigned_handlers[elem_index]
@@ -129,24 +220,27 @@ local function diff(component_data, parent, view, index, assigned_handlers)
         else
           assigned_handlers[elem_index] = {[event_id] = true}
         end
+      elseif key == "ref" then
+        refs[value] = elem
       elseif elem[key] ~= value then
         elem[key] = value
       end
     end
   end
-  local children = view.children
-  if children then
-    local children_len = #children
+  local view_children = view.children
+  local elem_children = elem.children
+  if view_children then
+    local children_len = #view_children
     local i = 0
     for _ = 1, children_len do
       i = i + 1
-      assigned_handlers = diff(component_data, elem, children[i], i, assigned_handlers)
+      assigned_handlers, refs = diff(component_data, elem, view_children[i], i, refs, assigned_handlers)
     end
-    for i = i + 1, children_len do
-      children[i].destroy()
+    for j = i + 1, #elem_children do
+      elem_children[j].destroy()
     end
   end
-  return assigned_handlers, elem
+  return assigned_handlers, refs, elem
 end
 
 -- COMPONENT METHODS
@@ -191,11 +285,12 @@ local function create_component(self, parent, identifier)
     state = initial_state,
   }
 
-  component_data.assigned_handlers, component_data.root = diff(
+  component_data.assigned_handlers, component_data.refs, component_data.root = diff(
     component_data,
     parent,
     self.view(component_data.state),
     #parent.children + 1,
+    {},
     {}
   )
 
@@ -223,14 +318,18 @@ local function update_and_diff_component(self, player_index, msg, identifier, ev
 
   if component_data then
     local state = component_data.state
-    self.update(msg, state, identifier, event_data)
-    local assigned_handlers = diff(
+    self.update(player_index, msg, state, component_data.refs, identifier, event_data)
+    local assigned_handlers, refs = diff(
       component_data,
       component_data.parent,
       self.view(state, identifier),
       component_data.root_child_index,
-      component_data.assigned_handlers
+      {},
+      {}
     )
+
+    -- save new refs
+    component_data.refs = refs
 
     -- remove any handlers that are no longer needed
     for index, new_handlers in pairs(component_data.assigned_handlers) do
