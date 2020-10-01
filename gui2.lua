@@ -195,59 +195,92 @@ end
 local function diff(component_data, parent, view, index, refs, assigned_handlers)
   local children = parent.children
   local elem = children[index]
-  if not elem then
-    elem = parent.add(view)
-  elseif view.type ~= elem.type then
-    -- delete this and all elements after this
-    -- TODO insert instead, if the capability is ever added to the API :(
-    for i = index, #children do
-      children[i].destroy()
+  local new
+  if view.type == "tab-and-content" then
+    local tab, content, new
+    assigned_handlers, refs, tab, new = diff(
+      component_data,
+      parent,
+      view.tab,
+      index * 2 - 1,
+      refs,
+      assigned_handlers
+    )
+    assigned_handlers, refs, content, new = diff(
+      component_data,
+      parent,
+      view.content,
+      index * 2,
+      refs,
+      assigned_handlers
+    )
+    if new then
+      parent.add_tab(tab, content)
     end
-  end
-  local elem_index = elem.index
-  for key, value in pairs(view) do
-    local event_id = event_keys[key]
-    local style_data = elem_style_keys[key]
-    if key ~= "children" then
-      if key == "style" then
-        if elem.style.name ~= value then
-          elem.style = value
+
+    return assigned_handlers, refs
+  else
+    if not elem then
+      elem = parent.add(view)
+      new = true
+    elseif view.type ~= elem.type then
+      -- delete this and all elements after this
+      -- TODO insert instead, if the capability is ever added to the API :(
+      for i = index, #children do
+        local child = children[i]
+        if child.type == "tab" then
+          parent.remove_tab(child)
         end
-      elseif style_data then
-        if style_data.write_only or elem.style[key] ~= value then
-          elem.style[key] = value
+        children[i].destroy()
+      end
+      new = true
+    end
+    local elem_index = elem.index
+    for key, value in pairs(view) do
+      local event_id = event_keys[key]
+      local style_data = elem_style_keys[key]
+      if key ~= "children" then
+        if key == "style" then
+          if elem.style.name ~= value then
+            elem.style = value
+          end
+        elseif style_data then
+          if style_data.write_only or elem.style[key] ~= value then
+            elem.style[key] = value
+          end
+        elseif elem_functions[key] then
+          elem[key](table.unpack(value))
+        elseif event_id then
+          add_or_change_handler(elem_index, event_id, component_data, standardize_msg(value))
+          local elem_handlers = assigned_handlers[elem_index]
+          if elem_handlers then
+            elem_handlers[event_id] = true
+          else
+            assigned_handlers[elem_index] = {[event_id] = true}
+          end
+        elseif key == "ref" then
+          refs[value] = elem
+        elseif elem[key] ~= value then
+          elem[key] = value
         end
-      elseif elem_functions[key] then
-        elem[key](table.unpack(value))
-      elseif event_id then
-        add_or_change_handler(elem_index, event_id, component_data, standardize_msg(value))
-        local elem_handlers = assigned_handlers[elem_index]
-        if elem_handlers then
-          elem_handlers[event_id] = true
-        else
-          assigned_handlers[elem_index] = {[event_id] = true}
-        end
-      elseif key == "ref" then
-        refs[value] = elem
-      elseif elem[key] ~= value then
-        elem[key] = value
       end
     end
-  end
-  local view_children = view.children
-  local elem_children = elem.children
-  if view_children then
-    local children_len = #view_children
-    local i = 0
-    for _ = 1, children_len do
-      i = i + 1
-      assigned_handlers, refs = diff(component_data, elem, view_children[i], i, refs, assigned_handlers)
+    local view_children = view.children
+    local elem_children = elem.children
+    if view_children then
+      -- special logic for tab-and-content children
+      local children_len = #view_children
+      local i = 0
+      for _ = 1, children_len do
+        i = i + 1
+        assigned_handlers, refs = diff(component_data, elem, view_children[i], i, refs, assigned_handlers)
+      end
+      for j = i + 1, #elem_children do
+        elem_children[j].destroy()
+      end
     end
-    for j = i + 1, #elem_children do
-      elem_children[j].destroy()
-    end
+    return assigned_handlers, refs, elem, new
   end
-  return assigned_handlers, refs, elem
 end
 
 -- COMPONENT METHODS
