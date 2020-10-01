@@ -91,27 +91,27 @@ function flib_gui.register_handlers()
 end
 
 -- navigate a structure to build a GUI
-local function recursive_build(root_name, parent, structure, refs, assigned_handlers, player_index)
+local function recursive_build(parent, structure, refs, assigned_handlers, player_index, updater_name)
   -- process structure
   local elem
   local structure_type = structure.type
   if structure_type == "tab-and-content" then
     local tab, content
     refs, assigned_handlers, tab = recursive_build(
-      root_name,
       parent,
       structure.tab,
       refs,
       assigned_handlers,
-      player_index
+      player_index,
+      updater_name
     )
     refs, assigned_handlers, content = recursive_build(
-      root_name,
       parent,
       structure.content,
       refs,
       assigned_handlers,
-      player_index
+      player_index,
+      updater_name
     )
     parent.add_tab(tab, content)
   else
@@ -125,24 +125,27 @@ local function recursive_build(root_name, parent, structure, refs, assigned_hand
         if elem_style_keys[key] then
           elem.style[key] = value
         elseif event_id then
-          flib_gui.add_handler(player_index, elem_index, event_id, value, root_name)
+          flib_gui.add_handler(player_index, elem_index, event_id, value, updater_name)
           assigned_handlers[elem_index] = true
+        elseif key == "ref" then
+          refs[value] = elem
         else
           elem[key] = value
         end
       end
     end
-    -- add to refs table
-    -- TODO support multiple levels with an array?
-    local structure_ref = structure.ref
-    if structure_ref then
-      refs[structure_ref] = elem
-    end
     -- add children
     local children = structure.children
     if children then
       for i = 1, #children do
-        refs, assigned_handlers = recursive_build(root_name, elem, children[i], refs, assigned_handlers, player_index)
+        refs, assigned_handlers = recursive_build(
+          elem,
+          children[i],
+          refs,
+          assigned_handlers,
+          player_index,
+          updater_name
+        )
       end
     end
   end
@@ -150,18 +153,18 @@ local function recursive_build(root_name, parent, structure, refs, assigned_hand
   return refs, assigned_handlers, elem
 end
 
-function flib_gui.build(parent, structures)
+function flib_gui.build(parent, updater_name, structures)
   local refs = {}
   local assigned_handlers = {}
   local player_index = parent.player_index or parent.player.index
   for i = 1, #structures do
     refs, assigned_handlers = recursive_build(
-      "TODO",
       parent,
       structures[i],
       refs,
       assigned_handlers,
-      player_index
+      player_index,
+      updater_name
     )
   end
   return refs, assigned_handlers
@@ -182,16 +185,19 @@ function flib_gui.dispatch(event_data)
 
   local handler_data = elem_handlers[event_data.name]
   if handler_data then
-    -- local updater_data = table.shallow_merge(event_data, {msg = handler_data.msg})
-    -- TODO dispatch updater
-    game.print(serpent.block{event_data, handler_data.msg})
+    local updater_name = handler_data.updater_name
+    local updater = flib_gui.updaters[updater_name]
+    if not updater then
+      error("Updater with the name ["..updater_name.."] does not exist.")
+    end
+    updater(handler_data.msg, event_data)
     return true
   else
     return false
   end
 end
 
-function flib_gui.add_handler(player_index, matcher, event_id, msg, root_name)
+function flib_gui.add_handler(player_index, matcher, event_id, msg, updater_name)
   local players = global.__flib.gui.players
 
   local player_data = players[player_index]
@@ -210,7 +216,7 @@ function flib_gui.add_handler(player_index, matcher, event_id, msg, root_name)
 
   elem_data[event_id] = {
     msg = msg,
-    root_name = root_name
+    updater_name = updater_name
   }
 end
 
@@ -232,7 +238,8 @@ function flib_gui.remove_handler(player_index, matcher, event_id)
       players[player_index] = nil
     end
   end
-
 end
+
+flib_gui.updaters = {}
 
 return flib_gui
