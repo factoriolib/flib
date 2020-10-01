@@ -126,9 +126,30 @@ local function recursive_build(parent, structure, refs, assigned_handlers, playe
           elem.style[key] = value
         elseif event_id then
           flib_gui.add_handler(player_index, elem_index, event_id, value, updater_name)
-          assigned_handlers[elem_index] = true
+          local elem_handlers = assigned_handlers[elem_index]
+          if elem_handlers then
+            elem_handlers[#elem_handlers + 1] = event_id
+          else
+            assigned_handlers[elem_index] = {event_id}
+          end
         elseif key == "ref" then
-          refs[value] = elem
+          -- convert to array if it was shortcutted
+          if type(value) == "string" then
+            value = {value}
+          end
+          local len = #value
+          local prev = refs
+          for i = 1, len do
+            local subkey = value[i]
+            if i < len then
+              if not prev[subkey] then
+                prev[subkey] = {}
+              end
+              prev = prev[subkey]
+            else
+              prev[subkey] = elem
+            end
+          end
         else
           elem[key] = value
         end
@@ -230,9 +251,11 @@ function flib_gui.remove_handler(player_index, matcher, event_id)
   local elem_data = player_handlers[matcher]
   if not elem_data then return end
 
-  elem_data[event_id] = nil
+  if event_id then
+    elem_data[event_id] = nil
+  end
 
-  if table_size(elem_data) == 0 then
+  if not event_id or table_size(elem_data) == 0 then
     player_handlers[matcher] = nil
     if table_size(player_handlers) == 0 then
       players[player_index] = nil
