@@ -72,6 +72,14 @@ local elem_style_keys = {
   margin = true
 }
 
+local elem_read_only_keys = {
+  name = true,
+  direction = true,
+  elem_type = true,
+  column_count = true,
+  tabs = true
+}
+
 function flib_gui.init()
   if global.__flib then
     global.__flib.gui = {players = {}}
@@ -91,25 +99,25 @@ function flib_gui.register_handlers()
 end
 
 -- navigate a structure to build a GUI
-local function recursive_build(parent, structure, refs, assigned_handlers, player_index, updater_name)
+local function recursive_build(parent, structure, refs, handlers, player_index, updater_name)
   -- process structure
   local elem
   local structure_type = structure.type
   if structure_type == "tab-and-content" then
     local tab, content
-    refs, assigned_handlers, tab = recursive_build(
+    refs, handlers, tab = recursive_build(
       parent,
       structure.tab,
       refs,
-      assigned_handlers,
+      handlers,
       player_index,
       updater_name
     )
-    refs, assigned_handlers, content = recursive_build(
+    refs, handlers, content = recursive_build(
       parent,
       structure.content,
       refs,
-      assigned_handlers,
+      handlers,
       player_index,
       updater_name
     )
@@ -126,11 +134,11 @@ local function recursive_build(parent, structure, refs, assigned_handlers, playe
           elem.style[key] = value
         elseif event_id then
           flib_gui.add_handler(player_index, elem_index, event_id, value, updater_name)
-          local elem_handlers = assigned_handlers[elem_index]
+          local elem_handlers = handlers[elem_index]
           if elem_handlers then
             elem_handlers[#elem_handlers + 1] = event_id
           else
-            assigned_handlers[elem_index] = {event_id}
+            handlers[elem_index] = {event_id}
           end
         elseif key == "ref" then
           -- convert to array if it was shortcutted
@@ -150,7 +158,7 @@ local function recursive_build(parent, structure, refs, assigned_handlers, playe
               prev[subkey] = elem
             end
           end
-        else
+        elseif not elem_read_only_keys[key] then
           elem[key] = value
         end
       end
@@ -159,11 +167,11 @@ local function recursive_build(parent, structure, refs, assigned_handlers, playe
     local children = structure.children
     if children then
       for i = 1, #children do
-        refs, assigned_handlers = recursive_build(
+        refs, handlers = recursive_build(
           elem,
           children[i],
           refs,
-          assigned_handlers,
+          handlers,
           player_index,
           updater_name
         )
@@ -171,24 +179,24 @@ local function recursive_build(parent, structure, refs, assigned_handlers, playe
     end
   end
 
-  return refs, assigned_handlers, elem
+  return refs, handlers, elem
 end
 
 function flib_gui.build(parent, updater_name, structures)
   local refs = {}
-  local assigned_handlers = {}
+  local handlers = {}
   local player_index = parent.player_index or parent.player.index
   for i = 1, #structures do
-    refs, assigned_handlers = recursive_build(
+    refs, handlers = recursive_build(
       parent,
       structures[i],
       refs,
-      assigned_handlers,
+      handlers,
       player_index,
       updater_name
     )
   end
-  return refs, assigned_handlers
+  return refs, handlers
 end
 
 function flib_gui.dispatch(event_data)
