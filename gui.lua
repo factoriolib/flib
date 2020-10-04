@@ -345,7 +345,7 @@ function flib_gui.build(parent, structures)
   local output = {}
   local filters = {}
   local player_index = parent.player_index or parent.player.index
-  for i=1,#structures do
+  for i = 1, #structures do
     output, filters = recursive_build(
       parent,
       structures[i],
