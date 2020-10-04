@@ -98,6 +98,23 @@ function flib_gui.register_handlers()
   end
 end
 
+-- create subtables and assign the value to the last key in the array
+local function create_subtables(source, path, value)
+  local len = #path
+  local prev = source
+  for i = 1, len do
+    local subkey = path[i]
+    if i < len then
+      if not prev[subkey] then
+        prev[subkey] = {}
+      end
+      prev = prev[subkey]
+    else
+      prev[subkey] = value
+    end
+  end
+end
+
 -- navigate a structure to build a GUI
 local function recursive_build(parent, structure, refs, handlers, player_index, updater_name)
   -- process structure
@@ -126,6 +143,7 @@ local function recursive_build(parent, structure, refs, handlers, player_index, 
     -- create element
     elem = parent.add(structure)
     -- iterate over properties
+    local added_handler = false
     local elem_index = elem.index
     for key, value in pairs(structure) do
       if key ~= "type" and key ~= "children" then
@@ -134,31 +152,14 @@ local function recursive_build(parent, structure, refs, handlers, player_index, 
           elem.style[key] = value
         elseif event_id then
           flib_gui.add_handler(player_index, elem_index, event_id, value, updater_name)
-          handlers[elem_index] = true
-          -- local elem_handlers = handlers[elem_index]
-          -- if elem_handlers then
-          --   elem_handlers[#elem_handlers + 1] = event_id
-          -- else
-          --   handlers[elem_index] = {event_id}
-          -- end
+          if not added_handler then
+            added_handler = true
+            local ref = structure.handlers_ref or structure.ref or {elem_index}
+            create_subtables(handlers, ref, elem_index)
+          end
         elseif key == "ref" then
-          -- convert to array if it was shortcutted
-          if type(value) == "string" then
-            value = {value}
-          end
-          local len = #value
-          local prev = refs
-          for i = 1, len do
-            local subkey = value[i]
-            if i < len then
-              if not prev[subkey] then
-                prev[subkey] = {}
-              end
-              prev = prev[subkey]
-            else
-              prev[subkey] = elem
-            end
-          end
+          -- add to refs table
+          create_subtables(refs, value, elem)
         elseif not elem_read_only_keys[key] then
           elem[key] = value
         end
@@ -183,9 +184,9 @@ local function recursive_build(parent, structure, refs, handlers, player_index, 
   return refs, handlers, elem
 end
 
-function flib_gui.build(parent, updater_name, structures, refs_outline, existing_handlers)
+function flib_gui.build(parent, updater_name, structures, refs_outline, handlers_outline)
   local refs = refs_outline or {}
-  local handlers = existing_handlers or {}
+  local handlers = handlers_outline or {}
   local player_index = parent.player_index or parent.player.index
   for i = 1, #structures do
     refs, handlers = recursive_build(
@@ -199,32 +200,6 @@ function flib_gui.build(parent, updater_name, structures, refs_outline, existing
   end
   return refs, handlers
 end
-
--- local function recursive_deregister(element, handlers)
---   handlers[element.index] = nil
---   local children = element.children
---   for i = 1, #children do
---     recursive_deregister(children[i], handlers)
---   end
--- end
-
--- function flib_gui.deregister_and_destroy(player_index, element)
---   local players = global.__flib.gui.players
---   local player_data = players[player_index]
---   if player_data then
---     local player_handlers = player_data.handlers
---     if player_handlers then
---       -- recursively remove all the element handlers from this and all children
---       recursive_deregister(element, player_handlers)
---       -- check the size of the table and clean it up if it's empty
---       if table_size(player_handlers) == 0 then
---         players[player_index] = nil
---       end
---     end
---   end
---   -- actually destroy the element and all of its children
---   element.destroy()
--- end
 
 function flib_gui.dispatch(event_data)
   local element = event_data.element
@@ -299,16 +274,16 @@ function flib_gui.remove_handler(player_index, matcher, event_id)
 end
 
 local function recursive_deregister(tbl, player_handlers)
-  for k, v in pairs(tbl) do
-    if v == true then
-      player_handlers[k] = nil
-    else
+  for _, v in pairs(tbl) do
+    if type(v) == "table" then
       recursive_deregister(v, player_handlers)
+    else
+      player_handlers[v] = nil
     end
   end
 end
 
-function flib_gui.remove_handlers_bulk(player_index, handlers)
+function flib_gui.remove_handlers(player_index, handlers)
   local players = global.__flib.gui.players
 
   local player_data = players[player_index]
