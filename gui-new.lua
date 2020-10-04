@@ -201,6 +201,16 @@ function flib_gui.build(parent, updater_name, structures, refs_outline, handlers
   return refs, handlers
 end
 
+flib_gui.updaters = {}
+
+function flib_gui.update(updater_name, msg, event_data)
+  local updater = flib_gui.updaters[updater_name]
+  if not updater then
+    error("Updater with the name ["..updater_name.."] does not exist.")
+  end
+  updater(msg, event_data)
+end
+
 function flib_gui.dispatch(event_data)
   local element = event_data.element
   local player_index = event_data.player_index
@@ -210,18 +220,15 @@ function flib_gui.dispatch(event_data)
   if not player_data then return false end
 
   local elem_index = element.index
+  local elem_name = string.gsub(element.name, "__.*", "")
 
-  local elem_handlers = player_data.handlers[elem_index]
+  local player_handlers = player_data.handlers
+  local elem_handlers = player_handlers[elem_index] or player_handlers[elem_name]
   if not elem_handlers then return false end
 
   local handler_data = elem_handlers[event_data.name]
   if handler_data then
-    local updater_name = handler_data.updater_name
-    local updater = flib_gui.updaters[updater_name]
-    if not updater then
-      error("Updater with the name ["..updater_name.."] does not exist.")
-    end
-    updater(handler_data.msg, event_data)
+    flib_gui.update(handler_data.updater_name, handler_data.msg, event_data)
     return true
   else
     return false
@@ -298,7 +305,14 @@ function flib_gui.remove_handlers(player_index, handlers)
   end
 end
 
-flib_gui.updaters = {}
+-- GUI component obj will call `build()` or return its static template when invoked
+function flib_gui.component()
+  local obj = {}
+  setmetatable(obj, {__call = function(self, ...)
+    return self.build(...)
+  end})
+  return obj
+end
 
 return flib_gui
 
