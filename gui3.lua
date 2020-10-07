@@ -1,8 +1,9 @@
 local flib_gui = {}
 
 local guis = {}
+local gui_mts = {}
 
--- PRIVATE
+-- HELPER FUNCTIONS
 
 local function get_or_create_player_table(player_index)
   local players = global.__flib.gui.players
@@ -11,56 +12,64 @@ local function get_or_create_player_table(player_index)
     return player_table
   else
     players[player_index] = {
-      guis = {},
-      handlers = {}
+      guis = {
+        __nextindex = 1
+      },
+      handlers = {},
     }
     return players[player_index]
   end
 end
 
+-- GUI "OBJECT" FUNCTIONS
+
 -- create an instance of the GUI
-local function create_gui(self, parent, name)
-  local gui_name = name and name or self.name
+local function create_gui(self, parent, ...)
   local player_index = parent.player_index or parent.player.index
   local player_table = get_or_create_player_table(player_index)
   local player_guis = player_table.guis
 
-  if player_guis[gui_name] then
-    error(
-      "GUI name ["..gui_name.."] is already taken for player ["..player_index.."]. If multiple of the same root are "
-      .."needed, provide a unique name for each root as the second argument to `create()`."
-    )
-  end
-
-  local initial_state = self.init(player_index, gui_name)
+  local initial_state = self.init(player_index, ...)
 
   if type(initial_state) ~= "table" then
     error("State must be a table.")
   end
 
+  local index = player_guis.__nextindex
+
   local gui_data = {
-    name = gui_name,
+    gui_index = index,
+    gui_name = self.name,
     parent = parent,
     player_index = player_index,
-    root_child_index = #parent.children + 1,
-    root_name = self.name,
     state = initial_state
   }
 
-  -- TODO
-  -- -- since this is the first creation, call `build()` directly and pass the entire GUI table
-  -- gui_data.root, gui_data.handlers, gui_data.refs = build(
-  --   parent,
-  --   self.view(gui_data.state),
-  --   gui_data.root_child_index,
-  --   {},
-  --   {}
-  -- )
+  setmetatable(gui_data, {__index = gui_mts[self.name]})
 
-  player_guis[gui_name] = gui_data
+  player_guis[index] = gui_data
+  player_guis.__nextindex = index + 1
+
+  -- TODO actually create the GUI...
+
+  return gui_data
 end
 
--- PUBLIC
+-- GUI "INSTANCE" FUNCTIONS
+
+-- destroy the instance and clean up handlers
+local function destroy_gui(self)
+  local player_table = get_or_create_player_table(self.player_index)
+  local player_guis = player_table.guis
+
+  -- TODO
+  -- self.root.destroy()
+  -- TODO remove handlers from handlers table
+
+  player_guis[self.gui_index] = nil
+end
+
+-- PUBLIC FUNCTIONS
 
 function flib_gui.init()
   if global.__flib then
@@ -72,11 +81,29 @@ function flib_gui.init()
   end
 end
 
--- register a new GUI
+function flib_gui.load()
+  for _, player_table in pairs(global.__flib.gui.players) do
+    for key, gui_data in pairs(player_table.guis) do
+      if key ~= "__nextindex" then
+        local gui_mt = gui_mts[gui_data.gui_name]
+        -- if the GUI object no longer exists, then the mod version changed and things will get cleaned up anyway
+        if gui_mt then
+          setmetatable(gui_data, {__index = gui_mt})
+        end
+      end
+    end
+  end
+end
+
 function flib_gui.register(name)
   if guis[name] then
     error("Duplicate GUI name ["..name.."] - every GUI must have a unique name.")
   end
+
+  -- metatable object - what instances of this GUI will use as their `__index`
+  gui_mts[name] = {
+    destroy = destroy_gui
+  }
 
   local obj = {
     create = create_gui,
@@ -85,20 +112,5 @@ function flib_gui.register(name)
   guis[name] =  obj
   return obj
 end
-
---[[
-  -- passing the root obj directly won't work since that won't persist across save/load
-  gui.create(player_index, name, root_obj)
-  gui.destroy(player_index, name, root_obj)
-  -- instead, we just assign each root a unique name...
-  gui.create(player_index, root_name, gui_name)
-  gui.destroy(player_index, root_name, gui_name)
-  -- we could also use object format to avoid passing two names
-  root_obj:create(player_index, name)
-  root_obj:destroy(player_index, name)
-  -- we must also provide a way to destroy GUIs whose roots no longer exist
-  -- easier alternative: enforce complete GUI destruction and recreation in on_configuration_changed
-  gui.migrate()
-]]
 
 return flib_gui
