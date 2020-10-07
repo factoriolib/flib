@@ -1,6 +1,8 @@
+--- A GUI library inspired by Elm and Seed-RS.
+-- @module gui
+-- @alias flib_gui
 local flib_gui = {}
 
-local guis = {}
 local gui_mts = {}
 
 -- HELPER FUNCTIONS
@@ -19,6 +21,20 @@ local function get_or_create_player_table(player_index)
     }
     return players[player_index]
   end
+end
+
+-- GUI "INSTANCE" FUNCTIONS
+
+-- destroy the instance and clean up handlers
+local function destroy_instance(self)
+  local player_table = get_or_create_player_table(self.player_index)
+  local player_guis = player_table.guis
+
+  -- TODO
+  -- self.root.destroy()
+  -- TODO remove handlers from handlers table
+
+  player_guis[self.gui_index] = nil
 end
 
 -- GUI "OBJECT" FUNCTIONS
@@ -42,7 +58,7 @@ local function create_gui(self, parent, ...)
     gui_name = self.name,
     parent = parent,
     player_index = player_index,
-    state = initial_state
+    state = initial_state,
   }
 
   setmetatable(gui_data, {__index = gui_mts[self.name]})
@@ -51,26 +67,16 @@ local function create_gui(self, parent, ...)
   player_guis.__nextindex = index + 1
 
   -- TODO actually create the GUI...
+  -- build(gui_data, self.view(gui_data.state))
 
   return gui_data
 end
 
--- GUI "INSTANCE" FUNCTIONS
-
--- destroy the instance and clean up handlers
-local function destroy_gui(self)
-  local player_table = get_or_create_player_table(self.player_index)
-  local player_guis = player_table.guis
-
-  -- TODO
-  -- self.root.destroy()
-  -- TODO remove handlers from handlers table
-
-  player_guis[self.gui_index] = nil
-end
-
 -- PUBLIC FUNCTIONS
 
+--- Initial setup.
+--
+-- Must be called during `on_init` **before** any GUIs are built.
 function flib_gui.init()
   if global.__flib then
     global.__flib.gui = {players = {}}
@@ -81,6 +87,9 @@ function flib_gui.init()
   end
 end
 
+--- Restore metatables on all GUI instances.
+--
+-- Must be called during `on_load`.
 function flib_gui.load()
   for _, player_table in pairs(global.__flib.gui.players) do
     for key, gui_data in pairs(player_table.guis) do
@@ -95,22 +104,28 @@ function flib_gui.load()
   end
 end
 
-function flib_gui.register(name)
-  if guis[name] then
+--- Create a new GUI object.
+--
+-- This sets up the instance metatable for this GUI and adds the `create()` function to the object.
+-- @tparam string name The name of the GUI. Must be unique.
+-- @treturn table The newly created GUI object. Add your `init()`, `update()` and `view()` functions to this object
+-- before returning it.
+-- @usage
+-- local my_gui = gui.new("my_gui")
+function flib_gui.new(name)
+  if gui_mts[name] then
     error("Duplicate GUI name ["..name.."] - every GUI must have a unique name.")
   end
 
   -- metatable object - what instances of this GUI will use as their `__index`
   gui_mts[name] = {
-    destroy = destroy_gui
+    destroy = destroy_instance
   }
 
-  local obj = {
+  return {
     create = create_gui,
     name = name
   }
-  guis[name] =  obj
-  return obj
 end
 
 return flib_gui
