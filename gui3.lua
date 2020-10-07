@@ -117,7 +117,7 @@ local function get_or_create_player_table(player_index)
     return player_table
   else
     players[player_index] = {
-      guis = {
+      instances = {
         __nextindex = 1
       }
     }
@@ -126,30 +126,6 @@ local function get_or_create_player_table(player_index)
 end
 
 -- BUILDING AND DIFFING
-
---[[
-  if element tags are added:
-
-  local tags = elem.tags[mod_name]
-  if tags and type(value) == "table" and value.__deleted then
-    tags[event_id] = nil
-  else
-    local info = {gui_index = self.gui_index, msg = value}
-    if tags then
-      local event_info = tags[event_id]
-      if event_info then
-        local event_msg = event_info.msg
-        for k, v in pairs(value) do
-          event_msg[k] = v
-        end
-      else
-        tags[event_id] = info
-      end
-    else
-      elem.tags[mod_name] = {[event_id] = info}
-    end
-  end
-]]
 
 local function apply_view(self, parent, index, view)
   local children = parent.children
@@ -168,6 +144,7 @@ local function apply_view(self, parent, index, view)
   -- add a new element if the current one doesn't exist or was deleted
   if not elem then
     elem = parent.add(view)
+    elem.tags = {flib = {}}
   end
 
   -- iterate keys
@@ -179,7 +156,15 @@ local function apply_view(self, parent, index, view)
       elseif elem_functions[key] then
         elem[key](table.unpack(value))
       elseif event_id then
-
+        local elem_tags = elem.tags
+        local tags = elem_tags.flib
+        local value_type = type(value)
+        if value_type == "table" and value.__removed then
+          tags[event_id] = nil
+        else
+          tags[event_id] = {gui_index = self.gui_index, msg = value}
+        end
+        elem.tags = elem_tags
       else
         elem[key] = value
       end
@@ -209,20 +194,27 @@ DIFF LOGIC:
 - if a property was changed in `new`, set it to that value in `old`
 - if a child's type changes, then it and every child after it will remain untouched, as new elements will need to be
   created from scratch (no insertion)
+- if the value of a handler message changes, and that message is a table, then don't diff the table - include all of it
 ]]
 
-local function diff(old, new)
+local function diff(old, new, flags)
   for key, value in pairs(new) do
     local old_value = old[key]
     if old_value and type(old_value) == "table" and type(value) == "table" then
-      diff(old_value, value)
+      local is_handler = event_keys[key] and true or false
+      local different = diff(old_value, value, {is_handler = is_handler})
+      if is_handler and different then
+        old[key] = value
       -- TODO find a more performant way to do this
-      if table_size(old_value) == 0 then
+      elseif is_handler or table_size(old_value) == 0 then
         old[key] = nil
       end
     elseif old_value ~= value then
+      if flags.is_handler then
+        return true
+      end
       old[key] = value
-    else
+    elseif not flags.is_handler then
       old[key] = nil
     end
   end
@@ -248,7 +240,7 @@ function GuiInstance:update(msg, e)
   -- TODO
   -- the stored `last_view` will be modified and consumed to become the diff, in order to avoid deepcopying
   local last_view = self.last_view
-  diff(last_view, new_view)
+  diff(last_view, new_view, {})
   apply_view(self, self.parent, self.root_child_index, last_view)
 
   -- save the new view as the last view for future diffing
@@ -258,11 +250,11 @@ end
 -- destroy the instance and clean up handlers
 function GuiInstance:destroy()
   local player_table = get_or_create_player_table(self.player_index)
-  local player_guis = player_table.guis
+  local player_instances = player_table.instances
 
   self.root.destroy()
 
-  player_guis[self.gui_index] = nil
+  player_instances[self.gui_index] = nil
 end
 
 -- GUI "ROOT"
@@ -273,7 +265,7 @@ local GuiRoot = {}
 function GuiRoot:create(parent, ...)
   local player_index = parent.player_index or parent.player.index
   local player_table = get_or_create_player_table(player_index)
-  local player_guis = player_table.guis
+  local player_instances = player_table.instances
 
   local initial_state = self.init(player_index, ...)
 
@@ -281,7 +273,7 @@ function GuiRoot:create(parent, ...)
     error("State must be a table.")
   end
 
-  local index = player_guis.__nextindex
+  local index = player_instances.__nextindex
 
   local initial_view = self.view(initial_state)
 
@@ -297,8 +289,8 @@ function GuiRoot:create(parent, ...)
 
   setmetatable(instance, {__index = GuiInstance})
 
-  player_guis[index] = instance
-  player_guis.__nextindex = index + 1
+  player_instances[index] = instance
+  player_instances.__nextindex = index + 1
 
   -- we are creating the GUI from nothing, so no diffing is needed
   -- save the root element so it can be destroyed later
@@ -327,15 +319,44 @@ end
 -- Must be called during `on_load`.
 function flib_gui.load()
   for _, player_table in pairs(global.__flib.gui.players) do
-    for key, gui_data in pairs(player_table.guis) do
+    for key, Instance in pairs(player_table.instances) do
       if key ~= "__nextindex" then
-        local gui_mt = gui_mts[gui_data.gui_name]
+        local gui_mt = gui_mts[Instance.gui_name]
         -- if the GUI object no longer exists, then the mod version changed and things will get cleaned up anyway
         if gui_mt then
-          setmetatable(gui_data, {__index = GuiInstance})
+          setmetatable(Instance, {__index = GuiInstance})
         end
       end
     end
+  end
+end
+
+-- TODO add migration function
+
+function flib_gui.dispatch(event_data)
+  local element = event_data.element
+  if not element then return end
+
+  local flib_tags = event_data.element.tags.flib
+  if not flib_tags then return false end
+
+  local event_info = flib_tags[event_data.name]
+  if not event_info then return false end
+
+  local player_data = global.__flib.gui.players[event_data.player_index]
+  if not player_data then return false end
+
+  local Instance = player_data.instances[event_info.gui_index]
+  if not Instance then return false end -- ? this should probably error
+
+  Instance:update(event_info.msg, event_data)
+
+  return true
+end
+
+function flib_gui.register_handlers()
+  for _, event_id in pairs(event_keys) do
+    script.on_event(event_id, flib_gui.dispatch)
   end
 end
 
