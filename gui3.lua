@@ -8,7 +8,7 @@ local flib_gui = {}
 local event_keys = {}
 for key, id in pairs(defines.events) do
   if string.find(key, "gui") then
-    event_keys[string.gsub(key, "_gui", "")] = id
+    event_keys[string.gsub(key, "_gui", "")] = tostring(id)
   end
 end
 
@@ -103,6 +103,22 @@ local elem_style_keys = {
   margin = {write_only = true}
 }
 
+local elem_read_only_keys = {
+  index = true,
+  gui = true,
+  parent = true,
+  name = true,
+  direction = true,
+  children_names = true,
+  player_index = true,
+  type = true,
+  children = true,
+  elem_type = true,
+  column_count = true,
+  tabs = true,
+  valid = true
+}
+
 -- FIELDS
 
 local roots = {}
@@ -148,7 +164,7 @@ local function apply_view(self, parent, index, view)
 
   -- iterate keys
   for key, value in pairs(view) do
-    if key ~= "type" and key ~= "name" and key ~= "children" then
+    if not elem_read_only_keys[key] then
       local event_id = event_keys[key]
       if elem_style_keys[key] then
         elem.style[key] = value
@@ -234,7 +250,7 @@ local function diff(old, new, flags)
   end
   for key in pairs(old) do
     local new_value = new[key]
-    if not new_value then
+    if new_value == nil then
       old[key] = {__removed = true}
     end
   end
@@ -350,7 +366,7 @@ function flib_gui.dispatch(event_data)
   local flib_tags = event_data.element.tags.flib
   if not flib_tags then return false end
 
-  local event_info = flib_tags[event_data.name]
+  local event_info = flib_tags[tostring(event_data.name)]
   if not event_info then return false end
 
   local player_data = global.__flib.gui.players[event_data.player_index]
@@ -366,19 +382,19 @@ end
 
 function flib_gui.register_handlers()
   for _, event_id in pairs(event_keys) do
-    script.on_event(event_id, flib_gui.dispatch)
+    script.on_event(tonumber(event_id), flib_gui.dispatch)
   end
 end
 
---- Create a new GUI object.
+--- Create a new GUI root.
 --
--- This sets up the instance metatable for this GUI and adds the `create()` function to the object.
+-- This sets up the instance metatable for this GUI and adds the `create()` method to the root.
 -- @tparam string name The name of the GUI. Must be unique.
--- @treturn table The newly created GUI object. Add your `init()`, `update()` and `view()` functions to this object
+-- @treturn table The newly created GUI root. Add your `init()`, `update()` and `view()` functions to this table
 -- before returning it.
 -- @usage
 -- local my_gui = gui.new("my_gui")
-function flib_gui.new(name)
+function flib_gui.root(name)
   if roots[name] then
     error("Duplicate GUI name ["..name.."] - every GUI must have a unique name.")
   end
