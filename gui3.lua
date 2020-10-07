@@ -105,8 +105,7 @@ local elem_style_keys = {
 
 -- FIELDS
 
-local guis = {}
-local gui_mts = {}
+local roots = {}
 
 -- HELPER FUNCTIONS
 
@@ -247,7 +246,7 @@ local GuiInstance = {}
 
 -- update the state, generate a new view, diff it, and apply the results
 function GuiInstance:update(msg, e)
-  local self_obj = guis[self.gui_name]
+  local self_obj = roots[self.gui_name]
   self_obj.update(self.state, msg, e)
 
   local new_view = self_obj.view(self.state)
@@ -277,7 +276,7 @@ end
 local GuiRoot = {}
 
 -- create an instance of this GUI
-function GuiRoot:create(parent, ...)
+function GuiRoot:new(parent, ...)
   local player_index = parent.player_index or parent.player.index
   local player_table = get_or_create_player_table(player_index)
   local player_instances = player_table.instances
@@ -336,11 +335,7 @@ function flib_gui.load()
   for _, player_table in pairs(global.__flib.gui.players) do
     for key, Instance in pairs(player_table.instances) do
       if key ~= "__nextindex" then
-        local gui_mt = gui_mts[Instance.gui_name]
-        -- if the GUI object no longer exists, then the mod version changed and things will get cleaned up anyway
-        if gui_mt then
-          setmetatable(Instance, {__index = GuiInstance})
-        end
+        setmetatable(Instance, {__index = GuiInstance})
       end
     end
   end
@@ -384,7 +379,7 @@ end
 -- @usage
 -- local my_gui = gui.new("my_gui")
 function flib_gui.new(name)
-  if guis[name] then
+  if roots[name] then
     error("Duplicate GUI name ["..name.."] - every GUI must have a unique name.")
   end
 
@@ -392,7 +387,7 @@ function flib_gui.new(name)
 
   setmetatable(obj, {__index = GuiRoot})
 
-  guis[name] = obj
+  roots[name] = obj
 
   return obj
 end
