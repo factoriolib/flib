@@ -198,24 +198,39 @@ DIFF LOGIC:
 ]]
 
 local function diff(old, new, flags)
+  local copy_all = false
   for key, value in pairs(new) do
-    local old_value = old[key]
-    if old_value and type(old_value) == "table" and type(value) == "table" then
-      local is_handler = event_keys[key] and true or false
-      local different = diff(old_value, value, {is_handler = is_handler})
-      if is_handler and different then
+    if copy_all then
+      old[key] = value
+    else
+      local old_value = old[key]
+      if old_value and type(old_value) == "table" and type(value) == "table" then
+        if flags.is_children then
+          if
+            old_value.type ~= value.type
+            or old_value.name ~= value.name
+          then
+            -- leave this and all children after it untouched
+            copy_all = true
+            old[key] = value
+          end
+        end
+        local is_handler = event_keys[key] and true or false
+        local different = diff(old_value, value, {is_handler = is_handler, is_children = key == "children"})
+        if is_handler and different then
+          old[key] = value
+        -- TODO find a more performant way to do this
+        elseif is_handler or table_size(old_value) == 0 then
+          old[key] = nil
+        end
+      elseif old_value ~= value then
+        if flags.is_handler then
+          return true
+        end
         old[key] = value
-      -- TODO find a more performant way to do this
-      elseif is_handler or table_size(old_value) == 0 then
+      elseif not flags.is_handler then
         old[key] = nil
       end
-    elseif old_value ~= value then
-      if flags.is_handler then
-        return true
-      end
-      old[key] = value
-    elseif not flags.is_handler then
-      old[key] = nil
     end
   end
   for key in pairs(old) do
