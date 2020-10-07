@@ -188,12 +188,10 @@ local function apply_view(self, parent, index, view)
 
   -- process children
   local elem_children = elem.children
-  local offset = 0
   for child_index, child_view in pairs(view.children or {}) do
-    if child_view.__deleted then
+    if child_view.__removed then
       -- delete the element
-      elem_children[child_index - offset].destroy()
-      offset = offset + 1
+      elem_children[child_index].destroy()
     else
       -- update the element
       apply_view(self, elem, child_index, child_view)
