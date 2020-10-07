@@ -25,6 +25,22 @@ end
 
 -- GUI "INSTANCE" FUNCTIONS
 
+-- update the state, generate a new view, diff it, and apply the results
+local function update_instance(self, msg, e)
+  self.update(self.state, msg, e)
+
+  local new_view = self.view(self.state)
+
+  -- TODO
+  -- the stored `last_view` will be modified and consumed to become the diff, in order to avoid deepcopying
+  -- local last_view = self.last_view
+  -- diff(last_view, new_view)
+  -- update_structure(self.root, last_view)
+
+  -- save the new view as the last view for future diffing
+  self.last_view = new_view
+end
+
 -- destroy the instance and clean up handlers
 local function destroy_instance(self)
   local player_table = get_or_create_player_table(self.player_index)
@@ -40,7 +56,7 @@ end
 -- GUI "OBJECT" FUNCTIONS
 
 -- create an instance of the GUI
-local function create_gui(self, parent, ...)
+local function create_instance(self, parent, ...)
   local player_index = parent.player_index or parent.player.index
   local player_table = get_or_create_player_table(player_index)
   local player_guis = player_table.guis
@@ -119,11 +135,12 @@ function flib_gui.new(name)
 
   -- metatable object - what instances of this GUI will use as their `__index`
   gui_mts[name] = {
-    destroy = destroy_instance
+    destroy = destroy_instance,
+    update = update_instance
   }
 
   return {
-    create = create_gui,
+    create = create_instance,
     name = name
   }
 end
