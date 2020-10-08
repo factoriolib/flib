@@ -262,10 +262,10 @@ local GuiInstance = {}
 
 -- update the state, generate a new view, diff it, and apply the results
 function GuiInstance:update(msg, e)
-  local self_obj = roots[self.gui_name]
-  self_obj.update(self.state, msg, e)
+  local Root = roots[self.gui_name]
+  Root:update(self.state, msg, e)
 
-  local new_view = self_obj.view(self.state)
+  local new_view = Root.view(self.state)
 
   -- TODO
   -- the stored `last_view` will be modified and consumed to become the diff, in order to avoid deepcopying
@@ -297,7 +297,7 @@ function GuiRoot:new(parent, ...)
   local player_table = get_or_create_player_table(player_index)
   local player_instances = player_table.instances
 
-  local initial_state = self.init(player_index, ...)
+  local initial_state = self:init(player_index, ...)
 
   if type(initial_state) ~= "table" then
     error("State must be a table.")
@@ -305,7 +305,7 @@ function GuiRoot:new(parent, ...)
 
   local index = player_instances.__nextindex
 
-  local initial_view = self.view(initial_state)
+  local initial_view = self:view(initial_state)
 
   local instance = {
     gui_index = index,
