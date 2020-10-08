@@ -313,23 +313,27 @@ function flib_table.partial_sort(arr, from_index, iterations, comp)
   return end_index + 1
 end
 
---- "Reduce" an array's values into a single output value, using the results of a reducer function.
+--- "Reduce" a table's values into a single output value, using the results of a reducer function.
 --
--- Calls `reducer(accumulator, value, index)` on each element in the array, returning a single accumulated output value.
--- @tparam array arr
+-- Calls `reducer(accumulator, value, key)` on each element in the table, returning a single accumulated output value.
+-- @tparam table tbl
 -- @tparam function reducer
--- @tparam[opt] any initial_value The initial value for the accumulator. If not provided or is falsy, the first value in
--- the array will be used as the initial `accumulator` value and skipped as `index`. Calling `reduce()` on an empty
--- array without an `initial_value` will cause a crash.
+-- @tparam[opt] any initial_value The initial value for the accumulator. If not provided or is falsy, the first value
+-- in the table will be used as the initial `accumulator` value and skipped as `key`. Calling `reduce()` on an empty
+-- table without an `initial_value` will cause a crash.
 -- @treturn any The accumulated value.
 -- @usage
 -- local tbl = {10, 20, 30, 40, 50}
 -- local sum = table.reduce(tbl, function(acc, v) return acc + v end)
 -- local sum_minus_ten = table.reduce(tbl, function(acc, v) return acc + v end, -10)
-function flib_table.reduce(arr, reducer, initial_value)
-  local accumulator = initial_value or arr[1]
-  for i = (initial_value and 1 or 2), #arr do
-    accumulator = reducer(accumulator, arr[i], i)
+function flib_table.reduce(tbl, reducer, initial_value)
+  local accumulator = initial_value
+  for key, value in pairs(tbl) do
+    if accumulator then
+      accumulator = reducer(accumulator, value, key)
+    else
+      accumulator = value
+    end
   end
   return accumulator
 end
