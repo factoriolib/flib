@@ -159,6 +159,11 @@ local function apply_view(self, parent, index, view)
     elem.tags = {
       flib = {events = {}}
     }
+
+    -- if the instance's base elem doesn't exist, this is it
+    if not self.base_elem or not self.base_elem.valid then
+      self.base_elem = elem
+    end
   end
 
   -- iterate keys
@@ -168,7 +173,13 @@ local function apply_view(self, parent, index, view)
       if elem_style_keys[key] then
         elem.style[key] = value
       elseif elem_functions[key] then
-        elem[key](table.unpack(value))
+        if type(value) == "table" then
+          if not value.__removed then
+            elem[key](table.unpack(value))
+          end
+        elseif value then
+          elem[key]()
+        end
       elseif event_id then
         local elem_tags = elem.tags
         local event_tags = elem_tags.flib.events
@@ -176,9 +187,16 @@ local function apply_view(self, parent, index, view)
         if value_type == "table" and value.__removed then
           event_tags[event_id] = nil
         else
-          event_tags[event_id] = {gui_index = self.gui_index, msg = value}
+          event_tags[event_id] = {index = self.index, msg = value}
         end
         elem.tags = elem_tags
+      elseif key == "ref" then
+        local elem_tags = elem.tags
+        local existing_ref = elem_tags.flib.ref
+        if existing_ref then
+          self.refs[existing_ref] = nil
+        end
+        self.refs[value] = elem
       else
         elem[key] = value
       end
@@ -327,16 +345,15 @@ end
 local GuiInstance = {}
 
 -- update the state, generate a new view, diff it, and apply the results
-function GuiInstance:update(msg, e)
-  local Root = roots[self.gui_name]
-  Root:update(self.state, msg, e)
+function GuiInstance:dispatch(msg, e)
+  self:update(self.state, msg, e)
 
-  local new_view = Root:view(self.state)
+  local new_view = self:view(self.state)
 
   -- the stored `last_view` will be modified and consumed to become the diff, in order to avoid deepcopying
   local last_view = self.last_view
   diff(last_view, new_view, {})
-  apply_view(self, self.parent, self.root_child_index, last_view)
+  apply_view(self, self.parent, self.base_elem.get_index_in_parent(), last_view)
 
   -- save the new view as the last view for future diffing
   self.last_view = new_view
@@ -347,51 +364,9 @@ function GuiInstance:destroy()
   local player_table = get_or_create_player_table(self.player_index)
   local player_instances = player_table.instances
 
-  self.root.destroy()
+  self.base_elem.destroy()
 
-  player_instances[self.gui_index] = nil
-end
-
--- GUI "ROOT"
-
-local GuiRoot = {}
-
--- create an instance of this GUI
-function GuiRoot:new(parent, ...)
-  local player_index = parent.player_index or parent.player.index
-  local player_table = get_or_create_player_table(player_index)
-  local player_instances = player_table.instances
-
-  local initial_state = self:init(player_index, ...)
-
-  if type(initial_state) ~= "table" then
-    error("State must be a table.")
-  end
-
-  local index = player_instances.__nextindex
-
-  local initial_view = self:view(initial_state)
-
-  local instance = {
-    gui_index = index,
-    gui_name = self.name,
-    last_view = initial_view,
-    parent = parent,
-    player_index = player_index,
-    root_child_index = #parent.children + 1,
-    state = initial_state,
-  }
-
-  setmetatable(instance, {__index = GuiInstance})
-
-  player_instances[index] = instance
-  player_instances.__nextindex = index + 1
-
-  -- we are creating the GUI from nothing, so no diffing is needed
-  -- save the root element so it can be destroyed later
-  instance.root = apply_view(instance, parent, #parent.children + 1, initial_view)
-
-  return instance
+  player_instances[self.index] = nil
 end
 
 -- PUBLIC FUNCTIONS
@@ -416,7 +391,10 @@ function flib_gui.load()
   for _, player_table in pairs(global.__flib.gui.players) do
     for key, Instance in pairs(player_table.instances) do
       if key ~= "__nextindex" then
-        setmetatable(Instance, {__index = GuiInstance})
+        local Root = roots[Instance.root_name]
+        if Root then
+          setmetatable(Instance, {__index = Root})
+        end
       end
     end
   end
@@ -437,10 +415,10 @@ function flib_gui.dispatch(event_data)
   local player_data = global.__flib.gui.players[event_data.player_index]
   if not player_data then return false end
 
-  local Instance = player_data.instances[event_info.gui_index]
+  local Instance = player_data.instances[event_info.index]
   if not Instance then return false end -- ? this should probably error
 
-  Instance:update(event_info.msg, event_data)
+  Instance:dispatch(event_info.msg, event_data)
 
   return true
 end
@@ -464,13 +442,49 @@ function flib_gui.root(name)
     error("Duplicate GUI name ["..name.."] - every GUI must have a unique name.")
   end
 
-  local obj = {name = name}
+  local Root = setmetatable({name = name}, {__index = GuiInstance})
 
-  setmetatable(obj, {__index = GuiRoot})
+  roots[name] = Root
 
-  roots[name] = obj
+  return Root
+end
 
-  return obj
+function flib_gui.new(Root, parent, ...)
+  local player_index = parent.player_index or parent.player.index
+  local player_table = get_or_create_player_table(player_index)
+  local player_instances = player_table.instances
+
+  -- create instance class
+  local index = player_instances.__nextindex
+  local Instance = setmetatable(
+    {
+      index = index,
+      parent = parent,
+      player_index = player_index,
+      refs = {},
+      root_name = Root.name,
+    },
+    {__index = Root}
+  )
+  -- save instance class
+  player_instances[index] = Instance
+  player_instances.__nextindex = index + 1
+
+  -- generate, check, and save initial state
+  local initial_state = Instance:init(player_index, ...)
+  if type(initial_state) ~= "table" then
+    error("State must be a table.")
+  end
+  Instance.state = initial_state
+
+  -- create the GUI and save the base element to be destroyed later
+  -- we don't need to do any diffing here since it is the first time it's being made
+  Instance.last_view = Instance:view(initial_state)
+  apply_view(Instance, parent, #parent.children + 1, Instance.last_view)
+
+  --
+
+  return Instance
 end
 
 return flib_gui
