@@ -107,7 +107,6 @@ local elem_read_only_keys = {
   index = true,
   gui = true,
   parent = true,
-  name = true,
   direction = true,
   children_names = true,
   player_index = true,
@@ -148,18 +147,18 @@ local function apply_view(self, parent, index, view)
 
   -- destroy and recreate if the type changed
   if elem and view.type and view.type ~= elem.type then
-    -- TODO insert instead, if the capability is ever added to the API :(
-    -- delete this and all elements after this
-    for i = index, #children do
-      children[i].destroy()
-    end
+    children[index].destroy()
     elem = nil
   end
 
   -- add a new element if the current one doesn't exist or was deleted
   if not elem then
+    view.index = index
     elem = parent.add(view)
-    elem.tags = {flib = {}}
+    view.index = nil
+    elem.tags = {
+      flib = {events = {}}
+    }
   end
 
   -- iterate keys
@@ -172,12 +171,12 @@ local function apply_view(self, parent, index, view)
         elem[key](table.unpack(value))
       elseif event_id then
         local elem_tags = elem.tags
-        local tags = elem_tags.flib
+        local event_tags = elem_tags.flib.events
         local value_type = type(value)
         if value_type == "table" and value.__removed then
-          tags[event_id] = nil
+          event_tags[event_id] = nil
         else
-          tags[event_id] = {gui_index = self.gui_index, msg = value}
+          event_tags[event_id] = {gui_index = self.gui_index, msg = value}
         end
         elem.tags = elem_tags
       else
@@ -197,6 +196,82 @@ local function apply_view(self, parent, index, view)
       apply_view(self, elem, child_index, child_view)
     end
   end
+
+  --[[
+
+  TABS LOGIC:
+  - tabs are always shown in the order that they appear in the provided tabs array
+  - if a content's type changes, then the following happens:
+    - the corresponding tab will automactically disappear
+    - current content is destroyed
+    - remove_tab() is called for all subsequent tabs
+    - add_tab() is called on the current tab and new content
+    - add_tab() is called for all removed tabs
+  - if a tab or a content is removed separately, then throw an error
+    - only the actual tab-and-content table may be removed
+  - if a tab-and-content is removed, simply call remove_tab() for that set and destroy the elements
+  - if a tab-and-content is provided outside the currently stored tab-and-contents, add the elements and call add_tab()
+  ]]
+
+  -- update children
+  elem_children = elem.children
+
+  -- process tabs
+  if elem.type == "tabbed-pane" then
+    local elem_tabs = elem.tabs
+
+    for tab_index, tab_and_content in pairs(view.tabs) do
+      if tab_and_content.__removed then
+        -- remove from visible
+        local removed_tab_and_content = elem_tabs[tab_index]
+        elem.remove_tab(removed_tab_and_content.tab)
+        -- destroy elements
+        removed_tab_and_content.tab.destroy()
+        removed_tab_and_content.content.destroy()
+      else
+        local real_tab_and_content = elem_tabs[tab_index]
+        if real_tab_and_content then
+          local tab = real_tab_and_content.tab
+          -- update tab if needed
+          local tab_view = tab_and_content.tab
+          if tab_view then
+            -- we can safely assume that the tab's type will never change, since tabs are the only valid tabs...
+            apply_view(self, elem, tab.get_index_in_parent(), tab_view)
+          end
+
+          -- update content if needed
+          local content = real_tab_and_content.content
+          local content_view = tab_and_content.content
+          if content_view then
+            local updated_content = apply_view(self, elem, content.get_index_in_parent(), content_view)
+            -- if the content was destroyed and re-made
+            if not content.valid then
+              -- remove this and all subsequent tabs
+              for i = tab_index, #elem_tabs do
+                elem.remove_tab(elem_tabs[i].tab)
+              end
+              -- add new current tab
+              elem.add_tab(tab, updated_content)
+              -- re-add all subsequent tabs
+              for i = tab_index + 1, #elem_tabs do
+                local this_tab_and_content = elem_tabs[i]
+                elem.add_tab(this_tab_and_content.tab, this_tab_and_content.content)
+              end
+              -- set selected tab index again
+              local selected = elem.selected_tab_index
+              elem.selected_tab_index = nil
+              elem.selected_tab_index = selected
+            end
+          end
+        else
+          -- new tab
+          local tab = apply_view(self, elem, nil, tab_and_content.tab)
+          local content = apply_view(self, elem, nil, tab_and_content.content)
+          elem.add_tab(tab, content)
+        end
+      end
+    end
+  end
   return elem
 end
 
@@ -210,26 +285,16 @@ DIFF LOGIC:
 - if a child's type changes, then it and every child after it will remain untouched, as new elements will need to be
   created from scratch (no insertion)
 - if the value of a handler message changes, and that message is a table, then don't diff the table - include all of it
+
 ]]
 
 local function diff(old, new, flags)
-  local copy_all = false
   for key, value in pairs(new) do
-    if copy_all then
-      old[key] = value
-    else
-      local old_value = old[key]
-      if old_value and type(old_value) == "table" and type(value) == "table" then
-        if flags.is_children then
-          if
-            old_value.type ~= value.type
-            or old_value.name ~= value.name
-          then
-            -- leave this and all children after it untouched
-            copy_all = true
-            old[key] = value
-          end
-        end
+    local old_value = old[key]
+    if old_value and type(old_value) == "table" and type(value) == "table" then
+      if old_value.type ~= value.type then
+        old[key] = value
+      else
         local is_handler = event_keys[key] and true or false
         local different = diff(old_value, value, {is_handler = is_handler, is_children = key == "children"})
         if is_handler and different then
@@ -238,14 +303,14 @@ local function diff(old, new, flags)
         elseif is_handler or table_size(old_value) == 0 then
           old[key] = nil
         end
-      elseif old_value ~= value then
-        if flags.is_handler then
-          return true
-        end
-        old[key] = value
-      elseif not flags.is_handler then
-        old[key] = nil
       end
+    elseif old_value ~= value then
+      if flags.is_handler then
+        return true
+      end
+      old[key] = value
+    elseif not flags.is_handler then
+      old[key] = nil
     end
   end
   for key in pairs(old) do
@@ -366,7 +431,7 @@ function flib_gui.dispatch(event_data)
   local flib_tags = event_data.element.tags.flib
   if not flib_tags then return false end
 
-  local event_info = flib_tags[tostring(event_data.name)]
+  local event_info = flib_tags.events[tostring(event_data.name)]
   if not event_info then return false end
 
   local player_data = global.__flib.gui.players[event_data.player_index]
