@@ -217,7 +217,7 @@ local function apply_view(self, parent, index, view)
   elem_children = elem.children
 
   -- process tabs
-  if elem.type == "tabbed-pane" then
+  if elem.type == "tabbed-pane" and view.tabs then
     local elem_tabs = elem.tabs
 
     for tab_index, tab_and_content in pairs(view.tabs) do
@@ -240,6 +240,7 @@ local function apply_view(self, parent, index, view)
           end
 
           -- update content if needed
+          -- TODO revisit this, it might be broken on some edge-cases
           local content = real_tab_and_content.content
           local content_view = tab_and_content.content
           if content_view then
@@ -332,7 +333,6 @@ function GuiInstance:update(msg, e)
 
   local new_view = Root:view(self.state)
 
-  -- TODO
   -- the stored `last_view` will be modified and consumed to become the diff, in order to avoid deepcopying
   local last_view = self.last_view
   diff(last_view, new_view, {})
