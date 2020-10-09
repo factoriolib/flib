@@ -482,7 +482,10 @@ function flib_gui.new(Root, parent, ...)
   Instance.last_view = Instance:view(initial_state)
   apply_view(Instance, parent, #parent.children + 1, Instance.last_view)
 
-  --
+  -- one-time setup
+  if Instance.setup then
+    Instance:setup(Instance.refs, player_index, ...)
+  end
 
   return Instance
 end
