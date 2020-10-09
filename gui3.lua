@@ -346,9 +346,13 @@ local GuiInstance = {}
 
 -- update the state, generate a new view, diff it, and apply the results
 function GuiInstance:dispatch(msg, e)
-  self:update(self.state, msg, e)
+  local root = roots[self.root_name]
+  if not root then error("Could not find GUI root ["..self.root_name.."]") end
 
-  local new_view = self:view(self.state)
+
+  root.update(self.state, msg, e, self.refs)
+
+  local new_view = root.view(self.state)
 
   -- the stored `last_view` will be modified and consumed to become the diff, in order to avoid deepcopying
   local last_view = self.last_view
@@ -449,7 +453,7 @@ function flib_gui.root(name)
   return Root
 end
 
-function flib_gui.new(Root, parent, ...)
+function flib_gui.new(root, parent, ...)
   local player_index = parent.player_index or parent.player.index
   local player_table = get_or_create_player_table(player_index)
   local player_instances = player_table.instances
@@ -462,16 +466,16 @@ function flib_gui.new(Root, parent, ...)
       parent = parent,
       player_index = player_index,
       refs = {},
-      root_name = Root.name,
+      root_name = root.name,
     },
-    {__index = Root}
+    {__index = GuiInstance}
   )
   -- save instance class
   player_instances[index] = Instance
   player_instances.__nextindex = index + 1
 
   -- generate, check, and save initial state
-  local initial_state = Instance:init(player_index, ...)
+  local initial_state = root.init(player_index, ...)
   if type(initial_state) ~= "table" then
     error("State must be a table.")
   end
@@ -479,12 +483,12 @@ function flib_gui.new(Root, parent, ...)
 
   -- create the GUI and save the base element to be destroyed later
   -- we don't need to do any diffing here since it is the first time it's being made
-  Instance.last_view = Instance:view(initial_state)
+  Instance.last_view = root.view(initial_state)
   apply_view(Instance, parent, #parent.children + 1, Instance.last_view)
 
   -- one-time setup
   if Instance.setup then
-    Instance:setup(Instance.refs, player_index, ...)
+    root.setup(Instance.refs, player_index, ...)
   end
 
   return Instance
