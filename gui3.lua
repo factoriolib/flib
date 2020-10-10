@@ -198,7 +198,11 @@ local function apply_view(self, parent, index, view)
         end
         self.refs[value] = elem
       else
-        elem[key] = value
+        if type(value) == "table" and value.__removed then
+          elem[key] = nil
+        else
+          elem[key] = value
+        end
       end
     end
   end
@@ -314,12 +318,12 @@ local function diff(old, new, flags)
       if old_value.type ~= value.type then
         old[key] = value
       else
-        local is_handler = event_keys[key] and true or false
-        local different = diff(old_value, value, {is_handler = is_handler, is_children = key == "children"})
-        if is_handler and different then
+        local no_diff = (event_keys[key] or elem_style_keys[key] or elem_functions[key]) and true or false
+        local different = diff(old_value, value, {is_handler = no_diff, is_children = key == "children"})
+        if no_diff and different then
           old[key] = value
         -- TODO find a more performant way to do this
-        elseif is_handler or table_size(old_value) == 0 then
+        elseif no_diff or table_size(old_value) == 0 then
           old[key] = nil
         end
       end
@@ -395,10 +399,7 @@ function flib_gui.load()
   for _, player_table in pairs(global.__flib.gui.players) do
     for key, Instance in pairs(player_table.instances) do
       if key ~= "__nextindex" then
-        local Root = roots[Instance.root_name]
-        if Root then
-          setmetatable(Instance, {__index = Root})
-        end
+        setmetatable(Instance, {__index = GuiInstance})
       end
     end
   end
@@ -446,11 +447,11 @@ function flib_gui.root(name)
     error("Duplicate GUI name ["..name.."] - every GUI must have a unique name.")
   end
 
-  local Root = setmetatable({name = name}, {__index = GuiInstance})
+  local root = {name = name}
 
-  roots[name] = Root
+  roots[name] = root
 
-  return Root
+  return root
 end
 
 function flib_gui.new(root, parent, ...)
@@ -487,7 +488,7 @@ function flib_gui.new(root, parent, ...)
   apply_view(Instance, parent, #parent.children + 1, Instance.last_view)
 
   -- one-time setup
-  if Instance.setup then
+  if root.setup then
     root.setup(Instance.refs, player_index, ...)
   end
 
