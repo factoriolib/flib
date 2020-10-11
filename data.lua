@@ -1,1 +1,2 @@
-require("prototypes/styles")
+require("prototypes/sprite")
+require("prototypes/style")

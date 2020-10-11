@@ -171,6 +171,14 @@ styles.flib_vertical_pusher = {
   vertically_stretchable = "on"
 }
 
+-- IMAGE STYLES
+
+styles.flib_indicator = {
+  type = "image_style",
+  parent = "status_image",
+  stretch_image_to_widget_size = true
+}
+
 -- SCROLL-PANE STYLES
 
 styles.flib_naked_scroll_pane = {
