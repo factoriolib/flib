@@ -495,4 +495,10 @@ function flib_gui.new(root, parent, ...)
   return Instance
 end
 
+function flib_gui.component()
+  return setmetatable({}, {
+    __call = function(self, ...) return self.view(...) end
+  })
+end
+
 return flib_gui
