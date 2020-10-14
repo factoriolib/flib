@@ -226,13 +226,10 @@ function flib_translation.serialise_localised_string(localised_string)
     if not first then
       output = output..","
     end
-    local t = type(v)
-    if t == "table" then
+    if type(v) == "table" then
       output = output..flib_translation.serialise_localised_string(v)
-    elseif t == "string" then
-      output = output.."\""..v.."\""
     else
-      output = output..tostring(v)
+      output = output.."\""..tostring(v).."\""
     end
     first = false
   end
