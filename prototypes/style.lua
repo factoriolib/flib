@@ -146,6 +146,12 @@ styles.flib_dialog_footer_drag_handle = {
   horizontally_stretchable = "on"
 }
 
+styles.flib_dialog_footer_drag_handle_no_right = {
+  type = "empty_widget_style",
+  parent = "flib_dialog_footer_drag_handle",
+  right_margin = 0
+}
+
 styles.flib_dialog_titlebar_drag_handle = {
   type = "empty_widget_style",
   parent = "flib_titlebar_drag_handle",
