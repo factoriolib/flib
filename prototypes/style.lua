@@ -175,7 +175,7 @@ styles.flib_vertical_pusher = {
 
 styles.flib_indicator = {
   type = "image_style",
-  parent = "status_image",
+  size = 16,
   stretch_image_to_widget_size = true
 }
 
