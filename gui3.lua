@@ -130,7 +130,7 @@ local elem_keys = {
   horizontal_scroll_policy = {},
   vertical_scroll_policy = {},
   type = {read_only = true},
-  children = {read_only = true},
+  -- children = {read_only = true},
   items = {},
   selected_index = {},
   number = {},
@@ -167,7 +167,7 @@ local elem_keys = {
   clear_and_focus_on_right_click = {},
   drag_target = {},
   selected_tab_index = {},
-  tabs = {read_only = true},
+  -- tabs = {read_only = true},
   entity = {},
   switch_state = {},
   allow_none_state = {},
@@ -388,8 +388,11 @@ local function diff(old, new, flags)
       if old_value.type ~= value.type then
         old[key] = value
       else
-        local no_diff = (event_keys[key] or elem_style_keys[key] or elem_functions[key]) and true or false
-        local different = diff(old_value, value, {is_handler = no_diff, is_children = key == "children"})
+        local no_diff = false
+        if elem_keys[key] or elem_style_keys[key] or elem_functions[key] or event_keys[key] then
+          no_diff = true
+        end
+        local different = diff(old_value, value, {no_diff = flags.no_diff or no_diff})
         if no_diff and different then
           old[key] = value
         -- TODO find a more performant way to do this
@@ -398,11 +401,11 @@ local function diff(old, new, flags)
         end
       end
     elseif old_value ~= value then
-      if flags.is_handler then
+      if flags.no_diff then
         return true
       end
       old[key] = value
-    elseif not flags.is_handler then
+    elseif not flags.no_diff then
       old[key] = nil
     end
   end
