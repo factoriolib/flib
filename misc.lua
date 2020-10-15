@@ -34,15 +34,15 @@ local format_string_1 = "%d:%02d"
 local format_string_2 = "%d:%02d:%02d"
 
 --- Convert given tick or game.tick into "[hh:]mm:ss" format.
--- @tparam[opt=game.tick] number tick
+-- @tparam[opt=game.ticks_played] number tick
 -- @treturn string
 function flib_misc.ticks_to_timestring(tick)
-  local total_seconds = math.floor((tick or game.tick)/60)
+  local total_seconds = math.floor((tick or game.ticks_played) / 60)
   local seconds = total_seconds % 60
-  local minutes = math.floor(total_seconds/60)
+  local minutes = math.floor(total_seconds / 60)
   if minutes > 59 then
     minutes = minutes % 60
-    local hours = math.floor(total_seconds/3600)
+    local hours = math.floor(total_seconds / 3600)
     return string.format(format_string_2, hours, minutes, seconds)
   else
     return string.format(format_string_1, minutes, seconds)
