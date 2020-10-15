@@ -35,7 +35,8 @@ local elem_functions = {
   -- add_tab = true,
   -- remove_tab = true,
   force_auto_center = true,
-  scroll_to_item = true
+  scroll_to_item = true,
+  bring_to_front = true
 }
 
 local elem_style_keys = {
@@ -121,6 +122,10 @@ local elem_read_only_keys = {
 -- FIELDS
 
 local roots = {}
+
+flib_gui.orders = {
+  destroy = 1
+}
 
 -- HELPER FUNCTIONS
 
@@ -354,7 +359,14 @@ function GuiInstance:dispatch(msg, e)
   if not root then error("Could not find GUI root ["..self.root_name.."]") end
 
 
-  root.update(self.state, msg, e, self.refs)
+  local orders = root.update(self.state, msg, e, self.refs)
+
+  for _, order in ipairs(orders or {}) do
+    if order == flib_gui.orders.destroy then
+      self:destroy()
+      return
+    end
+  end
 
   local new_view = root.view(self.state)
 
