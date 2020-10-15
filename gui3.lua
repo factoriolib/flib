@@ -24,6 +24,10 @@ local elem_functions = {
   -- get_slider_value_step = true,
   -- get_slider_discrete_slider = true,
   -- get_slider_discrete_values = true,
+  set_slider_minimum_maximum = true,
+  set_slider_value_step = true,
+  set_slider_discrete_slider = true,
+  set_slider_discrete_values = true,
   focus = true,
   scroll_to_top = true,
   scroll_to_bottom = true,
@@ -40,8 +44,8 @@ local elem_functions = {
 }
 
 local elem_style_keys = {
-  -- gui = {readOnly = true},
-  -- name = {readOnly = true},
+  -- gui = {read_only = true},
+  -- name = {read_only = true},
   minimal_width = {},
   maximal_width = {},
   minimal_height = {},
@@ -82,7 +86,7 @@ local elem_style_keys = {
   vertical_spacing = {},
   use_header_filler = {},
   color = {},
-  -- column_alignments = {readOnly = true},
+  -- column_alignments = {read_only = true},
   single_line = {},
   extra_top_padding_when_activated = {},
   extra_bottom_padding_when_activated = {},
@@ -104,19 +108,74 @@ local elem_style_keys = {
   margin = {write_only = true}
 }
 
-local elem_read_only_keys = {
-  index = true,
-  gui = true,
-  parent = true,
-  direction = true,
-  children_names = true,
-  player_index = true,
-  type = true,
-  children = true,
-  elem_type = true,
-  column_count = true,
-  tabs = true,
-  valid = true
+local elem_keys = {
+  index = {read_only = true},
+  gui = {read_only = true},
+  parent = {read_only = true},
+  name = {read_only = true},
+  caption = {},
+  value = {},
+  direction = {read_only = true},
+  style = {},
+  visible = {},
+  text = {},
+  children_names = {read_only = true},
+  state = {},
+  player_index = {read_only = true},
+  sprite = {},
+  resize_to_sprite = {},
+  hovered_sprite = {},
+  clicked_sprite = {},
+  tooltip = {},
+  horizontal_scroll_policy = {},
+  vertical_scroll_policy = {},
+  type = {read_only = true},
+  children = {read_only = true},
+  items = {},
+  selected_index = {},
+  number = {},
+  show_percent_for_small_numbers = {},
+  location = {},
+  auto_center = {},
+  badge_text = {},
+  position = {},
+  surface_index = {},
+  zoom = {},
+  minimap_player_index = {},
+  force = {},
+  elem_type = {read_only = true},
+  elem_value = {},
+  elem_filters = {},
+  selectable = {},
+  word_wrap = {},
+  read_only = {},
+  enabled = {},
+  ignored_by_interaction = {},
+  locked = {},
+  draw_vertical_lines = {},
+  draw_horizontal_lines = {},
+  draw_horizontal_line_after_headers = {},
+  column_count = {read_only = true},
+  vertical_centering = {},
+  slider_value = {},
+  mouse_button_filter = {},
+  numeric = {},
+  allow_decimal = {},
+  allow_negative = {},
+  is_password = {},
+  lose_focus_on_confirm = {},
+  clear_and_focus_on_right_click = {},
+  drag_target = {},
+  selected_tab_index = {},
+  tabs = {read_only = true},
+  entity = {},
+  switch_state = {},
+  allow_none_state = {},
+  left_label_caption = {},
+  left_label_tooltip = {},
+  right_label_caption = {},
+  right_label_tooltip = {},
+  tags = {}
 }
 
 -- FIELDS
@@ -124,7 +183,8 @@ local elem_read_only_keys = {
 local roots = {}
 
 flib_gui.orders = {
-  destroy = 1
+  destroy = 1,
+  skip_view = 2
 }
 
 -- HELPER FUNCTIONS
@@ -173,41 +233,40 @@ local function apply_view(self, parent, index, view)
 
   -- iterate keys
   for key, value in pairs(view) do
-    if not elem_read_only_keys[key] then
-      local event_id = event_keys[key]
-      if elem_style_keys[key] then
-        elem.style[key] = value
-      elseif elem_functions[key] then
-        if type(value) == "table" then
-          if not value.__removed then
-            elem[key](table.unpack(value))
-          end
-        elseif value then
-          elem[key]()
+    local key_data = elem_keys[key]
+    local event_id = event_keys[key]
+    if elem_style_keys[key] then
+      elem.style[key] = value
+    elseif elem_functions[key] then
+      if type(value) == "table" then
+        if not value.__removed then
+          elem[key](table.unpack(value))
         end
-      elseif event_id then
-        local elem_tags = elem.tags
-        local event_tags = elem_tags.flib.events
-        local value_type = type(value)
-        if value_type == "table" and value.__removed then
-          event_tags[event_id] = nil
-        else
-          event_tags[event_id] = {index = self.index, msg = value}
-        end
-        elem.tags = elem_tags
-      elseif key == "ref" then
-        local elem_tags = elem.tags
-        local existing_ref = elem_tags.flib.ref
-        if existing_ref then
-          self.refs[existing_ref] = nil
-        end
-        self.refs[value] = elem
+      elseif value then
+        elem[key]()
+      end
+    elseif event_id then
+      local elem_tags = elem.tags
+      local event_tags = elem_tags.flib.events
+      local value_type = type(value)
+      if value_type == "table" and value.__removed then
+        event_tags[event_id] = nil
       else
-        if type(value) == "table" and value.__removed then
-          elem[key] = nil
-        else
-          elem[key] = value
-        end
+        event_tags[event_id] = {index = self.index, msg = value}
+      end
+      elem.tags = elem_tags
+    elseif key == "ref" then
+      local elem_tags = elem.tags
+      local existing_ref = elem_tags.flib.ref
+      if existing_ref then
+        self.refs[existing_ref] = nil
+      end
+      self.refs[value] = elem
+    elseif key_data and not key_data.read_only then
+      if type(value) == "table" and not value.__self and value.__removed then
+        elem[key] = nil
+      else
+        elem[key] = value
       end
     end
   end
@@ -319,7 +378,13 @@ DIFF LOGIC:
 local function diff(old, new, flags)
   for key, value in pairs(new) do
     local old_value = old[key]
-    if old_value and type(old_value) == "table" and type(value) == "table" then
+    if
+      old_value
+      and type(old_value) == "table"
+      and not old_value.__self
+      and type(value) == "table"
+      and not value.__self
+    then
       if old_value.type ~= value.type then
         old[key] = value
       else
@@ -359,11 +424,13 @@ function GuiInstance:dispatch(msg, e)
   if not root then error("Could not find GUI root ["..self.root_name.."]") end
 
 
-  local orders = root.update(self.state, msg, e, self.refs)
+  local orders = root.update(self.state, msg, e, self.refs) or {}
 
-  for _, order in ipairs(orders or {}) do
+  for _, order in ipairs(orders) do
     if order == flib_gui.orders.destroy then
       self:destroy()
+      return
+    elseif order == flib_gui.orders.skip_view then
       return
     end
   end
