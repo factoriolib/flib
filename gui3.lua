@@ -3,6 +3,8 @@
 -- @alias flib_gui
 local flib_gui = {}
 
+local table = require("__flib__.table")
+
 -- CONSTANTS
 
 local event_keys = {}
@@ -375,7 +377,7 @@ DIFF LOGIC:
 
 ]]
 
-local function diff(old, new, flags)
+local function diff(old, new)
   for key, value in pairs(new) do
     local old_value = old[key]
     if
@@ -385,27 +387,27 @@ local function diff(old, new, flags)
       and type(value) == "table"
       and not value.__self
     then
-      if old_value.type ~= value.type then
-        old[key] = value
-      else
-        local no_diff = false
-        if elem_keys[key] or elem_style_keys[key] or elem_functions[key] or event_keys[key] then
-          no_diff = true
-        end
-        local different = diff(old_value, value, {no_diff = flags.no_diff or no_diff})
-        if no_diff and different then
-          old[key] = value
-        -- TODO find a more performant way to do this
-        elseif no_diff or table_size(old_value) == 0 then
+      if elem_keys[key] or elem_style_keys[key] or elem_functions[key] or event_keys[key] then
+        -- compare the two tables without modifying them
+        if table.deep_compare(old_value, value) then
           old[key] = nil
+        else
+          old[key] = value
+        end
+      else
+        if old_value.type ~= value.type then
+          old[key] = value
+        else
+          diff(old_value, value)
+          -- TODO find a more performant way to do this
+          if table_size(old_value) == 0 then
+            old[key] = nil
+          end
         end
       end
     elseif old_value ~= value then
-      if flags.no_diff then
-        return true
-      end
       old[key] = value
-    elseif not flags.no_diff then
+    else
       old[key] = nil
     end
   end
