@@ -19,7 +19,7 @@ merge = false
 backtick_references = false
 format = 'discount'
 examples = {'./docs/examples'}
-topics = {'./README.md', './LICENSE', './docs/gui-styles.md'}
+topics = {'./README.md', './LICENSE', './docs/gui-styles.md', './docs/sprites.md'}
 
 new_type('Concept', 'Concepts', false)
 

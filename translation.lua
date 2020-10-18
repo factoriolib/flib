@@ -219,16 +219,21 @@ end
 -- @tparam Concepts.LocalisedString localised_string
 -- @treturn string The serialised @{Concepts.LocalisedString}.
 function flib_translation.serialise_localised_string(localised_string)
-  local output = "{"
   if type(localised_string) == "string" then return localised_string end
+  local output = "{"
+  local first = true
   for _, v in pairs(localised_string) do
+    if not first then
+      output = output..","
+    end
     if type(v) == "table" then
       output = output..flib_translation.serialise_localised_string(v)
     else
-      output = output.."\""..v.."\", "
+      output = output.."\""..tostring(v).."\""
     end
+    first = false
   end
-  output = string.gsub(output, ", $", "").."}"
+  output = output.."}"
   return output
 end
 

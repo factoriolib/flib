@@ -177,6 +177,13 @@ styles.flib_vertical_pusher = {
   vertically_stretchable = "on"
 }
 
+-- FLOW STYLES
+
+styles.flib_indicator_flow = {
+  type = "horizontal_flow_style",
+  vertical_align = "center"
+}
+
 -- IMAGE STYLES
 
 styles.flib_indicator = {

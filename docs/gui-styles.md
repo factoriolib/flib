@@ -50,6 +50,18 @@ A drag handle suitable for placement in the titlebar of a **standard** window (a
 
 An invisible element that has `vertically_stretchable` set, thereby "pushing" everything to the bottom.
 
+### Flow styles
+
+**flib_indicator_flow**
+
+A flow designed for use with indicators (see below).
+
+### Image styles
+
+**flib_indicator**
+
+A 16x16 image style. Designed for use with flib's indicator sprites (see `sprites.md`).
+
 ### Scroll pane styles
 
 **flib_naked_scroll_pane**
