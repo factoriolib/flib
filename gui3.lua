@@ -371,10 +371,8 @@ DIFF LOGIC:
 - if a property was added in `new`, add it to `old`
 - if a property was removed in `new`, change it to `{__removed = true}` in `old`
 - if a property was changed in `new`, set it to that value in `old`
-- if a child's type changes, then it and every child after it will remain untouched, as new elements will need to be
-  created from scratch (no insertion)
+- if a read-only key changes, delete and re-create the element from scratch, inserting it into its old position
 - if the value of a handler message changes, and that message is a table, then don't diff the table - include all of it
-
 ]]
 
 local function diff(old, new)
@@ -399,8 +397,7 @@ local function diff(old, new)
           old[key] = value
         else
           diff(old_value, value)
-          -- TODO find a more performant way to do this
-          if table_size(old_value) == 0 then
+          if not next(old_value) then
             old[key] = nil
           end
         end
@@ -427,7 +424,6 @@ local GuiInstance = {}
 function GuiInstance:dispatch(msg, e)
   local root = roots[self.root_name]
   if not root then error("Could not find GUI root ["..self.root_name.."]") end
-
 
   local orders = root.update(self.state, msg, e, self.refs) or {}
 
