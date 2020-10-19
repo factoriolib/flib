@@ -476,10 +476,12 @@ end
 --
 -- Must be called during `on_load`.
 function flib_gui.load()
-  for _, player_table in pairs(global.__flib.gui.players) do
-    for key, Instance in pairs(player_table.instances) do
-      if key ~= "__nextindex" then
-        setmetatable(Instance, {__index = GuiInstance})
+  if global.__flib and global.__flib.gui and global.__flib.gui.players then
+    for _, player_table in pairs(global.__flib.gui.players) do
+      for key, Instance in pairs(player_table.instances) do
+        if key ~= "__nextindex" then
+          setmetatable(Instance, {__index = GuiInstance})
+        end
       end
     end
   end
