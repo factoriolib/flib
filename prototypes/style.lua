@@ -1,3 +1,5 @@
+local data_util = require("__flib__.data-util")
+
 local styles = data.raw["gui-style"].default
 
 -- SLOT BUTTON STYLES
@@ -135,6 +137,24 @@ styles.flib_tool_button_light_green = {
   parent = "item_and_count_select_confirm",
   padding = 2,
   top_margin = 0
+}
+
+styles.flib_tool_button_dark_red = {
+  type = "button_style",
+  parent = "tool_button",
+  default_graphical_set = {
+    base = {filename = data_util.dark_red_button_tileset, position = {0, 0}, corner_size = 8},
+    shadow = default_dirt
+  },
+  hovered_graphical_set = {
+    base = {filename = data_util.dark_red_button_tileset, position = {17, 0}, corner_size = 8},
+    shadow = default_dirt,
+    glow = default_glow({236, 130, 130, 127}, 0.5)
+  },
+  clicked_graphical_set = {
+    base = {filename = data_util.dark_red_button_tileset, position = {34, 0}, corner_size = 8},
+    shadow = default_dirt
+  }
 }
 
 -- EMPTY-WIDGET STYLES

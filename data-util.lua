@@ -163,4 +163,7 @@ flib_data_util.black_image = "__flib__/graphics/black.png"
 --- A desaturated planner image. Tint this sprite to easily add your own planners.
 flib_data_util.planner_base_image = "__flib__/graphics/planner.png"
 
+--- A dark red button tileset. Used for the `flib_tool_button_dark_red` style.
+flib_data_util.dark_red_button_tileset = "__flib__/graphics/dark-red-button.png"
+
 return flib_data_util
