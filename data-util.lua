@@ -55,7 +55,7 @@ function flib_data_util.create_icons(prototype, new_layers)
 
   if prototype.icons then
     local icons ={}
-    for k,v in pairs(prototype.icons) do
+    for _, v in pairs(prototype.icons) do
       -- assume every other mod is lacking full prototype definitions
       icons[#icons+1] = {
         icon = v.icon,
