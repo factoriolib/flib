@@ -1,7 +1,15 @@
 ---------------------------------------------------------------------------------------------------
-Version: 0.4.2
+Version: 0.5.0
 Date: ????
+  Features:
+    - Added indicator sprites
+    - Added `flib_indicator` image style
   Changes:
+    - Updated thumbnail
+    - Changed `table.reduce()` to work with non-arrays
+    - Changed `misc.ticks_to_timestring()` to use `game.ticks_played` by default, instead of `game.tick`
+  Bugfixes:
+    - Fixed a crash with serialise_localised_string (credit to dbeckwith)
 ---------------------------------------------------------------------------------------------------
 Version: 0.4.1
 Date: 2020-09-22
