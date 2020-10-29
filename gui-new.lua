@@ -496,7 +496,10 @@ function flib_gui.dispatch(event_data)
   local flib_tags = event_data.element.tags.flib
   if not flib_tags then return false end
 
-  local event_info = flib_tags.events[tostring(event_data.name)]
+  local events = flib_tags.events
+  if not events then return end
+
+  local event_info = events[tostring(event_data.name)]
   if not event_info then return false end
 
   local player_data = global.__flib.gui.players[event_data.player_index]
