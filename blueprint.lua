@@ -74,7 +74,7 @@ end
 -- @tparam LuaEvent event
 -- @tparam dictionary entity_map[old_entity_name]->string new_entity_name
 -- @usage
--- -- replace entities when player picks up a blueprint item in the cursor
+-- -- replace items in the cursor when player uses the pipette tool on an entity
 -- local uncraftable_mapping = {
 --   ["old-entity-1"] = "new_entity-1",
 --   ["old-entity-2"] = "new-entity-2",
