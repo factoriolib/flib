@@ -36,14 +36,14 @@ local function recursive_build(parent, structure, refs)
     end
     prev[prev_key] = elem
   end
-  -- element actions
-  if structure.actions then
+  -- element handlers
+  if structure.handlers then
     -- do it this way to preserve any other tags
     local tags = elem.tags
     if tags.flib then
-      tags.flib[script.mod_name] = {actions = structure.actions}
+      tags.flib[script.mod_name] = {handlers = structure.handlers}
     else
-      tags.flib = {[script.mod_name] = {actions = structure.actions}}
+      tags.flib = {[script.mod_name] = {handlers = structure.handlers}}
     end
     elem.tags = tags
   end
@@ -80,19 +80,41 @@ function flib_gui.build(parent, structures)
   return refs
 end
 
-function flib_gui.get_action(e)
-  if not e.element then return end
-  local tags = e.element.tags.flib
-  if tags then
-    local mod_tags = tags[script.mod_name]
-    if mod_tags then
-      local actions = mod_tags.actions
-      if actions then
-        local action = actions[string.gsub(reverse_defines.events[e.name], "_gui", "")]
-        if action then
-          return action
-        end
-      end
+local handlers = {}
+
+function flib_gui.add_handlers(tbl)
+  -- if `tbl.handlers` exists, use it, else use the table directly
+  for name, func in pairs(tbl.handlers or tbl) do
+    handlers[name] = func
+  end
+end
+
+function flib_gui.dispatch(e)
+  local elem = e.element
+  if not elem then return false end
+
+  local tags = elem.tags.flib
+  if not tags then return false end
+
+  local mod_data = tags[script.mod_name]
+  if not mod_data then return false end
+
+  local event_name = string.gsub(reverse_defines.events[e.name] or "", "_gui", "")
+  local handler_name = mod_data.handlers[event_name]
+  if not handler_name then return false end
+
+  local handler = handlers[handler_name]
+  if not handler then return false end
+
+  handler(e)
+
+  return true
+end
+
+function flib_gui.hook_gui_events()
+  for name, id in pairs(defines.events) do
+    if string.find(name, "gui") then
+      script.on_event(id, flib_gui.dispatch)
     end
   end
 end
