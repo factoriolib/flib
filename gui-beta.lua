@@ -40,10 +40,10 @@ local function recursive_build(parent, structure, refs)
   if structure.handlers then
     -- do it this way to preserve any other tags
     local tags = elem.tags
-    if tags.flib then
-      tags.flib[script.mod_name] = {handlers = structure.handlers}
+    if tags[script.mod_name] then
+      tags[script.mod_name].flib_handlers = structure.handlers
     else
-      tags.flib = {[script.mod_name] = {handlers = structure.handlers}}
+      tags[script.mod_name] = {flib_handlers = structure.handlers}
     end
     elem.tags = tags
   end
@@ -93,14 +93,14 @@ function flib_gui.dispatch(e)
   local elem = e.element
   if not elem then return false end
 
-  local tags = elem.tags.flib
-  if not tags then return false end
+  local mod_tags = elem.tags[script.mod_name]
+  if not mod_tags then return end
 
-  local mod_data = tags[script.mod_name]
-  if not mod_data then return false end
+  local elem_handlers = mod_tags.flib_handlers
+  if not elem_handlers then return end
 
   local event_name = string.gsub(reverse_defines.events[e.name] or "", "_gui", "")
-  local handler_name = mod_data.handlers[event_name]
+  local handler_name = elem_handlers[event_name]
   if not handler_name then return false end
 
   local handler = handlers[handler_name]
