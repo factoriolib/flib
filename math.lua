@@ -117,7 +117,7 @@ function flib_math.clamp(x, min, max)
   return x < min and min or (x > max and max or x)
 end
 
---- Linerarly interpolate between `num1` and `num2` by `amount`.
+--- Linearly interpolate between `num1` and `num2` by `amount`.
 --
 -- The parameter `amount` is clamped between `0` and `1`.
 --
