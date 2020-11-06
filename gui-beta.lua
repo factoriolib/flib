@@ -3,6 +3,29 @@ local table = require("__flib__.table")
 
 local flib_gui = {}
 
+-- FIELDS
+
+local handlers = {}
+
+-- SETUP FUNCTIONS
+
+function flib_gui.add_handlers(tbl)
+  -- if `tbl.handlers` exists, use it, else use the table directly
+  for name, func in pairs(tbl.handlers or tbl) do
+    handlers[name] = func
+  end
+end
+
+function flib_gui.hook_gui_events()
+  for name, id in pairs(defines.events) do
+    if string.find(name, "gui") then
+      script.on_event(id, flib_gui.dispatch)
+    end
+  end
+end
+
+-- FUNCTIONS
+
 -- navigate a structure to build a GUI
 local function recursive_build(parent, structure, refs)
   -- create element
@@ -87,15 +110,6 @@ function flib_gui.build(parent, structures)
   return refs
 end
 
-local handlers = {}
-
-function flib_gui.add_handlers(tbl)
-  -- if `tbl.handlers` exists, use it, else use the table directly
-  for name, func in pairs(tbl.handlers or tbl) do
-    handlers[name] = func
-  end
-end
-
 function flib_gui.dispatch(e)
   local elem = e.element
   if not elem then return false end
@@ -118,14 +132,6 @@ function flib_gui.dispatch(e)
   return true
 end
 
-function flib_gui.hook_gui_events()
-  for name, id in pairs(defines.events) do
-    if string.find(name, "gui") then
-      script.on_event(id, flib_gui.dispatch)
-    end
-  end
-end
-
 function flib_gui.get_tags(elem)
   return elem.tags[script.mod_name] or {}
 end
@@ -144,7 +150,12 @@ end
 
 function flib_gui.update_tags(elem, updates)
   local elem_tags = elem.tags
-  local existing = elem_tags[script.mod_name] or {}
+  local existing = elem_tags[script.mod_name]
+
+  if not existing then
+    elem_tags[script.mod_name] = {}
+    existing = elem_tags[script.mod_name]
+  end
 
   for k, v in pairs(updates) do
     existing[k] = v
