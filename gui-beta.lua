@@ -164,4 +164,54 @@ function flib_gui.update_tags(elem, updates)
   elem.tags = elem_tags
 end
 
+local function recursive_update(elem, updates)
+  if updates.cb then
+    updates.cb(elem)
+  end
+
+  if updates.style_mods then
+    for key, value in pairs(updates.style_mods) do
+      elem.style[key] = value
+    end
+  end
+
+  if updates.elem_mods then
+    for key, value in pairs(updates.elem_mods) do
+      elem[key] = value
+    end
+  end
+
+  if updates.children then
+    local elem_children = elem.children
+    for i, child_updates in ipairs(updates.children) do
+      if elem_children[i] then
+        recursive_update(elem_children[i], child_updates)
+      end
+    end
+  end
+
+  if updates.tabs then
+    local elem_tabs = elem.tabs
+    for i, tab_and_content_updates in pairs(updates.tabs) do
+      local elem_tab_and_content = elem_tabs[i]
+      if elem_tab_and_content then
+        local tab = elem_tab_and_content.tab
+        local tab_updates = tab_and_content_updates.tab
+        if tab and tab_updates then
+          recursive_update(tab, tab_updates)
+        end
+        local content = elem_tab_and_content.content
+        local content_updates = tab_and_content_updates.content
+        if content and content_updates then
+          recursive_update(content, content_updates)
+        end
+      end
+    end
+  end
+end
+
+function flib_gui.update(elem, updates)
+  recursive_update(elem, updates)
+end
+
 return flib_gui
