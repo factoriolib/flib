@@ -42,14 +42,16 @@ function flib_data_util.copy_prototype(prototype, new_name, remove_icon)
   return p
 end
 
---- Add new icon layers to a prototype icon or icons.
+--- Copy prototype.icon/icons to a new fully defined icons array, optionally adds new icon layers.
 -- @tparam PrototypeBase prototype
--- @tparam Types.IconSpecification[] new_layers
+-- @tparam Types.IconSpecification[]|nil new_layers
 -- @treturn Types.IconSpecification[]|nil
 function flib_data_util.create_icons(prototype, new_layers)
-  for _,new_layer in pairs(new_layers) do
-    if not new_layer.icon or not new_layer.icon_size then
-      return nil
+  if new_layers then
+    for _,new_layer in pairs(new_layers) do
+      if not new_layer.icon or not new_layer.icon_size then
+        return nil
+      end
     end
   end
 
@@ -63,8 +65,10 @@ function flib_data_util.create_icons(prototype, new_layers)
         tint = v.tint
       }
     end
-    for _, new_layer in pairs(new_layers) do
-      icons[#icons+1] = new_layer
+    if new_layers then
+      for _, new_layer in pairs(new_layers) do
+        icons[#icons+1] = new_layer
+      end
     end
     return icons
 
@@ -78,8 +82,10 @@ function flib_data_util.create_icons(prototype, new_layers)
         tint = {r=1, g=1, b=1, a=1}
       },
     }
-    for _, new_layer in pairs(new_layers) do
-      icons[#icons+1] = new_layer
+    if new_layers then
+      for _, new_layer in pairs(new_layers) do
+        icons[#icons+1] = new_layer
+      end
     end
     return icons
 
