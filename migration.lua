@@ -71,6 +71,7 @@ end
 -- @tparam Concepts.ConfigurationChangedData event_data
 -- @tparam MigrationsTable migrations
 -- @tparam[opt] string mod_name The mod to check against, defaults to the current mod.
+-- @tparam[opt] any ... Any additional arguments will be passed to each function within `migrations`.
 -- @treturn boolean If true, run generic migrations.
 -- @usage
 -- -- In on_configuration_changed:
@@ -78,12 +79,12 @@ end
 --   -- run generic (non-init) migrations
 --   rebuild_prototype_data()
 -- end
-function flib_migration.on_config_changed(event_data, migrations, mod_name)
+function flib_migration.on_config_changed(event_data, migrations, mod_name, ...)
   local changes = event_data.mod_changes[mod_name or script.mod_name]
   if changes then
     local old_version = changes.old_version
     if old_version then
-      flib_migration.run(old_version, migrations)
+      flib_migration.run(old_version, migrations, nil, ...)
     else
       return false -- don't do generic migrations, because we just initialized
     end
