@@ -282,7 +282,7 @@ end
 local function default_comp(a, b) return a < b end
 --- Partially sort an array.
 --
--- This function utilitizes [insertion sort](https://en.wikipedia.org/wiki/Insertion_sort), which is _extremely_
+-- This function utilizes [insertion sort](https://en.wikipedia.org/wiki/Insertion_sort), which is _extremely_
 -- inefficient with large data sets. However, you can spread the sorting over multiple ticks, reducing the performance
 -- impact. Only use this function if `table.sort` is too slow.
 -- @tparam array arr
