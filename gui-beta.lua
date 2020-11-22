@@ -1,6 +1,6 @@
 -- FLIB BETA GUI MODULE
 --
--- Welcome script explorer! This is a beta version of flib's new GUI module. This code is fairly stable and can be used
+-- Welcome, script explorer! This is a beta version of flib's new GUI module. This code is fairly stable and can be used
 -- in mods, but is not guaranteed to keep working between versions. Use at your own risk!
 
 -- Handlers vs. actions:
@@ -11,8 +11,13 @@
 -- specific things, while `actions` encourage the use of a single event structure, where the content of the action
 -- message is used to determine what to do. Both have strengths and weaknesses.
 --
--- Eventually, one of these methods will be removed in favor of the other. I just haven't decided which is better yet.
--- Only use one or the other on each element - don't use both at once! It will not work.
+-- While localized handlers are convenient, they have two main disadvantages:
+-- - It breaks the single event tree, meaning it is much harder to see everything that a mod does on specific events
+-- - It requires you to repeat basic code over and over (getting player, player table, GUI data, etc.)
+-- Actions solve both of these problems, but comes with one main disadvantage:
+-- - Because of the more monolithic event structure, slightly more boilerplate is required in order to achieve the same
+--   functionality
+-- Actions are likely to supercede handlers, so I recommend using them over handlers.
 
 local reverse_defines = require("__flib__.reverse-defines")
 
