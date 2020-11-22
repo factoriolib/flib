@@ -187,6 +187,8 @@ local function recursive_update(elem, updates)
     end
   end
 
+  -- TODO: tags, handlers/actions
+
   if updates.children then
     local elem_children = elem.children
     for i, child_updates in ipairs(updates.children) do
