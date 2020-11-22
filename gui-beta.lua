@@ -43,10 +43,10 @@ function flib_gui.dispatch(e)
   if not elem then return false end
 
   local mod_tags = elem.tags[script.mod_name]
-  if not mod_tags then return end
+  if not mod_tags then return false end
 
   local elem_handlers = mod_tags.flib
-  if not elem_handlers then return end
+  if not elem_handlers then return false end
 
   local event_name = string.gsub(reverse_defines.events[e.name] or "", "_gui", "")
   local handler_name = elem_handlers[event_name]
