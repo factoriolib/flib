@@ -130,7 +130,7 @@ local function recursive_update(elem, updates)
     end
   end
 
-  -- TODO: tags, handlers/actions
+  -- TODO: tags, actions
 
   if updates.children then
     local elem_children = elem.children
