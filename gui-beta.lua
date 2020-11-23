@@ -3,67 +3,9 @@
 -- Welcome, script explorer! This is a beta version of flib's new GUI module. This code is fairly stable and can be used
 -- in mods, but is not guaranteed to keep working between versions. Use at your own risk!
 
--- Handlers vs. actions:
--- There are two kinds of event handling currently present in this module:
--- - Handlers: defining specific functions to call on specific events for specific GUI elements
--- - Actions: defining specific sets of data to provide on specific events for specific GUI elements
--- The primary difference between the two is that `handlers` allows you to have small, localized event handlers to do
--- specific things, while `actions` encourage the use of a single event structure, where the content of the action
--- message is used to determine what to do. Both have strengths and weaknesses.
---
--- While localized handlers are convenient, they have two main disadvantages:
--- - It breaks the single event tree, meaning it is much harder to see everything that a mod does on specific events
--- - It requires you to repeat basic code over and over (getting player, player table, GUI data, etc.)
--- Actions solve both of these problems, but comes with one main disadvantage:
--- - Because of the more monolithic event structure, slightly more boilerplate is required in order to achieve the same
---   functionality
--- Actions are likely to supercede handlers, so I recommend using them over handlers.
-
 local reverse_defines = require("__flib__.reverse-defines")
 
 local flib_gui = {}
-
--- `HANDLERS` FUNCTIONS
-
-local handlers = {}
-
-function flib_gui.add_handlers(tbl)
-  -- if `tbl.handlers` exists, use it, else use the table directly
-  for name, func in pairs(tbl.handlers or tbl) do
-    handlers[name] = func
-  end
-end
-
-function flib_gui.hook_gui_events()
-  for name, id in pairs(defines.events) do
-    if string.find(name, "gui") then
-      script.on_event(id, flib_gui.dispatch)
-    end
-  end
-end
-
--- dispatches the stored handler function for the specific element
-function flib_gui.dispatch(e)
-  local elem = e.element
-  if not elem then return false end
-
-  local mod_tags = elem.tags[script.mod_name]
-  if not mod_tags then return false end
-
-  local elem_handlers = mod_tags.flib
-  if not elem_handlers then return false end
-
-  local event_name = string.gsub(reverse_defines.events[e.name] or "", "_gui", "")
-  local handler_name = elem_handlers[event_name]
-  if not handler_name then return false end
-
-  local handler = handlers[handler_name]
-  if not handler then return false end
-
-  handler(e)
-
-  return true
-end
 
 -- `ACTIONS` FUNCTIONS
 
@@ -115,10 +57,6 @@ local function recursive_build(parent, structure, refs)
   -- element tags
   if structure.tags then
     flib_gui.set_tags(elem, structure.tags)
-  end
-  -- element handlers
-  if structure.handlers then
-    flib_gui.update_tags(elem, {flib = structure.handlers})
   end
   -- element actions
   if structure.actions then
