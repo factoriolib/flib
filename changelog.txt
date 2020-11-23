@@ -4,8 +4,13 @@ Date: ????
   Features:
     - Added WIP `gui-beta` module
       - This module is experimental, but is currently relatively stable. Use at your own risk. See the source code for documentation.
+    - Additional arguments may be passed to `migration.on_config_changed()` to be available in the migration functions
+    - Added `data-util.dark_red_button_tileset`
+    - Added `flib_tool_button_dark_red` button style
   Changes:
     - Updated to Factorio 1.1
+    - Modified `flib_selected_frame_action_button` style to better match the vanilla buttons
+    - Made `new_layers` argument to `data-util.create_icons()` optional
     - Removed deprecated require paths for `data-util` and `reverse-defines` modules
 ---------------------------------------------------------------------------------------------------
 Version: 0.5.0

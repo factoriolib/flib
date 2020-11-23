@@ -44,7 +44,7 @@ end
 
 --- Copy prototype.icon/icons to a new fully defined icons array, optionally adds new icon layers.
 -- @tparam PrototypeBase prototype
--- @tparam Types.IconSpecification[]|nil new_layers
+-- @tparam[opt] Types.IconSpecification[] new_layers
 -- @treturn Types.IconSpecification[]|nil
 function flib_data_util.create_icons(prototype, new_layers)
   if new_layers then

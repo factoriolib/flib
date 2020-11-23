@@ -16,6 +16,10 @@ A "selected" tool button. Use when a tool button can "toggle" on and off.
 
 A light green tool button. Similar to the `item_and_count_select_confirm` style, but has margin and padding fixes to match other tool buttons.
 
+**flib_tool_button_dark_red**
+
+A dark red tool button, similar to the red shortcut button style.
+
 #### Slot styles
 
 FLib includes a myriad of colored slot styles for use with `sprite-button`s:
