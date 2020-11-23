@@ -9,6 +9,6 @@
   "factorio_version": "1.1",
   "dependencies": ["? base >= 1.1.0"],
   "package": {
-    "ignore": ["*.code-workspace", "docs/**"]
+    "ignore": ["*.code-workspace", "docs/**", ".devcontainer", ".scripts", ".vscode", ".gitignore"]
   }
 }
