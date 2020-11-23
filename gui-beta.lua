@@ -76,7 +76,7 @@ function flib_gui.hook_events(func)
 end
 
 -- retrieves the action message from the element's tags
-function flib_gui.get_action(e)
+function flib_gui.read_action(e)
   local elem = e.element
   if not elem then return end
 
@@ -87,9 +87,9 @@ function flib_gui.get_action(e)
   if not elem_actions then return end
 
   local event_name = string.gsub(reverse_defines.events[e.name] or "", "_gui", "")
-  local action = elem_actions[event_name]
+  local msg = elem_actions[event_name]
 
-  return action
+  return msg
 end
 
 -- BUILDING AND UPDATING FUNCTIONS

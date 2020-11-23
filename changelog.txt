@@ -1,7 +1,12 @@
 ---------------------------------------------------------------------------------------------------
-Version: 0.5.1
+Version: 0.6.0
 Date: ????
+  Features:
+    - Added WIP `gui-beta` module
+      - This module is experimental, but is currently relatively stable. Use at your own risk. See the source code for documentation.
   Changes:
+    - Updated to Factorio 1.1
+    - Removed deprecated require paths for `data-util` and `reverse-defines` modules
 ---------------------------------------------------------------------------------------------------
 Version: 0.5.0
 Date: 2020-10-22
