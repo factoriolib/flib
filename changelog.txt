@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.6.0
-Date: ????
+Date: 2020-11-23
   Features:
     - Added WIP `gui-beta` module
       - This module is experimental, but is currently relatively stable. Use at your own risk. See the source code for documentation.
