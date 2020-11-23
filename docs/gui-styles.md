@@ -1,4 +1,4 @@
-FLib includes several GUI styles for your use and convenience. For help and information on how to use these styles effectively, refer to the [work-in-progress GUI style guide](https://github.com/raiguard/Factorio-SmallMods/wiki/GUI-Style-Guide).
+flib includes several GUI styles for your use and convenience. For help and information on how to use these styles effectively, refer to the [work-in-progress GUI style guide](https://github.com/raiguard/Factorio-SmallMods/wiki/GUI-Style-Guide).
 
 **IMPORTANT:** Modifying these styles in any way will modify them for all mods using them. Therefore, unless you are specifically creating a GUI skin mod, **DO NOT MODIFY THESE STYLES!** Instead, create your own new styles using these styles as parents, then modify those new styles as you wish.
 
@@ -22,7 +22,7 @@ A dark red tool button, similar to the red shortcut button style.
 
 #### Slot styles
 
-FLib includes a myriad of colored slot styles for use with `sprite-button`s:
+flib includes a myriad of colored slot styles for use with `sprite-button`s:
 
 ![](https://raw.githubusercontent.com/factoriolib/flib/master/docs/assets/slot-style-examples.png)
 

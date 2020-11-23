@@ -1,4 +1,4 @@
-The following are sprites provided by FLib for your use:
+The following are sprites provided by flib for your use:
 
 ## Indicator sprites
 
