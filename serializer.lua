@@ -259,6 +259,12 @@ local function insertInventoryStacks(target, stacks)
 end
 
 
+
+---------------------------------------------------------------
+-- Save the contents of a LuaBurner object.
+-- Arguments:  burner -> LuaBurner
+-- Returns:    saved -> List structure with stats and inventories of the burner.
+---------------------------------------------------------------
 local function saveBurner(burner)
   if burner and burner.valid then
     local saved = {heat = burner.heat}
@@ -276,7 +282,16 @@ local function saveBurner(burner)
   end
 end
 
+
+---------------------------------------------------------------
+-- Restore the contents of a LuaBurner object.
+-- Arguments:  target -> LuaBurner
+--             saved -> List structure returned by saveBurner()
+-- Returns:    remainders -> List of SimpleItemStack containing items from saved structure
+--                that could not be inserted into target, or nil if none.
+---------------------------------------------------------------
 local function restoreBurner(target, saved)
+  local remainders = {}
   if target and target.valid and saved then
     -- Only restore burner heat if the fuel prototype still exists and is valid in this burner.
     if (saved.currently_burning and 
@@ -288,12 +303,14 @@ local function restoreBurner(target, saved)
     end
     local r1 = insertInventoryStacks(target.inventory, saved.inventory)
     local r2 = insertInventoryStacks(target.burnt_result_inventory, saved.burnt_result_inventory)
-    return mergeStackLists(r1, r2)
+    remainders = mergeStackLists(remainders, r1)
+    remainders = mergeStackLists(remainders, r2)
+    return remainders
   elseif saved then
     -- Return entire contents if target invalid
-    local r = mergeStackLists({}, saved.burnt_result_inventory)
-    r = mergeStackLists(r, saved.inventory)
-    return r
+    remainders = mergeStackLists(remainders, saved.burnt_result_inventory)
+    remainders = mergeStackLists(remainders, saved.inventory)
+    return remainders
   end
 end
 
