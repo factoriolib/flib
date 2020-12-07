@@ -1,7 +1,10 @@
--- FLIB BETA GUI MODULE
---
--- Welcome, script explorer! This is a beta version of flib's new GUI module. This code is fairly stable and can be used
--- in mods, but is not guaranteed to keep working between versions. Use at your own risk!
+--- GUI structuring tools and event handling (beta).
+-- This new GUI module makes use of a new feature in Factorio 1.1: GUI element tags. This significantly simplifies the
+-- logic around event handling. Due to the backward-incompatible nature of the changes, this new module was created
+-- instead of upgrading the old one.
+-- @module gui-beta
+-- @alias flib_gui
+-- @usage local gui = require("__flib__.gui-beta")
 
 local reverse_defines = require("__flib__.reverse-defines")
 

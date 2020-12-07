@@ -1,4 +1,5 @@
 --- GUI structuring tools and event handling.
+-- **NOTICE: THIS MODULE WILL BE DEPRECATED WHEN FACTORIO 1.2 RELEASES. USE THE GUI-BETA MODULE INSTEAD.**
 -- @module gui
 -- @alias flib_gui
 -- @usage local gui = require("__flib__.gui")
