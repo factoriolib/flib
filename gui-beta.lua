@@ -1,7 +1,7 @@
 --- GUI structuring tools and event handling (beta).
 -- This new GUI module makes use of a new feature in Factorio 1.1: GUI element tags. This significantly simplifies the
 -- logic around event handling. Due to the backward-incompatible nature of the changes, this new module was created
--- instead of upgrading the old one.
+-- instead of upgrading the old one. This module will replace the current non-beta module when Factorio 1.2 releases.
 -- @module gui-beta
 -- @alias flib_gui
 -- @usage local gui = require("__flib__.gui-beta")
@@ -12,6 +12,16 @@ local flib_gui = {}
 
 -- `ACTIONS` FUNCTIONS
 
+--- Provide a callback to be run for GUI events.
+-- @tparam function func
+-- @see gui-beta.read_action
+-- @usage
+-- gui.hook_events(function(e)
+--   local action = gui.read_action(e)
+--   if action then
+--     -- do stuff
+--   end
+-- end)
 function flib_gui.hook_events(func)
   for name, id in pairs(defines.events) do
     if string.find(name, "gui") then
@@ -20,9 +30,18 @@ function flib_gui.hook_events(func)
   end
 end
 
--- retrieves the action message from the element's tags
-function flib_gui.read_action(e)
-  local elem = e.element
+--- Retrieve the action message from a GUI element's tags.
+-- @tparam EventData event_data
+-- @treturn any|nil The element's action for this GUI event.
+-- @usage
+-- event.on_gui_click(function(e)
+--   local action = gui.read_action(e)
+--   if action then
+--     -- do stuff
+--   end
+-- end)
+function flib_gui.read_action(event_data)
+  local elem = event_data.element
   if not elem then return end
 
   local mod_tags = elem.tags[script.mod_name]
@@ -31,7 +50,7 @@ function flib_gui.read_action(e)
   local elem_actions = mod_tags.flib
   if not elem_actions then return end
 
-  local event_name = string.gsub(reverse_defines.events[e.name] or "", "_gui", "")
+  local event_name = string.gsub(reverse_defines.events[event_data.name] or "", "_gui", "")
   local msg = elem_actions[event_name]
 
   return msg
@@ -45,27 +64,27 @@ local function recursive_build(parent, structure, refs)
   local elem = parent.add(structure)
   -- reset tags so they can be added back in later with a subtable
   elem.tags = {}
-  -- style modifications
+
   if structure.style_mods then
     for k, v in pairs(structure.style_mods) do
       elem.style[k] = v
     end
   end
-  -- element modifications
+
   if structure.elem_mods then
     for k, v in pairs(structure.elem_mods) do
       elem[k] = v
     end
   end
-  -- element tags
+
   if structure.tags then
     flib_gui.set_tags(elem, structure.tags)
   end
-  -- element actions
+
   if structure.actions then
     flib_gui.update_tags(elem, {flib = structure.actions})
   end
-  -- element reference
+
   if structure.ref then
     -- recursively create tables as needed
     local prev = refs
@@ -83,14 +102,14 @@ local function recursive_build(parent, structure, refs)
     end
     prev[prev_key] = elem
   end
-  -- add children
+
   local children = structure.children
   if children then
     for i = 1, #children do
       recursive_build(elem, children[i], refs)
     end
   end
-  -- add tabs
+
   local tabs = structure.tabs
   if tabs then
     for i = 1, #tabs do
@@ -104,6 +123,11 @@ local function recursive_build(parent, structure, refs)
   return elem
 end
 
+--- Build a GUI based on the given structure(s).
+-- @tparam LuaGuiElement parent The parent GUI element where the new GUI will be located.
+-- @tparam GuiBuildStructure[] structures The GUIs to build.
+-- @treturn table @{LuaGuiElement} references and subtables, built based on the values of `ref` throughout the
+-- @{GuiBuildStructure}.
 function flib_gui.build(parent, structures)
   local refs = {}
   for i = 1, #structures do
@@ -119,6 +143,10 @@ end
 local function recursive_update(elem, updates)
   if updates.cb then
     updates.cb(elem)
+  end
+
+  if updates.style then
+    elem.style = updates.style
   end
 
   if updates.style_mods then
@@ -164,28 +192,54 @@ local function recursive_update(elem, updates)
   end
 end
 
+--- Update an existing GUI based on a given structure.
+-- @tparam LuaGuiElement elem The element to update.
+-- @tparam GuiUpdateStructure updates The updates to perform.
 function flib_gui.update(elem, updates)
   recursive_update(elem, updates)
 end
 
 -- TAGS FUNCTIONS
 
+--- Retrieve a GUI element's tags.
+-- These tags are automatically written to and read from a subtable keyed by mod name, preventing conflicts.
+--
+-- If no tags exist, this function will return an empty table.
+-- @tparam LuaGuiElement elem
+-- @treturn table
 function flib_gui.get_tags(elem)
   return elem.tags[script.mod_name] or {}
 end
 
+--- Set (override) a GUI element's tags.
+-- These tags are automatically written to and read from a subtable keyed by mod name, preventing conflicts.
+--
+-- @tparam LuaGuiElement elem
+-- @tparam table tags
 function flib_gui.set_tags(elem, tags)
   local elem_tags = elem.tags
   elem_tags[script.mod_name] = tags
   elem.tags = elem_tags
 end
 
+--- Delete a GUI element's tags.
+-- These tags are automatically written to and read from a subtable keyed by mod name, preventing conflicts.
+--
+-- @tparam LuaGuiElement elem
 function flib_gui.delete_tags(elem)
   local elem_tags = elem.tags
   elem_tags[script.mod_name] = nil
   elem.tags = elem_tags
 end
 
+--- Perform a shallow merge on a GUI element's tags.
+-- These tags are automatically written to and read from a subtable keyed by mod name, preventing conflicts.
+--
+-- Only the top level will be updated. If deep updating is needed, use @{gui-beta.get_tags} and @{table.deep_merge},
+-- then @{gui-beta.set_tags}.
+--
+-- @tparam LuaGuiElement elem
+-- @tparam table updates
 function flib_gui.update_tags(elem, updates)
   local elem_tags = elem.tags
   local existing = elem_tags[script.mod_name]
@@ -201,5 +255,128 @@ function flib_gui.update_tags(elem, updates)
 
   elem.tags = elem_tags
 end
+
+--- Concepts
+-- @section
+
+--- A series of nested tables used to build a GUI.
+-- This is an extension of @{LuaGuiElement}, providing new features and options.
+--
+-- This inherits all required properties from its base @{LuaGuiElement}, i.e. if the `type` field is
+-- `sprite-button`, the @{GuiBuildStructure} must contain all the fields that a `sprite-button` @{LuaGuiElement}
+-- requires.
+--
+-- There are a number of new fields that can be applied to a @{GuiBuildStructure} depending on the type:
+--
+-- **_style_mods_**
+--
+-- A key -> value dictionary defining modifications to make to the element's style. Available properties are listed in
+-- @{LuaStyle}.
+--
+-- **_elem_mods_**
+--
+-- A key -> value dictionary defining modifications to make to the element. Available properties are listed in
+-- @{LuaGuiElement}.
+--
+-- **_actions_**
+--
+-- See @{GuiElementActions}
+--
+-- **_ref_**
+--
+-- An @{array} of @{string} defining a nested table path in which to place a reference to this @{LuaGuiElement} in the
+-- first output of @{gui-beta.build}.
+--
+-- **_children_**
+--
+-- An array of @{GuiBuildStructure} that will be added as children of this element.
+--
+-- **_tabs_**
+--
+-- An array of @{TabAndContent} that will be added as tabs of this `tabbed-pane`.
+-- @usage
+-- {type="frame", direction="vertical", handlers="window", save_as="window", children={
+--   -- titlebar
+--   {type="flow", save_as="titlebar_flow", children={
+--     {type="label", style="frame_title", caption="Menu", elem_mods={ignored_by_interaction=true}},
+--     {type="empty-widget", style="flib_titlebar_drag_handle", elem_mods={ignored_by_interaction=true}},
+--     {type="condition", condition=(not is_dialog_frame), children={
+--       {template="frame_action_button",
+--         sprite="utility/close_white",
+--         handlers="titlebar.close_button",
+--         save_as="titlebar.close_button"
+--       }
+--     }}
+--   }},
+--   {type="frame", style="inside_shallow_frame_with_padding", children={
+--     {type="table", style="slot_table", column_count=10, save_as="content.slot_table"}
+--   }},
+--   {type="condition", condition=is_dialog_frame, children={
+--     {type="flow", style="dialog_buttons_horizontal_flow", children={
+--       {type="button", style="back_button", caption={"gui.back"}, handlers="footer.back_button"},
+--       {type="empty-widget",
+--         style="flib_dialog_footer_drag_handle",
+--         style_mods={right_margin=0},
+--         save_as="footer.drag_handle"
+--       }
+--     }}
+--   }}
+-- }}
+-- @Concept GuiBuildStructure
+
+--- A series of nested tables used to update a GUI.
+-- @tparam[opt] function cb A callback to run on this GUI element. The callback will be passed a @{LuaGuiElement} as its
+-- first parameter.
+-- @tparam[opt] string style The new style that the element should use.
+-- @tparam[opt] table style_mods A key -> value dictionary defining modifications to make to the element's style.
+-- Available properties are listed in @{LuaStyle}.
+-- @tparam[opt] table elem_mods A key –> value dictionary defining modifications to make to the element. Available
+-- properties are listed in LuaGuiElement.
+-- @tparam[opt] array children An array of @{GuiUpdateStructure} to apply to children of this element.
+-- @tparam[opt] array tabs An array of @{TabAndContent} containing @{GuiUpdateStructure} values to apply to tabs of this
+-- `tabbed-pane`.
+-- @usage
+-- gui.update(
+--   my_frame,
+--   {
+--     elem_mods = {caption = "Hello there!"},
+--     children = {
+--       {children = {
+--         tabs = {
+--           {tab = {elem_mods = {badge_text = "69"}}, content = {...}},
+--           {content = {...}}
+--         }
+--       }}
+--     }
+--   }
+-- )
+-- @Concept GuiUpdateStructure
+
+--- A mapping of GUI event name -> action message.
+-- Each key is a GUI event name (`on_gui_click`, `on_gui_elem_changed`, etc.) with the `_gui` part removed. For example,
+-- `on_gui_click` will become `on_click`.
+--
+-- Each value is a custom set of data that @{gui-beta.read_action} will return when that GUI event is fired and passes
+-- this GUI element. This data may be of any type, as long as it is truthy.
+-- @usage
+-- gui.build(player.gui.screen, {
+--   {
+--     type = "frame",
+--     caption = "My frame",
+--     actions = {
+--       on_click = {gui = "my_gui", action = "handle_click"},
+--       on_closed = {gui = "my_gui", action = "close"}
+--     }
+--   }
+-- })
+-- @Concept GuiElementActions
+
+--- A table representing a tab <-> content pair.
+-- When used in @{gui-beta.build}, both fields are required. When used in @{gui-beta.update}, both fields are optional.
+-- @tfield GuiBuildStructure|GuiUpdateStructure tab Must be of type `tab`.
+-- @tfield GuiBuildStructure|GuiUpdateStructure content
+-- @Concept TabAndContent
+
+-- @endsection
 
 return flib_gui
