@@ -5,7 +5,7 @@
     <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>gui.lua example</title>
+    <title>gui-beta.lua example</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../spectre.min.css" type="text/css" />
     <link rel="stylesheet" href="../spectre-icons.min.css" type="text/css" />
@@ -41,8 +41,8 @@
     <h2>Examples</h2>
     <ul class="nav">
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/event.lua.html"><span class="module-name-item">event.lua</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/gui-beta.lua.html"><span class="module-name-item">gui-beta.lua</span></a></div></li>
-    <li class="nav-item active"><div class="nav-item-block-active block"><a href="../examples/gui.lua.html"><span class="module-name-item">gui.lua</span></a><i class="icon icon-arrow-left icon-arrow-left-custom"></i></div></li>
+    <li class="nav-item active"><div class="nav-item-block-active block"><a href="../examples/gui-beta.lua.html"><span class="module-name-item">gui-beta.lua</span></a><i class="icon icon-arrow-left icon-arrow-left-custom"></i></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/gui.lua.html"><span class="module-name-item">gui.lua</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/migration.lua.html"><span class="module-name-item">migration.lua</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/translation.lua.html"><span class="module-name-item">translation.lua</span></a></div></li>
     </ul>
@@ -100,126 +100,128 @@
 
     <!-- module content header start -->
 
-    <h2><span class="body-module-name"><strong><em>gui.lua</em></strong></span> example</h2>
+    <h2><span class="body-module-name"><strong><em>gui-beta.lua</em></strong></span> example</h2>
     <p></p>
     <p></p>
 
     <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> event = <span class="global">require</span>(<span class="string">"__flib__.event"</span>)
-<span class="keyword">local</span> gui = <span class="global">require</span>(<span class="string">"__flib__.gui"</span>)
+<span class="keyword">local</span> gui = <span class="global">require</span>(<span class="string">"__flib__.gui-beta"</span>)
 <span class="keyword">local</span> migration = <span class="global">require</span>(<span class="string">"__flib__.migration"</span>)
 <span class="keyword">local</span> mod_gui = <span class="global">require</span>(<span class="string">"__core__.lualib.mod-gui"</span>)
-
-<span class="comment">-- add structure templates. this can be multiple levels deep, but this example only uses one level
-</span><span class="comment">-- in order to be usable, a template must have a `type` or another `template` key
-</span>gui.add_templates{
-  mouse_filter = {<span class="global">type</span>=<span class="string">"button"</span>, mouse_button_filter={<span class="string">"left"</span>}},
-  <span class="comment">-- elem mods - allows changing properties on an element immediately after creation
-</span>  <span class="comment">-- available modifications are listen in the LuaGuiElement docs
-</span>  drag_handle = {<span class="global">type</span>=<span class="string">"empty-widget"</span>, style=<span class="string">"flib_titlebar_drag_handle"</span>, elem_mods={ignored_by_interaction=<span class="keyword">true</span>}},
-  <span class="comment">-- a template that depends on another template will load that template first, then apply its own properties on top
-</span>  frame_action_button = {template=<span class="string">"mouse_filter"</span>, style=<span class="string">"frame_action_button"</span>}
-}
-
-<span class="comment">-- add handlers to be usable in `gui.build`
-</span>gui.add_handlers{
-  <span class="comment">--[[
-    organize the handlers however you like. in this example, the handlers for the inventory window elements are kept in
-    their own subtable, while the handler for the location button is separate
-  ]]</span>
-  inventory = {
-    <span class="comment">-- a handler group - contains `defines.events` event name -&gt; handler function pairs
-</span>    titlebar_button = {
-      <span class="comment">-- only `on_gui` events can be used in this table
-</span>      <span class="comment">-- a handler group can have multiple events, but this example only has one
-</span>      on_gui_click = <span class="keyword">function</span>(e)
-        game.get_player(e.player_index).<span class="global">print</span>(<span class="string">"You clicked one of the titlebar buttons!"</span>)
-      <span class="keyword">end</span>
-    },
-    slot_button = {
-      on_gui_click = <span class="keyword">function</span>(e)
-        <span class="keyword">local</span> _, _, name = <span class="global">string</span>.find(e.element.sprite, <span class="string">"item/(.*)"</span>)
-        game.get_player(e.player_index).<span class="global">print</span>(<span class="string">"You clicked the "</span>..name..<span class="string">" slot button!"</span>)
-      <span class="keyword">end</span>
-    },
-    window = {
-      <span class="comment">-- any `on_gui` event can be used
-</span>      on_gui_location_changed = <span class="keyword">function</span>(e)
-        <span class="keyword">local</span> location = e.element.location
-        global.players[e.player_index].gui.location.caption = location.x..<span class="string">", "</span>..location.y
-      <span class="keyword">end</span>
-    }
-  },
-  location = {
-    on_gui_click = <span class="keyword">function</span>(e)
-      global.players[e.player_index].gui.inventory.window.force_auto_center()
-    <span class="keyword">end</span>
-  }
-}
 
 <span class="comment">-- create the GUIs
 </span><span class="keyword">local</span> <span class="keyword">function</span> create_guis(player)
   <span class="comment">-- location button - kept in the `mod-gui` button flow
-</span>  <span class="keyword">local</span> location_elems = gui.build(mod_gui.get_button_flow(player), {
-    {<span class="global">type</span>=<span class="string">"button"</span>, style=mod_gui.button_style, caption=<span class="string">"0, 0"</span>, handlers=<span class="string">"location"</span>, save_as=<span class="string">"label"</span>}
-  })
+</span>  <span class="comment">-- here we demonstrate a method of using action messages on elements without using `gui.build()`
+</span>  <span class="keyword">local</span> location_button = mod_gui.get_button_flow(player).add{
+    <span class="global">type</span> = <span class="string">"button"</span>,
+    style = mod_gui.button_style,
+    caption = <span class="string">"0, 0"</span>,
+    tags = {
+      <span class="comment">-- the module's tags function read to and write from this subtable, keyed by the active mod's name
+</span>      [script.mod_name] = {
+        <span class="comment">-- actions are kept in the `flib` subtable
+</span>        flib = {
+          <span class="comment">-- abbreviated GUI event name -&gt; action message (can be anything that is truthy)
+</span>          on_click = <span class="string">"recenter_inventory_gui"</span>
+        }
+      }
+    }
+  }
+
+  <span class="comment">-- it is a good idea to extract commonly-used elements to builder functions
+</span>  <span class="keyword">local</span> <span class="keyword">function</span> frame_action_button(side)
+    <span class="keyword">return</span> {
+      <span class="global">type</span> = <span class="string">"sprite-button"</span>,
+      style = <span class="string">"frame_action_button"</span>,
+      <span class="comment">-- adding tags to an element during gui.build() will automatically stick them in the `script.mod_name` subtable
+</span>      <span class="comment">-- note that you could store this information directly in the action message, instead of as a standalone tag
+</span>      <span class="comment">-- e.g. `on_click = {action = "print_titlebar_click", side = side}`
+</span>      tags = {side = side},
+      actions = {
+        on_click = <span class="string">"print_titlebar_click"</span>
+      }
+    }
+  <span class="keyword">end</span>
 
   <span class="comment">-- inventory GUI - kept in `screen`
-</span>  <span class="keyword">local</span> inventory_elems = gui.build(player.gui.screen, {
-    <span class="comment">-- handlers - dot-deliminated path to a handler group table in `gui.handlers`
-</span>    <span class="comment">-- children - an array of GuiStructures to add as children of this element
-</span>    {<span class="global">type</span>=<span class="string">"frame"</span>, direction=<span class="string">"vertical"</span>, handlers=<span class="string">"inventory.window"</span>, save_as=<span class="string">"window"</span>, children={
-      <span class="comment">-- save_as - dot-deliminated path to save this element to in `inventory_elems`
-</span>      {<span class="global">type</span>=<span class="string">"flow"</span>, save_as=<span class="string">"titlebar.flow"</span>, children={
-        {<span class="global">type</span>=<span class="string">"label"</span>, style=<span class="string">"frame_title"</span>, caption=<span class="string">"Demo GUI"</span>, elem_mods={ignored_by_interaction=<span class="keyword">true</span>}},
-        {template=<span class="string">"drag_handle"</span>},
-        <span class="comment">-- you can assign multiple elements to the same handler group
-</span>        {template=<span class="string">"frame_action_button"</span>, handlers=<span class="string">"inventory.titlebar_button"</span>},
-        {template=<span class="string">"frame_action_button"</span>, handlers=<span class="string">"inventory.titlebar_button"</span>},
-        {template=<span class="string">"frame_action_button"</span>, handlers=<span class="string">"inventory.titlebar_button"</span>}
-      }},
-      <span class="comment">-- style mods - change style properties on an element immediately after creation
-</span>      <span class="comment">-- available properties are listen in the LuaStyle docs
-</span>      {<span class="global">type</span>=<span class="string">"frame"</span>, style=<span class="string">"inside_shallow_frame_with_padding"</span>, style_mods={padding=<span class="number">12</span>}, children={
-        {<span class="global">type</span>=<span class="string">"frame"</span>, style=<span class="string">"slot_button_deep_frame"</span>, children={
-          {<span class="global">type</span>=<span class="string">"scroll-pane"</span>, style=<span class="string">"flib_naked_scroll_pane_no_padding"</span>, style_mods={height=<span class="number">200</span>}, children={
-            {<span class="global">type</span>=<span class="string">"table"</span>, style=<span class="string">"slot_table"</span>, style_mods={width=<span class="number">400</span>}, column_count=<span class="number">10</span>, save_as=<span class="string">"slot_table"</span>}
+</span>  <span class="keyword">local</span> inventory_refs = gui.build(player.gui.screen, {
+    {
+      <span class="global">type</span> = <span class="string">"frame"</span>,
+      direction = <span class="string">"vertical"</span>,
+      <span class="comment">-- array of table keys defining a path to keep a reference to the frame LuaGuiElement
+</span>      ref = {<span class="string">"window"</span>},
+      <span class="comment">-- table of abbreviated GUI event name -&gt; action message (can be anything that is truthy)
+</span>      actions = {
+        on_location_changed = <span class="string">"update_location_string"</span>
+      },
+      children = {
+        {<span class="global">type</span> = <span class="string">"flow"</span>, ref = {<span class="string">"titlebar"</span>, <span class="string">"flow"</span>}, children = {
+          {<span class="global">type</span> = <span class="string">"label"</span>, style = <span class="string">"frame_title"</span>, caption = <span class="string">"Demo GUI"</span>, ignored_by_interaction = <span class="keyword">true</span>},
+          {<span class="global">type</span> = <span class="string">"empty-widget"</span>, style = <span class="string">"flib_titlebar_drag_handle"</span>, ignored_by_interaction = <span class="keyword">true</span>},
+          <span class="comment">-- call builder functions for commonly-used elements
+</span>          frame_action_button(<span class="string">"left"</span>),
+          frame_action_button(<span class="string">"center"</span>),
+          frame_action_button(<span class="string">"right"</span>)
+        }},
+        <span class="comment">-- style mods - change style properties on an element immediately after creation
+</span>        <span class="comment">-- available properties are listen in the LuaStyle docs
+</span>        {<span class="global">type</span> = <span class="string">"frame"</span>, style = <span class="string">"inside_shallow_frame_with_padding"</span>, style_mods = {padding = <span class="number">12</span>}, children = {
+          {<span class="global">type</span> = <span class="string">"frame"</span>, style = <span class="string">"slot_button_deep_frame"</span>, children = {
+            {
+              <span class="global">type</span> = <span class="string">"scroll-pane"</span>,
+              style = <span class="string">"flib_naked_scroll_pane_no_padding"</span>,
+              style_mods = {height = <span class="number">200</span>},
+              children = {
+                {
+                  <span class="global">type</span> = <span class="string">"table"</span>,
+                  style = <span class="string">"slot_table"</span>,
+                  style_mods = {width = <span class="number">400</span>},
+                  column_count = <span class="number">10</span>,
+                  ref = {<span class="string">"slot_table"</span>}
+                }
+              }
+            }
           }}
         }}
-      }}
-    }}
+      }
+    }
   })
 
-  <span class="comment">-- inventory_elems was built using the structure defined in the `save_as` keys
+  <span class="comment">-- inventory_refs was built using the structure defined in the `ref` keys
 </span>  <span class="comment">-- the titlebar flow was saved to the `titlebar` subtable
-</span>  inventory_elems.titlebar.flow.drag_target = inventory_elems.window
-  inventory_elems.window.force_auto_center()
+</span>  inventory_refs.titlebar.flow.drag_target = inventory_refs.window
+  inventory_refs.window.force_auto_center()
 
-  <span class="comment">-- update_filters - add or remove filters to or from a handler group
-</span>  <span class="comment">-- string filters are valid to be used as a filter as well
-</span>  <span class="comment">-- if the name contains two adjacent underscores `__`, they and everything after them will be ignored
-</span>  <span class="comment">-- this string filter is what will be matched, we will use `__` on element names later on
-</span>  gui.update_filters(<span class="string">"inventory.slot_button"</span>, player.index, {<span class="string">"demo_slot_button"</span>}, <span class="string">"add"</span>)
-
-  global.players[player.index].gui = {inventory=inventory_elems, location=location_elems.label}
+  global.players[player.index].guis = {inventory = inventory_refs, location = location_button}
 <span class="keyword">end</span>
 
-<span class="keyword">local</span> <span class="keyword">function</span> destroy_guis(player, player_table)
+<span class="keyword">local</span> <span class="keyword">function</span> destroy_guis(player_table)
   <span class="comment">-- destroy parents for both GUIs and clean up tables
-</span>  player_table.gui.inventory.window.destroy()
-  player_table.gui.location.destroy()
-  player_table.gui = <span class="keyword">nil</span>
+</span>  player_table.guis.inventory.window.destroy()
+  player_table.guis.location.destroy()
+  player_table.guis = <span class="keyword">nil</span>
+<span class="keyword">end</span>
 
-  <span class="comment">-- use update_filters to remove all stored filters for each group
-</span>  <span class="comment">-- passing `nil` as the third argument will remove everything in that group
-</span>  <span class="comment">-- in this case, you could also use `gui.remove_player_filters(player.index)` to accomplish the same thing
-</span>  gui.update_filters(<span class="string">"inventory"</span>, player.index, <span class="keyword">nil</span>, <span class="string">"remove"</span>)
-  gui.update_filters(<span class="string">"location"</span>, player.index, <span class="keyword">nil</span>, <span class="string">"remove"</span>)
+<span class="comment">-- handle actions for both GUIs
+</span><span class="comment">-- in a mod with multiple large GUIs, it is usually a good idea to have separate handler functions for each GUI
+</span><span class="keyword">local</span> <span class="keyword">function</span> handle_action(msg, e)
+  <span class="keyword">if</span> msg == <span class="string">"print_titlebar_click"</span> <span class="keyword">then</span>
+    <span class="comment">-- use `gui.get_tags()` to automatically access the `script.mod_name` subtable
+</span>    <span class="keyword">local</span> side = gui.get_tags(e.element).side
+    game.get_player(e.player_index).<span class="global">print</span>(<span class="string">"You clicked the "</span>..side..<span class="string">" titlebar button!"</span>)
+  <span class="keyword">elseif</span> msg == <span class="string">"print_sprite_click"</span> <span class="keyword">then</span>
+    <span class="keyword">local</span> _, _, name = <span class="global">string</span>.find(e.element.sprite, <span class="string">"item/(.*)"</span>)
+    game.get_player(e.player_index).<span class="global">print</span>(<span class="string">"You clicked the "</span>..name..<span class="string">" slot button!"</span>)
+  <span class="keyword">elseif</span> msg == <span class="string">"update_location_string"</span> <span class="keyword">then</span>
+    <span class="keyword">local</span> location = e.element.location
+    global.players[e.player_index].guis.location.caption = location.x..<span class="string">", "</span>..location.y
+  <span class="keyword">elseif</span> msg == <span class="string">"recenter_inventory_gui"</span> <span class="keyword">then</span>
+    global.players[e.player_index].guis.inventory.window.force_auto_center()
+  <span class="keyword">end</span>
 <span class="keyword">end</span>
 
 event.on_init(<span class="keyword">function</span>()
-  gui.init()
-  gui.build_lookup_tables()
-
   <span class="comment">-- players setup
 </span>  global.players = {}
   <span class="keyword">for</span> i, player <span class="keyword">in</span> <span class="global">pairs</span>(game.players) <span class="keyword">do</span>
@@ -228,34 +230,31 @@ event.on_init(<span class="keyword">function</span>()
   <span class="keyword">end</span>
 <span class="keyword">end</span>)
 
-event.on_load(<span class="keyword">function</span>()
-  gui.build_lookup_tables()
-<span class="keyword">end</span>)
-
 event.on_configuration_changed(<span class="keyword">function</span>(e)
   <span class="keyword">if</span> migration.on_config_changed(e, {}) <span class="keyword">then</span>
-    gui.check_filter_validity()
-
     <span class="comment">-- refresh all GUIs
 </span>    <span class="keyword">for</span> i, player <span class="keyword">in</span> <span class="global">pairs</span>(game.players) <span class="keyword">do</span>
       <span class="comment">-- destroy and recreate GUIs
 </span>      <span class="comment">-- destroying and recreating GUIs on a mod update is the best way to avoid edge cases
-</span>      destroy_guis(player, global.players[i])
+</span>      destroy_guis(global.players[i])
       create_guis(player)
     <span class="keyword">end</span>
   <span class="keyword">end</span>
 <span class="keyword">end</span>)
 
-<span class="comment">-- this registers `gui.dispatch_handlers()` to all GUI events
-</span>gui.register_handlers()
-
-<span class="comment">-- if custom logic is needed, a handler may be overwritten after calling `gui.register_handlers()`
-</span>event.on_gui_click(<span class="keyword">function</span>(e)
-  <span class="comment">-- dispatch_handlers - will run handlers for matched GUI filters, assigned using `handlers` in a GuiStructure
-</span>  <span class="comment">-- the function will return whether or not a handler was dispatched
-</span>  <span class="keyword">if</span> <span class="keyword">not</span> gui.dispatch_handlers(e) <span class="keyword">then</span>
-    game.<span class="global">print</span>(<span class="string">"custom logic here"</span>)
-  <span class="keyword">end</span>
+<span class="comment">-- this function will be hooked to all `on_gui_*` events
+</span>gui.hook_events(<span class="keyword">function</span>(e)
+  <span class="comment">-- read the corresponding action from the element's tags
+</span>  <span class="keyword">local</span> msg = gui.read_action(e)
+  <span class="comment">-- if an action was found
+</span>  <span class="keyword">if</span> msg <span class="keyword">then</span>
+    <span class="comment">-- if your mod has multiple GUIs, here is where you would check which GUI the action is for, and call the
+</span>    <span class="comment">-- appropriate handler function
+</span>    handle_action(msg, e)
+  <span class="comment">-- custom logic may be needed in some cases where action messages are unusable
+</span>  <span class="keyword">elseif</span> e.name == defines.events.on_gui_closed <span class="keyword">and</span> e.gui_type == <span class="number">16</span> <span class="keyword">then</span>
+    <span class="comment">-- custom logic here
+</span>  <span class="keyword">end</span>
 <span class="keyword">end</span>)
 
 <span class="comment">-- create GUIs for any players that join
@@ -268,7 +267,6 @@ event.on_configuration_changed(<span class="keyword">function</span>(e)
 <span class="comment">-- remove global data and remove all filters for any players that leave
 </span>event.on_player_removed(<span class="keyword">function</span>(e)
   global.players[e.player_index] = <span class="keyword">nil</span>
-  gui.remove_player_filters(e.player_index)
 <span class="keyword">end</span>)
 
 <span class="comment">-- update inventory GUI when the player's inventory changes
@@ -276,7 +274,7 @@ event.on_configuration_changed(<span class="keyword">function</span>(e)
   <span class="keyword">local</span> player = game.get_player(e.player_index)
 
   <span class="comment">-- get the inventory table and its children
-</span>  <span class="keyword">local</span> <span class="global">table</span> = global.players[e.player_index].gui.inventory.slot_table
+</span>  <span class="keyword">local</span> <span class="global">table</span> = global.players[e.player_index].guis.inventory.slot_table
   <span class="keyword">local</span> children = <span class="global">table</span>.children
 
   <span class="comment">-- iterate over the player's inventory contents
@@ -292,15 +290,17 @@ event.on_configuration_changed(<span class="keyword">function</span>(e)
     <span class="keyword">else</span>
       <span class="global">table</span>.add{
         <span class="global">type</span> = <span class="string">"sprite-button"</span>,
-        <span class="comment">-- double underscore - only `demo_slot_button` will be matched, the rest will be ignored
-</span>        <span class="comment">--[[
-          this allows all generated inventory buttons to be assigned to the same handler, without needing to call
-          `gui.build` on all of them
-        ]]</span>
-        name = <span class="string">"demo_slot_button__"</span>..i,
         style = <span class="string">"slot_button"</span>,
         sprite = <span class="string">"item/"</span>..name,
-        number = count
+        number = count,
+        <span class="comment">-- another example if using element actions outside of `gui.build`
+</span>        tags = {
+          [script.mod_name] = {
+            flib = {
+              on_click = <span class="string">"print_sprite_click"</span>
+            }
+          }
+        }
       }
     <span class="keyword">end</span>
   <span class="keyword">end</span>
