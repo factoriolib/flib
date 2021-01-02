@@ -1,6 +1,5 @@
 -- INDICATOR SPRITES
 
--- TODO document these (plus style)
 local indicators = {}
 for i, color in ipairs{"black", "white", "red", "orange", "yellow", "green", "cyan", "blue", "purple", "pink"} do
   indicators[i] = {
