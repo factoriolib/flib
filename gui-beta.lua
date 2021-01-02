@@ -17,9 +17,9 @@ local flib_gui = {}
 -- @see gui-beta.read_action
 -- @usage
 -- gui.hook_events(function(e)
---   local action = gui.read_action(e)
---   if action then
---     -- do stuff
+--   local msg = gui.read_action(e)
+--   if msg then
+--     -- read the action to determine what to do
 --   end
 -- end)
 function flib_gui.hook_events(func)
@@ -213,7 +213,6 @@ end
 
 --- Set (override) a GUI element's tags.
 -- These tags are automatically written to and read from a subtable keyed by mod name, preventing conflicts.
---
 -- @tparam LuaGuiElement elem
 -- @tparam table tags
 function flib_gui.set_tags(elem, tags)
@@ -268,60 +267,56 @@ end
 --
 -- There are a number of new fields that can be applied to a @{GuiBuildStructure} depending on the type:
 --
--- **_style_mods_**
---
--- A key -> value dictionary defining modifications to make to the element's style. Available properties are listed in
--- @{LuaStyle}.
---
--- **_elem_mods_**
---
--- A key -> value dictionary defining modifications to make to the element. Available properties are listed in
--- @{LuaGuiElement}.
---
--- **_actions_**
---
--- See @{GuiElementActions}
---
--- **_ref_**
---
--- An @{array} of @{string} defining a nested table path in which to place a reference to this @{LuaGuiElement} in the
--- first output of @{gui-beta.build}.
---
--- **_children_**
---
--- An array of @{GuiBuildStructure} that will be added as children of this element.
---
--- **_tabs_**
---
--- An array of @{TabAndContent} that will be added as tabs of this `tabbed-pane`.
+-- @tparam[opt] table style_mods A key -> value dictionary defining modifications to make to the element's style.
+-- Available properties are listed in @{LuaStyle}.
+-- @tparam[opt] table elem_mods A key -> value dictionary defining modifications to make to the element. Available
+-- properties are listed in @{LuaGuiElement}.
+-- @tparam[opt] GuiElementActions actions Actions to take on certain GUI events.
+-- @tparam[opt] string[] ref A nested table path in which to place a reference to this @{LuaGuiElement} in the output of
+-- @{gui-beta.build}.
+-- @tparam[opt] GuiBuildStructure[] children @{GuiBuildStructure}s to add as children of this @{LuaGuiElement}.
+-- @tparam[opt] TabAndContent[] tabs @{TabAndContent}s to add as tabs of this @{LuaGuiElement}.
 -- @usage
--- {type="frame", direction="vertical", handlers="window", save_as="window", children={
---   -- titlebar
---   {type="flow", save_as="titlebar_flow", children={
---     {type="label", style="frame_title", caption="Menu", elem_mods={ignored_by_interaction=true}},
---     {type="empty-widget", style="flib_titlebar_drag_handle", elem_mods={ignored_by_interaction=true}},
---     {type="condition", condition=(not is_dialog_frame), children={
---       {template="frame_action_button",
---         sprite="utility/close_white",
---         handlers="titlebar.close_button",
---         save_as="titlebar.close_button"
---       }
---     }}
---   }},
---   {type="frame", style="inside_shallow_frame_with_padding", children={
---     {type="table", style="slot_table", column_count=10, save_as="content.slot_table"}
---   }},
---   {type="condition", condition=is_dialog_frame, children={
---     {type="flow", style="dialog_buttons_horizontal_flow", children={
---       {type="button", style="back_button", caption={"gui.back"}, handlers="footer.back_button"},
---       {type="empty-widget",
---         style="flib_dialog_footer_drag_handle",
---         style_mods={right_margin=0},
---         save_as="footer.drag_handle"
---       }
---     }}
---   }}
--- }}
+-- gui.build(player.gui.screen, {
+--   {
+--     type = "frame",
+--     direction = "vertical",
+--     ref  =  {"window"},
+--     actions = {
+--       on_closed = {gui = "demo", action = "close"}
+--     },
+--     children = {
+--       -- titlebar
+--       {type = "flow", ref = {"titlebar", "flow"}, children = {
+--         {type = "label", style = "frame_title", caption = "Menu", ignored_by_interaction = true},
+--         {type = "empty-widget", style = "flib_titlebar_drag_handle", ignored_by_interaction = true},
+--         {
+--           type = "sprite-button",
+--           style = "frame_action_button",
+--           sprite = "utility/close_white",
+--           hovered_sprite = "utility/close_black",
+--           clicked_sprite = "utility/close_black",
+--           ref = {"titlebar", "close_button"},
+--           actions = {
+--             on_click = {gui = "demo", action = "close"}
+--           }
+--         }
+--       }},
+--       {type = "frame", style = "inside_deep_frame_for_tabs", children = {
+--         {type = "tabbed-pane", tabs = {
+--           {
+--             tab = {type = "tab", caption = "1"},
+--             content = {type = "table", style = "slot_table", column_count = 10, ref = {"tables", 1}}
+--           },
+--           {
+--             tab = {type = "tab", caption = "2"},
+--             content = {type = "table", style = "slot_table", column_count = 10, ref = {"tables", 2}}
+--           }
+--         }}
+--       }}
+--     }
+--   }
+-- })
 -- @Concept GuiBuildStructure
 
 --- A series of nested tables used to update a GUI.
@@ -332,9 +327,8 @@ end
 -- Available properties are listed in @{LuaStyle}.
 -- @tparam[opt] table elem_mods A key –> value dictionary defining modifications to make to the element. Available
 -- properties are listed in LuaGuiElement.
--- @tparam[opt] array children An array of @{GuiUpdateStructure} to apply to children of this element.
--- @tparam[opt] array tabs An array of @{TabAndContent} containing @{GuiUpdateStructure} values to apply to tabs of this
--- `tabbed-pane`.
+-- @tparam[opt] GuiUpdateStructure[] children @{GuiUpdateStructure}s to apply to the children of this @{LuaGuiElement}.
+-- @tparam[opt] TabAndContent[] tabs @{TabAndContent}s to apply to the tabs of this @{LuaGuiElement}.
 -- @usage
 -- gui.update(
 --   my_frame,
@@ -358,6 +352,12 @@ end
 --
 -- Each value is a custom set of data that @{gui-beta.read_action} will return when that GUI event is fired and passes
 -- this GUI element. This data may be of any type, as long as it is truthy.
+--
+-- Actions are kept under a `flib` subtable in the element's mod-specific tags subtable, retrievable with
+-- @{gui-beta.get_tags}. Because of this, there is no chance of accidental mod action overlaps, so feel free to use
+-- generic actions such as "close" or "open".
+--
+-- A common format for a mod with multiple GUIs might be to give each GUI a name, and write the actions as shown below.
 -- @usage
 -- gui.build(player.gui.screen, {
 --   {
