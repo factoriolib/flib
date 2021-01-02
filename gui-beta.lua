@@ -5,6 +5,7 @@
 -- @module gui-beta
 -- @alias flib_gui
 -- @usage local gui = require("__flib__.gui-beta")
+-- @see gui-beta.lua
 
 local reverse_defines = require("__flib__.reverse-defines")
 

@@ -2,8 +2,7 @@
 Version: 0.6.1
 Date: ????
   Features:
-    - Added `gui-beta` documentation
-  Changes:
+    - Added proper documentation for the `gui-beta` module
 ---------------------------------------------------------------------------------------------------
 Version: 0.6.0
 Date: 2020-11-23
