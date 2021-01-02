@@ -24,12 +24,14 @@ local function create_guis(player)
   }
 
   -- it is a good idea to extract commonly-used elements to builder functions
-  local function frame_action_button(to_print)
+  local function frame_action_button(side)
     return {
       type = "sprite-button",
       style = "frame_action_button",
       -- adding tags to an element during gui.build() will automatically stick them in the `script.mod_name` subtable
-      tags = {to_print = to_print},
+      -- note that you could store this information directly in the action message, instead of as a standalone tag
+      -- e.g. `on_click = {action = "print_titlebar_click", side = side}`
+      tags = {side = side},
       actions = {
         on_click = "print_titlebar_click"
       }
@@ -100,7 +102,7 @@ end
 local function handle_action(msg, e)
   if msg == "print_titlebar_click" then
     -- use `gui.get_tags()` to automatically access the `script.mod_name` subtable
-    local side = gui.get_tags(e.element).to_print
+    local side = gui.get_tags(e.element).side
     game.get_player(e.player_index).print("You clicked the "..side.." titlebar button!")
   elseif msg == "print_sprite_click" then
     local _, _, name = string.find(e.element.sprite, "item/(.*)")
