@@ -42,8 +42,8 @@ flib_math.max_uint16 = 65535
 flib_math.max_int = 2147483647
 --- -2,147,483,648
 flib_math.min_int = -2147483648
---- 4,294,967,296
-flib_math.max_uint = 4294967296
+--- 4,294,967,295
+flib_math.max_uint = 4294967295
 
 --- 9,007,199,254,740,991
 flib_math.max_int53 = 0x1FFFFFFFFFFFFF
