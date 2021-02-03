@@ -3,6 +3,7 @@ Version: 0.6.2
 Date: ????
   Features:
     - Added argument to `misc.ticks_to_timestring` to preserve leading zeroes
+    - Added `divisor` argument to `math.round()`, allowing rounding to the nearest multiple of N
   Bugfixes:
     - Fixed math.maxuint being one number too large
 ---------------------------------------------------------------------------------------------------

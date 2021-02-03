@@ -59,10 +59,15 @@ flib_math.min_int53 = -0x20000000000000
 --
 -- From [lua-users.org](http://lua-users.org/wiki/SimpleRound).
 -- @tparam number num
+-- @tparam[opt=1] divisor
 -- @treturn number
-function flib_math.round(num)
-  if num >= 0 then return flib_math.floor(num + 0.5)
-  else return flib_math.ceil(num - 0.5) end
+function flib_math.round(num, divisor)
+  divisor = divisor or 1
+  if num >= 0 then
+    return flib_math.floor((num / divisor) + 0.5) * divisor
+  else
+    return flib_math.ceil((num / divisor) + 0.5) * divisor
+  end
 end
 
 --- Round a number to the nearest N decimal places.
