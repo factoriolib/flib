@@ -30,22 +30,29 @@ function flib_misc.get_distance_squared(pos1, pos2)
   return (x1-x2)^2 + (y1-y2)^2
 end
 
-local format_string_1 = "%d:%02d"
-local format_string_2 = "%d:%02d:%02d"
-
 --- Convert given tick or game.tick into "[hh:]mm:ss" format.
 -- @tparam[opt=game.ticks_played] number tick
+-- @tparam[opt] booelan include_leading_zeroes If true, leading zeroes will be included in single-digit minute and hour
+-- values.
 -- @treturn string
-function flib_misc.ticks_to_timestring(tick)
+function flib_misc.ticks_to_timestring(tick, include_leading_zeroes)
   local total_seconds = math.floor((tick or game.ticks_played) / 60)
   local seconds = total_seconds % 60
   local minutes = math.floor(total_seconds / 60)
   if minutes > 59 then
     minutes = minutes % 60
     local hours = math.floor(total_seconds / 3600)
-    return string.format(format_string_2, hours, minutes, seconds)
+    if include_leading_zeroes then
+      return string.format("%02d:%02d:%02d", hours, minutes, seconds)
+    else
+      return string.format("%d:%02d:%02d", hours, minutes, seconds)
+    end
   else
-    return string.format(format_string_1, minutes, seconds)
+    if include_leading_zeroes then
+      return string.format("%02d:%02d", minutes, seconds)
+    else
+      return string.format("%d:%02d", minutes, seconds)
+    end
   end
 end
 
