@@ -61,10 +61,26 @@ end
 
 -- navigate a structure to build a GUI
 local function recursive_build(parent, structure, refs)
+  -- prepare tags
+  do
+    local tags = structure.tags or {}
+    tags.flib = structure.actions
+    structure.tags = {
+      [script.mod_name] = tags
+    }
+  end
+
+  -- local these for later
+  local tabs = structure.tabs
+  local children = structure.children
+
+  -- make the game not convert these into a property tree for no reason
+  structure.tabs = nil
+  structure.children = nil
+  structure.actions = nil
+
   -- create element
   local elem = parent.add(structure)
-  -- reset tags so they can be added back in later with a subtable
-  elem.tags = {}
 
   if structure.style_mods then
     for k, v in pairs(structure.style_mods) do
@@ -76,14 +92,6 @@ local function recursive_build(parent, structure, refs)
     for k, v in pairs(structure.elem_mods) do
       elem[k] = v
     end
-  end
-
-  if structure.tags then
-    flib_gui.set_tags(elem, structure.tags)
-  end
-
-  if structure.actions then
-    flib_gui.update_tags(elem, {flib = structure.actions})
   end
 
   if structure.ref then
@@ -104,14 +112,12 @@ local function recursive_build(parent, structure, refs)
     prev[prev_key] = elem
   end
 
-  local children = structure.children
   if children then
     for i = 1, #children do
       recursive_build(elem, children[i], refs)
     end
   end
 
-  local tabs = structure.tabs
   if tabs then
     for i = 1, #tabs do
       local tab_and_content = tabs[i]
