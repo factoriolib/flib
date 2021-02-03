@@ -102,22 +102,23 @@ local function recursive_build(parent, structure, refs)
     end
   end
 
-  if structure.ref then
-    -- recursively create tables as needed
-    local prev = refs
-    local prev_key
-    local nav
-    for _, key in pairs(structure.ref) do
-      prev = prev_key and prev[prev_key] or prev
-      nav = prev[key]
-      if nav then
-        prev = nav
-      else
-        prev[key] = {}
-        prev_key = key
+  do
+    local ref = structure.ref
+    if ref then
+      -- recursively create tables as needed
+      local prev = refs
+      local ref_length = #ref
+      for i = 1, ref_length - 1 do
+        local current_key = ref[i]
+        local current = prev[current_key]
+        if not current then
+          current = {}
+          prev[current_key] = current
+        end
+        prev = current
       end
+      prev[ref[ref_length]] = elem
     end
-    prev[prev_key] = elem
   end
 
   if children then
