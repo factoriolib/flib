@@ -90,15 +90,21 @@ local function recursive_build(parent, structure, refs)
   -- create element
   local elem = parent.add(structure)
 
-  if structure.style_mods then
-    for k, v in pairs(structure.style_mods) do
-      elem.style[k] = v
+  do
+    local style_mods = structure.style_mods
+    if style_mods then
+      for k, v in pairs(style_mods) do
+        elem.style[k] = v
+      end
     end
   end
 
-  if structure.elem_mods then
-    for k, v in pairs(structure.elem_mods) do
-      elem[k] = v
+  do
+    local elem_mods = structure.elem_mods
+    if elem_mods then
+      for k, v in pairs(elem_mods) do
+        elem[k] = v
+      end
     end
   end
 
@@ -128,11 +134,12 @@ local function recursive_build(parent, structure, refs)
   end
 
   if tabs then
+    local add_tab = elem.add_tab
     for i = 1, #tabs do
       local tab_and_content = tabs[i]
       local tab = recursive_build(elem, tab_and_content.tab, refs)
       local content = recursive_build(elem, tab_and_content.content, refs)
-      elem.add_tab(tab, content)
+      add_tab(tab, content)
     end
   end
 
