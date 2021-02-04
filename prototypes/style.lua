@@ -207,6 +207,11 @@ styles.flib_indicator_flow = {
   vertical_align = "center"
 }
 
+styles.flib_titlebar_flow = {
+  type = "horizontal_flow_style",
+  horizontal_spacing = 8
+}
+
 -- IMAGE STYLES
 
 styles.flib_indicator = {
