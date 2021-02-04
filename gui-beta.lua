@@ -9,8 +9,8 @@
 
 local mod_name = script.mod_name
 local gui_event_defines = {}
-local event_id_to_string_mapping = {}
 
+local event_id_to_string_mapping = {}
 for name, id in pairs(defines.events) do
   if string.find(name, "^on_gui") then
     gui_event_defines[name] = id
@@ -23,7 +23,7 @@ local flib_gui = {}
 -- `ACTIONS` FUNCTIONS
 
 --- Provide a callback to be run for GUI events.
--- @tparam function func
+-- @tparam function callback
 -- @see gui-beta.read_action
 -- @usage
 -- gui.hook_events(function(e)
@@ -32,10 +32,10 @@ local flib_gui = {}
 --     -- read the action to determine what to do
 --   end
 -- end)
-function flib_gui.hook_events(func)
+function flib_gui.hook_events(callback)
   local on_event = script.on_event
   for _, id in pairs(gui_event_defines) do
-    on_event(id, func)
+    on_event(id, callback)
   end
 end
 
