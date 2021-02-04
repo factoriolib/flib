@@ -7,7 +7,16 @@
 -- @usage local gui = require("__flib__.gui-beta")
 -- @see gui-beta.lua
 
-local reverse_defines = require("__flib__.reverse-defines")
+local mod_name = script.mod_name
+local gui_event_defines = {}
+local event_id_to_string_mapping = {}
+
+for name, id in pairs(defines.events) do
+  if string.find(name, "^on_gui") then
+    gui_event_defines[name] = id
+    event_id_to_string_mapping[id] = string.gsub(name, "^on_gui", "on")
+  end
+end
 
 local flib_gui = {}
 
@@ -24,10 +33,9 @@ local flib_gui = {}
 --   end
 -- end)
 function flib_gui.hook_events(func)
-  for name, id in pairs(defines.events) do
-    if string.find(name, "gui") then
-      script.on_event(id, func)
-    end
+  local on_event = script.on_event
+  for _, id in pairs(gui_event_defines) do
+    on_event(id, func)
   end
 end
 
@@ -45,13 +53,13 @@ function flib_gui.read_action(event_data)
   local elem = event_data.element
   if not elem then return end
 
-  local mod_tags = elem.tags[script.mod_name]
+  local mod_tags = elem.tags[mod_name]
   if not mod_tags then return end
 
   local elem_actions = mod_tags.flib
   if not elem_actions then return end
 
-  local event_name = string.gsub(reverse_defines.events[event_data.name] or "", "_gui", "")
+  local event_name = event_id_to_string_mapping[event_data.name]
   local msg = elem_actions[event_name]
 
   return msg
@@ -61,63 +69,83 @@ end
 
 -- navigate a structure to build a GUI
 local function recursive_build(parent, structure, refs)
+  -- prepare tags
+  local tags = structure.tags or {}
+  local actions = structure.actions
+  local tags_flib = tags.flib
+  tags.flib = actions
+  structure.tags = {
+    [mod_name] = tags
+  }
+
+  -- local these for later
+  local tabs = structure.tabs
+  local children = structure.children
+
+  -- make the game not convert these into a property tree for no reason
+  structure.tabs = nil
+  structure.children = nil
+  structure.actions = nil
+
   -- create element
   local elem = parent.add(structure)
-  -- reset tags so they can be added back in later with a subtable
-  elem.tags = {}
 
-  if structure.style_mods then
-    for k, v in pairs(structure.style_mods) do
-      elem.style[k] = v
-    end
-  end
+  -- restore structure
+  structure.tags = tabs
+  structure.children = children
+  structure.actions = actions
+  tags.flib = tags_flib
 
-  if structure.elem_mods then
-    for k, v in pairs(structure.elem_mods) do
-      elem[k] = v
-    end
-  end
-
-  if structure.tags then
-    flib_gui.set_tags(elem, structure.tags)
-  end
-
-  if structure.actions then
-    flib_gui.update_tags(elem, {flib = structure.actions})
-  end
-
-  if structure.ref then
-    -- recursively create tables as needed
-    local prev = refs
-    local prev_key
-    local nav
-    for _, key in pairs(structure.ref) do
-      prev = prev_key and prev[prev_key] or prev
-      nav = prev[key]
-      if nav then
-        prev = nav
-      else
-        prev[key] = {}
-        prev_key = key
+  do
+    local style_mods = structure.style_mods
+    if style_mods then
+      for k, v in pairs(style_mods) do
+        elem.style[k] = v
       end
     end
-    prev[prev_key] = elem
   end
 
-  local children = structure.children
+  do
+    local elem_mods = structure.elem_mods
+    if elem_mods then
+      for k, v in pairs(elem_mods) do
+        elem[k] = v
+      end
+    end
+  end
+
+  do
+    local ref = structure.ref
+    if ref then
+      -- recursively create tables as needed
+      local prev = refs
+      local ref_length = #ref
+      for i = 1, ref_length - 1 do
+        local current_key = ref[i]
+        local current = prev[current_key]
+        if not current then
+          current = {}
+          prev[current_key] = current
+        end
+        prev = current
+      end
+      prev[ref[ref_length]] = elem
+    end
+  end
+
   if children then
     for i = 1, #children do
       recursive_build(elem, children[i], refs)
     end
   end
 
-  local tabs = structure.tabs
   if tabs then
+    local add_tab = elem.add_tab
     for i = 1, #tabs do
       local tab_and_content = tabs[i]
       local tab = recursive_build(elem, tab_and_content.tab, refs)
       local content = recursive_build(elem, tab_and_content.content, refs)
-      elem.add_tab(tab, content)
+      add_tab(tab, content)
     end
   end
 
@@ -209,7 +237,7 @@ end
 -- @tparam LuaGuiElement elem
 -- @treturn table
 function flib_gui.get_tags(elem)
-  return elem.tags[script.mod_name] or {}
+  return elem.tags[mod_name] or {}
 end
 
 --- Set (override) a GUI element's tags.
@@ -218,7 +246,7 @@ end
 -- @tparam table tags
 function flib_gui.set_tags(elem, tags)
   local elem_tags = elem.tags
-  elem_tags[script.mod_name] = tags
+  elem_tags[mod_name] = tags
   elem.tags = elem_tags
 end
 
@@ -228,7 +256,7 @@ end
 -- @tparam LuaGuiElement elem
 function flib_gui.delete_tags(elem)
   local elem_tags = elem.tags
-  elem_tags[script.mod_name] = nil
+  elem_tags[mod_name] = nil
   elem.tags = elem_tags
 end
 
@@ -242,11 +270,11 @@ end
 -- @tparam table updates
 function flib_gui.update_tags(elem, updates)
   local elem_tags = elem.tags
-  local existing = elem_tags[script.mod_name]
+  local existing = elem_tags[mod_name]
 
   if not existing then
-    elem_tags[script.mod_name] = {}
-    existing = elem_tags[script.mod_name]
+    elem_tags[mod_name] = {}
+    existing = elem_tags[mod_name]
   end
 
   for k, v in pairs(updates) do
