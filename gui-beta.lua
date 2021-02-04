@@ -91,7 +91,8 @@ local function recursive_build(parent, structure, refs)
   local elem = parent.add(structure)
 
   -- restore structure
-  structure.tags = tabs
+  structure.tags = tags
+  structure.tabs = tabs
   structure.children = children
   structure.actions = actions
   tags.flib = tags_flib
