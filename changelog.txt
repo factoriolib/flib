@@ -2,9 +2,10 @@
 Version: 0.7.0
 Date: ????
   Features:
-    - Added argument to `misc.ticks_to_timestring` to preserve leading zeroes
-    - Added `divisor` argument to `math.round()`, allowing rounding to the nearest multiple of N
     - Added `flib_titlebar_flow` style
+    - Added `divisor` argument to `math.round()`, allowing rounding to the nearest multiple of N
+    - Added `math.max_double` and `math.min_double`
+    - Added argument to `misc.ticks_to_timestring` to preserve leading zeroes
   Bugfixes:
     - Fixed math.maxuint being one number too large
 ---------------------------------------------------------------------------------------------------

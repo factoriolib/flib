@@ -24,6 +24,11 @@ flib_math.deg_to_rad = flib_math.pi / 180
 -- local deg = rad x flib_math.rad_to_deg -- 57.2958
 flib_math.rad_to_deg = 180 / flib_math.pi
 
+--- Max double
+flib_math.max_double = 0X1.FFFFFFFFFFFFFP+1023
+--- Min double
+flib_math.min_double = -0X1.FFFFFFFFFFFFFP+1023
+
 --- 127
 flib_math.max_int8 = 127
 --- -128
@@ -50,7 +55,6 @@ flib_math.max_int53 = 0x1FFFFFFFFFFFFF
 --- -9,007,199,254,740,992
 flib_math.min_int53 = -0x20000000000000
 
-
 --- Functions
 -- @section
 
@@ -59,7 +63,7 @@ flib_math.min_int53 = -0x20000000000000
 --
 -- From [lua-users.org](http://lua-users.org/wiki/SimpleRound).
 -- @tparam number num
--- @tparam[opt=1] divisor
+-- @tparam[opt=1] divisor `num` will be rounded to the nearest multiple of `divisor`.
 -- @treturn number
 function flib_math.round(num, divisor)
   divisor = divisor or 1
