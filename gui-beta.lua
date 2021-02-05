@@ -70,7 +70,8 @@ end
 -- navigate a structure to build a GUI
 local function recursive_build(parent, structure, refs)
   -- prepare tags
-  local tags = structure.tags or {}
+  local original_tags = structure.tags
+  local tags = original_tags or {}
   local actions = structure.actions
   local tags_flib = tags.flib
   tags.flib = actions
@@ -91,7 +92,7 @@ local function recursive_build(parent, structure, refs)
   local elem = parent.add(structure)
 
   -- restore structure
-  structure.tags = tags
+  structure.tags = original_tags
   structure.tabs = tabs
   structure.children = children
   structure.actions = actions
