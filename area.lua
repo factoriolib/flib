@@ -1,4 +1,4 @@
---- Functions for maniuplating areas.
+--- Functions for manipulating areas.
 -- **NOTE:** All functions assume that `BoundingBox` and `Position` objects contain named keys - `x` and `y` for
 -- `Position`, and `left_top` and `right_bottom` for `BoundingBox`. Attempting to use these functions with the
 -- shorthand forms of these objects will result in a crash.
