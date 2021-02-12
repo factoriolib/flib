@@ -22,7 +22,7 @@ function flib_area.ceil(self)
   return self
 end
 
---- Calculate and return the centerpoint of the area.
+--- Calculate the centerpoint of the area.
 -- @tparam Concepts.BoundingBox self The area to check.
 -- @treturn Concepts.Position The centerpoint of the area.
 function flib_area.center(self)
@@ -183,7 +183,7 @@ function flib_area.height(self)
   return math.abs(self.right_bottom.y - self.left_top.y)
 end
 
---- Create an iterator of positions in the area from the top-left to bottom-right.
+--- Create an iterator of positions in the area from the left-top to the right-bottom.
 -- The iterator function, when called, will return a `Position` that is within the area.
 -- @tparam Concepts.BoundingBox self The area to iterate.
 -- @tparam[opt=1] number step The distance to move on each iteration.
