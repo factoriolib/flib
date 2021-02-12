@@ -167,8 +167,8 @@ function flib_area.floor(self)
   return self
 end
 
---- Create a 1y1 tile area from the given position.
--- @tparam Position position
+--- Create a 1x1 tile area from the given position.
+-- @tparam Concepts.Position position
 function flib_area.from_position(position)
   return {
     left_top = {x = position.x, y = position.y},
