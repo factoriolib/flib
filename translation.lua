@@ -157,7 +157,7 @@ function flib_translation.add_requests(player_index, strings)
     player_table.state = "sort"
     if player_table.sort then
       local strings_to_sort = player_table.sort.strings
-      for i=1, #strings do
+      for i = 1, #strings do
         strings_to_sort[#strings_to_sort+1] = strings[i]
       end
       player_table.sort.next_index = 1
@@ -178,7 +178,7 @@ function flib_translation.add_requests(player_index, strings)
       },
       -- translate
       translate = {
-        strings = {__size=0},
+        strings = {__size = 0},
         next_key = nil
       },
       -- wait
