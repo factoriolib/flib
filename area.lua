@@ -151,6 +151,22 @@ function flib_area.expand_to_contain_position(self, position)
   return self
 end
 
+--- Shrink an area to its inner tile edges.
+-- @tparam Concepts.BoundingBox self The area to floor.
+-- @treturn Concepts.BoundingBox The floored area.
+function flib_area.floor(self)
+  self.left_top = {
+    x = math.ceil(self.left_top.x),
+    y = math.ceil(self.left_top.y)
+  }
+  self.right_bottom = {
+    x = math.floor(self.right_bottom.x),
+    y = math.floor(self.right_bottom.y)
+  }
+
+  return self
+end
+
 --- Create a 1y1 tile area from the given position.
 -- @tparam Position position
 function flib_area.from_position(position)
@@ -293,5 +309,4 @@ function flib_area.width(self)
 end
 
 return flib_area
-
 

@@ -40,7 +40,7 @@ A drag handle suitable for placement in the footer of a **dialog** window.
 
 **flib_dialog_titlebar_drag_handle**
 
-A drag handle suitable for placement in the titlebar of a **dialog** window.
+A drag handle suitable for placement in the titlebar of a **dialog** window. Use inside of a `flib_titlebar_flow` flow.
 
 **flib_horizontal_pusher**
 
@@ -48,7 +48,7 @@ An invisible element that has `horizontally_stretchable` set, thereby "pushing" 
 
 **flib_titlebar_drag_handle**
 
-A drag handle suitable for placement in the titlebar of a **standard** window (a window with a close button, or any other frame action buttons in the titlebar).
+A drag handle suitable for placement in the titlebar of a **standard** window (a window with a close button, or any other frame action buttons in the titlebar). Use inside of a `flib_titlebar_flow` flow.
 
 **flib_vertical_pusher**
 
@@ -59,6 +59,10 @@ An invisible element that has `vertically_stretchable` set, thereby "pushing" ev
 **flib_indicator_flow**
 
 A flow designed for use with indicators (see below).
+
+**flib_titlebar_flow**
+
+A flow for use in a custom window titlebar. Identical to a regular horizontal flow, except for an increased horizontal spacing.
 
 ### Image styles
 
