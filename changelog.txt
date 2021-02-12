@@ -2,6 +2,7 @@
 Version: 0.7.0
 Date: ????
   Features:
+    - Added `area` module
     - Added `flib_titlebar_flow` style
     - Added `divisor` argument to `math.round()`, allowing rounding to the nearest multiple of N
     - Added `math.max_double` and `math.min_double`
@@ -9,7 +10,7 @@ Date: ????
   Optimizations:
     - Significant performance improvements to `gui-beta.build()`
   Bugfixes:
-    - Fixed math.max_uint being one number too large
+    - Fixed `math.max_uint` being one number too large
 ---------------------------------------------------------------------------------------------------
 Version: 0.6.1
 Date: 2021-01-02
