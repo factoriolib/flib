@@ -63,7 +63,7 @@ flib_math.min_int53 = -0x20000000000000
 --
 -- From [lua-users.org](http://lua-users.org/wiki/SimpleRound).
 -- @tparam number num
--- @tparam[opt=1] divisor `num` will be rounded to the nearest multiple of `divisor`.
+-- @tparam[opt=1] number divisor `num` will be rounded to the nearest multiple of `divisor`.
 -- @treturn number
 function flib_math.round(num, divisor)
   divisor = divisor or 1
