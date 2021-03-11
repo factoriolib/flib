@@ -58,9 +58,15 @@ function flib_data_util.create_icons(prototype, new_layers)
   if prototype.icons then
     local icons ={}
     for _, v in pairs(prototype.icons) do
-      local sub_icon = table.deepcopy(v)
-      sub_icon.icon_size = v.icon_size or prototype.icon_size
-      icons[#icons+1] = sub_icon
+      -- assume every other mod is lacking full prototype definitions
+      icons[#icons+1] = {
+        icon = v.icon,
+        icon_size = v.icon_size or prototype.icon_size or 32,
+        icon_mipmaps = v.icon_mipmaps or 0
+        tint = v.tint,
+        scale = v.scale,
+        shift = v.shift,
+      }
     end
     if new_layers then
       for _, new_layer in pairs(new_layers) do
