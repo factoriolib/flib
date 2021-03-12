@@ -58,11 +58,14 @@ function flib_data_util.create_icons(prototype, new_layers)
   if prototype.icons then
     local icons ={}
     for _, v in pairs(prototype.icons) do
-      -- assume every other mod is lacking full prototype definitions
+      -- over define as much as possible to minimize weirdness: https://forums.factorio.com/viewtopic.php?f=25&t=81980
       icons[#icons+1] = {
         icon = v.icon,
         icon_size = v.icon_size or prototype.icon_size or 32,
-        tint = v.tint
+        icon_mipmaps = v.icon_mipmaps or prototype.icon_mipmaps or 0,
+        tint = v.tint,
+        scale = v.scale or 1,
+        shift = v.shift,
       }
     end
     if new_layers then
