@@ -24,9 +24,9 @@ local exportable_items = {
 }
                     
 local blank_planner_strings = {
-  ["blueprint-book"] = "0eNqrrgUAAXUA+Q==",
-  ["upgrade-planner"] = "0eNqrViotSC9KTEmNL8hJzMtLLVKyqlYqTi0pycxLL1ayyivNydFRyixJzVWygqnUhanUUSpLLSrOzM9TsjI3NjC0NDMyNDY3q60FABK2HN8=",
-  ["deconstruction-planner"] = "0eNpljsEKwjAQRP9lzxFaCy3mZ0JIphJMN5JdhVLy77aoF70NbxjmbRQRCovWR9BU2N2zZ0Ylu5FANfFVjgzWpKubU1ZUt5QIsp0hrYA4z9HVEm7iCueV7OyzYC9Txv/igIKM992HN0NJsZD90Tl9dQw9UWUnZKeh6y/juR+msbUXMiNFlg==",
+  ["blueprint-book"] = "0eNqrVkrKKU0tKMrMK4lPys/PVrKqVsosSc1VskJI6IIldJQSk0syy1LjM/NSUiuUrAx0lMpSi4oz8/OUrIwsDE3MLY3MDc3MzS0tjWprAVWnHQo=",
+  ["upgrade-planner"] = "0eNo1yk0KgCAQBtC7fGtbKNGklwmhQQSbxJ824t1b+dZvoOdQ/M1XTl6EC9xA5daihAonPSWF2PiBW3NbU+HjUuMrcObUO1lD+iCy1sz5A4aSHcM=",
+  ["deconstruction-planner"] = "0eNpdy8EKgCAMANB/2dkOSmTuZyJshGAz3Owi/XtdunR98DpsFAuL1hY1FV7OvDJTBewgpJp4F0BuORtISgfgLwxfMHBRlVcA3WxHH5y3k/chuPt+ALDXI9s=",
 }
 
 --- 
@@ -545,19 +545,3 @@ function flib_serialize.item_request_proxy(target)
 end
 
 return flib_serialize, flib_deserialize
-
-{
-    saveBurner = saveBurner,
-    restoreBurner = restoreBurner,
-    
-    
-    saveInventoryStacks = saveInventoryStacks,
-    insertStack = insertStack,
-    insertInventoryStacks = insertInventoryStacks,
-    mergeStackLists = mergeStackLists,
-    itemsToStacks = itemsToStacks,
-    spillStack = spillStack,
-    spillStacks = spillStacks,
-
-    
-  }

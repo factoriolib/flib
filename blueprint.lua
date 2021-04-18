@@ -1,6 +1,6 @@
 --- Adds functions to replace to replace entities in blueprints and cursor selections.
 -- Useful for preventing non-buildable entities from being acquired in cheat mode or 
--- place as ghosts.
+-- placed as ghosts.
 -- @module blueprint
 -- @alias flib_blueprint
 -- @usage local blueprint = require("__flib__.blueprint")  
