@@ -3,9 +3,13 @@ local separator = "⤬⤬⤬"
 
 local translation = {}
 
-function translation.new(dictionary_name)
+function translation.new(dictionary_name, initial_contents)
   local initial = {"", "FLIB_TRANSLATION_DICTIONARY", inner_separator, dictionary_name, separator}
   initial._ref = initial
+
+  for key, value in pairs(initial_contents or {}) do
+    translation.add(initial, key, value)
+  end
 
   return initial
 end
@@ -17,17 +21,29 @@ function translation.add(dictionary, key, value)
 end
 
 function translation.split_results(e, include_failed)
+  include_failed = include_failed or translation.include_failed_type.no
   if e.translated then
-    local _, _, dict_name, translation = string.find(
+    local _, _, dict_name, result = string.find(
       e.result,
       "FLIB_TRANSLATION_DICTIONARY"..inner_separator.."(.-)"..separator.."(.*)$"
     )
-    if dict_name and translation then
+    if dict_name and result then
+      if type(include_failed) == "function" then
+        include_failed = include_failed(dict_name)
+      end
       local dictionary = {}
-      for str in string.gmatch(translation, "(.-)"..separator) do
+      for str in string.gmatch(result, "(.-)"..separator) do
         local _, _, key, value = string.find(str, "^(.-)"..inner_separator.."(.-)$")
-        if key and (include_failed or not string.find(value, "^Unknown key: ")) then
-          dictionary[key] = value
+        if key then
+          if string.find(value, "^Unknown key: ") then
+            if include_failed == translation.include_failed_type.key then
+              dictionary[key] = key
+            elseif include_failed == translation.include_failed_type.yes then
+              dictionary[key] = value
+            end
+          else
+            dictionary[key] = value
+          end
         end
       end
       return dict_name, dictionary
@@ -37,10 +53,16 @@ function translation.split_results(e, include_failed)
     error(
       [[
         Flib bulk translation failed. Helpful information has been written to the script-output/flib directory.
-        Please contact raiguard and upload that information.
+        Please contact raiguard and provide that information.
       ]]
     )
   end
 end
+
+translation.include_failed_type = {
+  no = 0,
+  key = 1,
+  yes = 2
+}
 
 return translation
