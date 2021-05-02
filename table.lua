@@ -111,7 +111,7 @@ end
 
 --- Call the given function for each item in the table, and abort if the function returns truthy.
 --
--- Calls `callback(value, key, tbl)` for each item in the table, and immediately ceases iteration if the callback
+-- Calls `callback(value, key)` for each item in the table, and immediately ceases iteration if the callback
 -- returns truthy.
 -- @tparam table tbl
 -- @tparam function callback Receives `value`, `key`, and `tbl` as parameters.
@@ -126,7 +126,7 @@ end
 -- local all_values_less_than_six = not table.for_each(tbl, function(v) return not (v < 6) end)
 function flib_table.for_each(tbl, callback)
   for k, v in pairs(tbl) do
-    if callback(v, k, tbl) then
+    if callback(v, k) then
       return true
     end
   end
@@ -219,7 +219,7 @@ end
 
 --- Create a filtered version of a table based on the results of a filter function.
 --
--- Calls `filter(value, key, tbl)` on each element in the table, returning a new table with only pairs for which
+-- Calls `filter(value, key)` on each element in the table, returning a new table with only pairs for which
 -- `filter` returned a truthy value.
 -- @tparam table tbl
 -- @tparam function filter Takes in `value`, `key`, and `tbl` as parameters.
@@ -264,7 +264,7 @@ end
 
 --- Create a transformed table using the output of a mapper function.
 --
--- Calls `mapper(value, key, tbl)` on each element in the table, using the return as the new value for the key.
+-- Calls `mapper(value, key)` on each element in the table, using the return as the new value for the key.
 -- @tparam table tbl
 -- @tparam function mapper Takes in `value`, `key`, and `tbl` as parameters.
 -- @treturn table A new table containing the transformed values.
