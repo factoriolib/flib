@@ -21,7 +21,6 @@ function translation.add(dictionary, key, value)
 end
 
 function translation.split_results(e, include_failed)
-  include_failed = include_failed or translation.include_failed_type.no
   if e.translated then
     local _, _, dict_name, result = string.find(
       e.result,
@@ -30,7 +29,10 @@ function translation.split_results(e, include_failed)
     if dict_name and result then
       if type(include_failed) == "function" then
         include_failed = include_failed(dict_name)
+      elseif include_failed == nil then
+        include_failed = translation.include_failed_type.no
       end
+
       local dictionary = {}
       for str in string.gmatch(result, "(.-)"..separator) do
         local _, _, key, value = string.find(str, "^(.-)"..inner_separator.."(.-)$")
