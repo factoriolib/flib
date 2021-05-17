@@ -58,13 +58,21 @@ end
 
 --- Split numerical values by a delimiter.
 -- Adapted from [lua-users.org](http://lua-users.org/wiki/FormattingNumbers).
--- @tparam number number The number to delineate. Will be floored before formatting.
+-- @tparam number number The number to delineate.
 -- @tparam[opt=","] string delimiter
 -- @treturn string The formatted number.
 function flib_misc.delineate_number(number, delimiter)
   delimiter = delimiter or ","
-  number = math.floor(number)
-  local formatted = number
+  -- Handle decimals
+  local _, _, before, after = string.find(number, "^(%d*)(%.%d*)")
+  if before and after then
+    number = tonumber(before)
+    after = after
+  else
+    before = math.floor(number)
+    after = ""
+  end
+  local formatted = before
   local k
   while true do
     formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", "%1"..delimiter.."%2")
@@ -72,7 +80,7 @@ function flib_misc.delineate_number(number, delimiter)
       break
     end
   end
-  return formatted
+  return formatted..after
 end
 
 return flib_misc
