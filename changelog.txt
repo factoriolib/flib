@@ -2,6 +2,8 @@
 Version: 0.7.1
 Date: ????
   Changes:
+  Bugfixes:
+    - Fixed a crash when calling `gui-beta.read_action()` when the element was invalid
 ---------------------------------------------------------------------------------------------------
 Version: 0.7.0
 Date: 2021-02-12
