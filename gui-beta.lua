@@ -69,6 +69,10 @@ end
 
 -- navigate a structure to build a GUI
 local function recursive_build(parent, structure, refs)
+  -- If the structure has no type, just ignore it
+  -- This is to make it possible to pass unit types `{}` to represent "no element" without breaking things
+  if not structure.type then return end
+
   -- prepare tags
   local original_tags = structure.tags
   local tags = original_tags or {}
@@ -135,16 +139,38 @@ local function recursive_build(parent, structure, refs)
     end
   end
 
+  -- Children or tab-and-content pairs are specified in the array portion of each structure
+  if structure.type == "tabbed-pane" then
+    local add_tab = elem.add_tab
+    for i = 1, #structure do
+      local tab_and_content = structure[i]
+      if not (tab_and_content.tab and tab_and_content.content) then
+        error("TabAndContent must have `tab` and `content` fields")
+      end
+      local tab = recursive_build(elem, tab_and_content.tab, refs)
+      local content = recursive_build(elem, tab_and_content.content, refs)
+      add_tab(tab, content)
+    end
+  else
+    for i = 1, #structure do
+      local child = structure[i]
+      recursive_build(elem, structure[i], refs)
+    end
+  end
+
+  -- The `children` and `tabs` tables are still supported, but aren't encouraged
   if children then
     for i = 1, #children do
       recursive_build(elem, children[i], refs)
     end
   end
-
   if tabs then
     local add_tab = elem.add_tab
     for i = 1, #tabs do
       local tab_and_content = tabs[i]
+      if not (tab_and_content.tab and tab_and_content.content) then
+        error("TabAndContent must have `tab` and `content` fields")
+      end
       local tab = recursive_build(elem, tab_and_content.tab, refs)
       local content = recursive_build(elem, tab_and_content.content, refs)
       add_tab(tab, content)
@@ -194,6 +220,13 @@ local function recursive_update(elem, updates)
 
   -- TODO: tags, actions
 
+  -- Preferred method: Children live in the array portion
+  for i, child_updates in ipairs(updates) do
+    if elem_children[i] then
+      recursive_update(elem_children[i], child_updates)
+    end
+  end
+
   if updates.children then
     local elem_children = elem.children
     for i, child_updates in ipairs(updates.children) do
@@ -203,6 +236,7 @@ local function recursive_update(elem, updates)
     end
   end
 
+  -- TODO: Live in array portion
   if updates.tabs then
     local elem_tabs = elem.tabs
     for i, tab_and_content_updates in pairs(updates.tabs) do
@@ -275,13 +309,33 @@ function flib_gui.update_tags(elem, updates)
   local existing = elem_tags[mod_name]
 
   if not existing then
-    elem_tags[mod_name] = {}
-    existing = elem_tags[mod_name]
+    existing = {}
+    elem_tags[mod_name] = existing
   end
 
   for k, v in pairs(updates) do
     existing[k] = v
   end
+
+  elem.tags = elem_tags
+end
+
+function flib_gui.set_action(elem, event_name, msg)
+  local elem_tags = elem.tags
+  local existing = elem_tags[mod_name]
+
+  if not existing then
+    existing = {}
+    elem_tags[mod_name] = existing
+  end
+
+  local actions = existing.flib
+  if not actions then
+    actions = {}
+    existing.flib = actions
+  end
+
+  actions[event_name] = msg
 
   elem.tags = elem_tags
 end
