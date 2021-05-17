@@ -1,6 +1,10 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.7.1
 Date: ????
+  Features:
+    - Added `flib_widthless_textfield` style
+    - Children in a `gui-beta.GuiStructure` can now be defined in the array portion, instead of in a `children` table
+    - `misc.delineate_number()` now supports decimal numbers
   Changes:
   Bugfixes:
     - Fixed a crash when calling `gui-beta.read_action()` when the element was invalid
