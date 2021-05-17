@@ -248,3 +248,10 @@ styles.flib_naked_scroll_pane_no_padding = {
   parent = "flib_naked_scroll_pane",
   padding = 0
 }
+
+-- TEXTFIELD STYLES
+
+styles.flib_widthless_textfield = {
+  type = "textbox_style",
+  width = 0
+}
