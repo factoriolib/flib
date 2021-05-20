@@ -73,107 +73,90 @@ local function recursive_build(parent, structure, refs)
   -- This is to make it possible to pass unit types `{}` to represent "no element" without breaking things
   if not structure.type then return end
 
-  -- prepare tags
+  -- Prepare tags
   local original_tags = structure.tags
   local tags = original_tags or {}
   local actions = structure.actions
   local tags_flib = tags.flib
   tags.flib = actions
-  structure.tags = {
-    [mod_name] = tags
-  }
+  structure.tags = {[mod_name] = tags}
 
-  -- local these for later
-  local tabs = structure.tabs
-  local children = structure.children
-
-  -- make the game not convert these into a property tree for no reason
-  structure.tabs = nil
-  structure.children = nil
+  -- Make the game not convert these into a property tree for no reason
   structure.actions = nil
+  -- Substructures can be defined in special tables or as the array portion of this structure
+  local substructures
+  local substructures_len = #structure
+  if substructures_len > 0 then
+    if structure.children or structure.tabs then
+      error("Children or tab-and-content pairs must ALL be in the array portion, or a subtable. Not both at once!")
+    end
+    substructures = {}
+    for i = 1, substructures_len do
+      substructures[i] = structure[i]
+      structure[i] = nil
+    end
+  else
+    substructures = structure.children or structure.tabs
+    structure.children = nil
+    structure.tabs = nil
+  end
 
-  -- create element
+  -- Create element
   local elem = parent.add(structure)
 
-  -- restore structure
+  -- Restore structure
   structure.tags = original_tags
-  structure.tabs = tabs
-  structure.children = children
   structure.actions = actions
   tags.flib = tags_flib
 
-  do
-    local style_mods = structure.style_mods
-    if style_mods then
-      for k, v in pairs(style_mods) do
-        elem.style[k] = v
-      end
+  local style_mods = structure.style_mods
+  if style_mods then
+    for k, v in pairs(style_mods) do
+      elem.style[k] = v
     end
   end
 
-  do
-    local elem_mods = structure.elem_mods
-    if elem_mods then
-      for k, v in pairs(elem_mods) do
-        elem[k] = v
-      end
+  local elem_mods = structure.elem_mods
+  if elem_mods then
+    for k, v in pairs(elem_mods) do
+      elem[k] = v
     end
   end
 
-  do
-    local ref = structure.ref
-    if ref then
-      -- recursively create tables as needed
-      local prev = refs
-      local ref_length = #ref
-      for i = 1, ref_length - 1 do
-        local current_key = ref[i]
-        local current = prev[current_key]
-        if not current then
-          current = {}
-          prev[current_key] = current
+  local ref = structure.ref
+  if ref then
+    -- Recursively create tables as needed
+    local prev = refs
+    local ref_length = #ref
+    for i = 1, ref_length - 1 do
+      local current_key = ref[i]
+      local current = prev[current_key]
+      if not current then
+        current = {}
+        prev[current_key] = current
+      end
+      prev = current
+    end
+    prev[ref[ref_length]] = elem
+  end
+
+  -- Substructures
+  if substructures then
+    if structure.type == "tabbed-pane" then
+      local add_tab = elem.add_tab
+      for i = 1, #substructures do
+        local tab_and_content = substructures[i]
+        if not (tab_and_content.tab and tab_and_content.content) then
+          error("TabAndContent must have `tab` and `content` fields")
         end
-        prev = current
+        local tab = recursive_build(elem, tab_and_content.tab, refs)
+        local content = recursive_build(elem, tab_and_content.content, refs)
+        add_tab(tab, content)
       end
-      prev[ref[ref_length]] = elem
-    end
-  end
-
-  -- Children or tab-and-content pairs are specified in the array portion of each structure
-  if structure.type == "tabbed-pane" then
-    local add_tab = elem.add_tab
-    for i = 1, #structure do
-      local tab_and_content = structure[i]
-      if not (tab_and_content.tab and tab_and_content.content) then
-        error("TabAndContent must have `tab` and `content` fields")
+    else
+      for i = 1, #substructures do
+        recursive_build(elem, substructures[i], refs)
       end
-      local tab = recursive_build(elem, tab_and_content.tab, refs)
-      local content = recursive_build(elem, tab_and_content.content, refs)
-      add_tab(tab, content)
-    end
-  else
-    for i = 1, #structure do
-      local child = structure[i]
-      recursive_build(elem, structure[i], refs)
-    end
-  end
-
-  -- The `children` and `tabs` tables are still supported, but aren't encouraged
-  if children then
-    for i = 1, #children do
-      recursive_build(elem, children[i], refs)
-    end
-  end
-  if tabs then
-    local add_tab = elem.add_tab
-    for i = 1, #tabs do
-      local tab_and_content = tabs[i]
-      if not (tab_and_content.tab and tab_and_content.content) then
-        error("TabAndContent must have `tab` and `content` fields")
-      end
-      local tab = recursive_build(elem, tab_and_content.tab, refs)
-      local content = recursive_build(elem, tab_and_content.content, refs)
-      add_tab(tab, content)
     end
   end
 
