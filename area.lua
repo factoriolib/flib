@@ -170,11 +170,20 @@ end
 
 --- Create a 1x1 tile area from the given position.
 -- @tparam Concepts.Position position
-function flib_area.from_position(position)
-  return {
-    left_top = {x = position.x, y = position.y},
-    right_bottom = {x = position.x, y = position.y}
-  }
+-- @tparam[opt] boolean snap If true, snap the created area to the tile edges the position is contained in
+function flib_area.from_position(position, snap)
+  if snap then
+    local floored_position = {x = math.floor(position.x), y = math.floor(position.y)}
+    return {
+      left_top = {x = floored_position.x, y = floored_position.y},
+      right_bottom = {x = floored_position.x + 1, y = floored_position.y + 1}
+    }
+  else
+    return {
+      left_top = {x = position.x - 0.5, y = position.y - 0.5},
+      right_bottom = {x = position.x + 0.5, y = position.y + 0.5}
+    }
+  end
 end
 
 --- Calculate the height of the area.
