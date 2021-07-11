@@ -1,8 +1,8 @@
 {
   "name": "flib",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "title": "Factorio Library",
-  "author": "Raiguard, Optera, justarandomgeek, Nexela",
+  "author": "raiguard, Optera, justarandomgeek, Nexela",
   "contact": "https://github.com/factoriolib/flib",
   "homepage": "https://github.com/factoriolib/flib",
   "description": "A set of high-quality, commonly-used utilities for creating Factorio mods.",
