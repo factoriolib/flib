@@ -7,7 +7,7 @@
   "homepage": "https://github.com/factoriolib/flib",
   "description": "A set of high-quality, commonly-used utilities for creating Factorio mods.",
   "factorio_version": "1.1",
-  "dependencies": ["? base >= 1.1.19"],
+  "dependencies": ["? base >= 1.1.35"],
   "package": {
     "ignore": ["*.code-workspace", "docs/**", ".devcontainer", ".scripts", ".vscode", ".gitignore"]
   }
