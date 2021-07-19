@@ -7,6 +7,7 @@ Date: ????
     - `misc.delineate_number()` now supports decimal numbers
   Bugfixes:
     - Fixed a crash when calling `gui-beta.read_action()` when the element was invalid
+    - Fixed `area.from_position` not actually creating a 1x1 area
 ---------------------------------------------------------------------------------------------------
 Version: 0.7.0
 Date: 2021-02-12
