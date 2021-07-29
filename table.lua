@@ -109,6 +109,18 @@ function flib_table.deep_merge(tables)
   return output
 end
 
+--- Find the value in the table.
+-- @tparam table tbl The table to search.
+-- @tparam any value The value to match. Must have an `eq` metamethod set, otherwise will error.
+-- @treturn any|nil The key that matches the value, or `nil` if it was not found.
+function flib_table.find(tbl, value)
+  for k, v in pairs(tbl) do
+    if v == value then
+      return k
+    end
+  end
+end
+
 --- Call the given function for each item in the table, and abort if the function returns truthy.
 --
 -- Calls `callback(value, key)` for each item in the table, and immediately ceases iteration if the callback
