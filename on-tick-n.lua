@@ -34,7 +34,7 @@ function on_tick_n.remove(ident)
   local tick_list = global.__flib.on_tick_n[ident.tick]
   if not tick_list or not tick_list[ident.index] then return false end
 
-  table.remove(tick_list, ident.index)
+  tick_list[ident.index] = nil
 
   return true
 end
