@@ -1,10 +1,8 @@
 local flib_dictionary = {}
 
-local Dictionary = {}
-
 local inner_separator = "⤬"
 local separator = "⤬⤬⤬"
-local max_depth = 20
+local max_depth = 5
 
 --[[
   LOGIC:
@@ -12,6 +10,8 @@ local max_depth = 20
   - After ten strings, the eleventh string will be a new level
   - There are 20 levels in each whole string
 ]]
+
+local Dictionary = {}
 
 function Dictionary:add(key, value)
   local to_add = {"", key, inner_separator, value, separator}
@@ -23,7 +23,7 @@ function Dictionary:add(key, value)
     self.i = i
   else
     local r_i = self.r_i + 1
-    if r_i <= 20 then
+    if r_i <= max_depth then
       local new_level = {"", to_add}
       ref[i] = new_level
       self.ref = new_level
@@ -39,6 +39,13 @@ function Dictionary:add(key, value)
       self.s_i = s_i
     end
   end
+end
+
+function flib_dictionary.init()
+  if not global.__flib then
+    global.__flib = {}
+  end
+  global.__flib.dictionary = {}
 end
 
 function flib_dictionary.new(name, initial_contents)
