@@ -180,6 +180,35 @@ function flib_gui.build(parent, structures)
   return refs
 end
 
+--- Build a single element based on a GuiStructure.
+-- This is to allow use of `style_mods`, `actions` and `tags` without needing to use `gui.build()` for a single element.
+--
+-- Unlike `gui.build()`, the element will be automatically returned from the function without needing to use `ref`.
+-- @tparam LuaGuiElement parent The parent GUI element where this new element will be located.
+-- @tparam GuiBuildStructure structure The element to build.
+-- @treturn @{LuaGuiElement} A reference to the element that was created.
+function flib_gui.add(parent, structure)
+  -- Make sure we don't have children
+  if structure.children or structure.tabs or #structure > 0 then
+    error("Use `gui.build()` for more than one element at a time!")
+  end
+  -- Just in case they had a ref in the structure already, extract it
+  local previous_ref = structure.ref
+  -- Put in a known ref that we can use later
+  structure.ref = {1}
+  -- Build the element
+  local refs = {}
+  recursive_build(
+    parent,
+    structure,
+    refs
+  )
+  -- Restore the previous ref
+  structure.ref = previous_ref
+  -- Return the element
+  return refs[1]
+end
+
 local function recursive_update(elem, updates)
   if updates.cb then
     updates.cb(elem)
