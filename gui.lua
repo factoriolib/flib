@@ -2,10 +2,10 @@
 -- This new GUI module makes use of a new feature in Factorio 1.1: GUI element tags. This significantly simplifies the
 -- logic around event handling. Due to the backward-incompatible nature of the changes, this new module was created
 -- instead of upgrading the old one. This module will replace the current non-beta module when Factorio 1.2 releases.
--- @module gui-beta
+-- @module gui
 -- @alias flib_gui
--- @usage local gui = require("__flib__.gui-beta")
--- @see gui-beta.lua
+-- @usage local gui = require("__flib__.gui")
+-- @see gui.lua
 
 local mod_name = script.mod_name
 local gui_event_defines = {}
