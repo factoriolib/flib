@@ -5,6 +5,9 @@ Date: ????
     - Added `flib_widthless_textfield` style
     - Children in a `gui-beta.GuiStructure` can now be defined in the array portion, instead of in a `children` table
     - `misc.delineate_number()` now supports decimal numbers
+  Changes:
+    - Deprecated the old `gui` module and replaced it with the contents of `gui-beta`
+      - Mods can still require `gui-beta`, but it will simply redirect to `gui` instead
   Bugfixes:
     - Fixed a crash when calling `gui-beta.read_action()` when the element was invalid
     - Fixed `area.from_position` not actually creating a 1x1 area
