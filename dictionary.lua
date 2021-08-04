@@ -7,13 +7,13 @@ local inner_separator = "⤬"
 local separator = "⤬⤬⤬"
 local max_depth = 15
 
-local language_finished_event = event.generate_id()
+local on_language_translated = event.generate_id()
 
 local function kv(key, value)
   return key..inner_separator..value..separator
 end
 
--- TODO: If we're storing the dictionaries in `global` ourselves, do we really need the Dictionary object?
+-- Dictionary object (for setup)
 
 local Dictionary = {}
 
@@ -45,20 +45,6 @@ function Dictionary:add(key, value)
   end
 end
 
---- Initialize the module's script data table.
--- Must be called at the beginning of `on_init` and during `on_configuration_changed` to reset all ongoing translations.
-function flib_dictionary.init()
-  if not global.__flib then
-    global.__flib = {}
-  end
-  global.__flib.dictionary = {
-    in_process = {},
-    players = {},
-    raw = {},
-    translated = {}
-  }
-end
-
 --- Create a new dictionary.
 function flib_dictionary.new(name, keep_untranslated, initial_contents)
   if global.__flib.dictionary.raw[name] then
@@ -73,13 +59,12 @@ function flib_dictionary.new(name, keep_untranslated, initial_contents)
       r_i = 1,
       s_i = 1,
       -- Internal
-      -- `ref` can't exist until after this table is initially created
       ref = initial_string,
       strings = {initial_string},
-      -- Settings
-      keep_untranslated = keep_untranslated,
       -- Meta
       name = name,
+      -- To prevent saving in `global`
+      __nosave = game.players,
     },
     {__index = Dictionary}
   )
@@ -88,9 +73,25 @@ function flib_dictionary.new(name, keep_untranslated, initial_contents)
     self:add(key, value)
   end
 
-  global.__flib.dictionary.raw[name] = self
+  global.__flib.dictionary.raw[name] = {strings = self.strings, keep_untranslated = keep_untranslated}
 
   return self
+end
+
+-- Module functions
+
+--- Initialize the module's script data table.
+-- Must be called at the beginning of `on_init` and during `on_configuration_changed` to reset all ongoing translations.
+function flib_dictionary.init()
+  if not global.__flib then
+    global.__flib = {}
+  end
+  global.__flib.dictionary = {
+    in_process = {},
+    players = {},
+    raw = {},
+    translated = {}
+  }
 end
 
 -- Add the player to the table and request the translation for their language code
@@ -108,7 +109,7 @@ function flib_dictionary.translate(player)
   player.request_translation({"", "FLIB_LOCALE_IDENTIFIER", separator, {"locale-identifier"}})
 end
 
-function flib_dictionary.on_tick(event_data)
+function flib_dictionary.iterate(event_data)
   local script_data = global.__flib.dictionary
   for player_index, player_table in pairs(script_data.players) do
     if player_table.status == "translating" then
@@ -154,6 +155,8 @@ function flib_dictionary.handle_translation(event_data)
     )
 
     if dict_name and dict_lang and string_index and translation then
+      -- TODO: Add this to a list so we know which strings were actually translated
+      -- Alternatively, investigate using `on_load` hax in singleplayer to restart translations and avoid the skipping
       string_index = tonumber(string_index)
       local language_data = script_data.in_process[dict_lang]
       -- In some cases, this can fire before on_configuration_changed
@@ -184,7 +187,7 @@ function flib_dictionary.handle_translation(event_data)
         script_data.translated[dict_lang] = language_data.dictionaries
         script_data.in_process[dict_lang] = nil
         script_data.players[event_data.player_index] = nil
-        event.raise(language_finished_event, {
+        event.raise(on_language_translated, {
           dictionaries = language_data.dictionaries,
           language = dict_lang,
           players = dict_data.players,
@@ -204,8 +207,8 @@ function flib_dictionary.handle_translation(event_data)
       if dictionaries then
         script_data.players[event_data.player_index] = nil
         event.raise(
-          language_finished_event,
-          {dictionaries = dictionaries, language = language, players = {e.player_index}}
+          on_language_translated,
+          {dictionaries = dictionaries, language = language, players = {event_data.player_index}}
         )
         return
       end
@@ -229,6 +232,6 @@ function flib_dictionary.handle_translation(event_data)
   end
 end
 
-flib_dictionary.language_finished_event = language_finished_event
+flib_dictionary.on_language_translated = on_language_translated
 
 return flib_dictionary
