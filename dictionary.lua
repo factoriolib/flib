@@ -5,7 +5,7 @@ local flib_dictionary = {}
 
 local inner_separator = "⤬"
 local separator = "⤬⤬⤬"
-local max_depth = 5
+local max_depth = 15
 
 local language_finished_event = event.generate_id()
 
