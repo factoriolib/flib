@@ -262,7 +262,7 @@ function flib_dictionary.cancel_translation(player_index)
       if #in_process.players > 1 then
         -- Copy progress to another player with the same language
         local first_player = in_process.players[1]
-        local first_player_data = script_data.players[player_index]
+        local first_player_data = script_data.players[first_player]
         first_player_data.status = "translating"
         first_player_data.dictionary = player_data.dictionary
         first_player_data.i = player_data.i
