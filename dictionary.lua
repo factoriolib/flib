@@ -6,6 +6,7 @@ local flib_dictionary = {}
 local inner_separator = "⤬"
 local separator = "⤬⤬⤬"
 local max_depth = 15
+local translation_timeout = 60
 
 local on_language_translated = event.generate_id()
 
@@ -96,8 +97,8 @@ end
 
 -- Add the player to the table and request the translation for their language code
 function flib_dictionary.translate(player)
-  local player_table = global.__flib.dictionary.players[player.index]
-  if player_table then
+  local player_data = global.__flib.dictionary.players[player.index]
+  if player_data then
     error("Player `"..player.name.."` ["..player.index.."] is already translating!")
   end
 
@@ -109,33 +110,45 @@ function flib_dictionary.translate(player)
   player.request_translation({"", "FLIB_LOCALE_IDENTIFIER", separator, {"locale-identifier"}})
 end
 
-function flib_dictionary.iterate(event_data)
+local function request_translation(player_data, script_data)
+  local dictionaries = script_data.raw
+  local string = dictionaries[player_data.dictionary].strings[player_data.i]
+
+  -- We use `while` instead of `if` here just in case a dictionary doesnt have any strings in it
+  while not string do
+    local next_dictionary = next(script_data.raw, player_data.dictionary)
+    if next_dictionary then
+      -- Set the next dictionary and reset index
+      player_data.dictionary = next_dictionary
+      player_data.i = 1
+      string = dictionaries[next_dictionary].strings[1]
+    else
+      -- We're done!
+      player_data.status = "finished"
+      return
+    end
+  end
+
+  player_data.player.request_translation{
+    "",
+    kv("FLIB_DICTIONARY_NAME", player_data.dictionary),
+    kv("FLIB_DICTIONARY_LANGUAGE", player_data.language),
+    kv("FLIB_DICTIONARY_STRING_INDEX", player_data.i),
+    string,
+  }
+
+  player_data.requested_tick = game.tick
+end
+
+function flib_dictionary.check_skipped(event_data)
   local script_data = global.__flib.dictionary
-  for player_index, player_table in pairs(script_data.players) do
-    if player_table.status == "translating" then
-      local i = player_table.i
-      local strings = script_data.raw[player_table.dictionary].strings
-      local string = strings[i]
-      if string then
-        player_table.player.request_translation{
-          "",
-          kv("FLIB_DICTIONARY_NAME", player_table.dictionary),
-          kv("FLIB_DICTIONARY_LANGUAGE", player_table.language),
-          kv("FLIB_DICTIONARY_STRING_INDEX", i),
-          string,
-        }
-        player_table.i = i + 1
-        if not strings[i + 1] then
-          local next_dictionary = next(script_data.raw, player_table.dictionary)
-          if next_dictionary then
-            player_table.dictionary = next_dictionary
-            player_table.i = 1
-          else
-            -- TODO: Handle edge case with missing translations when saving/loading a singleplayer game
-            player_table.status = "finishing"
-          end
-        end
-      end
+  local tick = game.tick
+  for player_index, player_data in pairs(script_data.players) do
+    -- If it's been longer than the timeout, request the string again
+    -- This is to solve a very rare edge case where translations requested on the same tick that a singleplayer game
+    -- is saved will not be returned when that save is loaded
+    if player_data.status == "translating" and player_data.requested_tick + translation_timeout <= tick then
+      request_translation(player_data, script_data)
     end
   end
 end
@@ -155,8 +168,6 @@ function flib_dictionary.handle_translation(event_data)
     )
 
     if dict_name and dict_lang and string_index and translation then
-      -- TODO: Add this to a list so we know which strings were actually translated
-      -- Alternatively, investigate using `on_load` hax in singleplayer to restart translations and avoid the skipping
       string_index = tonumber(string_index)
       local language_data = script_data.in_process[dict_lang]
       -- In some cases, this can fire before on_configuration_changed
@@ -164,43 +175,49 @@ function flib_dictionary.handle_translation(event_data)
       local dictionary = language_data.dictionaries[dict_name]
       if not dictionary then return end
       local dict_data = script_data.raw[dict_name]
-
-      for str in string.gmatch(translation, "(.-)"..separator) do
-        local _, _, key, value = string.find(str, "^(.-)"..inner_separator.."(.-)$")
-        if key then
-          -- If `keep_untranslated` is true, then use the key as the value if it failed
-          local failed = string.find(value, "Unknown key:")
-          if failed and dict_data.keep_untranslated then
-            value = key
-          elseif failed then
-            value = nil
-          end
-          if value then
-            dictionary[key] = value
+      local player_data = script_data.players[event_data.player_index]
+      if string_index == player_data.i then
+        -- Extract current string's translations
+        for str in string.gmatch(translation, "(.-)"..separator) do
+          local _, _, key, value = string.find(str, "^(.-)"..inner_separator.."(.-)$")
+          if key then
+            -- If `keep_untranslated` is true, then use the key as the value if it failed
+            local failed = string.find(value, "Unknown key:")
+            if failed and dict_data.keep_untranslated then
+              value = key
+            elseif failed then
+              value = nil
+            end
+            if value then
+              dictionary[key] = value
+            end
           end
         end
-      end
 
-      local player_table = script_data.players[event_data.player_index]
-      if player_table.status == "finishing" then
-        -- We're done!
-        script_data.translated[dict_lang] = language_data.dictionaries
-        script_data.in_process[dict_lang] = nil
-        script_data.players[event_data.player_index] = nil
-        event.raise(on_language_translated, {
-          dictionaries = language_data.dictionaries,
-          language = dict_lang,
-          players = dict_data.players,
-        })
+        -- Request next translation
+        player_data.i = player_data.i + 1
+        request_translation(player_data, script_data)
+
+        if player_data.status == "finished" then
+          -- We're done!
+          script_data.translated[dict_lang] = language_data.dictionaries
+          script_data.in_process[dict_lang] = nil
+          script_data.players[event_data.player_index] = nil
+          event.raise(on_language_translated, {
+            dictionaries = language_data.dictionaries,
+            language = dict_lang,
+            players = language_data.players,
+          })
+        end
       end
     end
   elseif string.find(event_data.result, "^FLIB_LOCALE_IDENTIFIER") then
     local _, _, language = string.find(event_data.result, "^FLIB_LOCALE_IDENTIFIER"..separator.."(.*)$")
     if language then
-      local player_table = script_data.players[event_data.player_index]
-      if not player_table then return end
+      local player_data = script_data.players[event_data.player_index]
+      if not player_data then return end
 
-      player_table.language = language
+      player_data.language = language
 
       -- Check if this language is already translated or being translated
       local dictionaries = script_data.translated[language]
@@ -215,19 +232,23 @@ function flib_dictionary.handle_translation(event_data)
       local in_process = script_data.in_process[language]
       if in_process then
         table.insert(in_process.players, event_data.player_index)
-        player_table.status = "waiting"
+        player_data.status = "waiting"
         return
       end
 
-      -- Start translating this language
-      player_table.status = "translating"
-      player_table.dictionary = next(script_data.raw)
-      player_table.i = 1
+      -- Set up player data for translating
+      player_data.status = "translating"
+      player_data.dictionary = next(script_data.raw)
+      player_data.i = 1
 
+      -- Add language to in process data
       script_data.in_process[language] = {
         dictionaries = table.map(script_data.raw, function(_) return {} end),
         players = {event_data.player_index}
       }
+
+      -- Start translating
+      request_translation(player_data, script_data)
     end
   end
 end
