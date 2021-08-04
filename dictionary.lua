@@ -1,4 +1,5 @@
 local event = require("__flib__.event")
+local table = require("__flib__.table")
 
 local flib_dictionary = {}
 
@@ -108,27 +109,53 @@ function flib_dictionary.translate(player)
 end
 
 function flib_dictionary.on_tick(event_data)
-  -- TODO:
+  local script_data = global.__flib.dictionary
+  for player_index, player_table in pairs(script_data.players) do
+    if player_table.status == "translating" then
+      local i = player_table.i + 1
+      local string = script_data.raw[player_table.dictionary].strings[i]
+      if string then
+        player_table.player.request_translation{
+          "",
+          kv("FLIB_DICTIONARY_NAME", player_table.dictionary),
+          kv("FLIB_DICTIONARY_LANGUAGE", player_table.language),
+          kv("FLIB_DICTIONARY_STRING_INDEX", i),
+          string,
+        }
+        player_table.i = i
+      else
+        local next_dictionary = next(script_data.raw, player_table.dictionary)
+        if next_dictionary then
+          player_table.dictionary = next_dictionary
+          player_table.i = 1
+        else
+          -- TODO: Handle edge case with missing translations when saving/loading a singleplayer game
+          player_table.status = "finishing"
+        end
+      end
+    end
+  end
 end
 
 local dictionary_match_string = kv("^FLIB_DICTIONARY_NAME", "(.-)")
-  ..kv("FLIB_DICTIONARY_NAME", "(.-)")
-  ..kv("FLIB_DICTIONARY_STRING_INDEX", "%d-")
+  ..kv("FLIB_DICTIONARY_LANGUAGE", "(.-)")
+  ..kv("FLIB_DICTIONARY_STRING_INDEX", "(%d-)")
   .."(.*)$"
 
 function flib_dictionary.handle_translation(event_data)
   if not event_data.translated then return end
-  if string.find(event_data.result, "^FLIB_DICTIONARY_TRANSLATION") then
+  if string.find(event_data.result, "^FLIB_DICTIONARY_NAME") then
     local _, _, dict_name, dict_lang, string_index, translation = string.find(
       event_data.result,
       dictionary_match_string
     )
 
     if dict_name and dict_lang and string_index and translation then
-      local language_dictionaries = global.__flib.dictionary.translated[dict_lang]
+      string_index = tonumber(string_index)
+      local language_dictionaries = global.__flib.dictionary.in_process[dict_lang]
       -- In some cases, this can fire before on_configuration_changed
       if not language_dictionaries then return end
-      local dictionary = language_dictionaries[dict_lang]
+      local dictionary = language_dictionaries[dict_name]
       if not dictionary then return end
       local dict_data = global.__flib.dictionary.raw[dict_name]
 
@@ -178,6 +205,8 @@ function flib_dictionary.handle_translation(event_data)
       player_table.status = "translating"
       player_table.dictionary = next(script_data.raw)
       player_table.i = 1
+
+      script_data.in_process[language] = table.map(script_data.raw, function(_) return {} end)
     end
   end
 end
