@@ -98,9 +98,7 @@ end
 -- Add the player to the table and request the translation for their language code
 function flib_dictionary.translate(player)
   local player_data = global.__flib.dictionary.players[player.index]
-  if player_data then
-    error("Player `"..player.name.."` ["..player.index.."] is already translating!")
-  end
+  if player_data then return end
 
   global.__flib.dictionary.players[player.index] = {
     player = player,
@@ -140,10 +138,10 @@ local function request_translation(player_data, script_data)
   player_data.requested_tick = game.tick
 end
 
-function flib_dictionary.check_skipped(event_data)
+function flib_dictionary.check_skipped()
   local script_data = global.__flib.dictionary
   local tick = game.tick
-  for player_index, player_data in pairs(script_data.players) do
+  for _, player_data in pairs(script_data.players) do
     -- If it's been longer than the timeout, request the string again
     -- This is to solve a very rare edge case where translations requested on the same tick that a singleplayer game
     -- is saved will not be returned when that save is loaded
@@ -168,7 +166,6 @@ function flib_dictionary.handle_translation(event_data)
     )
 
     if dict_name and dict_lang and string_index and translation then
-      string_index = tonumber(string_index)
       local language_data = script_data.in_process[dict_lang]
       -- In some cases, this can fire before on_configuration_changed
       if not language_data then return end
@@ -176,7 +173,9 @@ function flib_dictionary.handle_translation(event_data)
       if not dictionary then return end
       local dict_data = script_data.raw[dict_name]
       local player_data = script_data.players[event_data.player_index]
-      if string_index == player_data.i then
+
+      -- If this number does not match, this is a duplicate, so ignore it
+      if tonumber(string_index) == player_data.i then
         -- Extract current string's translations
         for str in string.gmatch(translation, "(.-)"..separator) do
           local _, _, key, value = string.find(str, "^(.-)"..inner_separator.."(.-)$")
@@ -250,6 +249,43 @@ function flib_dictionary.handle_translation(event_data)
       -- Start translating
       request_translation(player_data, script_data)
     end
+  end
+end
+
+function flib_dictionary.cancel_translation(player_index)
+  local script_data = global.__flib.dictionary
+  local player_data = script_data.players[player_index]
+  if player_data then
+    if player_data.status == "translating" then
+      local in_process = script_data.in_process[player_data.language]
+      if not in_process then error("Dafuq?") end
+      if #in_process.players > 1 then
+        -- Copy progress to another player with the same language
+        local first_player = in_process.players[1]
+        local first_player_data = script_data.players[player_index]
+        first_player_data.status = "translating"
+        first_player_data.dictionary = player_data.dictionary
+        first_player_data.i = player_data.i
+
+        -- Resume translating with the new player
+        request_translation(first_player_data, script_data)
+      else
+        -- Completely cancel the translation
+        script_data.in_process[player_data.language] = nil
+      end
+    elseif player_data.status == "waiting" then
+      local in_process = script_data.in_process[player_data.language]
+      -- Remove this player from the players table
+      for i, pi in pairs(in_process.players) do
+        if pi == player_index then
+          table.remove(in_process.players, i)
+          break
+        end
+      end
+    end
+
+    -- Delete this player's data
+    script_data.players[player_index] = nil
   end
 end
 
