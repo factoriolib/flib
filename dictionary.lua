@@ -101,8 +101,8 @@ function flib_dictionary.translate(player)
   end
 
   global.__flib.dictionary.players[player.index] = {
-    state = "get_language",
     player = player,
+    status = "get_language",
   }
 
   player.request_translation({"", "FLIB_LOCALE_IDENTIFIER", separator, {"locale-identifier"}})
