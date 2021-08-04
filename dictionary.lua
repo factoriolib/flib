@@ -112,8 +112,9 @@ function flib_dictionary.on_tick(event_data)
   local script_data = global.__flib.dictionary
   for player_index, player_table in pairs(script_data.players) do
     if player_table.status == "translating" then
-      local i = player_table.i + 1
-      local string = script_data.raw[player_table.dictionary].strings[i]
+      local i = player_table.i
+      local strings = script_data.raw[player_table.dictionary].strings
+      local string = strings[i]
       if string then
         player_table.player.request_translation{
           "",
@@ -122,15 +123,16 @@ function flib_dictionary.on_tick(event_data)
           kv("FLIB_DICTIONARY_STRING_INDEX", i),
           string,
         }
-        player_table.i = i
-      else
-        local next_dictionary = next(script_data.raw, player_table.dictionary)
-        if next_dictionary then
-          player_table.dictionary = next_dictionary
-          player_table.i = 1
-        else
-          -- TODO: Handle edge case with missing translations when saving/loading a singleplayer game
-          player_table.status = "finishing"
+        player_table.i = i + 1
+        if not strings[i + 1] then
+          local next_dictionary = next(script_data.raw, player_table.dictionary)
+          if next_dictionary then
+            player_table.dictionary = next_dictionary
+            player_table.i = 1
+          else
+            -- TODO: Handle edge case with missing translations when saving/loading a singleplayer game
+            player_table.status = "finishing"
+          end
         end
       end
     end
@@ -144,6 +146,7 @@ local dictionary_match_string = kv("^FLIB_DICTIONARY_NAME", "(.-)")
 
 function flib_dictionary.handle_translation(event_data)
   if not event_data.translated then return end
+  local script_data = global.__flib.dictionary
   if string.find(event_data.result, "^FLIB_DICTIONARY_NAME") then
     local _, _, dict_name, dict_lang, string_index, translation = string.find(
       event_data.result,
@@ -152,12 +155,12 @@ function flib_dictionary.handle_translation(event_data)
 
     if dict_name and dict_lang and string_index and translation then
       string_index = tonumber(string_index)
-      local language_dictionaries = global.__flib.dictionary.in_process[dict_lang]
+      local language_data = script_data.in_process[dict_lang]
       -- In some cases, this can fire before on_configuration_changed
-      if not language_dictionaries then return end
-      local dictionary = language_dictionaries[dict_name]
+      if not language_data then return end
+      local dictionary = language_data.dictionaries[dict_name]
       if not dictionary then return end
-      local dict_data = global.__flib.dictionary.raw[dict_name]
+      local dict_data = script_data.raw[dict_name]
 
       for str in string.gmatch(translation, "(.-)"..separator) do
         local _, _, key, value = string.find(str, "^(.-)"..inner_separator.."(.-)$")
@@ -174,11 +177,23 @@ function flib_dictionary.handle_translation(event_data)
           end
         end
       end
+
+      local player_table = script_data.players[event_data.player_index]
+      if player_table.status == "finishing" then
+        -- We're done!
+        script_data.translated[dict_lang] = language_data.dictionaries
+        script_data.in_process[dict_lang] = nil
+        script_data.players[event_data.player_index] = nil
+        event.raise(language_finished_event, {
+          dictionaries = language_data.dictionaries,
+          language = dict_lang,
+          players = dict_data.players,
+        })
+      end
     end
   elseif string.find(event_data.result, "^FLIB_LOCALE_IDENTIFIER") then
     local _, _, language = string.find(event_data.result, "^FLIB_LOCALE_IDENTIFIER"..separator.."(.*)$")
     if language then
-      local script_data = global.__flib.dictionary
       local player_table = script_data.players[event_data.player_index]
       if not player_table then return end
 
@@ -206,7 +221,10 @@ function flib_dictionary.handle_translation(event_data)
       player_table.dictionary = next(script_data.raw)
       player_table.i = 1
 
-      script_data.in_process[language] = table.map(script_data.raw, function(_) return {} end)
+      script_data.in_process[language] = {
+        dictionaries = table.map(script_data.raw, function(_) return {} end),
+        players = {event_data.player_index}
+      }
     end
   end
 end
