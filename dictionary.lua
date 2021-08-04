@@ -6,7 +6,7 @@ local flib_dictionary = {}
 local inner_separator = "⤬"
 local separator = "⤬⤬⤬"
 local max_depth = 15
-local translation_timeout = 60
+local translation_timeout = 180
 
 local on_language_translated = event.generate_id()
 
@@ -112,7 +112,7 @@ local function request_translation(player_data, script_data)
   local dictionaries = script_data.raw
   local string = dictionaries[player_data.dictionary].strings[player_data.i]
 
-  -- We use `while` instead of `if` here just in case a dictionary doesnt have any strings in it
+  -- We use `while` instead of `if` here just in case a dictionary doesn't have any strings in it
   while not string do
     local next_dictionary = next(script_data.raw, player_data.dictionary)
     if next_dictionary then
@@ -201,7 +201,9 @@ function flib_dictionary.handle_translation(event_data)
           -- We're done!
           script_data.translated[dict_lang] = language_data.dictionaries
           script_data.in_process[dict_lang] = nil
-          script_data.players[event_data.player_index] = nil
+          for _, player_index in pairs(language_data.players) do
+            script_data.players[player_index] = nil
+          end
           event.raise(on_language_translated, {
             dictionaries = language_data.dictionaries,
             language = dict_lang,
