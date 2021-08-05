@@ -10,6 +10,11 @@ local translation_timeout = 180
 
 local on_language_translated = event.generate_id()
 
+-- Holds the raw dictionaries
+local raw = {}
+
+local use_local_storage = false
+
 local function kv(key, value)
   return key..inner_separator..value..separator
 end
@@ -48,7 +53,7 @@ end
 
 --- Create a new dictionary.
 function flib_dictionary.new(name, keep_untranslated, initial_contents)
-  if global.__flib.dictionary.raw[name] then
+  if raw[name] then
     error("Dictionary with the name `"..name.."` already exists.")
   end
 
@@ -64,8 +69,6 @@ function flib_dictionary.new(name, keep_untranslated, initial_contents)
       strings = {initial_string},
       -- Meta
       name = name,
-      -- To prevent saving in `global`
-      __nosave = game.players,
     },
     {__index = Dictionary}
   )
@@ -74,7 +77,7 @@ function flib_dictionary.new(name, keep_untranslated, initial_contents)
     self:add(key, value)
   end
 
-  global.__flib.dictionary.raw[name] = {strings = self.strings, keep_untranslated = keep_untranslated}
+  raw[name] = {strings = self.strings, keep_untranslated = keep_untranslated}
 
   return self
 end
@@ -93,6 +96,18 @@ function flib_dictionary.init()
     raw = {},
     translated = {}
   }
+  if use_local_storage then
+    raw = {}
+  else
+    raw = global.__flib.dictionary.raw
+  end
+end
+
+function flib_dictionary.load()
+  -- TODO: Upvalue `script_data` as well
+  if not use_local_storage then
+    raw = global.__flib.dictionary.raw
+  end
 end
 
 -- Add the player to the table and request the translation for their language code
@@ -108,18 +123,17 @@ function flib_dictionary.translate(player)
   player.request_translation({"", "FLIB_LOCALE_IDENTIFIER", separator, {"locale-identifier"}})
 end
 
-local function request_translation(player_data, script_data)
-  local dictionaries = script_data.raw
-  local string = dictionaries[player_data.dictionary].strings[player_data.i]
+local function request_translation(player_data)
+  local string = raw[player_data.dictionary].strings[player_data.i]
 
   -- We use `while` instead of `if` here just in case a dictionary doesn't have any strings in it
   while not string do
-    local next_dictionary = next(script_data.raw, player_data.dictionary)
+    local next_dictionary = next(raw, player_data.dictionary)
     if next_dictionary then
       -- Set the next dictionary and reset index
       player_data.dictionary = next_dictionary
       player_data.i = 1
-      string = dictionaries[next_dictionary].strings[1]
+      string = raw[next_dictionary].strings[1]
     else
       -- We're done!
       player_data.status = "finished"
@@ -146,7 +160,7 @@ function flib_dictionary.check_skipped()
     -- This is to solve a very rare edge case where translations requested on the same tick that a singleplayer game
     -- is saved will not be returned when that save is loaded
     if player_data.status == "translating" and player_data.requested_tick + translation_timeout <= tick then
-      request_translation(player_data, script_data)
+      request_translation(player_data)
     end
   end
 end
@@ -156,7 +170,7 @@ local dictionary_match_string = kv("^FLIB_DICTIONARY_NAME", "(.-)")
   ..kv("FLIB_DICTIONARY_STRING_INDEX", "(%d-)")
   .."(.*)$"
 
-function flib_dictionary.handle_translation(event_data)
+function flib_dictionary.process_translation(event_data)
   if not event_data.translated then return end
   local script_data = global.__flib.dictionary
   if string.find(event_data.result, "^FLIB_DICTIONARY_NAME") then
@@ -171,7 +185,7 @@ function flib_dictionary.handle_translation(event_data)
       if not language_data then return end
       local dictionary = language_data.dictionaries[dict_name]
       if not dictionary then return end
-      local dict_data = script_data.raw[dict_name]
+      local dict_data = raw[dict_name]
       local player_data = script_data.players[event_data.player_index]
 
       -- If this number does not match, this is a duplicate, so ignore it
@@ -195,7 +209,7 @@ function flib_dictionary.handle_translation(event_data)
 
         -- Request next translation
         player_data.i = player_data.i + 1
-        request_translation(player_data, script_data)
+        request_translation(player_data)
 
         if player_data.status == "finished" then
           -- We're done!
@@ -239,17 +253,17 @@ function flib_dictionary.handle_translation(event_data)
 
       -- Set up player data for translating
       player_data.status = "translating"
-      player_data.dictionary = next(script_data.raw)
+      player_data.dictionary = next(raw)
       player_data.i = 1
 
       -- Add language to in process data
       script_data.in_process[language] = {
-        dictionaries = table.map(script_data.raw, function(_) return {} end),
+        dictionaries = table.map(raw, function(_) return {} end),
         players = {event_data.player_index}
       }
 
       -- Start translating
-      request_translation(player_data, script_data)
+      request_translation(player_data)
     end
   end
 end
@@ -270,7 +284,7 @@ function flib_dictionary.cancel_translation(player_index)
         first_player_data.i = player_data.i
 
         -- Resume translating with the new player
-        request_translation(first_player_data, script_data)
+        request_translation(first_player_data)
       else
         -- Completely cancel the translation
         script_data.in_process[player_data.language] = nil
@@ -289,6 +303,10 @@ function flib_dictionary.cancel_translation(player_index)
     -- Delete this player's data
     script_data.players[player_index] = nil
   end
+end
+
+function flib_dictionary.set_use_local_storage(value)
+  use_local_storage = value
 end
 
 flib_dictionary.on_language_translated = on_language_translated
