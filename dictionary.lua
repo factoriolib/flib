@@ -32,15 +32,15 @@ function Dictionary:add(key, value)
       local new_level = {"", to_add}
       ref[i] = new_level
       self.ref = new_level
-      self.i = 1
+      self.i = 2
       self.r_i = r_i
     else
       local s_i = self.s_i + 1
       self.s_i = s_i
-      local new_set = {""}
+      local new_set = {"", to_add}
       self.ref = new_set
       self.strings[s_i] = new_set
-      self.i = 1
+      self.i = 2
       self.r_i = 1
     end
   end
