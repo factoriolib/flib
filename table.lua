@@ -113,6 +113,10 @@ end
 -- @tparam table tbl The table to search.
 -- @tparam any value The value to match. Must have an `eq` metamethod set, otherwise will error.
 -- @treturn any|nil The key that matches the value, or `nil` if it was not found.
+-- @usage
+-- local tbl = {"foo", "bar"}
+-- local contains_foo = table.search(tbl, "foo") -- true
+-- local contains_baz = table.search(tbl, "baz") -- false
 function flib_table.find(tbl, value)
   for k, v in pairs(tbl) do
     if v == value then
@@ -366,6 +370,18 @@ function flib_table.shallow_copy(tbl, use_rawset)
       rawset(output, k, v)
     else
       output[k] = v
+    end
+  end
+  return output
+end
+
+--- Shallowly merge two or more tables.
+-- Unlike @{table.deep_merge}, this will only combine the top level of the tables.
+function flib_table.shallow_merge(tables)
+  local output = {}
+  for _, tbl in pairs(tables) do
+    for key, value in pairs(tbl) do
+      output[key] = value
     end
   end
   return output
