@@ -230,40 +230,66 @@ local function recursive_update(elem, updates)
     end
   end
 
-  -- TODO: tags, actions
+  if updates.tags then
+    flib_gui.update_tags(elem, updates.tags)
+  end
 
-  -- Preferred method: Children live in the array portion
-  for i, child_updates in ipairs(updates) do
-    if elem_children[i] then
-      recursive_update(elem_children[i], child_updates)
+  -- TODO: This could be a lot better
+  if updates.actions then
+    for event_name, payload in pairs(updates.actions) do
+      flib_gui.set_action(elem, event_name, payload)
     end
   end
 
-  if updates.children then
-    local elem_children = elem.children
-    for i, child_updates in ipairs(updates.children) do
-      if elem_children[i] then
-        recursive_update(elem_children[i], child_updates)
+  local substructures
+  local substructures_len = #updates
+  if substructures_len > 0 then
+    if updates.children or updates.tabs then
+      error("Children or tab-and-content pairs must ALL be in the array portion, or a subtable. Not both at once!")
+    end
+    substructures = {}
+    for i = 1, substructures_len do
+      substructures[i] = updates[i]
+      updates[i] = nil
+    end
+  else
+    substructures = updates.children or updates.tabs
+    updates.children = nil
+    updates.tabs = nil
+  end
+  local subelements
+  if elem.type == "tabbed-pane" then
+    subelements = elem.tabs
+  else
+    subelements = elem.children
+  end
+
+  if substructures then
+    for i, substructure in pairs(substructures) do
+      if substructure.tab or substructure.content then
+        local elem_tab_and_content = subelements[i]
+        if elem_tab_and_content then
+          local tab = elem_tab_and_content.tab
+          local tab_updates = substructures.tab
+          if tab and tab_updates then
+            recursive_update(tab, tab_updates)
+          end
+          local content = elem_tab_and_content.content
+          local content_updates = substructures.content
+          if content and content_updates then
+            recursive_update(content, content_updates)
+          end
+        end
+      elseif subelements[i] then
+        recursive_update(subelements[i], substructure)
       end
     end
   end
 
-  -- TODO: Live in array portion
-  if updates.tabs then
-    local elem_tabs = elem.tabs
-    for i, tab_and_content_updates in pairs(updates.tabs) do
-      local elem_tab_and_content = elem_tabs[i]
-      if elem_tab_and_content then
-        local tab = elem_tab_and_content.tab
-        local tab_updates = tab_and_content_updates.tab
-        if tab and tab_updates then
-          recursive_update(tab, tab_updates)
-        end
-        local content = elem_tab_and_content.content
-        local content_updates = tab_and_content_updates.content
-        if content and content_updates then
-          recursive_update(content, content_updates)
-        end
+  if updates.children then
+    for i, child_updates in ipairs(updates.children) do
+      if elem_children[i] then
+        recursive_update(elem_children[i], child_updates)
       end
     end
   end
@@ -332,6 +358,10 @@ function flib_gui.update_tags(elem, updates)
   elem.tags = elem_tags
 end
 
+--- Overwrite the specified action message for this GUI element.
+--  @tparam LuaGuiElement elem
+--  @tparam string event_name The GUI event name for this action, with the `_gui` portion omitted (i.e. `on_click`).
+--  @tparam any msg The action message. Can be any truthy value.
 function flib_gui.set_action(elem, event_name, msg)
   local elem_tags = elem.tags
   local existing = elem_tags[mod_name]
@@ -372,7 +402,9 @@ end
 -- @tparam[opt] string[] ref A nested table path in which to place a reference to this @{LuaGuiElement} in the output of
 -- @{gui-beta.build}.
 -- @tparam[opt] GuiBuildStructure[] children @{GuiBuildStructure}s to add as children of this @{LuaGuiElement}.
--- @tparam[opt] TabAndContent[] tabs @{TabAndContent}s to add as tabs of this @{LuaGuiElement}.
+-- Children may alternatively be defined in the array portion of the parent structure to remove a level of nesting.
+-- @tparam[opt] TabAndContent[] tabs @{TabAndContent}s to add as tabs of this @{LuaGuiElement}. Tabs may alternatively
+-- be defined int he array portion of the parent structure to remove a level of nesting.
 -- @usage
 -- gui.build(player.gui.screen, {
 --   {
@@ -382,35 +414,34 @@ end
 --     actions = {
 --       on_closed = {gui = "demo", action = "close"}
 --     },
---     children = {
---       -- titlebar
---       {type = "flow", ref = {"titlebar", "flow"}, children = {
---         {type = "label", style = "frame_title", caption = "Menu", ignored_by_interaction = true},
---         {type = "empty-widget", style = "flib_titlebar_drag_handle", ignored_by_interaction = true},
---         {
---           type = "sprite-button",
---           style = "frame_action_button",
---           sprite = "utility/close_white",
---           hovered_sprite = "utility/close_black",
---           clicked_sprite = "utility/close_black",
---           ref = {"titlebar", "close_button"},
---           actions = {
---             on_click = {gui = "demo", action = "close"}
---           }
+--     -- Titlebar
+--     {type = "flow", ref = {"titlebar", "flow"},
+--       {type = "label", style = "frame_title", caption = "Menu", ignored_by_interaction = true},
+--       {type = "empty-widget", style = "flib_titlebar_drag_handle", ignored_by_interaction = true},
+--       {
+--         type = "sprite-button",
+--         style = "frame_action_button",
+--         sprite = "utility/close_white",
+--         hovered_sprite = "utility/close_black",
+--         clicked_sprite = "utility/close_black",
+--         ref = {"titlebar", "close_button"},
+--         actions = {
+--           on_click = {gui = "demo", action = "close"}
 --         }
---       }},
---       {type = "frame", style = "inside_deep_frame_for_tabs", children = {
---         {type = "tabbed-pane", tabs = {
---           {
---             tab = {type = "tab", caption = "1"},
---             content = {type = "table", style = "slot_table", column_count = 10, ref = {"tables", 1}}
---           },
---           {
---             tab = {type = "tab", caption = "2"},
---             content = {type = "table", style = "slot_table", column_count = 10, ref = {"tables", 2}}
---           }
---         }}
---       }}
+--       }
+--     },
+--     -- Content
+--     {type = "frame", style = "inside_deep_frame_for_tabs",
+--       {type = "tabbed-pane",
+--         {
+--           tab = {type = "tab", caption = "1"},
+--           content = {type = "table", style = "slot_table", column_count = 10, ref = {"tables", 1}}
+--         },
+--         {
+--           tab = {type = "tab", caption = "2"},
+--           content = {type = "table", style = "slot_table", column_count = 10, ref = {"tables", 2}}
+--         }
+--       }
 --     }
 --   }
 -- })
@@ -424,20 +455,26 @@ end
 -- Available properties are listed in @{LuaStyle}.
 -- @tparam[opt] table elem_mods A key –> value dictionary defining modifications to make to the element. Available
 -- properties are listed in LuaGuiElement.
+-- @tparam table tags Tags that should be added to the element. This is identical to calling @{gui.update_tags} on the
+-- element.
+-- @tparam table actions Actions that should be added to the element. The format is identical to `actions` in a
+-- @{GuiBuidStructure}. This is identical to calling `set_action` for each action on this element.
 -- @tparam[opt] GuiUpdateStructure[] children @{GuiUpdateStructure}s to apply to the children of this @{LuaGuiElement}.
--- @tparam[opt] TabAndContent[] tabs @{TabAndContent}s to apply to the tabs of this @{LuaGuiElement}.
+-- This may alternatively be defined in the array portion of the parent structure to improve readability.
+-- @tparam[opt] TabAndContent[] tabs @{TabAndContent}s to apply to the tabs of this @{LuaGuiElement}. This may
+-- alternatively be defined in the array portion of the parent structure to improve readability.
 -- @usage
 -- gui.update(
 --   my_frame,
 --   {
 --     elem_mods = {caption = "Hello there!"},
---     children = {
---       {children = {
---         tabs = {
---           {tab = {elem_mods = {badge_text = "69"}}, content = {...}},
---           {content = {...}}
---         }
---       }}
+--     tags = {subject = "General Kenobi"},
+--     actions = {on_click = "everybody_say_hey"},
+--     {
+--      {
+--        {tab = {elem_mods = {badge_text = "69"}}, content = {...}},
+--        {content = {...}}
+--      }
 --     }
 --   }
 -- )
