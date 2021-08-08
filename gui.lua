@@ -355,10 +355,10 @@ function flib_gui.update_tags(elem, updates)
   elem.tags = elem_tags
 end
 
---- Overwrite the specified action message for this GUI element.
+--- Set (overwrite) the specified action message for this GUI element.
 --  @tparam LuaGuiElement elem
 --  @tparam string event_name The GUI event name for this action, with the `_gui` portion omitted (i.e. `on_click`).
---  @tparam any msg The action message. Can be any truthy value.
+--  @tparam any|nil msg The action message, or `nil` to clear the action.
 function flib_gui.set_action(elem, event_name, msg)
   local elem_tags = elem.tags
   local existing = elem_tags[mod_name]
@@ -377,6 +377,23 @@ function flib_gui.set_action(elem, event_name, msg)
   actions[event_name] = msg
 
   elem.tags = elem_tags
+end
+
+--- Retrieve the specified action message for this GUI element.
+-- @tparam LuaGuiElement elem
+-- @tparam string event_name The GUI event name to get the action message for, with the `_gui` portion omitted (i.e.
+-- `on_click`).
+-- @treturn any|nil msg The action message, if there is one.
+function flib_gui.get_action(elem, event_name)
+  local elem_tags = elem.tags
+  local existing = elem_tags[mod_name]
+
+  if not existing then return end
+
+  local actions = existing.flib
+  if not actions then return end
+
+  return actions[event_name]
 end
 
 --- Concepts
