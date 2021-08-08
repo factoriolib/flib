@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.8.0
-Date: ????
+Date: 2021-08-08
   Features:
     - Added `area.from_shorthand` and `area.to_shorthand`
     - Added `dictionary` module, which is a fast and easy-to-use dictionary system for localised string translations
