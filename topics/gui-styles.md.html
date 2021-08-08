@@ -53,9 +53,9 @@
     <ul class="nav">
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/area.html"><span class="module-name-item">area</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/data-util.html"><span class="module-name-item">data-util</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/dictionary.html"><span class="module-name-item">dictionary</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/direction.html"><span class="module-name-item">direction</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/event.html"><span class="module-name-item">event</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/gui-beta.html"><span class="module-name-item">gui-beta</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/gui.html"><span class="module-name-item">gui</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/math.html"><span class="module-name-item">math</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/migration.html"><span class="module-name-item">migration</span></a></div></li>
@@ -64,7 +64,6 @@
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/reverse-defines.html"><span class="module-name-item">reverse-defines</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/table.html"><span class="module-name-item">table</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/train.html"><span class="module-name-item">train</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/translation.html"><span class="module-name-item">translation</span></a></div></li>
     </ul>
     </li>
     </ul>
@@ -72,11 +71,10 @@
     <li class="nav-item">
     <h2>Examples</h2>
     <ul class="nav">
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/dictionary.lua.html"><span class="module-name-item">dictionary.lua</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/event.lua.html"><span class="module-name-item">event.lua</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/gui-beta.lua.html"><span class="module-name-item">gui-beta.lua</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/gui.lua.html"><span class="module-name-item">gui.lua</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/migration.lua.html"><span class="module-name-item">migration.lua</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/translation.lua.html"><span class="module-name-item">translation.lua</span></a></div></li>
     </ul>
     </li>
     </ul>
@@ -161,6 +159,12 @@
 <p>A drag handle suitable for placement in the footer of a <strong>dialog</strong> window.</p>
 
 
+<p><strong>flib_dialog_footer_drag_handle_no_right</strong></p>
+
+
+<p>A dialog footer drag handle with the right margin removed. Suitable for dialog windows without a <code>confirm</code> button.</p>
+
+
 <p><strong>flib_dialog_titlebar_drag_handle</strong></p>
 
 
@@ -200,6 +204,15 @@
 <p>A flow for use in a custom window titlebar. Identical to a regular horizontal flow, except for an increased horizontal spacing.</p>
 
 
+<h3>Frame styles</h3>
+
+
+<p><strong>flib_shallow_frame_in_shallow_frame</strong></p>
+
+
+<p>A shallow frame nested in another shallow frame. Use of this is generally recommended against, but can be useful in some specific situations.</p>
+
+
 <h3>Image styles</h3>
 
 
@@ -227,7 +240,37 @@
 <p><strong>flib_naked_scroll_pane_no_padding</strong></p>
 
 
-<p>Identical to <code>flib_naked_scroll_pane</code>, but has no padding for the content that&rsquo;s put inside. Useful for wrapping a table in a scroll pane, for example.
+<p>Identical to <code>flib_naked_scroll_pane</code>, but has no padding for the content that&rsquo;s put inside. Useful for wrapping a table in a scroll pane, for example.</p>
+
+
+<p><strong>flib_shallow_scroll_pane</strong></p>
+
+
+<p>A scroll pane that is inset from a shallow frame, instead of an outer frame.</p>
+
+
+<h3>Tabbed pane styles</h3>
+
+
+<p><strong>flib_tabbed_pane_with_no_padding</strong></p>
+
+
+<p>A tabbed pane with no padding whatsoever on the content container. Useful for specific situations where you need to have full control of the content padding.</p>
+
+
+<h3>Textfield styles</h3>
+
+
+<p><strong>flib_widthless_textfield</strong></p>
+
+
+<p>A textfield with no width defined on it. The default textfield style has a width of 200, which can wreak havoc.</p>
+
+
+<p><strong>flib_widthless_invalid_textfield</strong></p>
+
+
+<p>A widthless textfield that has a red background. Suitable for situations where the content of the textfield is invalid in some way.
 
 
 
@@ -261,7 +304,7 @@
     <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
     </div>
     <div class="content-footer column col-9 col-sm-12">
-    <i>Last updated 2021-02-12 03:52:28 UTC</i>
+    <i>Last updated 2021-08-08 22:26:02 UTC</i>
     </div>
     </div>
     </div>

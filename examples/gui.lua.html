@@ -40,11 +40,10 @@
     <li class="nav-item">
     <h2>Examples</h2>
     <ul class="nav">
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/dictionary.lua.html"><span class="module-name-item">dictionary.lua</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/event.lua.html"><span class="module-name-item">event.lua</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/gui-beta.lua.html"><span class="module-name-item">gui-beta.lua</span></a></div></li>
     <li class="nav-item active"><div class="nav-item-block-active block"><a href="../examples/gui.lua.html"><span class="module-name-item">gui.lua</span></a><i class="icon icon-arrow-left icon-arrow-left-custom"></i></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/migration.lua.html"><span class="module-name-item">migration.lua</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/translation.lua.html"><span class="module-name-item">translation.lua</span></a></div></li>
     </ul>
     </li>
     </ul>
@@ -54,9 +53,9 @@
     <ul class="nav">
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/area.html"><span class="module-name-item">area</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/data-util.html"><span class="module-name-item">data-util</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/dictionary.html"><span class="module-name-item">dictionary</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/direction.html"><span class="module-name-item">direction</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/event.html"><span class="module-name-item">event</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/gui-beta.html"><span class="module-name-item">gui-beta</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/gui.html"><span class="module-name-item">gui</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/math.html"><span class="module-name-item">math</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/migration.html"><span class="module-name-item">migration</span></a></div></li>
@@ -65,7 +64,6 @@
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/reverse-defines.html"><span class="module-name-item">reverse-defines</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/table.html"><span class="module-name-item">table</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/train.html"><span class="module-name-item">train</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/translation.html"><span class="module-name-item">translation</span></a></div></li>
     </ul>
     </li>
     </ul>
@@ -105,210 +103,384 @@
     <p></p>
     <p></p>
 
-    <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> event = <span class="global">require</span>(<span class="string">"__flib__.event"</span>)
+    <pre class="code" data-lang="Lua"><code><span class="comment">-- ---------------------------------------------------------------------------------------------------------------------
+</span><span class="comment">-- GUI MODULE EXAMPLE CODE
+</span><span class="comment">-- This is an implementation of TodoMVC using flib's GUI module. As such, it is not a small piece of code, but it
+</span><span class="comment">-- provides a great demonstration of various aspects of the GUI module. Dropping this into the `control.lua` file of an
+</span><span class="comment">-- empty mod will allow you to interact with the resulting GUI.
+</span><span class="comment">--
+</span><span class="comment">-- The code is split into two sections:
+</span><span class="comment">-- "GUI Code" is the contents of the `todo_gui` object. This code would usually go into its own file and return the
+</span><span class="comment">-- `todo_gui` object at the end. However, for the sake of the example, it has been inlined into one file.
+</span><span class="comment">-- "Event Handlers" contains what would go in the `control.lua` file. It passes events to the GUI module, creates the
+</span><span class="comment">-- GUI itself, and demonstrates some of the control flow involved.
+</span><span class="comment">-- ---------------------------------------------------------------------------------------------------------------------
+</span>
+<span class="keyword">local</span> event = <span class="global">require</span>(<span class="string">"__flib__.event"</span>)
 <span class="keyword">local</span> gui = <span class="global">require</span>(<span class="string">"__flib__.gui"</span>)
-<span class="keyword">local</span> migration = <span class="global">require</span>(<span class="string">"__flib__.migration"</span>)
 <span class="keyword">local</span> mod_gui = <span class="global">require</span>(<span class="string">"__core__.lualib.mod-gui"</span>)
+<span class="keyword">local</span> <span class="global">table</span> = <span class="global">require</span>(<span class="string">"__flib__.table"</span>)
 
-<span class="comment">-- add structure templates. this can be multiple levels deep, but this example only uses one level
-</span><span class="comment">-- in order to be usable, a template must have a `type` or another `template` key
-</span>gui.add_templates{
-  mouse_filter = {<span class="global">type</span>=<span class="string">"button"</span>, mouse_button_filter={<span class="string">"left"</span>}},
-  <span class="comment">-- elem mods - allows changing properties on an element immediately after creation
-</span>  <span class="comment">-- available modifications are listen in the LuaGuiElement docs
-</span>  drag_handle = {<span class="global">type</span>=<span class="string">"empty-widget"</span>, style=<span class="string">"flib_titlebar_drag_handle"</span>, elem_mods={ignored_by_interaction=<span class="keyword">true</span>}},
-  <span class="comment">-- a template that depends on another template will load that template first, then apply its own properties on top
-</span>  frame_action_button = {template=<span class="string">"mouse_filter"</span>, style=<span class="string">"frame_action_button"</span>}
+<span class="comment">-- ---------------------------------------------------------------------------------------------------------------------
+</span><span class="comment">-- GUI CODE
+</span>
+<span class="keyword">local</span> todo_gui = {}
+
+<span class="keyword">local</span> view_modes = <span class="global">table</span>.invert{
+  <span class="string">"all"</span>,
+  <span class="string">"active"</span>,
+  <span class="string">"completed"</span>
 }
 
-<span class="comment">-- add handlers to be usable in `gui.build`
-</span>gui.add_handlers{
-  <span class="comment">--[[
-    organize the handlers however you like. in this example, the handlers for the inventory window elements are kept in
-    their own subtable, while the handler for the location button is separate
-  ]]</span>
-  inventory = {
-    <span class="comment">-- a handler group - contains `defines.events` event name -&gt; handler function pairs
-</span>    titlebar_button = {
-      <span class="comment">-- only `on_gui` events can be used in this table
-</span>      <span class="comment">-- a handler group can have multiple events, but this example only has one
-</span>      on_gui_click = <span class="keyword">function</span>(e)
-        game.get_player(e.player_index).<span class="global">print</span>(<span class="string">"You clicked one of the titlebar buttons!"</span>)
-      <span class="keyword">end</span>
-    },
-    slot_button = {
-      on_gui_click = <span class="keyword">function</span>(e)
-        <span class="keyword">local</span> _, _, name = <span class="global">string</span>.find(e.element.sprite, <span class="string">"item/(.*)"</span>)
-        game.get_player(e.player_index).<span class="global">print</span>(<span class="string">"You clicked the "</span>..name..<span class="string">" slot button!"</span>)
-      <span class="keyword">end</span>
-    },
-    window = {
-      <span class="comment">-- any `on_gui` event can be used
-</span>      on_gui_location_changed = <span class="keyword">function</span>(e)
-        <span class="keyword">local</span> location = e.element.location
-        global.players[e.player_index].gui.location.caption = location.x..<span class="string">", "</span>..location.y
-      <span class="keyword">end</span>
-    }
-  },
-  location = {
-    on_gui_click = <span class="keyword">function</span>(e)
-      global.players[e.player_index].gui.inventory.window.force_auto_center()
-    <span class="keyword">end</span>
-  }
-}
+<span class="comment">-- ROOT
+</span>
+<span class="keyword">local</span> <span class="keyword">function</span> update_mode_radios(gui_data)
+  <span class="keyword">local</span> mode = gui_data.state.mode
+  <span class="keyword">local</span> subfooter_flow = gui_data.refs.subfooter_flow
 
-<span class="comment">-- create the GUIs
-</span><span class="keyword">local</span> <span class="keyword">function</span> create_guis(player)
-  <span class="comment">-- location button - kept in the `mod-gui` button flow
-</span>  <span class="keyword">local</span> location_elems = gui.build(mod_gui.get_button_flow(player), {
-    {<span class="global">type</span>=<span class="string">"button"</span>, style=mod_gui.button_style, caption=<span class="string">"0, 0"</span>, handlers=<span class="string">"location"</span>, save_as=<span class="string">"label"</span>}
-  })
-
-  <span class="comment">-- inventory GUI - kept in `screen`
-</span>  <span class="keyword">local</span> inventory_elems = gui.build(player.gui.screen, {
-    <span class="comment">-- handlers - dot-deliminated path to a handler group table in `gui.handlers`
-</span>    <span class="comment">-- children - an array of GuiStructures to add as children of this element
-</span>    {<span class="global">type</span>=<span class="string">"frame"</span>, direction=<span class="string">"vertical"</span>, handlers=<span class="string">"inventory.window"</span>, save_as=<span class="string">"window"</span>, children={
-      <span class="comment">-- save_as - dot-deliminated path to save this element to in `inventory_elems`
-</span>      {<span class="global">type</span>=<span class="string">"flow"</span>, save_as=<span class="string">"titlebar.flow"</span>, children={
-        {<span class="global">type</span>=<span class="string">"label"</span>, style=<span class="string">"frame_title"</span>, caption=<span class="string">"Demo GUI"</span>, elem_mods={ignored_by_interaction=<span class="keyword">true</span>}},
-        {template=<span class="string">"drag_handle"</span>},
-        <span class="comment">-- you can assign multiple elements to the same handler group
-</span>        {template=<span class="string">"frame_action_button"</span>, handlers=<span class="string">"inventory.titlebar_button"</span>},
-        {template=<span class="string">"frame_action_button"</span>, handlers=<span class="string">"inventory.titlebar_button"</span>},
-        {template=<span class="string">"frame_action_button"</span>, handlers=<span class="string">"inventory.titlebar_button"</span>}
-      }},
-      <span class="comment">-- style mods - change style properties on an element immediately after creation
-</span>      <span class="comment">-- available properties are listen in the LuaStyle docs
-</span>      {<span class="global">type</span>=<span class="string">"frame"</span>, style=<span class="string">"inside_shallow_frame_with_padding"</span>, style_mods={padding=<span class="number">12</span>}, children={
-        {<span class="global">type</span>=<span class="string">"frame"</span>, style=<span class="string">"slot_button_deep_frame"</span>, children={
-          {<span class="global">type</span>=<span class="string">"scroll-pane"</span>, style=<span class="string">"flib_naked_scroll_pane_no_padding"</span>, style_mods={height=<span class="number">200</span>}, children={
-            {<span class="global">type</span>=<span class="string">"table"</span>, style=<span class="string">"slot_table"</span>, style_mods={width=<span class="number">400</span>}, column_count=<span class="number">10</span>, save_as=<span class="string">"slot_table"</span>}
-          }}
-        }}
-      }}
-    }}
-  })
-
-  <span class="comment">-- inventory_elems was built using the structure defined in the `save_as` keys
-</span>  <span class="comment">-- the titlebar flow was saved to the `titlebar` subtable
-</span>  inventory_elems.titlebar.flow.drag_target = inventory_elems.window
-  inventory_elems.window.force_auto_center()
-
-  <span class="comment">-- update_filters - add or remove filters to or from a handler group
-</span>  <span class="comment">-- string filters are valid to be used as a filter as well
-</span>  <span class="comment">-- if the name contains two adjacent underscores `__`, they and everything after them will be ignored
-</span>  <span class="comment">-- this string filter is what will be matched, we will use `__` on element names later on
-</span>  gui.update_filters(<span class="string">"inventory.slot_button"</span>, player.index, {<span class="string">"demo_slot_button"</span>}, <span class="string">"add"</span>)
-
-  global.players[player.index].gui = {inventory=inventory_elems, location=location_elems.label}
+  subfooter_flow.all_radiobutton.state = mode == view_modes.all
+  subfooter_flow.active_radiobutton.state = mode == view_modes.active
+  subfooter_flow.completed_radiobutton.state = mode == view_modes.completed
 <span class="keyword">end</span>
 
-<span class="keyword">local</span> <span class="keyword">function</span> destroy_guis(player, player_table)
-  <span class="comment">-- destroy parents for both GUIs and clean up tables
-</span>  player_table.gui.inventory.window.destroy()
-  player_table.gui.location.destroy()
-  player_table.gui = <span class="keyword">nil</span>
+<span class="keyword">local</span> <span class="keyword">function</span> update_todos(gui_data)
+  <span class="keyword">local</span> state = gui_data.state
+  <span class="keyword">local</span> refs = gui_data.refs
 
-  <span class="comment">-- use update_filters to remove all stored filters for each group
-</span>  <span class="comment">-- passing `nil` as the third argument will remove everything in that group
-</span>  <span class="comment">-- in this case, you could also use `gui.remove_player_filters(player.index)` to accomplish the same thing
-</span>  gui.update_filters(<span class="string">"inventory"</span>, player.index, <span class="keyword">nil</span>, <span class="string">"remove"</span>)
-  gui.update_filters(<span class="string">"location"</span>, player.index, <span class="keyword">nil</span>, <span class="string">"remove"</span>)
-<span class="keyword">end</span>
-
-event.on_init(<span class="keyword">function</span>()
-  gui.init()
-  gui.build_lookup_tables()
-
-  <span class="comment">-- players setup
-</span>  global.players = {}
-  <span class="keyword">for</span> i, player <span class="keyword">in</span> <span class="global">pairs</span>(game.players) <span class="keyword">do</span>
-    global.players[i] = {}
-    create_guis(player)
-  <span class="keyword">end</span>
-<span class="keyword">end</span>)
-
-event.on_load(<span class="keyword">function</span>()
-  gui.build_lookup_tables()
-<span class="keyword">end</span>)
-
-event.on_configuration_changed(<span class="keyword">function</span>(e)
-  <span class="keyword">if</span> migration.on_config_changed(e, {}) <span class="keyword">then</span>
-    gui.check_filter_validity()
-
-    <span class="comment">-- refresh all GUIs
-</span>    <span class="keyword">for</span> i, player <span class="keyword">in</span> <span class="global">pairs</span>(game.players) <span class="keyword">do</span>
-      <span class="comment">-- destroy and recreate GUIs
-</span>      <span class="comment">-- destroying and recreating GUIs on a mod update is the best way to avoid edge cases
-</span>      destroy_guis(player, global.players[i])
-      create_guis(player)
-    <span class="keyword">end</span>
-  <span class="keyword">end</span>
-<span class="keyword">end</span>)
-
-<span class="comment">-- this registers `gui.dispatch_handlers()` to all GUI events
-</span>gui.register_handlers()
-
-<span class="comment">-- if custom logic is needed, a handler may be overwritten after calling `gui.register_handlers()`
-</span>event.on_gui_click(<span class="keyword">function</span>(e)
-  <span class="comment">-- dispatch_handlers - will run handlers for matched GUI filters, assigned using `handlers` in a GuiStructure
-</span>  <span class="comment">-- the function will return whether or not a handler was dispatched
-</span>  <span class="keyword">if</span> <span class="keyword">not</span> gui.dispatch_handlers(e) <span class="keyword">then</span>
-    game.<span class="global">print</span>(<span class="string">"custom logic here"</span>)
-  <span class="keyword">end</span>
-<span class="keyword">end</span>)
-
-<span class="comment">-- create GUIs for any players that join
-</span>event.on_player_created(<span class="keyword">function</span>(e)
-  global.players[e.player_index] = {}
-  <span class="keyword">local</span> player = game.get_player(e.player_index)
-  create_guis(player)
-<span class="keyword">end</span>)
-
-<span class="comment">-- remove global data and remove all filters for any players that leave
-</span>event.on_player_removed(<span class="keyword">function</span>(e)
-  global.players[e.player_index] = <span class="keyword">nil</span>
-  gui.remove_player_filters(e.player_index)
-<span class="keyword">end</span>)
-
-<span class="comment">-- update inventory GUI when the player's inventory changes
-</span>event.on_player_main_inventory_changed(<span class="keyword">function</span>(e)
-  <span class="keyword">local</span> player = game.get_player(e.player_index)
-
-  <span class="comment">-- get the inventory table and its children
-</span>  <span class="keyword">local</span> <span class="global">table</span> = global.players[e.player_index].gui.inventory.slot_table
-  <span class="keyword">local</span> children = <span class="global">table</span>.children
-
-  <span class="comment">-- iterate over the player's inventory contents
-</span>  <span class="keyword">local</span> i = <span class="number">0</span>
-  <span class="keyword">for</span> name, count <span class="keyword">in</span> <span class="global">pairs</span>(player.get_main_inventory().get_contents()) <span class="keyword">do</span>
-    i = i + <span class="number">1</span>
-
-    <span class="comment">-- check for child - if it exists, just update it, otherwise create it
-</span>    <span class="keyword">local</span> child = children[i]
-    <span class="keyword">if</span> child <span class="keyword">then</span>
-      child.sprite = <span class="string">"item/"</span>..name
-      child.number = count
+  <span class="keyword">local</span> todos_flow = refs.todos_flow
+  <span class="keyword">local</span> children = todos_flow.children
+  <span class="keyword">local</span> i = <span class="number">0</span>
+  <span class="keyword">local</span> active_count = <span class="number">0</span>
+  <span class="keyword">local</span> completed_count = <span class="number">0</span>
+  <span class="keyword">for</span> id, todo <span class="keyword">in</span> <span class="global">pairs</span>(state.todos) <span class="keyword">do</span>
+    <span class="keyword">if</span> todo.completed <span class="keyword">then</span>
+      completed_count = completed_count + <span class="number">1</span>
     <span class="keyword">else</span>
-      <span class="global">table</span>.add{
-        <span class="global">type</span> = <span class="string">"sprite-button"</span>,
-        <span class="comment">-- double underscore - only `demo_slot_button` will be matched, the rest will be ignored
-</span>        <span class="comment">--[[
-          this allows all generated inventory buttons to be assigned to the same handler, without needing to call
-          `gui.build` on all of them
-        ]]</span>
-        name = <span class="string">"demo_slot_button__"</span>..i,
-        style = <span class="string">"slot_button"</span>,
-        sprite = <span class="string">"item/"</span>..name,
-        number = count
+      active_count = active_count + <span class="number">1</span>
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span>
+      state.mode == view_modes.all
+      <span class="keyword">or</span> (state.mode == view_modes.active <span class="keyword">and</span> <span class="keyword">not</span> todo.completed)
+      <span class="keyword">or</span> (state.mode == view_modes.completed <span class="keyword">and</span> todo.completed)
+    <span class="keyword">then</span>
+      i = i + <span class="number">1</span>
+      <span class="keyword">local</span> child = children[i]
+      <span class="keyword">if</span> child <span class="keyword">then</span>
+        gui.update(
+          child,
+          {
+            {
+              elem_mods = {caption = todo.text, state = todo.completed},
+              tags = {todo_id = id}
+            },
+            {},
+            {tags = {todo_id = id}}
+          }
+        )
+      <span class="keyword">else</span>
+        gui.add(
+          todos_flow,
+          {<span class="global">type</span> = <span class="string">"flow"</span>, style_mods = {vertical_align = <span class="string">"center"</span>},
+            {
+              <span class="global">type</span> = <span class="string">"checkbox"</span>,
+              caption = todo.text,
+              state = todo.completed,
+              actions = {
+                on_click = <span class="string">"toggle_completed"</span>
+              },
+              tags = {todo_id = id}
+            },
+            {<span class="global">type</span> = <span class="string">"empty-widget"</span>, style = <span class="string">"flib_horizontal_pusher"</span>},
+            {
+              <span class="global">type</span> = <span class="string">"sprite-button"</span>,
+              style = <span class="string">"tool_button_red"</span>,
+              sprite = <span class="string">"utility/trash"</span>,
+              tooltip = <span class="string">"Delete"</span>,
+              actions = {
+                on_click = <span class="string">"delete_todo"</span>
+              },
+              tags = {todo_id = id}
+            }
+          }
+        )
+      <span class="keyword">end</span>
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+  <span class="keyword">for</span> j = i + <span class="number">1</span>, #children <span class="keyword">do</span>
+    children[j].destroy()
+  <span class="keyword">end</span>
+
+  <span class="keyword">if</span> i == <span class="number">0</span> <span class="keyword">then</span>
+    todos_flow.visible = <span class="keyword">false</span>
+  <span class="keyword">else</span>
+    todos_flow.visible = <span class="keyword">true</span>
+  <span class="keyword">end</span>
+
+  <span class="keyword">if</span> <span class="global">next</span>(state.todos) <span class="keyword">then</span>
+    refs.subfooter_frame.visible = <span class="keyword">true</span>
+  <span class="keyword">else</span>
+    refs.subfooter_frame.visible = <span class="keyword">false</span>
+  <span class="keyword">end</span>
+
+  refs.subfooter_flow.items_left_label.caption = active_count..<span class="string">" items left"</span>
+  refs.subfooter_flow.clear_completed_button.enabled = completed_count &gt; <span class="number">0</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> todo_gui.build(player, player_table)
+  <span class="keyword">local</span> refs = gui.build(player.gui.screen, {
+    {
+      <span class="global">type</span> = <span class="string">"frame"</span>,
+      direction = <span class="string">"vertical"</span>,
+      ref = {<span class="string">"window"</span>},
+      actions = {
+        on_closed = <span class="string">"close"</span>
+      },
+      {<span class="global">type</span> = <span class="string">"flow"</span>, ref = {<span class="string">"titlebar_flow"</span>}, children = {
+        {<span class="global">type</span> =<span class="string">"label"</span>, style = <span class="string">"frame_title"</span>, caption = <span class="string">"TodoMVC"</span>, ignored_by_interaction = <span class="keyword">true</span>},
+        {<span class="global">type</span> = <span class="string">"empty-widget"</span>, style = <span class="string">"flib_titlebar_drag_handle"</span>, ignored_by_interaction = <span class="keyword">true</span>},
+        {
+          <span class="global">type</span> = <span class="string">"sprite-button"</span>,
+          style = <span class="string">"frame_action_button"</span>,
+          sprite = <span class="string">"utility/close_white"</span>,
+          hovered_sprite = <span class="string">"utility/close_black"</span>,
+          clicked_sprite = <span class="string">"utility/close_black"</span>,
+          mouse_button_filter = {<span class="string">"left"</span>},
+          actions = {
+            on_click = <span class="string">"close"</span>
+          }
+        }
+      }},
+      {<span class="global">type</span> = <span class="string">"frame"</span>, style = <span class="string">"inside_shallow_frame"</span>, direction = <span class="string">"vertical"</span>,
+        {
+          <span class="global">type</span> = <span class="string">"textfield"</span>,
+          style_mods = {width = <span class="number">500</span>, margin = <span class="number">12</span>},
+          ref = {<span class="string">"textfield"</span>},
+          actions = {
+            on_confirmed = <span class="string">"add_todo"</span>
+          }
+        },
+        {
+          <span class="global">type</span> = <span class="string">"flow"</span>,
+          style_mods = {left_margin = <span class="number">12</span>, right_margin = <span class="number">12</span>, bottom_margin = <span class="number">12</span>},
+          direction = <span class="string">"vertical"</span>,
+          elem_mods = {visible = <span class="keyword">false</span>},
+          ref = {<span class="string">"todos_flow"</span>}
+        },
+        {
+          <span class="global">type</span> = <span class="string">"frame"</span>,
+          style = <span class="string">"subfooter_frame"</span>,
+          elem_mods = {visible = <span class="keyword">false</span>},
+          ref = {<span class="string">"subfooter_frame"</span>},
+          {
+            <span class="global">type</span> = <span class="string">"flow"</span>,
+            style_mods = {vertical_align = <span class="string">"center"</span>, left_margin = <span class="number">8</span>},
+            ref = {<span class="string">"subfooter_flow"</span>},
+            {<span class="global">type</span> = <span class="string">"label"</span>, name = <span class="string">"items_left_label"</span>, caption = <span class="string">"0 items left"</span>},
+            {<span class="global">type</span> = <span class="string">"empty-widget"</span>, style = <span class="string">"flib_horizontal_pusher"</span>},
+            {
+              <span class="global">type</span> = <span class="string">"radiobutton"</span>,
+              name = <span class="string">"all_radiobutton"</span>,
+              caption = <span class="string">"All"</span>,
+              state = <span class="keyword">true</span>,
+              actions = {
+                on_checked_state_changed = <span class="string">"change_mode"</span>
+              },
+              tags = {mode = view_modes.all}
+            },
+            {
+              <span class="global">type</span> = <span class="string">"radiobutton"</span>,
+              name = <span class="string">"active_radiobutton"</span>,
+              caption = <span class="string">"Active"</span>,
+              state = <span class="keyword">false</span>,
+              actions = {
+                on_checked_state_changed = <span class="string">"change_mode"</span>
+              },
+              tags = {mode = view_modes.active}
+            },
+            {
+              <span class="global">type</span> = <span class="string">"radiobutton"</span>,
+              name = <span class="string">"completed_radiobutton"</span>,
+              caption = <span class="string">"Completed"</span>,
+              state = <span class="keyword">false</span>,
+              actions = {
+                on_checked_state_changed = <span class="string">"change_mode"</span>
+              },
+              tags = {mode = view_modes.completed}
+            },
+            {<span class="global">type</span> = <span class="string">"empty-widget"</span>, style = <span class="string">"flib_horizontal_pusher"</span>},
+            {
+              <span class="global">type</span> = <span class="string">"button"</span>,
+              name = <span class="string">"clear_completed_button"</span>,
+              caption = <span class="string">"Clear completed"</span>,
+              elem_mods = {enabled = <span class="keyword">false</span>},
+              actions = {
+                on_click = <span class="string">"delete_completed_todos"</span>
+              }
+            }
+          }
+        }
       }
+    }
+  })
+
+  refs.titlebar_flow.drag_target = refs.window
+  refs.window.force_auto_center()
+  player.opened = refs.window
+
+  player_table.todo = {
+    refs = refs,
+    state = {
+      mode = view_modes.all,
+      next_id = <span class="number">1</span>,
+      todos = {},
+      visible = <span class="keyword">false</span>
+    }
+  }
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> todo_gui.open(e)
+  <span class="keyword">local</span> player = game.get_player(e.player_index)
+  <span class="keyword">local</span> player_table = global.players[e.player_index]
+  <span class="keyword">local</span> gui_data = player_table.todo
+
+  gui_data.refs.window.visible = <span class="keyword">true</span>
+  player.opened = gui_data.refs.window
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> todo_gui.close(e)
+  <span class="keyword">local</span> player = game.get_player(e.player_index)
+  <span class="keyword">local</span> player_table = global.players[e.player_index]
+  <span class="keyword">local</span> gui_data = player_table.todo
+
+  gui_data.refs.window.visible = <span class="keyword">false</span>
+  <span class="keyword">if</span> player.opened <span class="keyword">then</span>
+    player.opened = <span class="keyword">nil</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">-- ACTION HANDLERS
+</span>
+<span class="keyword">local</span> <span class="keyword">function</span> add_todo(e)
+  <span class="keyword">local</span> player_table = global.players[e.player_index]
+  <span class="keyword">local</span> gui_data = player_table.todo
+  <span class="keyword">local</span> state = gui_data.state
+
+  <span class="keyword">local</span> todo_text = e.element.text
+
+  state.todos[state.next_id] = {
+    completed = <span class="keyword">false</span>,
+    text = todo_text
+  }
+
+  state.next_id = state.next_id + <span class="number">1</span>
+
+  e.element.text = <span class="string">""</span>
+
+  update_todos(gui_data)
+<span class="keyword">end</span>
+
+<span class="keyword">local</span> <span class="keyword">function</span> toggle_todo_completed(e)
+  <span class="keyword">local</span> player_table = global.players[e.player_index]
+  <span class="keyword">local</span> gui_data = player_table.todo
+  <span class="keyword">local</span> state = gui_data.state
+
+  <span class="keyword">local</span> todo_data = state.todos[gui.get_tags(e.element).todo_id]
+  todo_data.completed = e.element.state
+
+  update_todos(gui_data)
+<span class="keyword">end</span>
+
+<span class="keyword">local</span> <span class="keyword">function</span> delete_todo(e)
+  <span class="keyword">local</span> player_table = global.players[e.player_index]
+  <span class="keyword">local</span> gui_data = player_table.todo
+  <span class="keyword">local</span> state = gui_data.state
+
+  state.todos[gui.get_tags(e.element).todo_id] = <span class="keyword">nil</span>
+
+  update_todos(gui_data)
+<span class="keyword">end</span>
+
+<span class="keyword">local</span> <span class="keyword">function</span> delete_completed_todos(e)
+  <span class="keyword">local</span> player_table = global.players[e.player_index]
+  <span class="keyword">local</span> gui_data = player_table.todo
+  <span class="keyword">local</span> state = gui_data.state
+
+  <span class="keyword">for</span> id, todo <span class="keyword">in</span> <span class="global">pairs</span>(state.todos) <span class="keyword">do</span>
+    <span class="keyword">if</span> todo.completed <span class="keyword">then</span>
+      state.todos[id] = <span class="keyword">nil</span>
     <span class="keyword">end</span>
   <span class="keyword">end</span>
 
-  <span class="comment">-- remove any extra buttons
-</span>  <span class="keyword">for</span> j = i + <span class="number">1</span>, #children <span class="keyword">do</span>
-    children[j].destroy()
+  update_todos(gui_data)
+<span class="keyword">end</span>
+
+<span class="keyword">local</span> <span class="keyword">function</span> change_view_mode(e)
+  <span class="keyword">local</span> player_table = global.players[e.player_index]
+  <span class="keyword">local</span> gui_data = player_table.todo
+  <span class="keyword">local</span> state = gui_data.state
+
+  state.mode = gui.get_tags(e.element).mode
+
+  update_mode_radios(gui_data)
+  update_todos(gui_data)
+<span class="keyword">end</span>
+
+todo_gui.actions = {
+  close = todo_gui.close,
+  add_todo = add_todo,
+  toggle_completed = toggle_todo_completed,
+  delete_todo = delete_todo,
+  delete_completed_todos = delete_completed_todos,
+  change_mode = change_view_mode
+}
+
+<span class="comment">-- ---------------------------------------------------------------------------------------------------------------------
+</span><span class="comment">-- EVENT HANDLERS
+</span>
+event.on_init(<span class="keyword">function</span>()
+  global.players = {}
+<span class="keyword">end</span>)
+
+event.on_player_created(<span class="keyword">function</span>(e)
+  <span class="comment">-- Create player table
+</span>  global.players[e.player_index] = {}
+  <span class="keyword">local</span> player_table = global.players[e.player_index]
+
+  <span class="keyword">local</span> player = game.get_player(e.player_index)
+
+  <span class="comment">-- CREATE GUIS
+</span>
+  gui.add(mod_gui.get_button_flow(player), {
+    <span class="global">type</span> = <span class="string">"button"</span>,
+    style = mod_gui.button_style,
+    caption = <span class="string">"TodoMVC"</span>,
+    actions = {
+      on_click = <span class="string">"toggle_todo_gui"</span>
+    }
+  })
+
+  todo_gui.build(player, player_table)
+<span class="keyword">end</span>)
+
+<span class="keyword">local</span> <span class="keyword">function</span> toggle_todo_gui(e)
+  <span class="keyword">local</span> player_table = global.players[e.player_index]
+  <span class="keyword">local</span> visible = player_table.todo.refs.window.visible
+  <span class="keyword">if</span> visible <span class="keyword">then</span>
+    todo_gui.close(e)
+  <span class="keyword">else</span>
+    todo_gui.open(e)
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+gui.hook_events(<span class="keyword">function</span>(e)
+  <span class="keyword">local</span> action = gui.read_action(e)
+  <span class="keyword">if</span> action <span class="keyword">then</span>
+    <span class="keyword">if</span> action == <span class="string">"toggle_todo_gui"</span> <span class="keyword">then</span>
+      toggle_todo_gui(e)
+    <span class="keyword">else</span>
+      todo_gui.actions[action](e)
+    <span class="keyword">end</span>
   <span class="keyword">end</span>
 <span class="keyword">end</span>)</code></pre>
 
@@ -340,7 +512,7 @@ event.on_configuration_changed(<span class="keyword">function</span>(e)
     <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
     </div>
     <div class="content-footer column col-9 col-sm-12">
-    <i>Last updated 2021-02-12 03:52:28 UTC</i>
+    <i>Last updated 2021-08-08 22:26:02 UTC</i>
     </div>
     </div>
     </div>

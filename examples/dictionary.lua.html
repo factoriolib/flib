@@ -1,0 +1,213 @@
+
+
+    <!doctype html>
+    <html class="no-js" lang="">
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>dictionary.lua example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../spectre.min.css" type="text/css" />
+    <link rel="stylesheet" href="../spectre-icons.min.css" type="text/css" />
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+    </head>
+    <body>
+
+    <div class="container grid-1280">
+    <div class="columns">
+
+    <!-- sidebar start -->
+
+    <div id="sidebar" class="column col-3 col-sm-12">
+
+    <div class="sidebar-custom">
+
+    <div class="project-infobox">
+
+    <!-- project title -->
+
+    <a href="../index.html"><h1>Factorio Library</h1></a>
+
+    <!-- project description -->
+
+    <!-- project full description -->
+    <span>  The Factorio Library (flib) is a set of high-quality, commonly-used utilities for creating Factorio mods.</span>
+    </div>
+
+
+    <!-- sidebar navigation -->
+    <ul class="nav nav-modules">
+    <li class="nav-item">
+    <h2>Examples</h2>
+    <ul class="nav">
+    <li class="nav-item active"><div class="nav-item-block-active block"><a href="../examples/dictionary.lua.html"><span class="module-name-item">dictionary.lua</span></a><i class="icon icon-arrow-left icon-arrow-left-custom"></i></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/event.lua.html"><span class="module-name-item">event.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/gui.lua.html"><span class="module-name-item">gui.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/migration.lua.html"><span class="module-name-item">migration.lua</span></a></div></li>
+    </ul>
+    </li>
+    </ul>
+    <ul class="nav nav-modules">
+    <li class="nav-item">
+    <h2>Modules</h2>
+    <ul class="nav">
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/area.html"><span class="module-name-item">area</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/data-util.html"><span class="module-name-item">data-util</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/dictionary.html"><span class="module-name-item">dictionary</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/direction.html"><span class="module-name-item">direction</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/event.html"><span class="module-name-item">event</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/gui.html"><span class="module-name-item">gui</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/math.html"><span class="module-name-item">math</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/migration.html"><span class="module-name-item">migration</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/misc.html"><span class="module-name-item">misc</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/orientation.html"><span class="module-name-item">orientation</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/reverse-defines.html"><span class="module-name-item">reverse-defines</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/table.html"><span class="module-name-item">table</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/train.html"><span class="module-name-item">train</span></a></div></li>
+    </ul>
+    </li>
+    </ul>
+    <ul class="nav nav-modules">
+    <li class="nav-item">
+    <h2>Topics</h2>
+    <ul class="nav">
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/README.md.html"><span class="module-name-item">README.md</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/LICENSE.html"><span class="module-name-item">LICENSE</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/gui-styles.md.html"><span class="module-name-item">gui-styles.md</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/sprites.md.html"><span class="module-name-item">sprites.md</span></a></div></li>
+    </ul>
+    </li>
+    </ul>
+
+
+
+    <!-- list of items in a module -->
+    </div>
+    <div class="up-to-top">
+    <a href="#">Top <i class="icon icon-upward"></i></a>
+    </div>
+    </div>
+    <!-- sidebar end -->
+
+    <!-- content body start -->
+    <div class="column col-9 col-sm-12">
+
+    <!-- module list on the main page start -->
+    <!-- module list on the main page end -->
+
+    <!-- module contents -->
+
+    <!-- module content header start -->
+
+    <h2><span class="body-module-name"><strong><em>dictionary.lua</em></strong></span> example</h2>
+    <p></p>
+    <p></p>
+
+    <pre class="code" data-lang="Lua"><code><span class="comment">-- ---------------------------------------------------------------------------------------------------------------------
+</span><span class="comment">-- DICTIONARY MODULE EXAMPLE CODE
+</span><span class="comment">-- This example demonstrates proper use of the module to handle all edge-cases. This example creates dictionaries for
+</span><span class="comment">-- the names and descriptions of every entity, fluid, item, recipe, technology, and tile in the game.
+</span><span class="comment">-- If an object's name doesn't have a translation, this example enabled a setting that will cause that object to use
+</span><span class="comment">-- its InternalString as its TranslatedString. See the `dictionary.new()` documentation for further information.
+</span><span class="comment">-- ---------------------------------------------------------------------------------------------------------------------
+</span>
+<span class="keyword">local</span> event = <span class="global">require</span>(<span class="string">"__flib__.event"</span>)
+<span class="keyword">local</span> dictionary = <span class="global">require</span>(<span class="string">"__flib__.dictionary"</span>)
+<span class="keyword">local</span> migration = <span class="global">require</span>(<span class="string">"__flib__.migration"</span>)
+
+<span class="keyword">local</span> <span class="keyword">function</span> create_demo_dictionaries()
+  <span class="keyword">for</span> _, <span class="global">type</span> <span class="keyword">in</span> <span class="global">pairs</span>{<span class="string">"entity"</span>, <span class="string">"fluid"</span>, <span class="string">"item"</span>, <span class="string">"recipe"</span>, <span class="string">"technology"</span>, <span class="string">"tile"</span>} <span class="keyword">do</span>
+    <span class="comment">-- If the object's name doesn't have a translation, use its internal name as the translation
+</span>    <span class="keyword">local</span> Names = dictionary.new(<span class="global">type</span>..<span class="string">"_names"</span>, <span class="keyword">true</span>)
+    <span class="comment">-- If a description doesn't exist, it won't exist in the resulting dictionary either
+</span>    <span class="keyword">local</span> Descriptions = dictionary.new(<span class="global">type</span>..<span class="string">"_descriptions"</span>)
+    <span class="keyword">for</span> name, prototype <span class="keyword">in</span> <span class="global">pairs</span>(game[<span class="global">type</span>..<span class="string">"_prototypes"</span>]) <span class="keyword">do</span>
+      Names:add(name, prototype.localised_name)
+      Descriptions:add(name, prototype.localised_description)
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+event.on_init(<span class="keyword">function</span>()
+  <span class="comment">-- Initialize the module
+</span>  dictionary.init()
+
+  global.player_dictionaries = {}
+  create_demo_dictionaries()
+<span class="keyword">end</span>)
+
+event.on_configuration_changed(<span class="keyword">function</span>(e)
+  <span class="keyword">if</span> migration.on_config_changed(e, {}) <span class="keyword">then</span>
+    <span class="comment">-- Reset the module to effectively cancel all ongoing translations and wipe all dictionaries
+</span>    dictionary.init()
+    create_demo_dictionaries()
+  <span class="keyword">end</span>
+<span class="keyword">end</span>)
+
+event.on_player_created(<span class="keyword">function</span>(e)
+  <span class="keyword">local</span> player = game.get_player(e.player_index)
+  <span class="comment">-- Only translate if they're connected - if they're not, then it will not work!
+</span>  <span class="keyword">if</span> player.connected <span class="keyword">then</span>
+    dictionary.translate(player)
+  <span class="keyword">end</span>
+<span class="keyword">end</span>)
+
+event.on_player_joined_game(<span class="keyword">function</span>(e)
+  <span class="comment">-- This serves two purposes: To translate the player's initial dictionaries, and to update the language if they player
+</span>  <span class="comment">-- switched locales.
+</span>  dictionary.translate(game.get_player(e.player_index))
+<span class="keyword">end</span>)
+
+event.on_player_left_game(<span class="keyword">function</span>(e)
+  <span class="comment">-- If the player was actively translating, cancel it and hand it off to another player (if any).
+</span>  dictionary.cancel_translation(e.player_index)
+<span class="keyword">end</span>)
+
+event.on_tick(dictionary.check_skipped)
+
+event.on_string_translated(dictionary.process_translation)
+
+event.register(dictionary.on_language_translated, <span class="keyword">function</span>(e)
+  <span class="comment">-- For convenience, store the dictionaries that each player is using in their personal table.
+</span>  <span class="comment">-- This does not actually take any storage space, because the dictionaries are already stored in the module's internal
+</span>  <span class="comment">-- table, so any additional references are just pointers to the original.
+</span>  <span class="keyword">for</span> _, player_index <span class="keyword">in</span> <span class="global">pairs</span>(e.players) <span class="keyword">do</span>
+    global.player_dictionaries[player_index] = e.dictionaries
+    game.<span class="global">print</span>(<span class="string">"Player "</span>..player_index..<span class="string">" now has dictionaries for their language!"</span>)
+  <span class="keyword">end</span>
+<span class="keyword">end</span>)</code></pre>
+
+    <!-- module info start -->
+    <!-- module info end -->
+
+    <!-- module usage start -->
+    <!-- module usage end -->
+
+    <!-- module content header end -->
+
+    <!-- module section list start -->
+    <!-- module section list end -->
+
+    <br />
+
+    <!-- section start -->
+
+    <!-- section end -->
+
+    </div>
+    </div>
+    </div>
+
+    <div class="footer container grid-1280">
+    <div class="divider divider-custom"></div>
+    <div class="footer-columns columns">
+    <div class="sidebar-footer column col-3 col-sm-12">
+    <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+    </div>
+    <div class="content-footer column col-9 col-sm-12">
+    <i>Last updated 2021-08-08 22:26:02 UTC</i>
+    </div>
+    </div>
+    </div>
+    </body>
+    </html>

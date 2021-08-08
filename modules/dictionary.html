@@ -1,0 +1,931 @@
+
+
+    <!doctype html>
+    <html class="no-js" lang="">
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>dictionary module</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../spectre.min.css" type="text/css" />
+    <link rel="stylesheet" href="../spectre-icons.min.css" type="text/css" />
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+    </head>
+    <body>
+
+    <div class="container grid-1280">
+    <div class="columns">
+
+    <!-- sidebar start -->
+
+    <div id="sidebar" class="column col-3 col-sm-12">
+
+    <div class="sidebar-custom">
+
+    <div class="project-infobox">
+
+    <!-- project title -->
+
+    <a href="../index.html"><h1>Factorio Library</h1></a>
+
+    <!-- project description -->
+
+    <!-- project full description -->
+    <span>  The Factorio Library (flib) is a set of high-quality, commonly-used utilities for creating Factorio mods.</span>
+    </div>
+
+
+    <!-- sidebar navigation -->
+    <ul class="nav nav-modules">
+    <li class="nav-item">
+    <h2>Modules</h2>
+    <ul class="nav">
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/area.html"><span class="module-name-item">area</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/data-util.html"><span class="module-name-item">data-util</span></a></div></li>
+    <li class="nav-item active"><div class="nav-item-block-active block"><a href="../modules/dictionary.html"><span class="module-name-item">dictionary</span></a><i class="icon icon-arrow-left icon-arrow-left-custom"></i></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/direction.html"><span class="module-name-item">direction</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/event.html"><span class="module-name-item">event</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/gui.html"><span class="module-name-item">gui</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/math.html"><span class="module-name-item">math</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/migration.html"><span class="module-name-item">migration</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/misc.html"><span class="module-name-item">misc</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/orientation.html"><span class="module-name-item">orientation</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/reverse-defines.html"><span class="module-name-item">reverse-defines</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/table.html"><span class="module-name-item">table</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/train.html"><span class="module-name-item">train</span></a></div></li>
+    </ul>
+    </li>
+    </ul>
+    <ul class="nav nav-modules">
+    <li class="nav-item">
+    <h2>Topics</h2>
+    <ul class="nav">
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/README.md.html"><span class="module-name-item">README.md</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/LICENSE.html"><span class="module-name-item">LICENSE</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/gui-styles.md.html"><span class="module-name-item">gui-styles.md</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../topics/sprites.md.html"><span class="module-name-item">sprites.md</span></a></div></li>
+    </ul>
+    </li>
+    </ul>
+    <ul class="nav nav-modules">
+    <li class="nav-item">
+    <h2>Examples</h2>
+    <ul class="nav">
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/dictionary.lua.html"><span class="module-name-item">dictionary.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/event.lua.html"><span class="module-name-item">event.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/gui.lua.html"><span class="module-name-item">gui.lua</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/migration.lua.html"><span class="module-name-item">migration.lua</span></a></div></li>
+    </ul>
+    </li>
+    </ul>
+
+
+
+    <!-- list of items in a module -->
+    <ul class="nav nav-module-contents">
+    <li class="nav-item">
+    <h4>Contents of <strong>dictionary</strong></h4>
+    <ul class="nav">
+    <li class="nav-item"><a href="#RawDictionary_methods"><span class="fragment-hashtag">#</span> RawDictionary methods </a></li>
+    <li class="nav-item"><a href="#Functions"><span class="fragment-hashtag">#</span> Functions </a></li>
+    <li class="nav-item"><a href="#Events"><span class="fragment-hashtag">#</span> Events </a></li>
+    <li class="nav-item"><a href="#Concepts"><span class="fragment-hashtag">#</span> Concepts </a></li>
+    </ul>
+    </li>
+    </ul>
+    </div>
+    <div class="up-to-top">
+    <a href="#">Top <i class="icon icon-upward"></i></a>
+    </div>
+    </div>
+    <!-- sidebar end -->
+
+    <!-- content body start -->
+    <div class="column col-9 col-sm-12">
+
+    <!-- module list on the main page start -->
+    <!-- module list on the main page end -->
+
+    <!-- module contents -->
+
+    <!-- module content header start -->
+
+    <h2><span class="body-module-name"><strong><em>dictionary</em></strong></span> module</h2>
+    <p>An easy-to-use dictionary system for storing localised string translations.</p>
+    <p>
+</p>
+
+
+    <!-- module info start -->
+    <!-- module info end -->
+
+    <!-- module usage start -->
+    <h3>See also</h3>
+    <ul class="module-see-also">
+    <li><a href="../examples/dictionary.lua.html#">dictionary.lua</a></li>
+    </ul>
+    <h3>Usage</h3>
+    <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> dictionary = <span class="global">require</span>(<span class="string">"__flib__.dictionary"</span>)</code></pre>
+    <!-- module usage end -->
+
+    <!-- module content header end -->
+
+    <!-- module section list start -->
+    <table class="section-content-list">
+    <thead>
+    <h3><a href="#RawDictionary_methods">RawDictionary methods </a></h3>
+    <span></span>
+    </thead>
+    <tbody>
+    <tr>
+    <td class="name"><a href="#RawDictionary:add">RawDictionary:add(internal, translation)</a></td>
+    <td class="summary">Add a new translation to this dictionary.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#new">new(name[, keep_untranslated][, initial_contents])</a></td>
+    <td class="summary">Create a new <a href="../modules/dictionary.html#RawDictionary">RawDictionary</a>.</td>
+    </tr>
+    </tbody>
+    </table>
+    <table class="section-content-list">
+    <thead>
+    <h3><a href="#Functions">Functions </a></h3>
+    <span></span>
+    </thead>
+    <tbody>
+    <tr>
+    <td class="name"><a href="#init">init()</a></td>
+    <td class="summary">Initialize the module&rsquo;s script data table.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#load">load()</a></td>
+    <td class="summary">Set up the module&rsquo;s local references.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#translate">translate(player)</a></td>
+    <td class="summary">Request all dictionaries for the given player.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#check_skipped">check_skipped()</a></td>
+    <td class="summary">Check for a &ldquo;skipped&rdquo; translation and re-request it after three seconds.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#process_translation">process_translation(event_data)</a></td>
+    <td class="summary">Processes a returned translation batch, then request the next batch.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#cancel_translation">cancel_translation(player_index)</a></td>
+    <td class="summary">Cancel the translation of the player&rsquo;s dictionaries if they are the currently translating player.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#set_use_local_storage">set_use_local_storage(value)</a></td>
+    <td class="summary">Set whether or not the module is using local storage mode.</td>
+    </tr>
+    </tbody>
+    </table>
+    <table class="section-content-list">
+    <thead>
+    <h3><a href="#Events">Events </a></h3>
+    <span></span>
+    </thead>
+    <tbody>
+    <tr>
+    <td class="name"><a href="#on_language_translated">on_language_translated</a></td>
+    <td class="summary">Raised when dictionary translation has been completed for a given language.</td>
+    </tr>
+    </tbody>
+    </table>
+    <table class="section-content-list">
+    <thead>
+    <h3><a href="#Concepts">Concepts </a></h3>
+    <span></span>
+    </thead>
+    <tbody>
+    <tr>
+    <td class="name"><a href="#RawDictionary">RawDictionary</a></td>
+    <td class="summary">A &ldquo;raw&rdquo; dictionary containing the actual <a href="http://lua-api.factorio.com/latest/Concepts.html#LocalisedString">Concepts.LocalisedString</a>s for translation.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#InternalString">InternalString</a></td>
+    <td class="summary">The &ldquo;internal&rdquo; representation of the translation.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#TranslatedString">TranslatedString</a></td>
+    <td class="summary">The translated result of a <a href="http://lua-api.factorio.com/latest/Concepts.html#LocalisedString">Concepts.LocalisedString</a> for a specific language, or the <a href="../modules/dictionary.html#InternalString">InternalString</a> if
+ <code>include_failed_translations</code> was enabled when creating the <a href="../modules/dictionary.html#RawDictionary">RawDictionary</a>.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#DictionaryContents">DictionaryContents</a></td>
+    <td class="summary">The contents of a translated dictionary.</td>
+    </tr>
+    </tbody>
+    </table>
+    <!-- module section list end -->
+
+    <br />
+
+    <!-- section start -->
+    <h3><span id="RawDictionary_methods" class="section-title"><a href="#RawDictionary_methods">RawDictionary methods </a></span></h3>
+    <dl class="section-body-container">
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#RawDictionary:add" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="RawDictionary:add">RawDictionary:add(internal, translation)</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Add a new translation to this dictionary.</p>
+    <p class="section-item-description"> This method <strong>must not</strong> be called after control stage initialization and migration. Doing so will result in
+ different languages having different sets of data.</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>internal</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="../modules/dictionary.html#InternalString">InternalString</a></span>)
+
+
+
+
+    </li>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>translation</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Concepts.html#LocalisedString">LocalisedString</a></span>)
+
+
+
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#new" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="new">new(name[, keep_untranslated][, initial_contents])</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Create a new <a href="../modules/dictionary.html#RawDictionary">RawDictionary</a>.</p>
+    <p class="section-item-description">
+</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>name</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a></span>)
+
+     The name of the dictionary.
+
+    </li>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>keep_untranslated</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#boolean">boolean</a></span>)
+
+     If <code>true</code>, translations that &ldquo;failed&rdquo; (begin with <code>Unknown key:</code> will be
+ added to the dictionary with their internal name as their translated name.
+
+    (<em>optional</em>)
+    </li>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>initial_contents</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.5.html">table</a></span>)
+
+     The intial contents of the dictionary. This is a table of <a href="../modules/dictionary.html#InternalString">InternalString</a> &ndash;>
+ <a href="http://lua-api.factorio.com/latest/Concepts.html#LocalisedString">LocalisedString</a>.
+
+    (<em>optional</em>)
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <strong>Returns:</strong>
+    <ul>
+    <li>
+    (<span class="types"><a class="type" href="../modules/dictionary.html#RawDictionary">RawDictionary</a></span>)
+    <span class="return-text">The newly created dictionary object.</span>
+    </li>
+    </ul>
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    </dl>
+    <h3><span id="Functions" class="section-title"><a href="#Functions">Functions </a></span></h3>
+    <dl class="section-body-container">
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#init" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="init">init()</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Initialize the module&rsquo;s script data table.</p>
+    <p class="section-item-description"> Must be called at the <strong>beginning</strong> of <code>on_init</code> for initial setup, and at the <strong>beginning</strong> of
+ <code>on_configuration_changed</code> to reset all ongoing translations.</p>
+
+    <!-- parameters start -->
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#load" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="load">load()</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Set up the module&rsquo;s local references.</p>
+    <p class="section-item-description"> Must be called at the <strong>beginning</strong> of <code>on_load</code>.</p>
+
+<p> If using <a href="../modules/dictionary.html#set_use_local_storage">dictionary.set_use_local_storage</a>, your dictionaries must be re-generated <strong>after</strong> this function is
+ called.</p>
+
+    <!-- parameters start -->
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#translate" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="translate">translate(player)</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Request all dictionaries for the given player.</p>
+    <p class="section-item-description"> The dictionary system stores dictionaries by language, not by player. Thus, if this player&rsquo;s language has already
+ been translated, the module will simply return the already existing dictionaries instead of translating them again.</p>
+
+<p> If you wish to re-translate dictionaries, call <a href="../modules/dictionary.html#init">dictionary.init</a> and call this function for all online players.</p>
+
+<p> The player must be connected to the game in order to call this function. Calling this function on a disconnected
+ player will throw an error.</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>player</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/LuaPlayer.html">LuaPlayer</a></span>)
+
+
+
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#check_skipped" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="check_skipped">check_skipped()</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Check for a &ldquo;skipped&rdquo; translation and re-request it after three seconds.</p>
+    <p class="section-item-description"> Must be called <strong>during</strong> <code>on_tick</code>.</p>
+
+<p> This is to handle a very specific edge-case where translations that are requested on the same tick that a game is
+ saved will not be returned when that save is loaded.</p>
+
+    <!-- parameters start -->
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#process_translation" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="process_translation">process_translation(event_data)</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Processes a returned translation batch, then request the next batch.</p>
+    <p class="section-item-description"> Must be called <strong>during</strong> <code>on_string_translated</code>.</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>event_data</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><span class="type">OnStringTranslatedEventData</span></span>)
+
+
+
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#cancel_translation" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="cancel_translation">cancel_translation(player_index)</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Cancel the translation of the player&rsquo;s dictionaries if they are the currently translating player.</p>
+    <p class="section-item-description"> If multiple players are waiting on these dictionaries, the translation duties will be handed off to the next player
+ in the list.</p>
+
+<p> Must be called <strong>during</strong> <code>on_player_left_game</code>.</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>player_index</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.3.html">number</a></span>)
+
+
+
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#set_use_local_storage" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="set_use_local_storage">set_use_local_storage(value)</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Set whether or not the module is using local storage mode.</p>
+    <p class="section-item-description"> Must be called in the <strong>root scope</strong> of your mod if you wish to use local storage.</p>
+
+<p> Using local storage is a technique to reduce the amount of script data that the module saves in the <code>global</code> table.
+ If you enable this, you <strong>must</strong> re-build all of your dictionaries <strong>during</strong> <code>on_load</code>, but <strong>after</strong> calling
+ <a href="../modules/dictionary.html#load">dictionary.load</a>. Failure to do so will result in a desync.</p>
+
+<p> <strong>Only use this function if you understood the above explanation and if you are familiar with how desyncs can occur.
+ Use at your own risk!</strong></p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>value</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#boolean">boolean</a></span>)
+
+     Whether or not to use local storage.
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <strong>Usage:</strong>
+    <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> dictionary = <span class="global">require</span>(<span class="string">"__flib__.dictionary"</span>)
+dictionary.set_use_local_storage(<span class="keyword">true</span>)</code></pre>
+    <!-- usage end -->
+
+    </dd>
+    </dl>
+    <h3><span id="Events" class="section-title"><a href="#Events">Events </a></span></h3>
+    <dl class="section-body-container">
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#on_language_translated" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="on_language_translated">on_language_translated</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Raised when dictionary translation has been completed for a given language.</p>
+    <p class="section-item-description">
+</p>
+
+    <!-- parameters start -->
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-module-field-li">
+
+    <strong><em>language</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a></span>)
+
+     The language that was translated.
+
+    </li>
+
+
+
+
+
+    <li class="section-subitem-module-field-li">
+
+    <strong><em>dictionaries</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.5.html">table</a></span>)
+
+     The resulting dictionaries, in the format of <code>dictionary_name</code> &ndash;> <a href="../modules/dictionary.html#DictionaryContents">DictionaryContents</a>.
+
+    </li>
+
+
+
+
+
+    <li class="section-subitem-module-field-li">
+
+    <strong><em>players</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/11.1.html">array[number]</a></span>)
+
+     The players who were waiting for this language to complete translation.
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    </dl>
+    <h3><span id="Concepts" class="section-title"><a href="#Concepts">Concepts </a></span></h3>
+    <dl class="section-body-container">
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#RawDictionary" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="RawDictionary">RawDictionary</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">A &ldquo;raw&rdquo; dictionary containing the actual <a href="http://lua-api.factorio.com/latest/Concepts.html#LocalisedString">Concepts.LocalisedString</a>s for translation.</p>
+    <p class="section-item-description"> This object contains a metatable giving access to all of the methods in the <code>RawDictionary object methods</code> section.</p>
+
+<p> This object <strong>must not</strong> be stored in the <code>global</code> table. Doing so will result in a desync if the game is saved and
+ loaded and you attempt to call methods on it.</p>
+
+    <!-- parameters start -->
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <strong>Usage:</strong>
+    <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> MyDictionary = dictionary.new(<span class="string">"my_dictionary"</span>)
+MyDictionary:add(<span class="string">"iron-ore"</span>, {<span class="string">"item-name.iron-ore"</span>})</code></pre>
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#InternalString" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="InternalString">InternalString</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">The &ldquo;internal&rdquo; representation of the translation.</p>
+    <p class="section-item-description"> This is a consistent, language-agnostic identifier that
+ corresponds to the translation.</p>
+
+    <!-- parameters start -->
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#TranslatedString" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="TranslatedString">TranslatedString</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">The translated result of a <a href="http://lua-api.factorio.com/latest/Concepts.html#LocalisedString">Concepts.LocalisedString</a> for a specific language, or the <a href="../modules/dictionary.html#InternalString">InternalString</a> if
+ <code>include_failed_translations</code> was enabled when creating the <a href="../modules/dictionary.html#RawDictionary">RawDictionary</a>.</p>
+    <p class="section-item-description">
+</p>
+
+    <!-- parameters start -->
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#DictionaryContents" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="DictionaryContents">DictionaryContents</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">The contents of a translated dictionary.</p>
+    <p class="section-item-description"> A table of <a href="../modules/dictionary.html#InternalString">InternalString</a> &ndash;> <a href="../modules/dictionary.html#TranslatedString">TranslatedString</a>.</p>
+
+    <!-- parameters start -->
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    </dl>
+
+    <!-- section end -->
+
+    </div>
+    </div>
+    </div>
+
+    <div class="footer container grid-1280">
+    <div class="divider divider-custom"></div>
+    <div class="footer-columns columns">
+    <div class="sidebar-footer column col-3 col-sm-12">
+    <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+    </div>
+    <div class="content-footer column col-9 col-sm-12">
+    <i>Last updated 2021-08-08 22:26:02 UTC</i>
+    </div>
+    </div>
+    </div>
+    </body>
+    </html>

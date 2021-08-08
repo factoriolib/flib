@@ -42,9 +42,9 @@
     <ul class="nav">
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/area.html"><span class="module-name-item">area</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/data-util.html"><span class="module-name-item">data-util</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/dictionary.html"><span class="module-name-item">dictionary</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/direction.html"><span class="module-name-item">direction</span></a></div></li>
     <li class="nav-item active"><div class="nav-item-block-active block"><a href="../modules/event.html"><span class="module-name-item">event</span></a><i class="icon icon-arrow-left icon-arrow-left-custom"></i></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/gui-beta.html"><span class="module-name-item">gui-beta</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/gui.html"><span class="module-name-item">gui</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/math.html"><span class="module-name-item">math</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/migration.html"><span class="module-name-item">migration</span></a></div></li>
@@ -53,7 +53,6 @@
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/reverse-defines.html"><span class="module-name-item">reverse-defines</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/table.html"><span class="module-name-item">table</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/train.html"><span class="module-name-item">train</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/translation.html"><span class="module-name-item">translation</span></a></div></li>
     </ul>
     </li>
     </ul>
@@ -72,11 +71,10 @@
     <li class="nav-item">
     <h2>Examples</h2>
     <ul class="nav">
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/dictionary.lua.html"><span class="module-name-item">dictionary.lua</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/event.lua.html"><span class="module-name-item">event.lua</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/gui-beta.lua.html"><span class="module-name-item">gui-beta.lua</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/gui.lua.html"><span class="module-name-item">gui.lua</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/migration.lua.html"><span class="module-name-item">migration.lua</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/translation.lua.html"><span class="module-name-item">translation.lua</span></a></div></li>
     </ul>
     </li>
     </ul>
@@ -261,8 +259,7 @@
     <pre class="code" data-lang="Lua"><code><span class="comment">-- register a handler to run during mod init
 </span>event.on_init(<span class="keyword">function</span>() log(<span class="string">"on_init"</span>) <span class="keyword">end</span>)
 <span class="comment">-- deregister the registered handler, if one exists
-</span>event.on_init(<span class="keyword">nil</span>)
-</code></pre>
+</span>event.on_init(<span class="keyword">nil</span>)</code></pre>
     <!-- usage end -->
 
     </dd>
@@ -318,8 +315,7 @@
     <pre class="code" data-lang="Lua"><code><span class="comment">-- register a handler to run during mod load
 </span>event.on_load(<span class="keyword">function</span>() log(<span class="string">"on_load"</span>) <span class="keyword">end</span>)
 <span class="comment">-- deregister the registered handler, if one exists
-</span>event.on_load(<span class="keyword">nil</span>)
-</code></pre>
+</span>event.on_load(<span class="keyword">nil</span>)</code></pre>
     <!-- usage end -->
 
     </dd>
@@ -375,8 +371,7 @@
     <pre class="code" data-lang="Lua"><code><span class="comment">-- register a handler to run when mod configuration changes
 </span>event.on_configuration_changed(<span class="keyword">function</span>() log(<span class="string">"on_configuration_changed"</span>) <span class="keyword">end</span>)
 <span class="comment">-- deregister the registered handler, if one exists
-</span>event.on_configuration_changed(<span class="keyword">nil</span>)
-</code></pre>
+</span>event.on_configuration_changed(<span class="keyword">nil</span>)</code></pre>
     <!-- usage end -->
 
     </dd>
@@ -449,8 +444,7 @@
     <pre class="code" data-lang="Lua"><code><span class="comment">-- register a handler to run every 30 ticks
 </span>event.on_nth_tick(<span class="number">30</span>, <span class="keyword">function</span>(e) log(<span class="string">"30th tick!"</span>) <span class="keyword">end</span>)
 <span class="comment">-- deregister the registered handler, if one exists
-</span>event.on_nth_tick(<span class="number">30</span>, <span class="keyword">nil</span>)
-</code></pre>
+</span>event.on_nth_tick(<span class="number">30</span>, <span class="keyword">nil</span>)</code></pre>
     <!-- usage end -->
 
     </dd>
@@ -547,8 +541,7 @@
 <span class="comment">-- deregister a handler from a single event, if one is registered
 </span>event.register(<span class="string">"my-input"</span>, <span class="keyword">nil</span>)
 <span class="comment">-- deregister a handler from multiple events, if one is registered
-</span>event.register({<span class="string">"my-input"</span>, defines.events.on_lua_shortcut}, <span class="keyword">nil</span>)
-</code></pre>
+</span>event.register({<span class="string">"my-input"</span>, defines.events.on_lua_shortcut}, <span class="keyword">nil</span>)</code></pre>
     <!-- usage end -->
 
     </dd>
@@ -652,8 +645,7 @@
     <pre class="code" data-lang="Lua"><code><span class="comment">-- generate a new event ID
 </span><span class="keyword">local</span> my_event = event.generate_id()
 <span class="comment">-- raise that event with custom parameters
-</span>event.raise(my_event, {whatever_you_want=<span class="keyword">true</span>, ...})
-</code></pre>
+</span>event.raise(my_event, {whatever_you_want=<span class="keyword">true</span>, ...})</code></pre>
     <!-- usage end -->
 
     </dd>
@@ -896,8 +888,7 @@
   {filter=<span class="string">"type"</span>, <span class="global">type</span>=<span class="string">"assembling-machine"</span>}
 })
 <span class="comment">-- clear event filters if any are set
-</span>event.set_filters(defines.events.on_robot_built_entity, <span class="keyword">nil</span>)
-</code></pre>
+</span>event.set_filters(defines.events.on_robot_built_entity, <span class="keyword">nil</span>)</code></pre>
     <!-- usage end -->
 
     </dd>
@@ -1011,7 +1002,7 @@
     <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
     </div>
     <div class="content-footer column col-9 col-sm-12">
-    <i>Last updated 2021-02-12 03:52:28 UTC</i>
+    <i>Last updated 2021-08-08 22:26:02 UTC</i>
     </div>
     </div>
     </div>

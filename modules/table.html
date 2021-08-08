@@ -42,9 +42,9 @@
     <ul class="nav">
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/area.html"><span class="module-name-item">area</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/data-util.html"><span class="module-name-item">data-util</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/dictionary.html"><span class="module-name-item">dictionary</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/direction.html"><span class="module-name-item">direction</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/event.html"><span class="module-name-item">event</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/gui-beta.html"><span class="module-name-item">gui-beta</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/gui.html"><span class="module-name-item">gui</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/math.html"><span class="module-name-item">math</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/migration.html"><span class="module-name-item">migration</span></a></div></li>
@@ -53,7 +53,6 @@
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/reverse-defines.html"><span class="module-name-item">reverse-defines</span></a></div></li>
     <li class="nav-item active"><div class="nav-item-block-active block"><a href="../modules/table.html"><span class="module-name-item">table</span></a><i class="icon icon-arrow-left icon-arrow-left-custom"></i></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/train.html"><span class="module-name-item">train</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/translation.html"><span class="module-name-item">translation</span></a></div></li>
     </ul>
     </li>
     </ul>
@@ -72,11 +71,10 @@
     <li class="nav-item">
     <h2>Examples</h2>
     <ul class="nav">
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/dictionary.lua.html"><span class="module-name-item">dictionary.lua</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/event.lua.html"><span class="module-name-item">event.lua</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/gui-beta.lua.html"><span class="module-name-item">gui-beta.lua</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/gui.lua.html"><span class="module-name-item">gui.lua</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/migration.lua.html"><span class="module-name-item">migration.lua</span></a></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../examples/translation.lua.html"><span class="module-name-item">translation.lua</span></a></div></li>
     </ul>
     </li>
     </ul>
@@ -151,6 +149,10 @@
     <td class="summary">Recursively merge two or more tables.</td>
     </tr>
     <tr>
+    <td class="name"><a href="#find">find(tbl, value)</a></td>
+    <td class="summary">Find the value in the table.</td>
+    </tr>
+    <tr>
     <td class="name"><a href="#for_each">for_each(tbl, callback)</a></td>
     <td class="summary">Call the given function for each item in the table, and abort if the function returns truthy.</td>
     </tr>
@@ -181,6 +183,10 @@
     <tr>
     <td class="name"><a href="#shallow_copy">shallow_copy(tbl, use_rawset)</a></td>
     <td class="summary">Shallowly copy the contents of a table into a new table.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#shallow_merge">shallow_merge(tables)</a></td>
+    <td class="summary">Shallowly merge two or more tables.</td>
     </tr>
     <tr>
     <td class="name"><a href="#size">size(tbl)</a></td>
@@ -463,6 +469,84 @@ log(tbl.foo) <span class="comment">-- logs "baz"
     <dt>
     <div class="divider divider-custom"></div>
     <div class="block section-item-header">
+    <a href="#find" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="find">find(tbl, value)</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Find the value in the table.</p>
+    <p class="section-item-description">
+</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>tbl</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.5.html">table</a></span>)
+
+     The table to search.
+
+    </li>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>value</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><span class="type">any</span></span>)
+
+     The value to match. Must have an <code>eq</code> metamethod set, otherwise will error.
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <strong>Returns:</strong>
+    <ul>
+    <li>
+    (<span class="types"><span class="type">any</span> or <a class="type" href="https://www.lua.org/pil/2.1.html">nil</a></span>)
+    <span class="return-text">The key that matches the value, or <code>nil</code> if it was not found.</span>
+    </li>
+    </ul>
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <strong>Usage:</strong>
+    <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> tbl = {<span class="string">"foo"</span>, <span class="string">"bar"</span>}
+<span class="keyword">local</span> contains_foo = <span class="global">table</span>.search(tbl, <span class="string">"foo"</span>) <span class="comment">-- true
+</span><span class="keyword">local</span> contains_baz = <span class="global">table</span>.search(tbl, <span class="string">"baz"</span>) <span class="comment">-- false</span></code></pre>
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
     <a href="#for_each" class="fragment-hashtag">#</a>
     <span class="section-item-title" id="for_each">for_each(tbl, callback)</span>
     </div>
@@ -471,7 +555,7 @@ log(tbl.foo) <span class="comment">-- logs "baz"
     <div class="section-item-body">
 
     <p class="section-item-summary">Call the given function for each item in the table, and abort if the function returns truthy.</p>
-    <p class="section-item-description"> Calls <code>callback(value, key, tbl)</code> for each item in the table, and immediately ceases iteration if the callback
+    <p class="section-item-description"> Calls <code>callback(value, key)</code> for each item in the table, and immediately ceases iteration if the callback
  returns truthy.</p>
 
     <!-- parameters start -->
@@ -539,8 +623,7 @@ log(tbl.foo) <span class="comment">-- logs "baz"
 <span class="comment">-- determine if any value in the table passes the test
 </span><span class="keyword">local</span> value_is_even = <span class="global">table</span>.for_each(tbl, <span class="keyword">function</span>(v) <span class="keyword">return</span> v % <span class="number">2</span> == <span class="number">0</span> <span class="keyword">end</span>)
 <span class="comment">-- determine if ALL values in the table pass the test (invert the test result and function return)
-</span><span class="keyword">local</span> all_values_less_than_six = <span class="keyword">not</span> <span class="global">table</span>.for_each(tbl, <span class="keyword">function</span>(v) <span class="keyword">return</span> <span class="keyword">not</span> (v &lt; <span class="number">6</span>) <span class="keyword">end</span>)
-</code></pre>
+</span><span class="keyword">local</span> all_values_less_than_six = <span class="keyword">not</span> <span class="global">table</span>.for_each(tbl, <span class="keyword">function</span>(v) <span class="keyword">return</span> <span class="keyword">not</span> (v &lt; <span class="number">6</span>) <span class="keyword">end</span>)</code></pre>
     <!-- usage end -->
 
     </dd>
@@ -696,8 +779,7 @@ log(tbl.foo) <span class="comment">-- logs "baz"
 }
 event.on_tick(<span class="keyword">function</span>()
   global.from_k = <span class="global">table</span>.for_n_of(extremely_large_table, global.from_k, <span class="number">10</span>, <span class="keyword">function</span>(v) game.<span class="global">print</span>(v) <span class="keyword">end</span>)
-<span class="keyword">end</span>)
-</code></pre>
+<span class="keyword">end</span>)</code></pre>
     <!-- usage end -->
 
     </dd>
@@ -712,7 +794,7 @@ event.on_tick(<span class="keyword">function</span>()
     <div class="section-item-body">
 
     <p class="section-item-summary">Create a filtered version of a table based on the results of a filter function.</p>
-    <p class="section-item-description"> Calls <code>filter(value, key, tbl)</code> on each element in the table, returning a new table with only pairs for which
+    <p class="section-item-description"> Calls <code>filter(value, key)</code> on each element in the table, returning a new table with only pairs for which
  <code>filter</code> returned a truthy value.</p>
 
     <!-- parameters start -->
@@ -870,7 +952,7 @@ event.on_tick(<span class="keyword">function</span>()
     <div class="section-item-body">
 
     <p class="section-item-summary">Create a transformed table using the output of a mapper function.</p>
-    <p class="section-item-description"> Calls <code>mapper(value, key, tbl)</code> on each element in the table, using the return as the new value for the key.</p>
+    <p class="section-item-description"> Calls <code>mapper(value, key)</code> on each element in the table, using the return as the new value for the key.</p>
 
     <!-- parameters start -->
     <strong>Parameters:</strong>
@@ -1141,8 +1223,7 @@ event.on_tick(<span class="keyword">function</span>()
     <strong>Usage:</strong>
     <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> tbl = {<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>, <span class="number">50</span>}
 <span class="keyword">local</span> sum = <span class="global">table</span>.reduce(tbl, <span class="keyword">function</span>(acc, v) <span class="keyword">return</span> acc + v <span class="keyword">end</span>)
-<span class="keyword">local</span> sum_minus_ten = <span class="global">table</span>.reduce(tbl, <span class="keyword">function</span>(acc, v) <span class="keyword">return</span> acc + v <span class="keyword">end</span>, -<span class="number">10</span>)
-</code></pre>
+<span class="keyword">local</span> sum_minus_ten = <span class="global">table</span>.reduce(tbl, <span class="keyword">function</span>(acc, v) <span class="keyword">return</span> acc + v <span class="keyword">end</span>, -<span class="number">10</span>)</code></pre>
     <!-- usage end -->
 
     </dd>
@@ -1213,6 +1294,55 @@ event.on_tick(<span class="keyword">function</span>()
     <span class="return-text">The copied table.</span>
     </li>
     </ul>
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#shallow_merge" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="shallow_merge">shallow_merge(tables)</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Shallowly merge two or more tables.</p>
+    <p class="section-item-description"> Unlike <a href="../modules/table.html#deep_merge">table.deep_merge</a>, this will only combine the top level of the tables.</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>tables</em></strong>
+
+
+
+
+
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
     <!-- returns end -->
 
 
@@ -1490,7 +1620,7 @@ event.on_tick(<span class="keyword">function</span>()
     <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
     </div>
     <div class="content-footer column col-9 col-sm-12">
-    <i>Last updated 2021-02-12 03:52:28 UTC</i>
+    <i>Last updated 2021-08-08 22:26:02 UTC</i>
     </div>
     </div>
     </div>
