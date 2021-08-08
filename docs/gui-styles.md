@@ -38,6 +38,10 @@ Each slot style also has a `selected` variant, which uses the hovered graphics a
 
 A drag handle suitable for placement in the footer of a **dialog** window.
 
+**flib_dialog_footer_drag_handle_no_right**
+
+A dialog footer drag handle with the right margin removed. Suitable for dialog windows without a `confirm` button.
+
 **flib_dialog_titlebar_drag_handle**
 
 A drag handle suitable for placement in the titlebar of a **dialog** window. Use inside of a `flib_titlebar_flow` flow.
@@ -64,6 +68,12 @@ A flow designed for use with indicators (see below).
 
 A flow for use in a custom window titlebar. Identical to a regular horizontal flow, except for an increased horizontal spacing.
 
+### Frame styles
+
+**flib_shallow_frame_in_shallow_frame**
+
+A shallow frame nested in another shallow frame. Use of this is generally recommended against, but can be useful in some specific situations.
+
 ### Image styles
 
 **flib_indicator**
@@ -83,3 +93,23 @@ Identical to `flib_naked_scroll_pane`, but has an inset on the top side when act
 **flib_naked_scroll_pane_no_padding**
 
 Identical to `flib_naked_scroll_pane`, but has no padding for the content that's put inside. Useful for wrapping a table in a scroll pane, for example.
+
+**flib_shallow_scroll_pane**
+
+A scroll pane that is inset from a shallow frame, instead of an outer frame.
+
+### Tabbed pane styles
+
+**flib_tabbed_pane_with_no_padding**
+
+A tabbed pane with no padding whatsoever on the content container. Useful for specific situations where you need to have full control of the content padding.
+
+### Textfield styles
+
+**flib_widthless_textfield**
+
+A textfield with no width defined on it. The default textfield style has a width of 200, which can wreak havoc.
+
+**flib_widthless_invalid_textfield**
+
+A widthless textfield that has a red background. Suitable for situations where the content of the textfield is invalid in some way.
