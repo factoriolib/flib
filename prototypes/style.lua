@@ -13,16 +13,16 @@ local function gen_slot(x, y, default_offset)
     parent = "slot",
     size = 40,
     default_graphical_set = {
-      base = {border=4, position={x + default_offset , y}, size=80, filename=slot_tileset},
+      base = {border = 4, position={x + default_offset , y}, size = 80, filename = slot_tileset},
     },
     hovered_graphical_set = {
-      base = {border=4, position={x + 80, y}, size=80, filename=slot_tileset},
+      base = {border = 4, position={x + 80, y}, size = 80, filename = slot_tileset},
     },
     clicked_graphical_set = {
     },
-      base = {border=4, position={x + 160, y}, size=80, filename=slot_tileset},
+      base = {border = 4, position={x + 160, y}, size = 80, filename = slot_tileset},
     disabled_graphical_set = { -- identical to default graphical set
-      base = {border=4, position={x + default_offset, y}, size=80, filename=slot_tileset},
+      base = {border = 4, position={x + default_offset, y}, size = 80, filename = slot_tileset},
     }
   }
 end
@@ -34,20 +34,20 @@ local function gen_slot_button(x, y, default_offset, glow)
     parent = "slot_button",
     size = 40,
     default_graphical_set = {
-      base = {border=4, position={x + default_offset , y}, size=80, filename=slot_tileset},
+      base = {border = 4, position={x + default_offset , y}, size = 80, filename = slot_tileset},
       shadow = offset_by_2_rounded_corners_glow(default_dirt_color),
     },
     hovered_graphical_set = {
-      base = {border=4, position={x + 80, y}, size=80, filename=slot_tileset},
+      base = {border = 4, position={x + 80, y}, size = 80, filename = slot_tileset},
       shadow = offset_by_2_rounded_corners_glow(default_dirt_color),
       glow = offset_by_2_rounded_corners_glow(glow)
     },
     clicked_graphical_set = {
-      base = {border=4, position={x + 160, y}, size=80, filename=slot_tileset},
+      base = {border = 4, position={x + 160, y}, size = 80, filename = slot_tileset},
       shadow = offset_by_2_rounded_corners_glow(default_dirt_color),
     },
     disabled_graphical_set = { -- identical to default graphical set
-      base = {border=4, position={x + default_offset, y}, size=80, filename=slot_tileset},
+      base = {border = 4, position={x + default_offset, y}, size = 80, filename = slot_tileset},
       shadow = offset_by_2_rounded_corners_glow(default_dirt_color),
     }
   }
@@ -60,19 +60,19 @@ local function gen_standalone_slot_button(x, y, default_offset)
     parent = "slot_button",
     size = 40,
     default_graphical_set = {
-      base = {border=4, position={x + default_offset , y}, size=80, filename=slot_tileset},
+      base = {border = 4, position={x + default_offset , y}, size = 80, filename = slot_tileset},
       shadow = offset_by_4_rounded_corners_subpanel_inset
     },
     hovered_graphical_set = {
-      base = {border=4, position={x + 80, y}, size=80, filename=slot_tileset},
+      base = {border = 4, position={x + 80, y}, size = 80, filename = slot_tileset},
       shadow = offset_by_4_rounded_corners_subpanel_inset
     },
     clicked_graphical_set = {
-      base = {border=4, position={x + 160, y}, size=80, filename=slot_tileset},
+      base = {border = 4, position={x + 160, y}, size = 80, filename = slot_tileset},
       shadow = offset_by_4_rounded_corners_subpanel_inset
     },
     disabled_graphical_set = { -- identical to default graphical set
-      base = {border=4, position={x + default_offset, y}, size=80, filename=slot_tileset},
+      base = {border = 4, position={x + default_offset, y}, size = 80, filename = slot_tileset},
       shadow = offset_by_4_rounded_corners_subpanel_inset
     }
   }
