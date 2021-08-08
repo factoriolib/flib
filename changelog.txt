@@ -2,16 +2,21 @@
 Version: 0.8.0
 Date: ????
   Features:
+    - Added `area.from_shorthand` and `area.to_shorthand`
+    - Added `dictionary` module, which is a fast and easy-to-use dictionary system for localised string translations
     - Added `flib_widthless_textfield` style
     - Added `gui.add`, `gui.set_action`, and `gui.get_action`
-    - Added support for tags and actions in `gui.update()`
+    - Added support for tags and actions in `gui.update`
     - Children in a `GuiBuildStructure` or `GuiUpdateStructure` can now be defined in the array portion, instead of in a `children` or `tabs` table
       - The subtables are still accepted for situations where they are appropriate (i.e. dynamically generated children)
     - `misc.delineate_number()` now supports decimal numbers
   Changes:
+    - `area.load` will now automatically convert from a shorthanded area to a proper area if needed
     - Deprecated the old `gui` module and replaced it with the contents of `gui-beta`
       - Mods can still require `gui-beta`, but it will simply redirect to `gui` instead
       - Mods that depended on the old GUI module will need to update to the new one or download a copy of it to their mod - it is no longer supported whatsoever
+    - Deprecated the `translation` module, replaced by the new `dictionary` module
+      - The `translation` module still exists and can be used, but is no longer documented and its use is recommended against
   Bugfixes:
     - Fixed a crash when calling `gui-beta.read_action()` when the element was invalid
     - Fixed `area.from_position` not actually creating a 1x1 area

@@ -186,6 +186,16 @@ function flib_area.from_position(position, snap)
   end
 end
 
+--- Create a proper area from a shorthanded area.
+-- @tparam Concepts.BoundingBox area
+-- @treturn Concepts.BoundingBox The converted area.
+function flib_area.from_shorthand(area, set_metatable)
+  return {
+    left_top = {x = area[1][1], y = area[1][2]},
+    right_bottom = {x = area[2][1], y = area[2][2]},
+  }
+end
+
 --- Calculate the height of the area.
 -- @tparam Concepts.BoundingBox self The area to measure.
 -- @treturn number The height of the area.
@@ -247,6 +257,8 @@ end
 --
 -- Metatables do not persist across save/load, so when using area objects, this function must be called on them whenever
 -- they are retrieved from `global` or during `on_load`.
+--
+-- This function will also call @{area.from_shorthand} if needed, to ensure that the returned area is properly defined.
 -- @tparam Concepts.BoundingBox area The plain area to convert.
 -- @treturn Concepts.BoundingBox The converted area.
 -- @usage
@@ -258,6 +270,10 @@ end
 --   log(serpent.line(position))
 -- end
 function flib_area.load(area)
+  local area = area
+  if not area.left_top then
+    area = flib_area.from_shorthand(area)
+  end
   return setmetatable(area, {__index = flib_area})
 end
 
@@ -308,6 +324,16 @@ function flib_area.strip(self)
       x = self.right_bottom.x,
       y = self.right_bottom.y
     }
+  }
+end
+
+--- Remove keys from the area to create a shorthanded area.
+-- @tparam Concepts.BoundingBox self The area to convert.
+-- @treturn Concepts.BoundingBox The converted area.
+function flib_area.to_shorthand(self)
+  return {
+    {self.left_top.x, self.left_top.y},
+    {self.right_bottom.x, self.right_bottom.y},
   }
 end
 
