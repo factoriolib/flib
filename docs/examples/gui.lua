@@ -1,206 +1,380 @@
+-- ---------------------------------------------------------------------------------------------------------------------
+-- GUI MODULE EXAMPLE CODE
+-- This is an implementation of TodoMVC using flib's GUI module. As such, it is not a small piece of code, but it
+-- provides a great demonstration of various aspects of the GUI module. Dropping this into the `control.lua` file of an
+-- empty mod will allow you to interact with the resulting GUI.
+--
+-- The code is split into two sections:
+-- "GUI Code" is the contents of the `todo_gui` object. This code would usually go into its own file and return the
+-- `todo_gui` object at the end. However, for the sake of the example, it has been inlined into one file.
+-- "Event Handlers" contains what would go in the `control.lua` file. It passes events to the GUI module, creates the
+-- GUI itself, and demonstrates some of the control flow involved.
+-- ---------------------------------------------------------------------------------------------------------------------
+
 local event = require("__flib__.event")
-local gui = require("__flib__.gui-beta")
-local migration = require("__flib__.migration")
+local gui = require("__flib__.gui")
 local mod_gui = require("__core__.lualib.mod-gui")
+local table = require("__flib__.table")
 
--- create the GUIs
-local function create_guis(player)
-  -- location button - kept in the `mod-gui` button flow
-  -- here we demonstrate a method of using action messages on elements without using `gui.build()`
-  local location_button = mod_gui.get_button_flow(player).add{
-    type = "button",
-    style = mod_gui.button_style,
-    caption = "0, 0",
-    tags = {
-      -- the module's tags function read to and write from this subtable, keyed by the active mod's name
-      [script.mod_name] = {
-        -- actions are kept in the `flib` subtable
-        flib = {
-          -- abbreviated GUI event name -> action message (can be anything that is truthy)
-          on_click = "recenter_inventory_gui"
-        }
-      }
-    }
-  }
+-- ---------------------------------------------------------------------------------------------------------------------
+-- GUI CODE
 
-  -- it is a good idea to extract commonly-used elements to builder functions
-  local function frame_action_button(side)
-    return {
-      type = "sprite-button",
-      style = "frame_action_button",
-      -- adding tags to an element during gui.build() will automatically stick them in the `script.mod_name` subtable
-      -- note that you could store this information directly in the action message, instead of as a standalone tag
-      -- e.g. `on_click = {action = "print_titlebar_click", side = side}`
-      tags = {side = side},
-      actions = {
-        on_click = "print_titlebar_click"
-      }
-    }
+local todo_gui = {}
+
+local view_modes = table.invert{
+  "all",
+  "active",
+  "completed"
+}
+
+-- ROOT
+
+local function update_mode_radios(gui_data)
+  local mode = gui_data.state.mode
+  local subfooter_flow = gui_data.refs.subfooter_flow
+
+  subfooter_flow.all_radiobutton.state = mode == view_modes.all
+  subfooter_flow.active_radiobutton.state = mode == view_modes.active
+  subfooter_flow.completed_radiobutton.state = mode == view_modes.completed
+end
+
+local function update_todos(gui_data)
+  local state = gui_data.state
+  local refs = gui_data.refs
+
+  local todos_flow = refs.todos_flow
+  local children = todos_flow.children
+  local i = 0
+  local active_count = 0
+  local completed_count = 0
+  for id, todo in pairs(state.todos) do
+    if todo.completed then
+      completed_count = completed_count + 1
+    else
+      active_count = active_count + 1
+    end
+
+    if
+      state.mode == view_modes.all
+      or (state.mode == view_modes.active and not todo.completed)
+      or (state.mode == view_modes.completed and todo.completed)
+    then
+      i = i + 1
+      local child = children[i]
+      if child then
+        gui.update(
+          child,
+          {
+            {
+              elem_mods = {caption = todo.text, state = todo.completed},
+              tags = {todo_id = id}
+            },
+            {},
+            {tags = {todo_id = id}}
+          }
+        )
+      else
+        gui.add(
+          todos_flow,
+          {type = "flow", style_mods = {vertical_align = "center"},
+            {
+              type = "checkbox",
+              caption = todo.text,
+              state = todo.completed,
+              actions = {
+                on_click = "toggle_completed"
+              },
+              tags = {todo_id = id}
+            },
+            {type = "empty-widget", style = "flib_horizontal_pusher"},
+            {
+              type = "sprite-button",
+              style = "tool_button_red",
+              sprite = "utility/trash",
+              tooltip = "Delete",
+              actions = {
+                on_click = "delete_todo"
+              },
+              tags = {todo_id = id}
+            }
+          }
+        )
+      end
+    end
+  end
+  for j = i + 1, #children do
+    children[j].destroy()
   end
 
-  -- inventory GUI - kept in `screen`
-  local inventory_refs = gui.build(player.gui.screen, {
+  if i == 0 then
+    todos_flow.visible = false
+  else
+    todos_flow.visible = true
+  end
+
+  if next(state.todos) then
+    refs.subfooter_frame.visible = true
+  else
+    refs.subfooter_frame.visible = false
+  end
+
+  refs.subfooter_flow.items_left_label.caption = active_count.." items left"
+  refs.subfooter_flow.clear_completed_button.enabled = completed_count > 0
+end
+
+function todo_gui.build(player, player_table)
+  local refs = gui.build(player.gui.screen, {
     {
       type = "frame",
       direction = "vertical",
-      -- array of table keys defining a path to keep a reference to the frame LuaGuiElement
       ref = {"window"},
-      -- table of abbreviated GUI event name -> action message (can be anything that is truthy)
       actions = {
-        on_location_changed = "update_location_string"
+        on_closed = "close"
       },
-      children = {
-        {type = "flow", ref = {"titlebar", "flow"}, children = {
-          {type = "label", style = "frame_title", caption = "Demo GUI", ignored_by_interaction = true},
-          {type = "empty-widget", style = "flib_titlebar_drag_handle", ignored_by_interaction = true},
-          -- call builder functions for commonly-used elements
-          frame_action_button("left"),
-          frame_action_button("center"),
-          frame_action_button("right")
-        }},
-        -- style mods - change style properties on an element immediately after creation
-        -- available properties are listen in the LuaStyle docs
-        {type = "frame", style = "inside_shallow_frame_with_padding", style_mods = {padding = 12}, children = {
-          {type = "frame", style = "slot_button_deep_frame", children = {
+      {type = "flow", ref = {"titlebar_flow"}, children = {
+        {type ="label", style = "frame_title", caption = "TodoMVC", ignored_by_interaction = true},
+        {type = "empty-widget", style = "flib_titlebar_drag_handle", ignored_by_interaction = true},
+        {
+          type = "sprite-button",
+          style = "frame_action_button",
+          sprite = "utility/close_white",
+          hovered_sprite = "utility/close_black",
+          clicked_sprite = "utility/close_black",
+          mouse_button_filter = {"left"},
+          actions = {
+            on_click = "close"
+          }
+        }
+      }},
+      {type = "frame", style = "inside_shallow_frame", direction = "vertical",
+        {
+          type = "textfield",
+          style_mods = {width = 500, margin = 12},
+          ref = {"textfield"},
+          actions = {
+            on_confirmed = "add_todo"
+          }
+        },
+        {
+          type = "flow",
+          style_mods = {left_margin = 12, right_margin = 12, bottom_margin = 12},
+          direction = "vertical",
+          elem_mods = {visible = false},
+          ref = {"todos_flow"}
+        },
+        {
+          type = "frame",
+          style = "subfooter_frame",
+          elem_mods = {visible = false},
+          ref = {"subfooter_frame"},
+          {
+            type = "flow",
+            style_mods = {vertical_align = "center", left_margin = 8},
+            ref = {"subfooter_flow"},
+            {type = "label", name = "items_left_label", caption = "0 items left"},
+            {type = "empty-widget", style = "flib_horizontal_pusher"},
             {
-              type = "scroll-pane",
-              style = "flib_naked_scroll_pane_no_padding",
-              style_mods = {height = 200},
-              children = {
-                {
-                  type = "table",
-                  style = "slot_table",
-                  style_mods = {width = 400},
-                  column_count = 10,
-                  ref = {"slot_table"}
-                }
+              type = "radiobutton",
+              name = "all_radiobutton",
+              caption = "All",
+              state = true,
+              actions = {
+                on_checked_state_changed = "change_mode"
+              },
+              tags = {mode = view_modes.all}
+            },
+            {
+              type = "radiobutton",
+              name = "active_radiobutton",
+              caption = "Active",
+              state = false,
+              actions = {
+                on_checked_state_changed = "change_mode"
+              },
+              tags = {mode = view_modes.active}
+            },
+            {
+              type = "radiobutton",
+              name = "completed_radiobutton",
+              caption = "Completed",
+              state = false,
+              actions = {
+                on_checked_state_changed = "change_mode"
+              },
+              tags = {mode = view_modes.completed}
+            },
+            {type = "empty-widget", style = "flib_horizontal_pusher"},
+            {
+              type = "button",
+              name = "clear_completed_button",
+              caption = "Clear completed",
+              elem_mods = {enabled = false},
+              actions = {
+                on_click = "delete_completed_todos"
               }
-            }
-          }}
-        }}
-      }
-    }
-  })
-
-  -- inventory_refs was built using the structure defined in the `ref` keys
-  -- the titlebar flow was saved to the `titlebar` subtable
-  inventory_refs.titlebar.flow.drag_target = inventory_refs.window
-  inventory_refs.window.force_auto_center()
-
-  global.players[player.index].guis = {inventory = inventory_refs, location = location_button}
-end
-
-local function destroy_guis(player_table)
-  -- destroy parents for both GUIs and clean up tables
-  player_table.guis.inventory.window.destroy()
-  player_table.guis.location.destroy()
-  player_table.guis = nil
-end
-
--- handle actions for both GUIs
--- in a mod with multiple large GUIs, it is usually a good idea to have separate handler functions for each GUI
-local function handle_action(msg, e)
-  if msg == "print_titlebar_click" then
-    -- use `gui.get_tags()` to automatically access the `script.mod_name` subtable
-    local side = gui.get_tags(e.element).side
-    game.get_player(e.player_index).print("You clicked the "..side.." titlebar button!")
-  elseif msg == "print_sprite_click" then
-    local _, _, name = string.find(e.element.sprite, "item/(.*)")
-    game.get_player(e.player_index).print("You clicked the "..name.." slot button!")
-  elseif msg == "update_location_string" then
-    local location = e.element.location
-    global.players[e.player_index].guis.location.caption = location.x..", "..location.y
-  elseif msg == "recenter_inventory_gui" then
-    global.players[e.player_index].guis.inventory.window.force_auto_center()
-  end
-end
-
-event.on_init(function()
-  -- players setup
-  global.players = {}
-  for i, player in pairs(game.players) do
-    global.players[i] = {}
-    create_guis(player)
-  end
-end)
-
-event.on_configuration_changed(function(e)
-  if migration.on_config_changed(e, {}) then
-    -- refresh all GUIs
-    for i, player in pairs(game.players) do
-      -- destroy and recreate GUIs
-      -- destroying and recreating GUIs on a mod update is the best way to avoid edge cases
-      destroy_guis(global.players[i])
-      create_guis(player)
-    end
-  end
-end)
-
--- this function will be hooked to all `on_gui_*` events
-gui.hook_events(function(e)
-  -- read the corresponding action from the element's tags
-  local msg = gui.read_action(e)
-  -- if an action was found
-  if msg then
-    -- if your mod has multiple GUIs, here is where you would check which GUI the action is for, and call the
-    -- appropriate handler function
-    handle_action(msg, e)
-  -- custom logic may be needed in some cases where action messages are unusable
-  elseif e.name == defines.events.on_gui_closed and e.gui_type == 16 then
-    -- custom logic here
-  end
-end)
-
--- create GUIs for any players that join
-event.on_player_created(function(e)
-  global.players[e.player_index] = {}
-  local player = game.get_player(e.player_index)
-  create_guis(player)
-end)
-
--- remove global data and remove all filters for any players that leave
-event.on_player_removed(function(e)
-  global.players[e.player_index] = nil
-end)
-
--- update inventory GUI when the player's inventory changes
-event.on_player_main_inventory_changed(function(e)
-  local player = game.get_player(e.player_index)
-
-  -- get the inventory table and its children
-  local table = global.players[e.player_index].guis.inventory.slot_table
-  local children = table.children
-
-  -- iterate over the player's inventory contents
-  local i = 0
-  for name, count in pairs(player.get_main_inventory().get_contents()) do
-    i = i + 1
-
-    -- check for child - if it exists, just update it, otherwise create it
-    local child = children[i]
-    if child then
-      child.sprite = "item/"..name
-      child.number = count
-    else
-      table.add{
-        type = "sprite-button",
-        style = "slot_button",
-        sprite = "item/"..name,
-        number = count,
-        -- another example if using element actions outside of `gui.build`
-        tags = {
-          [script.mod_name] = {
-            flib = {
-              on_click = "print_sprite_click"
             }
           }
         }
       }
+    }
+  })
+
+  refs.titlebar_flow.drag_target = refs.window
+  refs.window.force_auto_center()
+  player.opened = refs.window
+
+  player_table.todo = {
+    refs = refs,
+    state = {
+      mode = view_modes.all,
+      next_id = 1,
+      todos = {},
+      visible = false
+    }
+  }
+end
+
+function todo_gui.open(e)
+  local player = game.get_player(e.player_index)
+  local player_table = global.players[e.player_index]
+  local gui_data = player_table.todo
+
+  gui_data.refs.window.visible = true
+  player.opened = gui_data.refs.window
+end
+
+function todo_gui.close(e)
+  local player = game.get_player(e.player_index)
+  local player_table = global.players[e.player_index]
+  local gui_data = player_table.todo
+
+  gui_data.refs.window.visible = false
+  if player.opened then
+    player.opened = nil
+  end
+end
+
+-- ACTION HANDLERS
+
+local function add_todo(e)
+  local player_table = global.players[e.player_index]
+  local gui_data = player_table.todo
+  local state = gui_data.state
+
+  local todo_text = e.element.text
+
+  state.todos[state.next_id] = {
+    completed = false,
+    text = todo_text
+  }
+
+  state.next_id = state.next_id + 1
+
+  e.element.text = ""
+
+  update_todos(gui_data)
+end
+
+local function toggle_todo_completed(e)
+  local player_table = global.players[e.player_index]
+  local gui_data = player_table.todo
+  local state = gui_data.state
+
+  local todo_data = state.todos[gui.get_tags(e.element).todo_id]
+  todo_data.completed = e.element.state
+
+  update_todos(gui_data)
+end
+
+local function delete_todo(e)
+  local player_table = global.players[e.player_index]
+  local gui_data = player_table.todo
+  local state = gui_data.state
+
+  state.todos[gui.get_tags(e.element).todo_id] = nil
+
+  update_todos(gui_data)
+end
+
+local function delete_completed_todos(e)
+  local player_table = global.players[e.player_index]
+  local gui_data = player_table.todo
+  local state = gui_data.state
+
+  for id, todo in pairs(state.todos) do
+    if todo.completed then
+      state.todos[id] = nil
     end
   end
 
-  -- remove any extra buttons
-  for j = i + 1, #children do
-    children[j].destroy()
+  update_todos(gui_data)
+end
+
+local function change_view_mode(e)
+  local player_table = global.players[e.player_index]
+  local gui_data = player_table.todo
+  local state = gui_data.state
+
+  state.mode = gui.get_tags(e.element).mode
+
+  update_mode_radios(gui_data)
+  update_todos(gui_data)
+end
+
+todo_gui.actions = {
+  close = todo_gui.close,
+  add_todo = add_todo,
+  toggle_completed = toggle_todo_completed,
+  delete_todo = delete_todo,
+  delete_completed_todos = delete_completed_todos,
+  change_mode = change_view_mode
+}
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- EVENT HANDLERS
+
+event.on_init(function()
+  global.players = {}
+end)
+
+event.on_player_created(function(e)
+  -- Create player table
+  global.players[e.player_index] = {}
+  local player_table = global.players[e.player_index]
+
+  local player = game.get_player(e.player_index)
+
+  -- CREATE GUIS
+
+  gui.add(mod_gui.get_button_flow(player), {
+    type = "button",
+    style = mod_gui.button_style,
+    caption = "TodoMVC",
+    actions = {
+      on_click = "toggle_todo_gui"
+    }
+  })
+
+  todo_gui.build(player, player_table)
+end)
+
+local function toggle_todo_gui(e)
+  local player_table = global.players[e.player_index]
+  local visible = player_table.todo.refs.window.visible
+  if visible then
+    todo_gui.close(e)
+  else
+    todo_gui.open(e)
+  end
+end
+
+gui.hook_events(function(e)
+  local action = gui.read_action(e)
+  if action then
+    if action == "toggle_todo_gui" then
+      toggle_todo_gui(e)
+    else
+      todo_gui.actions[action](e)
+    end
   end
 end)
