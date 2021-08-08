@@ -472,7 +472,7 @@ end
 -- @tparam table tags Tags that should be added to the element. This is identical to calling @{gui.update_tags} on the
 -- element.
 -- @tparam table actions Actions that should be added to the element. The format is identical to `actions` in a
--- @{GuiBuidStructure}. This is identical to calling `set_action` for each action on this element.
+-- @{GuiBuildStructure}. This is identical to calling `set_action` for each action on this element.
 -- @tparam[opt] GuiUpdateStructure[] children @{GuiUpdateStructure}s to apply to the children of this @{LuaGuiElement}.
 -- This may alternatively be defined in the array portion of the parent structure to improve readability.
 -- @tparam[opt] TabAndContent[] tabs @{TabAndContent}s to apply to the tabs of this @{LuaGuiElement}. This may
