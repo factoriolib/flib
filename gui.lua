@@ -1,7 +1,4 @@
---- GUI structuring tools and event handling (beta).
--- This new GUI module makes use of a new feature in Factorio 1.1: GUI element tags. This significantly simplifies the
--- logic around event handling. Due to the backward-incompatible nature of the changes, this new module was created
--- instead of upgrading the old one. This module will replace the current non-beta module when Factorio 1.2 releases.
+--- GUI structuring tools and event handling.
 -- @module gui
 -- @alias flib_gui
 -- @usage local gui = require("__flib__.gui")
@@ -24,7 +21,7 @@ local flib_gui = {}
 
 --- Provide a callback to be run for GUI events.
 -- @tparam function callback
--- @see gui-beta.read_action
+-- @see gui.read_action
 -- @usage
 -- gui.hook_events(function(e)
 --   local msg = gui.read_action(e)
@@ -337,8 +334,8 @@ end
 --- Perform a shallow merge on a GUI element's tags.
 -- These tags are automatically written to and read from a subtable keyed by mod name, preventing conflicts.
 --
--- Only the top level will be updated. If deep updating is needed, use @{gui-beta.get_tags} and @{table.deep_merge},
--- then @{gui-beta.set_tags}.
+-- Only the top level will be updated. If deep updating is needed, use @{gui.get_tags} and @{table.deep_merge},
+-- then @{gui.set_tags}.
 --
 -- @tparam LuaGuiElement elem
 -- @tparam table updates
@@ -400,7 +397,7 @@ end
 -- properties are listed in @{LuaGuiElement}.
 -- @tparam[opt] GuiElementActions actions Actions to take on certain GUI events.
 -- @tparam[opt] string[] ref A nested table path in which to place a reference to this @{LuaGuiElement} in the output of
--- @{gui-beta.build}.
+-- @{gui.build}.
 -- @tparam[opt] GuiBuildStructure[] children @{GuiBuildStructure}s to add as children of this @{LuaGuiElement}.
 -- Children may alternatively be defined in the array portion of the parent structure to remove a level of nesting.
 -- @tparam[opt] TabAndContent[] tabs @{TabAndContent}s to add as tabs of this @{LuaGuiElement}. Tabs may alternatively
@@ -484,11 +481,11 @@ end
 -- Each key is a GUI event name (`on_gui_click`, `on_gui_elem_changed`, etc.) with the `_gui` part removed. For example,
 -- `on_gui_click` will become `on_click`.
 --
--- Each value is a custom set of data that @{gui-beta.read_action} will return when that GUI event is fired and passes
+-- Each value is a custom set of data that @{gui.read_action} will return when that GUI event is fired and passes
 -- this GUI element. This data may be of any type, as long as it is truthy.
 --
 -- Actions are kept under a `flib` subtable in the element's mod-specific tags subtable, retrievable with
--- @{gui-beta.get_tags}. Because of this, there is no chance of accidental mod action overlaps, so feel free to use
+-- @{gui.get_tags}. Because of this, there is no chance of accidental mod action overlaps, so feel free to use
 -- generic actions such as "close" or "open".
 --
 -- A common format for a mod with multiple GUIs might be to give each GUI a name, and write the actions as shown below.
@@ -506,7 +503,7 @@ end
 -- @Concept GuiElementActions
 
 --- A table representing a tab <-> content pair.
--- When used in @{gui-beta.build}, both fields are required. When used in @{gui-beta.update}, both fields are optional.
+-- When used in @{gui.build}, both fields are required. When used in @{gui.update}, both fields are optional.
 -- @tfield GuiBuildStructure|GuiUpdateStructure tab Must be of type `tab`.
 -- @tfield GuiBuildStructure|GuiUpdateStructure content
 -- @Concept TabAndContent
