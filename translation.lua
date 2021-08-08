@@ -1,5 +1,5 @@
 -- NOTICE: This module is deprecated and has been replaced by the new `dictionary` module. This will remain in flib for
--- the foreseeable future, but is no longer documented on the documentation website..
+-- the foreseeable future, but is no longer documented or supported.
 
 local flib_translation = {}
 
