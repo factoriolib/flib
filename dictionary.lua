@@ -1,3 +1,9 @@
+--- An easy-to-use dictionary system for storing localised string translations.
+-- @module dictionary
+-- @alias flib_dictionary
+-- @usage local dictionary = require("__flib__.dictionary")
+-- @see dictionary.lua
+
 local event = require("__flib__.event")
 local table = require("__flib__.table")
 
@@ -10,7 +16,7 @@ local translation_timeout = 180
 
 local on_language_translated = event.generate_id()
 
--- Holds the raw dictionaries
+-- Depending on the value of `use_local_storage`, this will be tied to `global` or will be re-generated during `on_load`
 local raw = {}
 
 local use_local_storage = false
@@ -19,12 +25,19 @@ local function kv(key, value)
   return key..inner_separator..value..separator
 end
 
--- Dictionary object (for setup)
 
-local Dictionary = {}
+--- RawDictionary methods
+-- @section
 
-function Dictionary:add(key, value)
-  local to_add = {"", key, inner_separator, value, separator}
+local RawDictionary = {}
+
+--- Add a new translation to this dictionary.
+-- This method **must not** be called after control stage initialization and migration. Doing so will result in
+-- different languages having different sets of data.
+-- @tparam InternalString internal
+-- @tparam Concepts.LocalisedString translation
+function RawDictionary:add(internal, translation)
+  local to_add = {"", internal, inner_separator, translation, separator}
 
   local ref = self.ref
   local i = self.i + 1
@@ -51,7 +64,13 @@ function Dictionary:add(key, value)
   end
 end
 
---- Create a new dictionary.
+--- Create a new @{RawDictionary}.
+-- @tparam string name The name of the dictionary.
+-- @tparam[opt] boolean keep_untranslated If `true`, translations that "failed" (begin with `Unknown key: ` will be
+-- added to the dictionary with their internal name as their translated name.
+-- @tparam[opt] table initial_contents The intial contents of the dictionary. This is a table of @{InternalString} ->
+-- @{Concepts.LocalisedString}.
+-- @treturn RawDictionary The newly created dictionary object.
 function flib_dictionary.new(name, keep_untranslated, initial_contents)
   if raw[name] then
     error("Dictionary with the name `"..name.."` already exists.")
@@ -70,22 +89,24 @@ function flib_dictionary.new(name, keep_untranslated, initial_contents)
       -- Meta
       name = name,
     },
-    {__index = Dictionary}
+    {__index = RawDictionary}
   )
 
   for key, value in pairs(initial_contents or {}) do
     self:add(key, value)
   end
-
   raw[name] = {strings = self.strings, keep_untranslated = keep_untranslated}
+
 
   return self
 end
 
--- Module functions
+--- Functions
+-- @section
 
 --- Initialize the module's script data table.
--- Must be called at the beginning of `on_init` and during `on_configuration_changed` to reset all ongoing translations.
+-- Must be called at the **beginning** of `on_init` for initial setup, and at the **beginning** of
+-- `on_configuration_changed` to reset all ongoing translations.
 function flib_dictionary.init()
   if not global.__flib then
     global.__flib = {}
@@ -103,15 +124,30 @@ function flib_dictionary.init()
   end
 end
 
+--- Set up the module's local references.
+-- Must be called at the **beginning** of `on_load`.
+--
+-- If using @{dictionary.set_use_local_storage}, your dictionaries must be re-generated **after** this function is
+-- called.
 function flib_dictionary.load()
-  -- TODO: Upvalue `script_data` as well
   if not use_local_storage then
     raw = global.__flib.dictionary.raw
   end
 end
 
--- Add the player to the table and request the translation for their language code
+--- Request all dictionaries for the given player.
+-- The dictionary system stores dictionaries by language, not by player. Thus, if this player's language has already
+-- been translated, the module will simply return the already existing dictionaries instead of translating them again.
+--
+-- If you wish to re-translate dictionaries, call @{dictionary.init} and call this function for all online players.
+--
+-- The player must be connected to the game in order to call this function. Calling this function on a disconnected
+-- player will throw an error.
+-- @tparam LuaPlayer player
 function flib_dictionary.translate(player)
+  if not player.connected then
+    error("Player must be connected to the game before this function can be called!")
+  end
   local player_data = global.__flib.dictionary.players[player.index]
   if player_data then return end
 
@@ -152,6 +188,11 @@ local function request_translation(player_data)
   player_data.requested_tick = game.tick
 end
 
+--- Check for a "skipped" translation and re-request it after three seconds.
+-- Must be called **during** `on_tick`.
+--
+-- This is to handle a very specific edge-case where translations that are requested on the same tick that a game is
+-- saved will not be returned when that save is loaded.
 function flib_dictionary.check_skipped()
   local script_data = global.__flib.dictionary
   local tick = game.tick
@@ -170,6 +211,9 @@ local dictionary_match_string = kv("^FLIB_DICTIONARY_NAME", "(.-)")
   ..kv("FLIB_DICTIONARY_STRING_INDEX", "(%d-)")
   .."(.*)$"
 
+--- Processes a returned translation batch, then request the next batch.
+-- Must be called **during** `on_string_translated`.
+-- @tparam OnStringTranslatedEventData event_data
 function flib_dictionary.process_translation(event_data)
   if not event_data.translated then return end
   local script_data = global.__flib.dictionary
@@ -268,6 +312,12 @@ function flib_dictionary.process_translation(event_data)
   end
 end
 
+--- Cancel the translation of the player's dictionaries if they are the currently translating player.
+-- If multiple players are waiting on these dictionaries, the translation duties will be handed off to the next player
+-- in the list.
+--
+-- Must be called **during** `on_player_left_game`.
+-- @tparam number player_index
 function flib_dictionary.cancel_translation(player_index)
   local script_data = global.__flib.dictionary
   local player_data = script_data.players[player_index]
@@ -305,10 +355,54 @@ function flib_dictionary.cancel_translation(player_index)
   end
 end
 
+--- Set whether or not the module is using local storage mode.
+-- Must be called in the **root scope** of your mod if you wish to use local storage.
+--
+-- Using local storage is a technique to reduce the amount of script data that the module saves in the `global` table.
+-- If you enable this, you **must** re-build all of your dictionaries **during** `on_load`, but **after** calling
+-- @{dictionary.load}. Failure to do so will result in a desync.
+--
+-- **Only use this function if you understood the above explanation and if you are familiar with how desyncs can occur.
+-- Use at your own risk!**
+-- @tparam boolean value Whether or not to use local storage.
+-- @usage
+-- local dictionary = require("__flib__.dictionary")
+-- dictionary.set_use_local_storage(true)
 function flib_dictionary.set_use_local_storage(value)
   use_local_storage = value
 end
 
+--- Events
+-- @section
+
+--- Raised when dictionary translation has been completed for a given language.
+-- @tfield string language The language that was translated.
+-- @tfield table dictionaries The resulting dictionaries, in the format of `dictionary_name` -> @{DictionaryContents}.
+-- @tfield array[number] players The players who were waiting for this language to complete translation.
 flib_dictionary.on_language_translated = on_language_translated
+
+--- Concepts
+-- @section
+
+--- A "raw" dictionary containing the actual @{Concepts.LocalisedString}s for translation.
+-- This object contains a metatable giving access to all of the methods in the `RawDictionary object methods` section.
+--
+-- This object **must not** be stored in the `global` table. Doing so will result in a desync if the game is saved and
+-- loaded and you attempt to call methods on it.
+-- @usage
+-- local MyDictionary = dictionary.new("my_dictionary")
+-- MyDictionary:add("iron-ore", {"item-name.iron-ore"})
+-- @Concept RawDictionary
+
+--- The "internal" representation of the translation. This is a consistent, language-agnostic identifier that
+-- corresponds to the translation.
+-- @Concept InternalString
+
+--- The translated result of a @{Concepts.LocalisedString} for a specific language, or the @{InternalString} if
+-- `include_failed_translations` was enabled when creating the @{RawDictionary}.
+-- @Concept TranslatedString
+
+--- The contents of a translated dictionary. A table of @{InternalString} -> @{TranslatedString}.
+-- @Concept DictionaryContents
 
 return flib_dictionary
