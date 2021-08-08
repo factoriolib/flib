@@ -1,8 +1,6 @@
---- Localised string translation and dictionary organization.
--- @module translation
--- @alias flib_translation
--- @usage local translation = require("__flib__.translation")
--- @see translation.lua
+-- NOTICE: This module is deprecated and has been replaced by the new `dictionary` module. This will remain in flib for
+-- the foreseeable future, but is no longer documented on the documentation website..
+
 local flib_translation = {}
 
 local table = require("__flib__.table")
@@ -13,15 +11,6 @@ local pairs = pairs
 local string = string
 local type = type
 
---- Functions
--- @section
-
---- Initial setup.
--- Must be called at the **beginning** of `on_init`, and during `on_configuration_changed` **before** any translations
--- are started.
---
--- This function will effectively cancel all running translations, so if that functionality is desired, this function is
--- a good fit for it.
 function flib_translation.init()
   if not global.__flib then
     global.__flib = {}
@@ -32,11 +21,6 @@ function flib_translation.init()
   }
 end
 
--- TODO Nexela Link OnTickEventData to https://lua-api.factorio.com/latest/events.html#on_tick
-
---- Perform translation operations.
--- Must be called during an `on_tick` event.
--- @tparam OnTickEventData event_data
 function flib_translation.iterate_batch(event_data)
   local __translation = global.__flib.translation
   if __translation.translating_players_count == 0 then return end
@@ -115,13 +99,6 @@ function flib_translation.iterate_batch(event_data)
   end
 end
 
--- TODO Nexela Link OnStringTranslatedEventData to https://lua-api.factorio.com/latest/events.html#on_string_translated
-
---- Process a received translation.
--- Must be called during an `on_string_translated` event.
--- @tparam OnStringTranslatedEventData event_data
--- @treturn ResultSortData
--- @treturn boolean If all of the player's translations are complete.
 function flib_translation.process_result(event_data)
   local __translation = global.__flib.translation
   if __translation.translating_players_count == 0 then return end
@@ -147,9 +124,6 @@ function flib_translation.process_result(event_data)
   return nil, false
 end
 
---- Add translation requests for the given player, to be performed over the next several ticks.
--- @tparam number player_index
--- @tparam StringData[] strings
 function flib_translation.add_requests(player_index, strings)
   local __translation = global.__flib.translation
   local player_table = __translation.players[player_index]
@@ -188,8 +162,6 @@ function flib_translation.add_requests(player_index, strings)
   end
 end
 
---- Cancel a player's translations.
--- @tparam number player_index
 function flib_translation.cancel(player_index)
   local __translation = global.__flib.translation
   local player_table = __translation.players[player_index]
@@ -201,23 +173,14 @@ function flib_translation.cancel(player_index)
   __translation.translating_players_count = __translation.translating_players_count - 1
 end
 
---- Check whether a player is actively translating.
--- @tparam number player_index
--- @treturn boolean
 function flib_translation.is_translating(player_index)
   return global.__flib.translation.players[player_index] and true or false
 end
 
---- Check the number of players currently translating.
--- @treturn number
 function flib_translation.translating_players_count()
   return global.__flib.translation.translating_players_count
 end
 
---- Serialise a localised string into a form readable by the API.
--- Gives a similar result to serpent.line(), but is much faster.
--- @tparam Concepts.LocalisedString localised_string
--- @treturn string The serialised @{Concepts.LocalisedString}.
 function flib_translation.serialise_localised_string(localised_string)
   if type(localised_string) == "string" then return localised_string end
   local output = "{"
@@ -238,34 +201,3 @@ function flib_translation.serialise_localised_string(localised_string)
 end
 
 return flib_translation
-
---- Concepts
--- @section
-
---- A mapping of a translated string's dictionaries and internal names.
--- Dictionary @{string} -> array of @{string}. Each key is a dictionary name, each value is an array of internal names
--- that the translation matches. Use this data to sort the translation into its appropriate locations.
--- @usage
--- {
---   entities = {"crude-oil"},
---   fluids = {"crude-oil"}
--- }
--- @usage
--- {
---   entities = {"iron-ore"},
---   items = {"iron-ore"},
---   recipes = {"iron-ore"}
--- }
--- @Concept ResultSortData
-
---- Dictioanry data for a localised string.
--- @tfield string dictionary The "dictionary" (subtable) that this string belongs to.
--- @tfield string internal The internal name that will be used to reference this string.
--- @tfield Concepts.LocalisedString localised The localised string to translate.
--- @usage
--- {
---   {dictionary="fluids", internal="crude-oil", localised={"fluid-name.crude-oil"}},
---   {dictionary="items", internal="iron-ore", localised={"item-name.iron-ore"}},
---   {dictionary="gui", internal="search-ellipses", localised={"demo-gui.search-ellipses"}}
--- }
--- @Concept StringData
