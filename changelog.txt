@@ -2,6 +2,8 @@
 Version: 0.8.1
 Date: ????
   Changes:
+    - The dictionary module no longer provides an event to hook, instead returning the finished dictionaries directly from `process_translation`
+      - This is to allow a single-source-of-truth for the language's dictionaries, which was the original intention, but returning them in an event broke that intention
 ---------------------------------------------------------------------------------------------------
 Version: 0.8.0
 Date: 2021-08-08

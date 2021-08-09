@@ -4,7 +4,6 @@
 -- @usage local dictionary = require("__flib__.dictionary")
 -- @see dictionary.lua
 
-local event = require("__flib__.event")
 local table = require("__flib__.table")
 
 local flib_dictionary = {}
@@ -13,8 +12,6 @@ local inner_separator = "⤬"
 local separator = "⤬⤬⤬"
 local max_depth = 15
 local translation_timeout = 180
-
-local on_language_translated = event.generate_id()
 
 -- Depending on the value of `use_local_storage`, this will be tied to `global` or will be re-generated during `on_load`
 local raw = {}
@@ -214,6 +211,8 @@ local dictionary_match_string = kv("^FLIB_DICTIONARY_NAME", "(.-)")
 --- Processes a returned translation batch, then request the next batch.
 -- Must be called **during** `on_string_translated`.
 -- @tparam OnStringTranslatedEventData event_data
+-- @return TranslationFinishedOutput|nil The results of the translated dictionaries, or `nil` if translation is not yet
+-- complete.
 function flib_dictionary.process_translation(event_data)
   if not event_data.translated then return end
   local script_data = global.__flib.dictionary
@@ -262,11 +261,7 @@ function flib_dictionary.process_translation(event_data)
           for _, player_index in pairs(language_data.players) do
             script_data.players[player_index] = nil
           end
-          event.raise(on_language_translated, {
-            dictionaries = language_data.dictionaries,
-            language = dict_lang,
-            players = language_data.players,
-          })
+          return {dictionaries = language_data.dictionaries, language = dict_lang, players = language_data.players}
         end
       end
     end
@@ -282,11 +277,7 @@ function flib_dictionary.process_translation(event_data)
       local dictionaries = script_data.translated[language]
       if dictionaries then
         script_data.players[event_data.player_index] = nil
-        event.raise(
-          on_language_translated,
-          {dictionaries = dictionaries, language = language, players = {event_data.player_index}}
-        )
-        return
+        return {dictionaries = dictionaries, language = language, players = {event_data.player_index}}
       end
       local in_process = script_data.in_process[language]
       if in_process then
@@ -375,12 +366,6 @@ end
 --- Events
 -- @section
 
---- Raised when dictionary translation has been completed for a given language.
--- @tfield string language The language that was translated.
--- @tfield table dictionaries The resulting dictionaries, in the format of `dictionary_name` -> @{DictionaryContents}.
--- @tfield array[number] players The players who were waiting for this language to complete translation.
-flib_dictionary.on_language_translated = on_language_translated
-
 --- Concepts
 -- @section
 
@@ -404,5 +389,11 @@ flib_dictionary.on_language_translated = on_language_translated
 
 --- The contents of a translated dictionary. A table of @{InternalString} -> @{TranslatedString}.
 -- @Concept DictionaryContents
+
+--- The results of a translated language.
+-- @tfield string language The language that was translated.
+-- @tfield table dictionaries The resulting dictionaries, in the format of `dictionary_name` -> @{DictionaryContents}.
+-- @tfield array[number] players The players who were waiting for this language to complete translation.
+-- @Concept TranslationFinishedOutput
 
 return flib_dictionary
