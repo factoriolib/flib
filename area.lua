@@ -189,7 +189,7 @@ end
 --- Create a proper area from a shorthanded area.
 -- @tparam Concepts.BoundingBox area
 -- @treturn Concepts.BoundingBox The converted area.
-function flib_area.from_shorthand(area, set_metatable)
+function flib_area.from_shorthand(area)
   return {
     left_top = {x = area[1][1], y = area[1][2]},
     right_bottom = {x = area[2][1], y = area[2][2]},
