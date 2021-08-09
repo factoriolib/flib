@@ -88,7 +88,6 @@
     <ul class="nav">
     <li class="nav-item"><a href="#RawDictionary_methods"><span class="fragment-hashtag">#</span> RawDictionary methods </a></li>
     <li class="nav-item"><a href="#Functions"><span class="fragment-hashtag">#</span> Functions </a></li>
-    <li class="nav-item"><a href="#Events"><span class="fragment-hashtag">#</span> Events </a></li>
     <li class="nav-item"><a href="#Concepts"><span class="fragment-hashtag">#</span> Concepts </a></li>
     </ul>
     </li>
@@ -185,18 +184,6 @@
     </table>
     <table class="section-content-list">
     <thead>
-    <h3><a href="#Events">Events </a></h3>
-    <span></span>
-    </thead>
-    <tbody>
-    <tr>
-    <td class="name"><a href="#on_language_translated">on_language_translated</a></td>
-    <td class="summary">Raised when dictionary translation has been completed for a given language.</td>
-    </tr>
-    </tbody>
-    </table>
-    <table class="section-content-list">
-    <thead>
     <h3><a href="#Concepts">Concepts </a></h3>
     <span></span>
     </thead>
@@ -217,6 +204,10 @@
     <tr>
     <td class="name"><a href="#DictionaryContents">DictionaryContents</a></td>
     <td class="summary">The contents of a translated dictionary.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#TranslationFinishedOutput">TranslationFinishedOutput</a></td>
+    <td class="summary">The results of a translated language.</td>
     </tr>
     </tbody>
     </table>
@@ -549,7 +540,8 @@
     <div class="section-item-body">
 
     <p class="section-item-summary">Processes a returned translation batch, then request the next batch.</p>
-    <p class="section-item-description"> Must be called <strong>during</strong> <code>on_string_translated</code>.</p>
+    <p class="section-item-description"> Must be called <strong>during</strong> <code>on_string_translated</code>.
+ complete.</p>
 
     <!-- parameters start -->
     <strong>Parameters:</strong>
@@ -579,6 +571,12 @@
     <!-- parameters end -->
 
     <!-- returns start -->
+    <strong>Returns:</strong>
+    <ul>
+    <li>
+    <span class="return-text">TranslationFinishedOutput|nil The results of the translated dictionaries, or <code>nil</code> if translation is not yet</span>
+    </li>
+    </ul>
     <!-- returns end -->
 
 
@@ -704,91 +702,6 @@ dictionary.set_use_local_storage(<span class="keyword">true</span>)</code></pre>
 
     </dd>
     </dl>
-    <h3><span id="Events" class="section-title"><a href="#Events">Events </a></span></h3>
-    <dl class="section-body-container">
-    <dt>
-    <div class="divider divider-custom"></div>
-    <div class="block section-item-header">
-    <a href="#on_language_translated" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="on_language_translated">on_language_translated</span>
-    </div>
-    </dt>
-    <dd>
-    <div class="section-item-body">
-
-    <p class="section-item-summary">Raised when dictionary translation has been completed for a given language.</p>
-    <p class="section-item-description">
-</p>
-
-    <!-- parameters start -->
-
-    <ul>
-
-
-
-
-
-    <li class="section-subitem-module-field-li">
-
-    <strong><em>language</em></strong>
-
-    <strong> : </strong>
-
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a></span>)
-
-     The language that was translated.
-
-    </li>
-
-
-
-
-
-    <li class="section-subitem-module-field-li">
-
-    <strong><em>dictionaries</em></strong>
-
-    <strong> : </strong>
-
-    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.5.html">table</a></span>)
-
-     The resulting dictionaries, in the format of <code>dictionary_name</code> &ndash;> <a href="../modules/dictionary.html#DictionaryContents">DictionaryContents</a>.
-
-    </li>
-
-
-
-
-
-    <li class="section-subitem-module-field-li">
-
-    <strong><em>players</em></strong>
-
-    <strong> : </strong>
-
-    (<span class="types"><a class="type" href="https://www.lua.org/pil/11.1.html">array[number]</a></span>)
-
-     The players who were waiting for this language to complete translation.
-
-    </li>
-
-
-    </ul>
-
-    <!-- parameters end -->
-
-    <!-- returns start -->
-    <!-- returns end -->
-
-
-    <!-- see also start -->
-    <!-- see also end -->
-
-    <!-- usage start -->
-    <!-- usage end -->
-
-    </dd>
-    </dl>
     <h3><span id="Concepts" class="section-title"><a href="#Concepts">Concepts </a></span></h3>
     <dl class="section-body-container">
     <dt>
@@ -908,6 +821,88 @@ MyDictionary:add(<span class="string">"iron-ore"</span>, {<span class="string">"
     <!-- usage end -->
 
     </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#TranslationFinishedOutput" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="TranslationFinishedOutput">TranslationFinishedOutput</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">The results of a translated language.</p>
+    <p class="section-item-description">
+</p>
+
+    <!-- parameters start -->
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-module-field-li">
+
+    <strong><em>language</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a></span>)
+
+     The language that was translated.
+
+    </li>
+
+
+
+
+
+    <li class="section-subitem-module-field-li">
+
+    <strong><em>dictionaries</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.5.html">table</a></span>)
+
+     The resulting dictionaries, in the format of <code>dictionary_name</code> &ndash;> <a href="../modules/dictionary.html#DictionaryContents">DictionaryContents</a>.
+
+    </li>
+
+
+
+
+
+    <li class="section-subitem-module-field-li">
+
+    <strong><em>players</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/11.1.html">array[number]</a></span>)
+
+     The players who were waiting for this language to complete translation.
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
     </dl>
 
     <!-- section end -->
@@ -923,7 +918,7 @@ MyDictionary:add(<span class="string">"iron-ore"</span>, {<span class="string">"
     <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
     </div>
     <div class="content-footer column col-9 col-sm-12">
-    <i>Last updated 2021-08-08 22:26:02 UTC</i>
+    <i>Last updated 2021-08-09 02:00:36 UTC</i>
     </div>
     </div>
     </div>
