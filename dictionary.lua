@@ -151,6 +151,7 @@ function flib_dictionary.translate(player)
   global.__flib.dictionary.players[player.index] = {
     player = player,
     status = "get_language",
+    requested_tick = game.tick,
   }
 
   player.request_translation({"", "FLIB_LOCALE_IDENTIFIER", separator, {"locale-identifier"}})
@@ -197,8 +198,13 @@ function flib_dictionary.check_skipped()
     -- If it's been longer than the timeout, request the string again
     -- This is to solve a very rare edge case where translations requested on the same tick that a singleplayer game
     -- is saved will not be returned when that save is loaded
-    if player_data.status == "translating" and player_data.requested_tick + translation_timeout <= tick then
-      request_translation(player_data)
+    if (player_data.requested_tick or 0) + translation_timeout <= tick then
+      if player_data.status == "get_language" then
+        player_data.player.request_translation({"", "FLIB_LOCALE_IDENTIFIER", separator, {"locale-identifier"}})
+      end
+      if player_data.status == "translating" then
+        request_translation(player_data)
+      end
     end
   end
 end
@@ -269,7 +275,8 @@ function flib_dictionary.process_translation(event_data)
     local _, _, language = string.find(event_data.result, "^FLIB_LOCALE_IDENTIFIER"..separator.."(.*)$")
     if language then
       local player_data = script_data.players[event_data.player_index]
-      if not player_data then return end
+      -- Handle a duplicate
+      if not player_data or player_data.status == "translating" then return end
 
       player_data.language = language
 
