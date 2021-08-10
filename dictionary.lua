@@ -370,9 +370,6 @@ function flib_dictionary.set_use_local_storage(value)
   use_local_storage = value
 end
 
---- Events
--- @section
-
 --- Concepts
 -- @section
 
