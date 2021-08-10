@@ -208,10 +208,10 @@ local dictionary_match_string = kv("^FLIB_DICTIONARY_NAME", "(.-)")
   ..kv("FLIB_DICTIONARY_STRING_INDEX", "(%d-)")
   .."(.*)$"
 
---- Processes a returned translation batch, then request the next batch.
+--- Processe a returned translation batch, then request the next batch or return the finished dictionaries.
 -- Must be called **during** `on_string_translated`.
 -- @tparam OnStringTranslatedEventData event_data
--- @return TranslationFinishedOutput|nil The results of the translated dictionaries, or `nil` if translation is not yet
+-- @treturn TranslationFinishedOutput|nil The results of the translated dictionaries, or `nil` if translation is not yet
 -- complete.
 function flib_dictionary.process_translation(event_data)
   if not event_data.translated then return end
