@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.8.2
-Date: ????
+Date: 2021-08-10
   Bugfixes:
     - Fixed the dictionary module not handling if the language detection string was lost across save/load
 ---------------------------------------------------------------------------------------------------
