@@ -5,7 +5,7 @@
     <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>misc module</title>
+    <title>on-tick-n module</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../spectre.min.css" type="text/css" />
     <link rel="stylesheet" href="../spectre-icons.min.css" type="text/css" />
@@ -48,8 +48,8 @@
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/gui.html"><span class="module-name-item">gui</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/math.html"><span class="module-name-item">math</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/migration.html"><span class="module-name-item">migration</span></a></div></li>
-    <li class="nav-item active"><div class="nav-item-block-active block"><a href="../modules/misc.html"><span class="module-name-item">misc</span></a><i class="icon icon-arrow-left icon-arrow-left-custom"></i></div></li>
-    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/on-tick-n.html"><span class="module-name-item">on-tick-n</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/misc.html"><span class="module-name-item">misc</span></a></div></li>
+    <li class="nav-item active"><div class="nav-item-block-active block"><a href="../modules/on-tick-n.html"><span class="module-name-item">on-tick-n</span></a><i class="icon icon-arrow-left icon-arrow-left-custom"></i></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/orientation.html"><span class="module-name-item">orientation</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/reverse-defines.html"><span class="module-name-item">reverse-defines</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/table.html"><span class="module-name-item">table</span></a></div></li>
@@ -85,9 +85,10 @@
     <!-- list of items in a module -->
     <ul class="nav nav-module-contents">
     <li class="nav-item">
-    <h4>Contents of <strong>misc</strong></h4>
+    <h4>Contents of <strong>on-tick-n</strong></h4>
     <ul class="nav">
     <li class="nav-item"><a href="#Functions"><span class="fragment-hashtag">#</span> Functions</a></li>
+    <li class="nav-item"><a href="#Concepts"><span class="fragment-hashtag">#</span> Concepts </a></li>
     </ul>
     </li>
     </ul>
@@ -108,8 +109,8 @@
 
     <!-- module content header start -->
 
-    <h2><span class="body-module-name"><strong><em>misc</em></strong></span> module</h2>
-    <p>Miscellaneous control-stage functions that don&rsquo;t yet have a proper home.</p>
+    <h2><span class="body-module-name"><strong><em>on-tick-n</em></strong></span> module</h2>
+    <p>Schedule tasks to be executed later.</p>
     <p>
 </p>
 
@@ -119,7 +120,7 @@
 
     <!-- module usage start -->
     <h3>Usage</h3>
-    <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> misc = <span class="global">require</span>(<span class="string">"__flib__.misc"</span>)</code></pre>
+    <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> on_tick_n = <span class="global">require</span>(<span class="string">"__flib__.on-tick-n"</span>)</code></pre>
     <!-- module usage end -->
 
     <!-- module content header end -->
@@ -132,20 +133,36 @@
     </thead>
     <tbody>
     <tr>
-    <td class="name"><a href="#get_distance">get_distance(pos1, pos2)</a></td>
-    <td class="summary">Calculate the distance in tiles between two positions.</td>
+    <td class="name"><a href="#init">init()</a></td>
+    <td class="summary">Initialize the module&rsquo;s script data table.</td>
     </tr>
     <tr>
-    <td class="name"><a href="#get_distance_squared">get_distance_squared(pos1, pos2)</a></td>
-    <td class="summary">Calculate the squared distance in tiles between two positions.</td>
+    <td class="name"><a href="#retrieve">retrieve(tick)</a></td>
+    <td class="summary">Retrieve the tasks for the given tick.</td>
     </tr>
     <tr>
-    <td class="name"><a href="#ticks_to_timestring">ticks_to_timestring([tick=game.ticks_played][, include_leading_zeroes])</a></td>
-    <td class="summary">Convert given tick or game.tick into &ldquo;[hh:]mm:ss&rdquo; format.</td>
+    <td class="name"><a href="#add">add(tick, task)</a></td>
+    <td class="summary">Add a task to execute on the given tick.</td>
     </tr>
     <tr>
-    <td class="name"><a href="#delineate_number">delineate_number(number[, delimiter="])</a></td>
-    <td class="summary">Split numerical values by a delimiter.</td>
+    <td class="name"><a href="#remove">remove(ident)</a></td>
+    <td class="summary">Remove a scheduled task.</td>
+    </tr>
+    </tbody>
+    </table>
+    <table class="section-content-list">
+    <thead>
+    <h3><a href="#Concepts">Concepts </a></h3>
+    <span></span>
+    </thead>
+    <tbody>
+    <tr>
+    <td class="name"><a href="#TaskIdent">TaskIdent</a></td>
+    <td class="summary">A unique identifier for a previously added task, used in <a href="../modules/on-tick-n.html#remove">on-tick-n.remove</a>.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#Tasks">Tasks</a></td>
+    <td class="summary">An table of <a href="../modules/on-tick-n.html#TaskIdent">TaskIdent</a>s, representing the tasks to be executed on a given tick.</td>
     </tr>
     </tbody>
     </table>
@@ -159,68 +176,20 @@
     <dt>
     <div class="divider divider-custom"></div>
     <div class="block section-item-header">
-    <a href="#get_distance" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="get_distance">get_distance(pos1, pos2)</span>
+    <a href="#init" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="init">init()</span>
     </div>
     </dt>
     <dd>
     <div class="section-item-body">
 
-    <p class="section-item-summary">Calculate the distance in tiles between two positions.</p>
-    <p class="section-item-description">
-</p>
+    <p class="section-item-summary">Initialize the module&rsquo;s script data table.</p>
+    <p class="section-item-description"> Must be called at the <strong>beginning</strong> of <code>on_init</code>. Can also be used to delete all current tasks.</p>
 
     <!-- parameters start -->
-    <strong>Parameters:</strong>
-
-    <ul>
-
-
-
-
-
-    <li class="section-subitem-li">
-
-    <strong><em>pos1</em></strong>
-
-    <strong> : </strong>
-
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Concepts.html#Position">Position</a></span>)
-
-
-
-
-    </li>
-
-
-
-
-
-    <li class="section-subitem-li">
-
-    <strong><em>pos2</em></strong>
-
-    <strong> : </strong>
-
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Concepts.html#Position">Position</a></span>)
-
-
-
-
-    </li>
-
-
-    </ul>
-
     <!-- parameters end -->
 
     <!-- returns start -->
-    <strong>Returns:</strong>
-    <ul>
-    <li>
-    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.3.html">number</a></span>)
-    </li>
-    </ul>
     <!-- returns end -->
 
 
@@ -234,89 +203,14 @@
     <dt>
     <div class="divider divider-custom"></div>
     <div class="block section-item-header">
-    <a href="#get_distance_squared" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="get_distance_squared">get_distance_squared(pos1, pos2)</span>
+    <a href="#retrieve" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="retrieve">retrieve(tick)</span>
     </div>
     </dt>
     <dd>
     <div class="section-item-body">
 
-    <p class="section-item-summary">Calculate the squared distance in tiles between two positions.</p>
-    <p class="section-item-description">
-</p>
-
-    <!-- parameters start -->
-    <strong>Parameters:</strong>
-
-    <ul>
-
-
-
-
-
-    <li class="section-subitem-li">
-
-    <strong><em>pos1</em></strong>
-
-    <strong> : </strong>
-
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Concepts.html#Position">Position</a></span>)
-
-
-
-
-    </li>
-
-
-
-
-
-    <li class="section-subitem-li">
-
-    <strong><em>pos2</em></strong>
-
-    <strong> : </strong>
-
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Concepts.html#Position">Position</a></span>)
-
-
-
-
-    </li>
-
-
-    </ul>
-
-    <!-- parameters end -->
-
-    <!-- returns start -->
-    <strong>Returns:</strong>
-    <ul>
-    <li>
-    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.3.html">number</a></span>)
-    </li>
-    </ul>
-    <!-- returns end -->
-
-
-    <!-- see also start -->
-    <!-- see also end -->
-
-    <!-- usage start -->
-    <!-- usage end -->
-
-    </dd>
-    <dt>
-    <div class="divider divider-custom"></div>
-    <div class="block section-item-header">
-    <a href="#ticks_to_timestring" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="ticks_to_timestring">ticks_to_timestring([tick=game.ticks_played][, include_leading_zeroes])</span>
-    </div>
-    </dt>
-    <dd>
-    <div class="section-item-body">
-
-    <p class="section-item-summary">Convert given tick or game.tick into &ldquo;[hh:]mm:ss&rdquo; format.</p>
+    <p class="section-item-summary">Retrieve the tasks for the given tick.</p>
     <p class="section-item-description">
 </p>
 
@@ -340,25 +234,6 @@
 
 
 
-    (<em>default</em>: game.ticks_played)
-    </li>
-
-
-
-
-
-    <li class="section-subitem-li">
-
-    <strong><em>include_leading_zeroes</em></strong>
-
-    <strong> : </strong>
-
-    (<span class="types"><span class="type">booelan</span></span>)
-
-     If true, leading zeroes will be included in single-digit minute and hour
- values.
-
-    (<em>optional</em>)
     </li>
 
 
@@ -370,7 +245,8 @@
     <strong>Returns:</strong>
     <ul>
     <li>
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a></span>)
+    (<span class="types"><a class="type" href="../modules/on-tick-n.html#Tasks">Tasks</a> or <a class="type" href="https://www.lua.org/pil/2.1.html">nil</a></span>)
+    <span class="return-text">The tasks to execute on this tick, or <code>nil</code>.</span>
     </li>
     </ul>
     <!-- returns end -->
@@ -386,15 +262,16 @@
     <dt>
     <div class="divider divider-custom"></div>
     <div class="block section-item-header">
-    <a href="#delineate_number" class="fragment-hashtag">#</a>
-    <span class="section-item-title" id="delineate_number">delineate_number(number[, delimiter="])</span>
+    <a href="#add" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="add">add(tick, task)</span>
     </div>
     </dt>
     <dd>
     <div class="section-item-body">
 
-    <p class="section-item-summary">Split numerical values by a delimiter.</p>
-    <p class="section-item-description"> Adapted from <a href="http://lua-users.org/wiki/FormattingNumbers">lua-users.org</a>.</p>
+    <p class="section-item-summary">Add a task to execute on the given tick.</p>
+    <p class="section-item-description">
+</p>
 
     <!-- parameters start -->
     <strong>Parameters:</strong>
@@ -407,13 +284,14 @@
 
     <li class="section-subitem-li">
 
-    <strong><em>number</em></strong>
+    <strong><em>tick</em></strong>
 
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="https://www.lua.org/pil/2.3.html">number</a></span>)
 
-     The number to delineate.
+
+
 
     </li>
 
@@ -423,16 +301,14 @@
 
     <li class="section-subitem-li">
 
-    <strong><em>delimiter</em></strong>
+    <strong><em>task</em></strong>
 
     <strong> : </strong>
 
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a></span>)
+    (<span class="types"><span class="type">any</span></span>)
 
+     The data representing this task. This can be anything that is not a function.
 
-
-
-    (<em>default</em>: ")
     </li>
 
 
@@ -444,10 +320,157 @@
     <strong>Returns:</strong>
     <ul>
     <li>
-    (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a></span>)
-    <span class="return-text">The formatted number.</span>
+    (<span class="types"><a class="type" href="../modules/on-tick-n.html#TaskIdent">TaskIdent</a></span>)
+    <span class="return-text">An identifier for the task. Save this if you might remove the task before execution.</span>
     </li>
     </ul>
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#remove" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="remove">remove(ident)</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Remove a scheduled task.</p>
+    <p class="section-item-description">
+</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>ident</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="../modules/on-tick-n.html#TaskIdent">TaskIdent</a></span>)
+
+     The identifier object for the task, as returned from <a href="../modules/on-tick-n.html#add">on-tick-n.add</a>.
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    </dl>
+    <h3><span id="Concepts" class="section-title"><a href="#Concepts">Concepts </a></span></h3>
+    <dl class="section-body-container">
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#TaskIdent" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="TaskIdent">TaskIdent</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">A unique identifier for a previously added task, used in <a href="../modules/on-tick-n.html#remove">on-tick-n.remove</a>.</p>
+    <p class="section-item-description">
+</p>
+
+    <!-- parameters start -->
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-module-field-li">
+
+    <strong><em>tick</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.3.html">number</a></span>)
+
+     The tick this task is scheduled for.
+
+    </li>
+
+
+
+
+
+    <li class="section-subitem-module-field-li">
+
+    <strong><em>index</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.3.html">number</a></span>)
+
+     The tasks' index in the tick&rsquo;s <a href="../modules/on-tick-n.html#Tasks">Tasks</a> table.
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#Tasks" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="Tasks">Tasks</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">An table of <a href="../modules/on-tick-n.html#TaskIdent">TaskIdent</a>s, representing the tasks to be executed on a given tick.</p>
+    <p class="section-item-description"> <strong>This is not an array, there may be gaps. Always use <code>pairs</code> to iterate this table.</strong></p>
+
+    <!-- parameters start -->
+    <!-- parameters end -->
+
+    <!-- returns start -->
     <!-- returns end -->
 
 
