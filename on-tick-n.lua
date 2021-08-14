@@ -15,6 +15,7 @@ function on_tick_n.init()
 end
 
 --- Retrieve the tasks for the given tick.
+-- Must be called **during** `on_tick`.
 -- @tparam number tick
 -- @treturn Tasks|nil The tasks to execute on this tick, or `nil`.
 function on_tick_n.retrieve(tick)
