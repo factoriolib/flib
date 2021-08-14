@@ -63,8 +63,22 @@ end
 -- @tfield number index The tasks' index in the tick's @{Tasks} table.
 -- @Concept TaskIdent
 
---- An table of @{TaskIdent}s, representing the tasks to be executed on a given tick.
+--- An table of tasks.
+-- Each task can be anything that is not a function, as specified in @{on-tick-n.add}.
+--
 -- **This is not an array, there may be gaps. Always use `pairs` to iterate this table.**
+-- @usage
+-- event.on_tick(function(e)
+--   for _, task in pairs(on_tick_n.retrieve(e.tick) or {}) do
+--     if task == "say_hi" then
+--       game.print("Hello there!")
+--     elseif task == "order_66" then
+--       for _, player in pairs(game.players) do
+--         player.die()
+--       end
+--     end
+--   end
+-- end)
 -- @Concept Tasks
 
 return on_tick_n
