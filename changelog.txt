@@ -21,6 +21,7 @@ Date: 2021-08-08
     - Added `dictionary` module, which is a fast and easy-to-use dictionary system for localised string translations
     - Added `flib_widthless_textfield` style
     - Added `gui.add`, `gui.set_action`, and `gui.get_action`
+    - Added `on-tick-n` module, which allows you to schedule tasks to be executed on a specific tick
     - Added support for tags and actions in `gui.update`
     - Children in a `GuiBuildStructure` or `GuiUpdateStructure` can now be defined in the array portion, instead of in a `children` or `tabs` table
       - The subtables are still accepted for situations where they are appropriate (i.e. dynamically generated children)

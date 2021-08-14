@@ -1,5 +1,12 @@
+--- Schedule tasks to be executed later.
+-- @module on-tick-n
+-- @alias on_tick_n
+-- @usage local on_tick_n = require("__flib__.on-tick-n")
+
 local on_tick_n = {}
 
+--- Initialize the module's script data table.
+-- Must be called at the **beginning** of `on_init`. Can also be used to delete all current tasks.
 function on_tick_n.init()
   if not global.__flib then
     global.__flib = {}
@@ -7,6 +14,9 @@ function on_tick_n.init()
   global.__flib.on_tick_n = {}
 end
 
+--- Retrieve the tasks for the given tick.
+-- @tparam number tick
+-- @treturn Tasks|nil The tasks to execute on this tick, or `nil`.
 function on_tick_n.retrieve(tick)
   -- Failsafe for rare cases where on_tick can fire before on_init
   if not global.__flib or not global.__flib.on_tick_n then return end
@@ -17,19 +27,25 @@ function on_tick_n.retrieve(tick)
   end
 end
 
-function on_tick_n.add(tick, action)
+--- Add a task to execute on the given tick.
+-- @tparam number tick
+-- @tparam any task The data representing this task. This can be anything that is not a function.
+-- @treturn TaskIdent An identifier for the task. Save this if you might remove the task before execution.
+function on_tick_n.add(tick, task)
   local list = global.__flib.on_tick_n
   local tick_list = list[tick]
   if tick_list then
     local index = #tick_list + 1
-    tick_list[index] = action
+    tick_list[index] = task
     return {index = index, tick = tick}
   else
-    list[tick] = {action}
+    list[tick] = {task}
     return {index = 1, tick = tick}
   end
 end
 
+--- Remove a scheduled task.
+-- @tparam TaskIdent ident The identifier object for the task, as returned from @{on-tick-n.add}.
 function on_tick_n.remove(ident)
   local tick_list = global.__flib.on_tick_n[ident.tick]
   if not tick_list or not tick_list[ident.index] then return false end
@@ -38,5 +54,17 @@ function on_tick_n.remove(ident)
 
   return true
 end
+
+--- Concepts
+-- @section
+
+--- A unique identifier for a previously added task, used in @{on-tick-n.remove}.
+-- @tfield number tick The tick this task is scheduled for.
+-- @tfield number index The tasks' index in the tick's @{Tasks} table.
+-- @Concept TaskIdent
+
+--- An table of @{TaskIdent}s, representing the tasks to be executed on a given tick.
+-- **This is not an array, there may be gaps. Always use `pairs` to iterate this table.**
+-- @Concept Tasks
 
 return on_tick_n
