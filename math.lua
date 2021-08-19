@@ -70,7 +70,7 @@ function flib_math.round(num, divisor)
   if num >= 0 then
     return flib_math.floor((num / divisor) + 0.5) * divisor
   else
-    return flib_math.ceil((num / divisor) + 0.5) * divisor
+    return flib_math.ceil((num / divisor) - 0.5) * divisor
   end
 end
 
