@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.8.3
-Date: ????
+Date: 2021-08-20
   Bugfixes:
     - Fixed that math.round() was incorrect for some negative numbers
     - Fixed that the on-tick-n module was not documented and not mentioned in the v0.8.0 changelog
