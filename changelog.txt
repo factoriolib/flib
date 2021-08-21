@@ -2,6 +2,8 @@
 Version: 0.8.4
 Date: ????
   Changes:
+    - Children may now be defined in `gui.add()`
+      - If you need to return refs to children, use `gui.build()` instead
 ---------------------------------------------------------------------------------------------------
 Version: 0.8.3
 Date: 2021-08-20

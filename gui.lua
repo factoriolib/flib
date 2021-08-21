@@ -185,14 +185,10 @@ end
 -- @tparam GuiBuildStructure structure The element to build.
 -- @treturn @{LuaGuiElement} A reference to the element that was created.
 function flib_gui.add(parent, structure)
-  -- Make sure we don't have children
-  if structure.children or structure.tabs or #structure > 0 then
-    error("Use `gui.build()` for more than one element at a time!")
-  end
   -- Just in case they had a ref in the structure already, extract it
   local previous_ref = structure.ref
   -- Put in a known ref that we can use later
-  structure.ref = {1}
+  structure.ref = {"FLIB_ADD_ROOT"}
   -- Build the element
   local refs = {}
   recursive_build(
@@ -203,7 +199,7 @@ function flib_gui.add(parent, structure)
   -- Restore the previous ref
   structure.ref = previous_ref
   -- Return the element
-  return refs[1]
+  return refs.FLIB_ADD_ROOT
 end
 
 local function recursive_update(elem, updates)
