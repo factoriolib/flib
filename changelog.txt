@@ -1,9 +1,12 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.8.4
 Date: ????
+  Features:
+    - Added `flib-dictionary-levels-per-batch` setting
   Changes:
     - Children may now be defined in `gui.add()`
       - If you need to return refs to children, use `gui.build()` instead
+    - `flib-translations-per-tick` setting is now hidden
 ---------------------------------------------------------------------------------------------------
 Version: 0.8.3
 Date: 2021-08-20
