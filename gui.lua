@@ -180,7 +180,8 @@ end
 --- Build a single element based on a GuiStructure.
 -- This is to allow use of `style_mods`, `actions` and `tags` without needing to use `gui.build()` for a single element.
 --
--- Unlike `gui.build()`, the element will be automatically returned from the function without needing to use `ref`.
+-- Unlike `gui.build()`, the element will be automatically returned from the function without needing to use `ref`. If
+-- you need to obtain references to children of this element, use `gui.build()` instead.
 -- @tparam LuaGuiElement parent The parent GUI element where this new element will be located.
 -- @tparam GuiBuildStructure structure The element to build.
 -- @treturn @{LuaGuiElement} A reference to the element that was created.
