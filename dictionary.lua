@@ -10,7 +10,7 @@ local flib_dictionary = {}
 
 local inner_separator = "⤬"
 local separator = "⤬⤬⤬"
-local max_depth = 15
+local max_depth = settings.global["flib-dictionary-levels-per-batch"].value
 local translation_timeout = 180
 
 -- Depending on the value of `use_local_storage`, this will be tied to `global` or will be re-generated during `on_load`
