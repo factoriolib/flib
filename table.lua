@@ -354,6 +354,18 @@ function flib_table.reduce(tbl, reducer, initial_value)
   return accumulator
 end
 
+--- Retrieve a value from a table, returning it.
+-- Unlike @{table.remove}, this does _not_ shift all other entries in the table to fill the gap. This also means that
+-- this function works on actual tables, not just arrays.
+-- @tparam table tbl
+-- @tparam any key
+-- @treturn any|nil The value, or `nil` if the value was not in the table.
+function flib_table.retrieve(tbl, key)
+  local value = tbl[key]
+  tbl[key] = nil
+  return value
+end
+
 --- Shallowly copy the contents of a table into a new table.
 --
 -- The parent table will have a new table reference, but any subtables within it will still have the same table
