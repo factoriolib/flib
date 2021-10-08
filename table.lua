@@ -354,6 +354,18 @@ function flib_table.reduce(tbl, reducer, initial_value)
   return accumulator
 end
 
+--- Remove and return a value from the table.
+-- @tparam table tbl
+-- @tparam any key The key to retrieve.
+-- @treturn any|nil The value stored at that key, if any.
+function flib_table.retrieve(tbl, key)
+  local value = tbl[key]
+  if value ~= nil then
+    tbl[key] = nil
+    return value
+  end
+end
+
 --- Shallowly copy the contents of a table into a new table.
 --
 -- The parent table will have a new table reference, but any subtables within it will still have the same table
