@@ -115,8 +115,8 @@ end
 -- @treturn any|nil The key that matches the value, or `nil` if it was not found.
 -- @usage
 -- local tbl = {"foo", "bar"}
--- local contains_foo = table.find(tbl, "foo") -- true
--- local contains_baz = table.find(tbl, "baz") -- false
+-- local key_of_foo = table.find(tbl, "foo") -- 1
+-- local key_of_baz = table.find(tbl, "baz") -- nil
 function flib_table.find(tbl, value)
   for k, v in pairs(tbl) do
     if v == value then
