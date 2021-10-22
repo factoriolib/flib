@@ -27,6 +27,22 @@ function flib_table.array_copy(arr)
   return new_arr
 end
 
+--- Merge all of the given arrays into a single array.
+-- @tparam array arrays An array of arrays to merge.
+-- @treturn array The merged array.
+function flib_table.array_merge(arrays)
+  local output = {}
+  local i = 0
+  for j = 1, #arrays do
+    local arr = arrays[j]
+    for k = 1, #arr do
+      i = i + 1
+      output[i] = arr[k]
+    end
+  end
+  return output
+end
+
 --- Recursively compare two tables for inner equality.
 --
 -- Does not compare metatables.

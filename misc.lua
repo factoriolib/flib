@@ -6,6 +6,7 @@ local flib_misc = {}
 
 local math = math
 local string = string
+
 --- Calculate the distance in tiles between two positions.
 -- @tparam Concepts.Position pos1
 -- @tparam Concepts.Position pos2

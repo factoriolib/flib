@@ -2,7 +2,7 @@
 Version: 0.9.0
 Date: ????
   Features:
-    - Added `table.retrieve()`
+    - Added `table.array_merge()` and `table.retrieve()`
 ---------------------------------------------------------------------------------------------------
 Version: 0.8.4
 Date: 2021-09-19
