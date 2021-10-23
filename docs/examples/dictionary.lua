@@ -60,14 +60,12 @@ end)
 
 event.on_tick(dictionary.check_skipped)
 
-event.on_string_translated(dictionary.process_translation)
-
-event.register(dictionary.on_language_translated, function(e)
-  -- For convenience, store the dictionaries that each player is using in their personal table.
-  -- This does not actually take any storage space, because the dictionaries are already stored in the module's internal
-  -- table, so any additional references are just pointers to the original.
-  for _, player_index in pairs(e.players) do
-    global.player_dictionaries[player_index] = e.dictionaries
-    game.print("Player "..player_index.." now has dictionaries for their language!")
+event.on_string_translated(function(e)
+  local language_data = dictionary.process_translation(e)
+  if language_data then
+    for _, player_index in pairs(language_data.players) do
+      global.player_dictionaries[player_index] = language_data.dictionaries
+      game.print("Player "..player_index.." now has dictionaries for their language!")
+    end
   end
 end)
