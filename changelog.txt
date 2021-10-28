@@ -3,6 +3,9 @@ Version: 0.9.0
 Date: ????
   Features:
     - Added `table.array_merge()` and `table.retrieve()`
+    - Added `flib_pin` and `flib_settings` sprites in black, white, and disabled variants
+      - These are for use with frame action buttons
+    - Added `gui.flib-keep-open` and `gui.flib-settings` locales for use with the aforementioned styles
 ---------------------------------------------------------------------------------------------------
 Version: 0.8.4
 Date: 2021-09-19
