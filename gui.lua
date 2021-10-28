@@ -279,14 +279,6 @@ local function recursive_update(elem, updates)
       end
     end
   end
-
-  if updates.children then
-    for i, child_updates in ipairs(updates.children) do
-      if elem_children[i] then
-        recursive_update(elem_children[i], child_updates)
-      end
-    end
-  end
 end
 
 --- Update an existing GUI based on a given structure.
@@ -371,7 +363,7 @@ function flib_gui.set_action(elem, event_name, msg)
     existing.flib = actions
   end
 
-  actions[event_name] = msg
+  actions[event_name] = msg or nil
 
   elem.tags = elem_tags
 end
