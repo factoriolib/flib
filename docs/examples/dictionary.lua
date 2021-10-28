@@ -36,6 +36,13 @@ event.on_configuration_changed(function(e)
     -- Reset the module to effectively cancel all ongoing translations and wipe all dictionaries
     dictionary.init()
     create_demo_dictionaries()
+
+    -- Request translations for all connected players
+    for _, player in pairs(game.players) do
+      if player.connected then
+        dictionary.translate(player)
+      end
+    end
   end
 end)
 
