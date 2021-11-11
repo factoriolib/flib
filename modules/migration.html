@@ -51,6 +51,7 @@
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/misc.html"><span class="module-name-item">misc</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/on-tick-n.html"><span class="module-name-item">on-tick-n</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/orientation.html"><span class="module-name-item">orientation</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/queue.html"><span class="module-name-item">queue</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/reverse-defines.html"><span class="module-name-item">reverse-defines</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/table.html"><span class="module-name-item">table</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/train.html"><span class="module-name-item">train</span></a></div></li>
@@ -112,6 +113,7 @@
     <h2><span class="body-module-name"><strong><em>migration</em></strong></span> module</h2>
     <p>Mod migrations and version comparison functions.</p>
     <p>
+
 </p>
 
 
@@ -142,7 +144,7 @@
     </tr>
     <tr>
     <td class="name"><a href="#is_newer_version">is_newer_version(old_version, current_version[, format=%02d])</a></td>
-    <td class="summary">Check if current_version is newer than old_version.</td>
+    <td class="summary">Check if current<em>version is newer than old</em>version.</td>
     </tr>
     <tr>
     <td class="name"><a href="#run">run(old_version, migrations[, format="%02d"][, ...])</a></td>
@@ -185,6 +187,7 @@
 
     <p class="section-item-summary">Normalize version strings for easy comparison.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -207,6 +210,7 @@
 
 
 
+
     </li>
 
 
@@ -220,6 +224,7 @@
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a></span>)
+
 
 
 
@@ -262,8 +267,9 @@ migration.format_version(<span class="string">"3"</span>, <span class="string">"
     <dd>
     <div class="section-item-body">
 
-    <p class="section-item-summary">Check if current_version is newer than old_version.</p>
+    <p class="section-item-summary">Check if current<em>version is newer than old</em>version.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -286,6 +292,7 @@ migration.format_version(<span class="string">"3"</span>, <span class="string">"
 
 
 
+
     </li>
 
 
@@ -303,6 +310,7 @@ migration.format_version(<span class="string">"3"</span>, <span class="string">"
 
 
 
+
     </li>
 
 
@@ -316,6 +324,7 @@ migration.format_version(<span class="string">"3"</span>, <span class="string">"
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a></span>)
+
 
 
 
@@ -357,6 +366,7 @@ migration.format_version(<span class="string">"3"</span>, <span class="string">"
 
     <p class="section-item-summary">Run migrations against the given version.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -379,6 +389,7 @@ migration.format_version(<span class="string">"3"</span>, <span class="string">"
 
 
 
+
     </li>
 
 
@@ -396,6 +407,7 @@ migration.format_version(<span class="string">"3"</span>, <span class="string">"
 
 
 
+
     </li>
 
 
@@ -409,6 +421,7 @@ migration.format_version(<span class="string">"3"</span>, <span class="string">"
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a></span>)
+
 
 
 
@@ -461,6 +474,7 @@ migration.format_version(<span class="string">"3"</span>, <span class="string">"
 
     <p class="section-item-summary">Determine if migrations need to be run for this mod, then run them if needed.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -483,6 +497,7 @@ migration.format_version(<span class="string">"3"</span>, <span class="string">"
 
 
 
+
     </li>
 
 
@@ -496,6 +511,7 @@ migration.format_version(<span class="string">"3"</span>, <span class="string">"
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="../modules/migration.html#MigrationsTable">MigrationsTable</a></span>)
+
 
 
 
@@ -579,9 +595,9 @@ migration.format_version(<span class="string">"3"</span>, <span class="string">"
     <div class="section-item-body">
 
     <p class="section-item-summary">A table of migrations to run for given versions.</p>
-    <p class="section-item-description"> Dictionary <a href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a> &ndash;> <a href="https://www.lua.org/pil/2.6.html">function</a>. Each string is a version number, and each function is logic to run for that
+    <p class="section-item-description"> Dictionary <a href="http://lua-api.factorio.com/latest/Builtin-Types.html#string">string</a> -> <a href="https://www.lua.org/pil/2.6.html">function</a>. Each string is a version number, and each function is logic to run for that
  version. When passed into <a href="../modules/migration.html#run">migration.run</a> or <a href="../modules/migration.html#on_config_changed">migration.on_config_changed</a>, the module will check <code>old_version</code>
- against each version in this table, and for any that are newer, will run that version&rsquo;s corresponding logic.</p>
+ against each version in this table, and for any that are newer, will run that version's corresponding logic.</p>
 
 <p> A version function can accept arguments that are passed in through <a href="../modules/migration.html#run">migration.run</a>.</p>
 
@@ -626,7 +642,7 @@ migration.format_version(<span class="string">"3"</span>, <span class="string">"
     <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
     </div>
     <div class="content-footer column col-9 col-sm-12">
-    <i>Last updated 2021-09-19 21:47:59 UTC</i>
+    <i>Last updated 2021-11-10 19:48:16 UTC</i>
     </div>
     </div>
     </div>

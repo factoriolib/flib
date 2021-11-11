@@ -51,6 +51,7 @@
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/misc.html"><span class="module-name-item">misc</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/on-tick-n.html"><span class="module-name-item">on-tick-n</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/orientation.html"><span class="module-name-item">orientation</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/queue.html"><span class="module-name-item">queue</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/reverse-defines.html"><span class="module-name-item">reverse-defines</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/table.html"><span class="module-name-item">table</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/train.html"><span class="module-name-item">train</span></a></div></li>
@@ -113,6 +114,7 @@
     <h2><span class="body-module-name"><strong><em>dictionary</em></strong></span> module</h2>
     <p>An easy-to-use dictionary system for storing localised string translations.</p>
     <p>
+
 </p>
 
 
@@ -155,11 +157,11 @@
     <tbody>
     <tr>
     <td class="name"><a href="#init">init()</a></td>
-    <td class="summary">Initialize the module&rsquo;s script data table.</td>
+    <td class="summary">Initialize the module's script data table.</td>
     </tr>
     <tr>
     <td class="name"><a href="#load">load()</a></td>
-    <td class="summary">Set up the module&rsquo;s local references.</td>
+    <td class="summary">Set up the module's local references.</td>
     </tr>
     <tr>
     <td class="name"><a href="#translate">translate(player)</a></td>
@@ -167,7 +169,7 @@
     </tr>
     <tr>
     <td class="name"><a href="#check_skipped">check_skipped()</a></td>
-    <td class="summary">Check for a &ldquo;skipped&rdquo; translation and re-request it after three seconds.</td>
+    <td class="summary">Check for a "skipped" translation and re-request it after three seconds.</td>
     </tr>
     <tr>
     <td class="name"><a href="#process_translation">process_translation(event_data)</a></td>
@@ -175,7 +177,7 @@
     </tr>
     <tr>
     <td class="name"><a href="#cancel_translation">cancel_translation(player_index)</a></td>
-    <td class="summary">Cancel the translation of the player&rsquo;s dictionaries if they are the currently translating player.</td>
+    <td class="summary">Cancel the translation of the player's dictionaries if they are the currently translating player.</td>
     </tr>
     <tr>
     <td class="name"><a href="#set_use_local_storage">set_use_local_storage(value)</a></td>
@@ -191,11 +193,11 @@
     <tbody>
     <tr>
     <td class="name"><a href="#RawDictionary">RawDictionary</a></td>
-    <td class="summary">A &ldquo;raw&rdquo; dictionary containing the actual <a href="http://lua-api.factorio.com/latest/Concepts.html#LocalisedString">Concepts.LocalisedString</a>s for translation.</td>
+    <td class="summary">A "raw" dictionary containing the actual <a href="http://lua-api.factorio.com/latest/Concepts.html#LocalisedString">Concepts.LocalisedString</a>s for translation.</td>
     </tr>
     <tr>
     <td class="name"><a href="#InternalString">InternalString</a></td>
-    <td class="summary">The &ldquo;internal&rdquo; representation of the translation.</td>
+    <td class="summary">The "internal" representation of the translation.</td>
     </tr>
     <tr>
     <td class="name"><a href="#TranslatedString">TranslatedString</a></td>
@@ -253,6 +255,7 @@
 
 
 
+
     </li>
 
 
@@ -266,6 +269,7 @@
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Concepts.html#LocalisedString">LocalisedString</a></span>)
+
 
 
 
@@ -300,6 +304,7 @@
 
     <p class="section-item-summary">Create a new <a href="../modules/dictionary.html#RawDictionary">RawDictionary</a>.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -335,7 +340,7 @@
 
     (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#boolean">boolean</a></span>)
 
-     If <code>true</code>, translations that &ldquo;failed&rdquo; (begin with <code>Unknown key:</code> will be
+     If <code>true</code>, translations that "failed" (begin with <code>Unknown key:</code> will be
  added to the dictionary with their internal name as their translated name.
 
     (<em>optional</em>)
@@ -353,7 +358,7 @@
 
     (<span class="types"><a class="type" href="https://www.lua.org/pil/2.5.html">table</a></span>)
 
-     The intial contents of the dictionary. This is a table of <a href="../modules/dictionary.html#InternalString">InternalString</a> &ndash;>
+     The intial contents of the dictionary. This is a table of <a href="../modules/dictionary.html#InternalString">InternalString</a> ->
  <a href="http://lua-api.factorio.com/latest/Concepts.html#LocalisedString">LocalisedString</a>.
 
     (<em>optional</em>)
@@ -395,7 +400,7 @@
     <dd>
     <div class="section-item-body">
 
-    <p class="section-item-summary">Initialize the module&rsquo;s script data table.</p>
+    <p class="section-item-summary">Initialize the module's script data table.</p>
     <p class="section-item-description"> Must be called at the <strong>beginning</strong> of <code>on_init</code> for initial setup, and at the <strong>beginning</strong> of
  <code>on_configuration_changed</code> to reset all ongoing translations.</p>
 
@@ -423,7 +428,7 @@
     <dd>
     <div class="section-item-body">
 
-    <p class="section-item-summary">Set up the module&rsquo;s local references.</p>
+    <p class="section-item-summary">Set up the module's local references.</p>
     <p class="section-item-description"> Must be called at the <strong>beginning</strong> of <code>on_load</code>.</p>
 
 <p> If using <a href="../modules/dictionary.html#set_use_local_storage">dictionary.set_use_local_storage</a>, your dictionaries must be re-generated <strong>after</strong> this function is
@@ -454,7 +459,7 @@
     <div class="section-item-body">
 
     <p class="section-item-summary">Request all dictionaries for the given player.</p>
-    <p class="section-item-description"> The dictionary system stores dictionaries by language, not by player. Thus, if this player&rsquo;s language has already
+    <p class="section-item-description"> The dictionary system stores dictionaries by language, not by player. Thus, if this player's language has already
  been translated, the module will simply return the already existing dictionaries instead of translating them again.</p>
 
 <p> If you wish to re-translate dictionaries, call <a href="../modules/dictionary.html#init">dictionary.init</a> and call this function for all online players.</p>
@@ -478,6 +483,7 @@
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/LuaPlayer.html">LuaPlayer</a></span>)
+
 
 
 
@@ -510,7 +516,7 @@
     <dd>
     <div class="section-item-body">
 
-    <p class="section-item-summary">Check for a &ldquo;skipped&rdquo; translation and re-request it after three seconds.</p>
+    <p class="section-item-summary">Check for a "skipped" translation and re-request it after three seconds.</p>
     <p class="section-item-description"> Must be called <strong>during</strong> <code>on_tick</code>.</p>
 
 <p> This is to handle a very specific edge-case where translations that are requested on the same tick that a game is
@@ -563,6 +569,7 @@
 
 
 
+
     </li>
 
 
@@ -599,7 +606,7 @@
     <dd>
     <div class="section-item-body">
 
-    <p class="section-item-summary">Cancel the translation of the player&rsquo;s dictionaries if they are the currently translating player.</p>
+    <p class="section-item-summary">Cancel the translation of the player's dictionaries if they are the currently translating player.</p>
     <p class="section-item-description"> If multiple players are waiting on these dictionaries, the translation duties will be handed off to the next player
  in the list.</p>
 
@@ -621,6 +628,7 @@
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="https://www.lua.org/pil/2.3.html">number</a></span>)
+
 
 
 
@@ -716,7 +724,7 @@ dictionary.set_use_local_storage(<span class="keyword">true</span>)</code></pre>
     <dd>
     <div class="section-item-body">
 
-    <p class="section-item-summary">A &ldquo;raw&rdquo; dictionary containing the actual <a href="http://lua-api.factorio.com/latest/Concepts.html#LocalisedString">Concepts.LocalisedString</a>s for translation.</p>
+    <p class="section-item-summary">A "raw" dictionary containing the actual <a href="http://lua-api.factorio.com/latest/Concepts.html#LocalisedString">Concepts.LocalisedString</a>s for translation.</p>
     <p class="section-item-description"> This object contains a metatable giving access to all of the methods in the <code>RawDictionary object methods</code> section.</p>
 
 <p> This object <strong>must not</strong> be stored in the <code>global</code> table. Doing so will result in a desync if the game is saved and
@@ -749,7 +757,7 @@ MyDictionary:add(<span class="string">"iron-ore"</span>, {<span class="string">"
     <dd>
     <div class="section-item-body">
 
-    <p class="section-item-summary">The &ldquo;internal&rdquo; representation of the translation.</p>
+    <p class="section-item-summary">The "internal" representation of the translation.</p>
     <p class="section-item-description"> This is a consistent, language-agnostic identifier that
  corresponds to the translation.</p>
 
@@ -780,6 +788,7 @@ MyDictionary:add(<span class="string">"iron-ore"</span>, {<span class="string">"
     <p class="section-item-summary">The translated result of a <a href="http://lua-api.factorio.com/latest/Concepts.html#LocalisedString">Concepts.LocalisedString</a> for a specific language, or the <a href="../modules/dictionary.html#InternalString">InternalString</a> if
  <code>include_failed_translations</code> was enabled when creating the <a href="../modules/dictionary.html#RawDictionary">RawDictionary</a>.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -807,7 +816,7 @@ MyDictionary:add(<span class="string">"iron-ore"</span>, {<span class="string">"
     <div class="section-item-body">
 
     <p class="section-item-summary">The contents of a translated dictionary.</p>
-    <p class="section-item-description"> A table of <a href="../modules/dictionary.html#InternalString">InternalString</a> &ndash;> <a href="../modules/dictionary.html#TranslatedString">TranslatedString</a>.</p>
+    <p class="section-item-description"> A table of <a href="../modules/dictionary.html#InternalString">InternalString</a> -> <a href="../modules/dictionary.html#TranslatedString">TranslatedString</a>.</p>
 
     <!-- parameters start -->
     <!-- parameters end -->
@@ -835,6 +844,7 @@ MyDictionary:add(<span class="string">"iron-ore"</span>, {<span class="string">"
 
     <p class="section-item-summary">The results of a translated language.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -869,7 +879,7 @@ MyDictionary:add(<span class="string">"iron-ore"</span>, {<span class="string">"
 
     (<span class="types"><a class="type" href="https://www.lua.org/pil/2.5.html">table</a></span>)
 
-     The resulting dictionaries, in the format of <code>dictionary_name</code> &ndash;> <a href="../modules/dictionary.html#DictionaryContents">DictionaryContents</a>.
+     The resulting dictionaries, in the format of <code>dictionary_name</code> -> <a href="../modules/dictionary.html#DictionaryContents">DictionaryContents</a>.
 
     </li>
 
@@ -920,7 +930,7 @@ MyDictionary:add(<span class="string">"iron-ore"</span>, {<span class="string">"
     <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
     </div>
     <div class="content-footer column col-9 col-sm-12">
-    <i>Last updated 2021-09-19 21:47:59 UTC</i>
+    <i>Last updated 2021-11-10 19:48:16 UTC</i>
     </div>
     </div>
     </div>

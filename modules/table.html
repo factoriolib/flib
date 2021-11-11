@@ -51,6 +51,7 @@
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/misc.html"><span class="module-name-item">misc</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/on-tick-n.html"><span class="module-name-item">on-tick-n</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/orientation.html"><span class="module-name-item">orientation</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/queue.html"><span class="module-name-item">queue</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/reverse-defines.html"><span class="module-name-item">reverse-defines</span></a></div></li>
     <li class="nav-item active"><div class="nav-item-block-active block"><a href="../modules/table.html"><span class="module-name-item">table</span></a><i class="icon icon-arrow-left icon-arrow-left-custom"></i></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/train.html"><span class="module-name-item">train</span></a></div></li>
@@ -135,7 +136,11 @@
     <tbody>
     <tr>
     <td class="name"><a href="#array_copy">array_copy(arr)</a></td>
-    <td class="summary">Shallow copy an array&rsquo;s values into a new array.</td>
+    <td class="summary">Shallow copy an array's values into a new array.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#array_merge">array_merge(arrays)</a></td>
+    <td class="summary">Merge all of the given arrays into a single array.</td>
     </tr>
     <tr>
     <td class="name"><a href="#deep_compare">deep_compare(tbl1, tbl2)</a></td>
@@ -179,7 +184,11 @@
     </tr>
     <tr>
     <td class="name"><a href="#reduce">reduce(tbl, reducer[, initial_value])</a></td>
-    <td class="summary">&ldquo;Reduce&rdquo; a table&rsquo;s values into a single output value, using the results of a reducer function.</td>
+    <td class="summary">"Reduce" a table's values into a single output value, using the results of a reducer function.</td>
+    </tr>
+    <tr>
+    <td class="name"><a href="#retrieve">retrieve(tbl, key)</a></td>
+    <td class="summary">Remove and return a value from the table.</td>
     </tr>
     <tr>
     <td class="name"><a href="#shallow_copy">shallow_copy(tbl, use_rawset)</a></td>
@@ -220,7 +229,7 @@
     <dd>
     <div class="section-item-body">
 
-    <p class="section-item-summary">Shallow copy an array&rsquo;s values into a new array.</p>
+    <p class="section-item-summary">Shallow copy an array's values into a new array.</p>
     <p class="section-item-description"> This function is optimized specifically for arrays, and should be used in place of <a href="../modules/table.html#shallow_copy">table.shallow_copy</a> for arrays.</p>
 
     <!-- parameters start -->
@@ -243,6 +252,7 @@
 
 
 
+
     </li>
 
 
@@ -256,6 +266,65 @@
     <li>
     (<span class="types"><a class="type" href="https://www.lua.org/pil/11.1.html">array</a></span>)
     <span class="return-text">The copied array.</span>
+    </li>
+    </ul>
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
+    <a href="#array_merge" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="array_merge">array_merge(arrays)</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Merge all of the given arrays into a single array.</p>
+    <p class="section-item-description">
+
+</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>arrays</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/11.1.html">array</a></span>)
+
+     An array of arrays to merge.
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <strong>Returns:</strong>
+    <ul>
+    <li>
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/11.1.html">array</a></span>)
+    <span class="return-text">The merged array.</span>
     </li>
     </ul>
     <!-- returns end -->
@@ -301,6 +370,7 @@
 
 
 
+
     </li>
 
 
@@ -314,6 +384,7 @@
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="https://www.lua.org/pil/2.5.html">table</a></span>)
+
 
 
 
@@ -479,6 +550,7 @@ log(tbl.foo) <span class="comment">-- logs "baz"
 
     <p class="section-item-summary">Find the value in the table.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -540,8 +612,8 @@ log(tbl.foo) <span class="comment">-- logs "baz"
     <!-- usage start -->
     <strong>Usage:</strong>
     <pre class="code" data-lang="Lua"><code><span class="keyword">local</span> tbl = {<span class="string">"foo"</span>, <span class="string">"bar"</span>}
-<span class="keyword">local</span> contains_foo = <span class="global">table</span>.search(tbl, <span class="string">"foo"</span>) <span class="comment">-- true
-</span><span class="keyword">local</span> contains_baz = <span class="global">table</span>.search(tbl, <span class="string">"baz"</span>) <span class="comment">-- false</span></code></pre>
+<span class="keyword">local</span> key_of_foo = <span class="global">table</span>.find(tbl, <span class="string">"foo"</span>) <span class="comment">-- 1
+</span><span class="keyword">local</span> key_of_baz = <span class="global">table</span>.find(tbl, <span class="string">"baz"</span>) <span class="comment">-- nil</span></code></pre>
     <!-- usage end -->
 
     </dd>
@@ -575,6 +647,7 @@ log(tbl.foo) <span class="comment">-- logs "baz"
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="https://www.lua.org/pil/2.5.html">table</a></span>)
+
 
 
 
@@ -642,7 +715,7 @@ log(tbl.foo) <span class="comment">-- logs "baz"
     <p class="section-item-description"> Calls <code>callback(value, key)</code> over <code>n</code> items from <code>tbl</code>, starting after <code>from_k</code>.</p>
 
 <p> The first return value of each invocation of <code>callback</code> will be collected and returned in a table keyed by the
- current item&rsquo;s key.</p>
+ current item's key.</p>
 
 <p> The second return value of <code>callback</code> is a flag requesting deletion of the current item.</p>
 
@@ -818,6 +891,7 @@ event.on_tick(<span class="keyword">function</span>()
 
 
 
+
     </li>
 
 
@@ -914,6 +988,7 @@ event.on_tick(<span class="keyword">function</span>()
 
 
 
+
     </li>
 
 
@@ -971,6 +1046,7 @@ event.on_tick(<span class="keyword">function</span>()
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="https://www.lua.org/pil/2.5.html">table</a></span>)
+
 
 
 
@@ -1050,6 +1126,7 @@ event.on_tick(<span class="keyword">function</span>()
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="https://www.lua.org/pil/11.1.html">array</a></span>)
+
 
 
 
@@ -1140,7 +1217,7 @@ event.on_tick(<span class="keyword">function</span>()
     <dd>
     <div class="section-item-body">
 
-    <p class="section-item-summary">&ldquo;Reduce&rdquo; a table&rsquo;s values into a single output value, using the results of a reducer function.</p>
+    <p class="section-item-summary">"Reduce" a table's values into a single output value, using the results of a reducer function.</p>
     <p class="section-item-description"> Calls <code>reducer(accumulator, value, key)</code> on each element in the table, returning a single accumulated output value.</p>
 
     <!-- parameters start -->
@@ -1163,6 +1240,7 @@ event.on_tick(<span class="keyword">function</span>()
 
 
 
+
     </li>
 
 
@@ -1176,6 +1254,7 @@ event.on_tick(<span class="keyword">function</span>()
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="https://www.lua.org/pil/2.6.html">function</a></span>)
+
 
 
 
@@ -1231,6 +1310,83 @@ event.on_tick(<span class="keyword">function</span>()
     <dt>
     <div class="divider divider-custom"></div>
     <div class="block section-item-header">
+    <a href="#retrieve" class="fragment-hashtag">#</a>
+    <span class="section-item-title" id="retrieve">retrieve(tbl, key)</span>
+    </div>
+    </dt>
+    <dd>
+    <div class="section-item-body">
+
+    <p class="section-item-summary">Remove and return a value from the table.</p>
+    <p class="section-item-description">
+
+</p>
+
+    <!-- parameters start -->
+    <strong>Parameters:</strong>
+
+    <ul>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>tbl</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><a class="type" href="https://www.lua.org/pil/2.5.html">table</a></span>)
+
+
+
+
+
+    </li>
+
+
+
+
+
+    <li class="section-subitem-li">
+
+    <strong><em>key</em></strong>
+
+    <strong> : </strong>
+
+    (<span class="types"><span class="type">any</span></span>)
+
+     The key to retrieve.
+
+    </li>
+
+
+    </ul>
+
+    <!-- parameters end -->
+
+    <!-- returns start -->
+    <strong>Returns:</strong>
+    <ul>
+    <li>
+    (<span class="types"><span class="type">any</span> or <a class="type" href="https://www.lua.org/pil/2.1.html">nil</a></span>)
+    <span class="return-text">The value stored at that key, if any.</span>
+    </li>
+    </ul>
+    <!-- returns end -->
+
+
+    <!-- see also start -->
+    <!-- see also end -->
+
+    <!-- usage start -->
+    <!-- usage end -->
+
+    </dd>
+    <dt>
+    <div class="divider divider-custom"></div>
+    <div class="block section-item-header">
     <a href="#shallow_copy" class="fragment-hashtag">#</a>
     <span class="section-item-title" id="shallow_copy">shallow_copy(tbl, use_rawset)</span>
     </div>
@@ -1260,6 +1416,7 @@ event.on_tick(<span class="keyword">function</span>()
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="https://www.lua.org/pil/2.5.html">table</a></span>)
+
 
 
 
@@ -1336,6 +1493,7 @@ event.on_tick(<span class="keyword">function</span>()
 
 
 
+
     </li>
 
 
@@ -1365,7 +1523,7 @@ event.on_tick(<span class="keyword">function</span>()
     <div class="section-item-body">
 
     <p class="section-item-summary">Retrieve the size of a table.</p>
-    <p class="section-item-description"> Uses Factorio&rsquo;s built-in <code>table_size</code> function.</p>
+    <p class="section-item-description"> Uses Factorio's built-in <code>table_size</code> function.</p>
 
     <!-- parameters start -->
     <strong>Parameters:</strong>
@@ -1383,6 +1541,7 @@ event.on_tick(<span class="keyword">function</span>()
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="https://www.lua.org/pil/2.5.html">table</a></span>)
+
 
 
 
@@ -1445,6 +1604,7 @@ event.on_tick(<span class="keyword">function</span>()
 
 
 
+
     </li>
 
 
@@ -1458,6 +1618,7 @@ event.on_tick(<span class="keyword">function</span>()
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#int">int</a></span>)
+
 
 
 
@@ -1542,6 +1703,7 @@ event.on_tick(<span class="keyword">function</span>()
 
 
 
+
     </li>
 
 
@@ -1555,6 +1717,7 @@ event.on_tick(<span class="keyword">function</span>()
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Builtin-Types.html#int">int</a></span>)
+
 
 
 
@@ -1621,7 +1784,7 @@ event.on_tick(<span class="keyword">function</span>()
     <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
     </div>
     <div class="content-footer column col-9 col-sm-12">
-    <i>Last updated 2021-09-19 21:47:59 UTC</i>
+    <i>Last updated 2021-11-10 19:48:16 UTC</i>
     </div>
     </div>
     </div>

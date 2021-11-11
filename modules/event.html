@@ -51,6 +51,7 @@
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/misc.html"><span class="module-name-item">misc</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/on-tick-n.html"><span class="module-name-item">on-tick-n</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/orientation.html"><span class="module-name-item">orientation</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/queue.html"><span class="module-name-item">queue</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/reverse-defines.html"><span class="module-name-item">reverse-defines</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/table.html"><span class="module-name-item">table</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/train.html"><span class="module-name-item">train</span></a></div></li>
@@ -162,7 +163,7 @@
     </tr>
     <tr>
     <td class="name"><a href="#register_on_entity_destroyed">register_on_entity_destroyed(entity)</a></td>
-    <td class="summary">Register an entity to raise <code>on_entity_destroyed</code> when it&rsquo;s destroyed.</td>
+    <td class="summary">Register an entity to raise <code>on_entity_destroyed</code> when it's destroyed.</td>
     </tr>
     <tr>
     <td class="name"><a href="#generate_id">generate_id()</a></td>
@@ -220,6 +221,7 @@
 
     <p class="section-item-summary">Register or deregister a handler to be run during mod init.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -276,6 +278,7 @@
 
     <p class="section-item-summary">Register or deregister a handler to be run during mod load.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -332,6 +335,7 @@
 
     <p class="section-item-summary">Register or deregister a handler to be run when mod configuration changes.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -388,6 +392,7 @@
 
     <p class="section-item-summary">Register or deregister a handler to run every N ticks.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -406,6 +411,7 @@
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="https://www.lua.org/pil/2.3.html">number</a></span>)
+
 
 
 
@@ -483,6 +489,7 @@
 
 
 
+
     </li>
 
 
@@ -512,6 +519,7 @@
     <strong> : </strong>
 
     (<span class="types"><span class="type">EventFilters</span></span>)
+
 
 
 
@@ -556,15 +564,15 @@
     <dd>
     <div class="section-item-body">
 
-    <p class="section-item-summary">Register an entity to raise <code>on_entity_destroyed</code> when it&rsquo;s destroyed.</p>
-    <p class="section-item-description"> Once an entity is registered it&rsquo;s registered forever (until it&rsquo;s destroyed) and persists through save/load.</p>
+    <p class="section-item-summary">Register an entity to raise <code>on_entity_destroyed</code> when it's destroyed.</p>
+    <p class="section-item-description"> Once an entity is registered it's registered forever (until it's destroyed) and persists through save/load.</p>
 
 <p> Registered is global across all mods: once an entity is registered the event will be fired for all mods when its
  destroyed.</p>
 
 <p> An entity registered multiple times will only fire the event once and gives back the same registration number.</p>
 
-<p> Depending on when a given entity is destroyed on_entity_destroyed will be fired at the end of the current tick or end
+<p> Depending on when a given entity is destroyed on<em>entity</em>destroyed will be fired at the end of the current tick or end
  of the next tick.</p>
 
     <!-- parameters start -->
@@ -623,6 +631,7 @@
 
     <p class="section-item-summary">Generate a new, unique event ID.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -662,6 +671,7 @@
 
     <p class="section-item-summary">Retrieve the handler for an event, if one exists.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -684,6 +694,7 @@
 
 
 
+
     </li>
 
 
@@ -696,7 +707,7 @@
     <ul>
     <li>
     (<span class="types"><a class="type" href="https://www.lua.org/pil/2.6.html">function</a></span>)
-    <span class="return-text">The registered handler, or <code>nil</code> if one isn&rsquo;t registered.</span>
+    <span class="return-text">The registered handler, or <code>nil</code> if one isn't registered.</span>
     </li>
     </ul>
     <!-- returns end -->
@@ -738,6 +749,7 @@
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="../modules/event.html#EventId">EventId</a></span>)
+
 
 
 
@@ -790,6 +802,7 @@
 
     <p class="section-item-summary">Retrieve the mod event order.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -824,6 +837,7 @@
 
     <p class="section-item-summary">Set the filters for the given event(s).</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -842,6 +856,7 @@
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="../modules/event.html#EventId">EventId</a> or <a class="type" href="../modules/event.html#EventId">EventId[]</a></span>)
+
 
 
 
@@ -905,6 +920,7 @@
 
     <p class="section-item-summary">Retrieve the filters for the given event.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -923,6 +939,7 @@
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="../modules/event.html#EventId">EventId</a></span>)
+
 
 
 
@@ -966,6 +983,7 @@
     <div class="section-item-body">
 
     <p class="section-item-summary">
+
 </p>
     <p class="section-item-description"> One of the following:
  <ul>
@@ -1003,7 +1021,7 @@
     <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
     </div>
     <div class="content-footer column col-9 col-sm-12">
-    <i>Last updated 2021-09-19 21:47:59 UTC</i>
+    <i>Last updated 2021-11-10 19:48:16 UTC</i>
     </div>
     </div>
     </div>

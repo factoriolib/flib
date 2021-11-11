@@ -51,6 +51,7 @@
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/misc.html"><span class="module-name-item">misc</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/on-tick-n.html"><span class="module-name-item">on-tick-n</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/orientation.html"><span class="module-name-item">orientation</span></a></div></li>
+    <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/queue.html"><span class="module-name-item">queue</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/reverse-defines.html"><span class="module-name-item">reverse-defines</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/table.html"><span class="module-name-item">table</span></a></div></li>
     <li class="nav-item"><div class="nav-item-block-inactive block"><a href="../modules/train.html"><span class="module-name-item">train</span></a></div></li>
@@ -110,7 +111,7 @@
 
     <h2><span class="body-module-name"><strong><em>area</em></strong></span> module</h2>
     <p>Functions for manipulating areas.</p>
-    <p> <strong>NOTE:</strong> All functions assume that <code>BoundingBox</code> and <code>Position</code> objects contain named keys &ndash; <code>x</code> and <code>y</code> for
+    <p> <strong>NOTE:</strong> All functions assume that <code>BoundingBox</code> and <code>Position</code> objects contain named keys - <code>x</code> and <code>y</code> for
  <code>Position</code>, and <code>left_top</code> and <code>right_bottom</code> for <code>BoundingBox</code>. Attempting to use these functions with the
  shorthand forms of these objects will result in a crash.</p>
 
@@ -237,6 +238,7 @@
 
     <p class="section-item-summary">Expand an area to its outer tile edges.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -288,6 +290,7 @@
 
     <p class="section-item-summary">Calculate the centerpoint of the area.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -346,6 +349,7 @@
 
     <p class="section-item-summary">Re-center the area on the given position.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -420,6 +424,7 @@
 
     <p class="section-item-summary">Check if the given area is within the area.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -494,6 +499,7 @@
 
     <p class="section-item-summary">Check if the given position is within the area.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -568,6 +574,7 @@
 
     <p class="section-item-summary">Add left-bottom and right-top corners to the area.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -626,6 +633,7 @@
 
     <p class="section-item-summary">Find the distance between a point and the nearest edge of the given area.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -700,6 +708,7 @@
 
     <p class="section-item-summary">Expand the given area by the given amount.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -774,6 +783,7 @@
 
     <p class="section-item-summary">Expand the given area to contain the other area.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -848,6 +858,7 @@
 
     <p class="section-item-summary">Expand the given area to contain the given position.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -922,6 +933,7 @@
 
     <p class="section-item-summary">Shrink an area to its inner tile edges.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -980,6 +992,7 @@
 
     <p class="section-item-summary">Create a 1x1 tile area from the given position.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -998,6 +1011,7 @@
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Concepts.html#Position">Position</a></span>)
+
 
 
 
@@ -1049,6 +1063,7 @@
 
     <p class="section-item-summary">Create a proper area from a shorthanded area.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -1067,6 +1082,7 @@
     <strong> : </strong>
 
     (<span class="types"><a class="type" href="http://lua-api.factorio.com/latest/Concepts.html#BoundingBox">BoundingBox</a></span>)
+
 
 
 
@@ -1108,6 +1124,7 @@
 
     <p class="section-item-summary">Calculate the height of the area.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -1248,7 +1265,7 @@
     <div class="section-item-body">
 
     <p class="section-item-summary">Create an area object from a plain area.</p>
-    <p class="section-item-description"> Doing this allows one to use area methods directly on an area &ldquo;object&rdquo; via the <code>:</code> operator. The area will be passed
+    <p class="section-item-description"> Doing this allows one to use area methods directly on an area "object" via the <code>:</code> operator. The area will be passed
  in as <code>self</code> to each function automatically.</p>
 
 <p> Metatables do not persist across save/load, so when using area objects, this function must be called on them whenever
@@ -1320,6 +1337,7 @@
 
     <p class="section-item-summary">Move the given area by the given delta.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -1394,6 +1412,7 @@
 
     <p class="section-item-summary">Rotate an area 90 degrees around its center.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -1452,6 +1471,7 @@
 
     <p class="section-item-summary">Create a new area table from the given area, removing any extra fields and metatables.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -1510,6 +1530,7 @@
 
     <p class="section-item-summary">Remove keys from the area to create a shorthanded area.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -1568,6 +1589,7 @@
 
     <p class="section-item-summary">Calculate the width of an area.</p>
     <p class="section-item-description">
+
 </p>
 
     <!-- parameters start -->
@@ -1629,7 +1651,7 @@
     <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
     </div>
     <div class="content-footer column col-9 col-sm-12">
-    <i>Last updated 2021-09-19 21:47:59 UTC</i>
+    <i>Last updated 2021-11-10 19:48:16 UTC</i>
     </div>
     </div>
     </div>
