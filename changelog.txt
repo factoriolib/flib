@@ -3,6 +3,7 @@ Version: 0.9.1
 Date: ????
   Bugfixes:
     - Fixed a crash when calling dictionary.load() before dictionary.init() has been able to fire
+    - Fixed table.slice() and table.splice() stop-n-from-end being one position off
 ---------------------------------------------------------------------------------------------------
 Version: 0.9.0
 Date: 2021-11-11
