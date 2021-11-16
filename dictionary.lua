@@ -127,7 +127,7 @@ end
 -- If using @{dictionary.set_use_local_storage}, your dictionaries must be re-generated **after** this function is
 -- called.
 function flib_dictionary.load()
-  if not use_local_storage then
+  if not use_local_storage and global.__flib and global.__flib.dictionary then
     raw = global.__flib.dictionary.raw
   end
 end
