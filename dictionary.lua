@@ -210,7 +210,13 @@ function flib_dictionary.check_skipped()
   end
 end
 
-local dictionary_match_string = kv("^FLIB_DICTIONARY_MOD", script.mod_name)
+
+--- Escape match special characters
+local function match_literal(s)
+    return string.gsub(s, "%-", "%%-")
+end
+
+local dictionary_match_string = kv("^FLIB_DICTIONARY_MOD", match_literal(script.mod_name))
   ..kv("FLIB_DICTIONARY_NAME", "(.-)")
   ..kv("FLIB_DICTIONARY_LANGUAGE", "(.-)")
   ..kv("FLIB_DICTIONARY_STRING_INDEX", "(%d-)")
