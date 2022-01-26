@@ -168,6 +168,24 @@ function flib_area.floor(self)
   return self
 end
 
+--- Create an area from dimensions and a centerpoint.
+--- @param dimensions DisplayResolution
+--- @param center? Position
+--- @return BoundingBox
+function flib_area.from_dimensions(dimensions, center)
+  center = center or { x = 0, y = 0 }
+  return {
+    left_top = {
+      x = center.x - (dimensions.width / 2),
+      y = center.y - (dimensions.height / 2),
+    },
+    right_bottom = {
+      x = center.x + (dimensions.width / 2),
+      y = center.y + (dimensions.height / 2),
+    },
+  }
+end
+
 --- Create a 1x1 tile area from the given position.
 -- @tparam Concepts.Position position
 -- @tparam[opt] boolean snap If true, snap the created area to the tile edges the position is contained in
