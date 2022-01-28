@@ -26,7 +26,7 @@ function flib_migration.format_version(version, format)
     format = format or version_format
     local tbl = {}
     for v in string.gmatch(version, version_pattern) do
-      tbl[#tbl+1] = string.format(format, v)
+      tbl[#tbl + 1] = string.format(format, v)
     end
     if next(tbl) then
       return table.concat(tbl, ".")
@@ -69,7 +69,7 @@ end
 
 --- Determine if migrations need to be run for this mod, then run them if needed.
 -- @tparam Concepts.ConfigurationChangedData event_data
--- @tparam MigrationsTable migrations
+-- @tparam[opt] MigrationsTable migrations
 -- @tparam[opt] string mod_name The mod to check against, defaults to the current mod.
 -- @tparam[opt] any ... Any additional arguments will be passed to each function within `migrations`.
 -- @treturn boolean If true, run generic migrations.
@@ -84,7 +84,9 @@ function flib_migration.on_config_changed(event_data, migrations, mod_name, ...)
   if changes then
     local old_version = changes.old_version
     if old_version then
-      flib_migration.run(old_version, migrations, nil, ...)
+      if migrations then
+        flib_migration.run(old_version, migrations, nil, ...)
+      end
     else
       return false -- don't do generic migrations, because we just initialized
     end
