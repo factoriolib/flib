@@ -1,3 +1,5 @@
+local flib_math = require("__flib__.math")
+
 --- Functions for working with directions.
 -- @module direction
 -- @alias flib_direction
@@ -102,6 +104,23 @@ function flib_direction.to_vector_2d(direction, longitudinal, orthogonal)
   elseif direction == defines.direction.west then
     return {x=-longitudinal, y=-orthogonal}
   end
+end
+
+--- Returns the direction of travel from the source to the target.
+--- @param source Position
+--- @param target Position
+--- @param round boolean If true, round to the nearest `defines.direction`.
+--- @return defines.direction
+function flib_direction.from_positions(source, target, round)
+  local deg = math.deg(math.atan2(target.y - source.y, target.x - source.x))
+  local direction = (deg + 90) / 45
+  if direction < 0 then
+    direction = 8 + direction
+  end
+  if round then
+    direction = flib_math.round(direction)
+  end
+  return direction
 end
 
 return flib_direction
