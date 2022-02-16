@@ -1,15 +1,22 @@
+-- TODO: Using `self` makes the language server treat `flib_area` as a BoundingBox...
+
 --- Functions for manipulating areas.
--- **NOTE:** All functions assume that `BoundingBox` and `Position` objects contain named keys - `x` and `y` for
--- `Position`, and `left_top` and `right_bottom` for `BoundingBox`. Attempting to use these functions with the
--- shorthand forms of these objects will result in a crash.
--- @module area
--- @alias flib_area
--- @usage local area = require("__flib__.area")
+---
+--- All functions in this module, with the exception of `area.to_shorthand()`, will ensure that the all passed areas have `left_top` and `right_bottom` keys.
+---
+--- All functions in this module will modify the area in-place as well as return it, to provide maximum flexibility.
+---
+--- All constructor functions in this module will apply a metatable allowing module methods to be called directly on the area objects (see `area.load()`).
+---
 local flib_area = {}
 
---- Expand an area to its outer tile edges.
--- @tparam Concepts.BoundingBox self The area to modify.
+
+--- Expands an area to its outer tile edges.
+--- @param self BoundingBox
 function flib_area.ceil(self)
+  if not self.left_top then
+    self = flib_area.from_shorthand(self)
+  end
   self.left_top = {
     x = math.floor(self.left_top.x),
     y = math.floor(self.left_top.y)
@@ -22,21 +29,28 @@ function flib_area.ceil(self)
   return self
 end
 
---- Calculate the centerpoint of the area.
--- @tparam Concepts.BoundingBox self The area to check.
--- @treturn Concepts.Position The centerpoint of the area.
+--- Calculates the centerpoint of the area.
+--- @param self BoundingBox
+--- @return Position center_point
 function flib_area.center(self)
+  if not self.left_top then
+    self = flib_area.from_shorthand(self)
+  end
   return {
     x = self.left_top.x + (flib_area.width(self) / 2),
     y = self.left_top.y + (flib_area.height(self) / 2)
   }
 end
 
---- Re-center the area on the given position.
--- @tparam Concepts.BoundingBox self The area to modify.
--- @tparam Concepts.Position center_point The position to center the area on.
--- @treturn Concepts.BoundingBox The re-centered area.
+--- Re-centers the area on the given position.
+--- @param self BoundingBox
+--- @param center_point Position
+--- @return BoundingBox self
 function flib_area.center_on(self, center_point)
+  if not self.left_top then
+    self = flib_area.from_shorthand(self)
+  end
+
   local height = flib_area.height(self)
   local width = flib_area.width(self)
 
@@ -52,24 +66,32 @@ function flib_area.center_on(self, center_point)
   return self
 end
 
---- Check if the given area is within the area.
--- @tparam Concepts.BoundingBox self The area to check against.
--- @tparam Concepts.BoundingBox area The area to check if it is contained.
--- @treturn boolean Whether or not `area` is contained withing `self`.
-function flib_area.contains_area(self, area)
+--- Check if the area contains the other area.
+--- @param self BoundingBox
+--- @param other_area BoundingBox
+--- @return boolean
+function flib_area.contains_area(self, other_area)
+  if not self.left_top then
+    self = flib_area.from_shorthand(self)
+  end
+
   return (
-    self.left_top.x <= area.left_top.x
-    and self.left_top.y <= area.left_top.y
-    and self.right_bottom.x >= area.right_bottom.x
-    and self.right_bottom.y >= area.right_bottom.y
+    self.left_top.x <= other_area.left_top.x
+    and self.left_top.y <= other_area.left_top.y
+    and self.right_bottom.x >= other_area.right_bottom.x
+    and self.right_bottom.y >= other_area.right_bottom.y
   )
 end
 
---- Check if the given position is within the area.
--- @tparam Concepts.BoundingBox self The area to check against.
--- @tparam Concepts.Position position The position to check.
--- @treturn boolean Whether or not the position is contained within the area.
+--- Checks if the area contains the given position.
+--- @param self BoundingBox
+--- @param position Position
+--- @return boolean
 function flib_area.contains_position(self, position)
+  if not self.left_top then
+    self = flib_area.from_shorthand(self)
+  end
+
   return (
     self.left_top.x <= position.x
     and self.right_bottom.x >= position.x
@@ -78,10 +100,16 @@ function flib_area.contains_position(self, position)
   )
 end
 
---- Add left-bottom and right-top corners to the area.
--- @tparam Concepts.BoundingBox self The area to modify.
--- @treturn Concepts.BoundingBox The area with added `left_bottom` and `right_top` subtables.
+--- Adds left_bottom and right_top keys to the area.
+---
+--- These keys will not be updated when you modify the area, so the recommended usage is to call this function whenever you need to read the extra keys.
+--- @param self BoundingBox
+--- @return BoundingBox
 function flib_area.corners(self)
+  if not self.left_top then
+    self = flib_area.from_shorthand(self)
+  end
+
   self.left_bottom = {
     x = self.left_top.x,
     y = self.right_bottom.y
@@ -94,22 +122,30 @@ function flib_area.corners(self)
   return self
 end
 
---- Find the distance between a point and the nearest edge of the given area.
--- @tparam Concepts.BoundingBox self The area to check against.
--- @tparam Concepts.Position position The position to check.
--- @treturn double The distance to the nearest edge of the area from the given position.
+--- Finds the distance between a position and the nearest edge of the area.
+--- @param self BoundingBox
+--- @param position Position
+--- @return number
 function flib_area.distance_to_nearest_edge(self, position)
+  if not self.left_top then
+    self = flib_area.from_shorthand(self)
+  end
+
   local x_distance = math.min(math.abs(self.left_top.x - position.x), math.abs(self.right_bottom.x - position.x))
   local y_distance = math.min(math.abs(self.left_top.y - position.y), math.abs(self.right_bottom.y - position.y))
 
   return math.min(x_distance, y_distance)
 end
 
---- Expand the given area by the given amount.
--- @tparam Concepts.BoundingBox self The area to expand.
--- @tparam number delta How far to expand the edges of the area.
--- @treturn Concepts.BoundingBox The expanded area.
+--- Expands the area by the given amount.
+--- @param self BoundingBox
+--- @param delta number
+--- @return BoundingBox
 function flib_area.expand(self, delta)
+  if not self.left_top then
+    self = flib_area.from_shorthand(self)
+  end
+
   self.left_top.x = self.left_top.x - delta
   self.right_bottom.x = self.right_bottom.x + delta
   self.left_top.y = self.left_top.y - delta
@@ -118,28 +154,36 @@ function flib_area.expand(self, delta)
   return self
 end
 
---- Expand the given area to contain the other area.
--- @tparam Concepts.BoundingBox self The area to expand.
--- @tparam Concepts.BoundingBox area The area to be contained.
--- @treturn Concepts.BoundingBox The modified area, containing the second area.
-function flib_area.expand_to_contain_area(self, area)
+--- Expands the area to contain the other area.
+--- @param self BoundingBox
+--- @param other_area BoundingBox
+--- @return BoundingBox
+function flib_area.expand_to_contain_area(self, other_area)
+  if not self.left_top then
+    self = flib_area.from_shorthand(self)
+  end
+
   self.left_top = {
-    x = self.left_top.x < area.left_top.x and self.left_top.x or area.left_top.x,
-    y = self.left_top.y < area.left_top.y and self.left_top.y or area.left_top.y
+    x = self.left_top.x < other_area.left_top.x and self.left_top.x or other_area.left_top.x,
+    y = self.left_top.y < other_area.left_top.y and self.left_top.y or other_area.left_top.y
   }
   self.right_bottom = {
-    x = self.right_bottom.x > area.right_bottom.x and self.right_bottom.x or area.right_bottom.x,
-    y = self.right_bottom.y > area.right_bottom.y and self.right_bottom.y or area.right_bottom.y
+    x = self.right_bottom.x > other_area.right_bottom.x and self.right_bottom.x or other_area.right_bottom.x,
+    y = self.right_bottom.y > other_area.right_bottom.y and self.right_bottom.y or other_area.right_bottom.y
   }
 
   return self
 end
 
---- Expand the given area to contain the given position.
--- @tparam Concepts.BoundingBox self The area to expand.
--- @tparam Concepts.Position position The position to be contained.
--- @treturn Concepts.BoundingBox The modified area, containing the given position.
+--- Expands the area to contain the given position.
+--- @param self BoundingBox
+--- @param position Position
+--- @return BoundingBox
 function flib_area.expand_to_contain_position(self, position)
+  if not self.left_top then
+    self = flib_area.from_shorthand(self)
+  end
+
   self.left_top = {
     x = self.left_top.x < position.x and self.left_top.x or position.x,
     y = self.left_top.y < position.y and self.left_top.y or position.y,
@@ -152,10 +196,14 @@ function flib_area.expand_to_contain_position(self, position)
   return self
 end
 
---- Shrink an area to its inner tile edges.
--- @tparam Concepts.BoundingBox self The area to floor.
--- @treturn Concepts.BoundingBox The floored area.
+--- Shrinks the  area to its inner tile edges.
+--- @param self BoundingBox
+--- @return BoundingBox
 function flib_area.floor(self)
+  if not self.left_top then
+    self = flib_area.from_shorthand(self)
+  end
+
   self.left_top = {
     x = math.ceil(self.left_top.x),
     y = math.ceil(self.left_top.y)
@@ -168,11 +216,15 @@ function flib_area.floor(self)
   return self
 end
 
---- Create an area from dimensions and a centerpoint.
+--- Creates an area from dimensions and a centerpoint.
 --- @param dimensions DisplayResolution
 --- @param center? Position
 --- @return BoundingBox
 function flib_area.from_dimensions(dimensions, center)
+  if not self.left_top then
+    self = flib_area.from_shorthand(self)
+  end
+
   center = center or { x = 0, y = 0 }
   return {
     left_top = {
@@ -186,10 +238,14 @@ function flib_area.from_dimensions(dimensions, center)
   }
 end
 
---- Create a 1x1 tile area from the given position.
--- @tparam Concepts.Position position
--- @tparam[opt] boolean snap If true, snap the created area to the tile edges the position is contained in
+--- Creates a 1x1 tile area from the given position.
+--- @param position Position
+--- @param snap boolean? If true, snap the created area to the tile edges the position is contained in.
 function flib_area.from_position(position, snap)
+  if not self.left_top then
+    self = flib_area.from_shorthand(self)
+  end
+
   if snap then
     local floored_position = {x = math.floor(position.x), y = math.floor(position.y)}
     return {
@@ -204,9 +260,13 @@ function flib_area.from_position(position, snap)
   end
 end
 
---- Create a proper area from a shorthanded area.
--- @tparam Concepts.BoundingBox area
--- @treturn Concepts.BoundingBox The converted area.
+--- Creates a proper area from a shorthanded area.
+---
+--- A "shorthand" area is an area without the `left_top` and `right_bottom` keys, which is sometimes used by the game in the data stage.
+---
+--- This function will automatically be called when using any other function in this module.
+--- @param area BoundingBox
+--- @return BoundingBox
 function flib_area.from_shorthand(area)
   return {
     left_top = {x = area[1][1], y = area[1][2]},
@@ -214,28 +274,33 @@ function flib_area.from_shorthand(area)
   }
 end
 
---- Calculate the height of the area.
--- @tparam Concepts.BoundingBox self The area to measure.
--- @treturn number The height of the area.
+--- Calculates the height of the area.
+--- @param self BoundingBox
+--- @return number
 function flib_area.height(self)
   return math.abs(self.right_bottom.y - self.left_top.y)
 end
 
---- Create an iterator of positions in the area from the left-top to the right-bottom.
--- The iterator function, when called, will return a `Position` that is within the area.
--- @tparam Concepts.BoundingBox self The area to iterate.
--- @tparam[opt=1] number step The distance to move on each iteration.
--- @treturn function The iterator function.
--- @usage
--- -- standard area
--- for position in area.iterate(my_area) do
---   log(serpent.line(position))
--- end
--- -- area object
--- for position in MyArea:iterate() do
---   log(serpent.line(position))
--- end
+--- Creates an iterator of positions in the area from the left-top to the right-bottom, incrementing by `step`.
+---
+--- The iterator function, when called, will return a `Position` that is within the area.
+---
+--- # Examples
+---
+--- ```lua
+--- local Area = area.from_dimensions({ height = 10, width = 10 }, { x = 0, y = 0 })
+--- for position in MyArea:iterate() do
+---   log(serpent.line(position))
+--- end
+--- ```
+--- @param self BoundingBox
+--- @param step number? The distance between each returned position (default: `1`).
+--- @return fun(): Position
 function flib_area.iterate(self, step)
+  if not self.left_top then
+    self = flib_area.from_shorthand(self)
+  end
+
   step = step or 1
 
   local x = self.left_top.x
@@ -244,7 +309,7 @@ function flib_area.iterate(self, step)
   local max_y = self.right_bottom.y
   local first = true
 
-  local function iterator()
+  return function()
     if first then
       first = false
       return {x = x, y = y}
@@ -265,28 +330,30 @@ function flib_area.iterate(self, step)
 
     return {x = x, y = y}
   end
-
-  return iterator
 end
 
---- Create an area object from a plain area.
--- Doing this allows one to use area methods directly on an area "object" via the `:` operator. The area will be passed
--- in as `self` to each function automatically.
---
--- Metatables do not persist across save/load, so when using area objects, this function must be called on them whenever
--- they are retrieved from `global` or during `on_load`.
---
--- This function will also call @{area.from_shorthand} if needed, to ensure that the returned area is properly defined.
--- @tparam Concepts.BoundingBox area The plain area to convert.
--- @treturn Concepts.BoundingBox The converted area.
--- @usage
--- -- create the area object
--- local MyArea = area.load(event_data.area)
--- -- use module methods directly on the object
--- local center_position = MyArea:center()
--- for position in MyArea:iterate(0.5) do
---   log(serpent.line(position))
--- end
+--- Creates an area object from a plain area.
+---
+--- Doing this allows one to use area methods directly on an area "object" via the `:` operator. The area will be passed
+--- in as `self` to each function automatically.
+---
+--- Metatables do not persist across save/load, so when using area objects, this function must be called on them whenever
+--- they are retrieved from `global` or during `on_load`.
+---
+--- # Examples
+---
+--- ```lua
+--- -- Create the area object
+--- local MyArea = area.load(event_data.area)
+---
+--- -- Use module methods directly on the object
+--- log("Center: " .. MyArea:center())
+--- for position in MyArea:iterate(0.5) do
+---   log(serpent.line(position))
+--- end
+--- ```
+--- @param area BoundingBox
+--- @return BoundingBox
 function flib_area.load(area)
   local area = area
   if not area.left_top then
@@ -295,11 +362,15 @@ function flib_area.load(area)
   return setmetatable(area, {__index = flib_area})
 end
 
---- Move the given area by the given delta.
--- @tparam Concepts.BoundingBox self The area to move.
--- @tparam Concepts.Position delta How far to move the area in each dimension.
--- @treturn Concepts.BoundingBox The moved area.
+--- Moves the area by the given delta.
+--- @param self BoundingBox
+--- @param delta Position
+--- @return BoundingBox
 function flib_area.move(self, delta)
+  if not self.left_top then
+    self = flib_area.from_shorthand(self)
+  end
+
   self.left_top.x = self.left_top.x + delta.x
   self.left_top.y = self.left_top.y + delta.y
   self.right_bottom.x = self.right_bottom.x + delta.x
@@ -308,9 +379,9 @@ function flib_area.move(self, delta)
   return self
 end
 
---- Rotate an area 90 degrees around its center.
--- @tparam Concepts.BoundingBox self The area to rotate.
--- @treturn Concepts.BoundingBox The rotated area.
+--- Rotates the area 90 degrees around its center.
+--- @param self BoundingBox
+--- @return BoundingBox
 function flib_area.rotate(self)
   -- save current properties
   local center = flib_area.center(self)
@@ -329,9 +400,11 @@ function flib_area.rotate(self)
   return self
 end
 
---- Create a new area table from the given area, removing any extra fields and metatables.
--- @tparam Concepts.BoundingBox self The area to strip.
--- @treturn Concepts.BoundingBox The stripped area.
+--- Creates a new area table from the given area, removing any extra fields and metatables.
+---
+--- This is useful when passing an area to API functions that will complain about any unknown fields.
+--- @param self BoundingBox
+--- @return BoundingBox
 function flib_area.strip(self)
   return {
     left_top = {
@@ -345,9 +418,18 @@ function flib_area.strip(self)
   }
 end
 
---- Remove keys from the area to create a shorthanded area.
--- @tparam Concepts.BoundingBox self The area to convert.
--- @treturn Concepts.BoundingBox The converted area.
+--- Removes keys from the area to create a shorthanded area.
+---
+--- # Examples
+---
+--- ```lua
+--- local Area = area.from_dimensions({ height = 5, width = 5 }, { x = 0, y = 0 })
+--- local stripped_area = area.strip(Area)
+--- log(serpent.line(Area)) -- { left_top = { x = -2.5, y = -2.5 }, right_bottom = { x = 2.5, y = 2.5 } }
+--- log(serpent.line(stripped_area)) -- { { -2.5, -2.5 }, { 2.5, 2.5 } }
+--- ```
+--- @param self BoundingBox
+--- @return BoundingBox
 function flib_area.to_shorthand(self)
   return {
     {self.left_top.x, self.left_top.y},
@@ -355,12 +437,11 @@ function flib_area.to_shorthand(self)
   }
 end
 
---- Calculate the width of an area.
--- @tparam Concepts.BoundingBox self The area to measure.
--- @treturn number The width of the area.
+--- Calculates the width of the area.
+--- @param self BoundingBox
+--- @return number
 function flib_area.width(self)
   return math.abs(self.right_bottom.x - self.left_top.x)
 end
 
 return flib_area
-

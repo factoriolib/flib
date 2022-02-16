@@ -2,6 +2,8 @@
 Version: 0.10.0
 Date: ????
   Changes:
+    - Converted from LDoc to EmmyLua annotations, enabling language server intellisense
+    - [area] All functions will ensure that any passed areas have `left_top` and `right_bottom` keys, and will automatically convert ones that do not
 ---------------------------------------------------------------------------------------------------
 Version: 0.9.2
 Date: 2021-11-18
