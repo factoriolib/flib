@@ -67,7 +67,8 @@ function flib_dictionary.new(name, keep_untranslated, initial_contents)
   end
 
   local initial_string = { "" }
-  local self = setmetatable({
+  --- @type RawDictionary
+  local self = {
     -- Indices
     i = 1,
     r_i = 1,
@@ -77,7 +78,8 @@ function flib_dictionary.new(name, keep_untranslated, initial_contents)
     strings = { initial_string },
     -- Meta
     name = name,
-  }, { __index = RawDictionary })
+  }
+  setmetatable(self, { __index = RawDictionary })
 
   for key, value in pairs(initial_contents or {}) do
     self:add(key, value)
