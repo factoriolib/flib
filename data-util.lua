@@ -1,14 +1,11 @@
---- Misc functions for data stage prototype manipulation.
--- @module data-util
--- @alias flib_data_util
--- @usage local data_util = require('__flib__.data-util')
+--- Miscellaneous functions for data stage prototype manipulation.
 local flib_data_util = {}
 
---- Copy a prototype, assign new name and minable properties.
--- @tparam PrototypeBase prototype
--- @tparam string new_name string
--- @tparam[opt=false] boolean remove_icon
--- @treturn PrototypeBase
+--- Copies a prototype, assigning a new name and minable properties.
+--- @param prototype table
+--- @param new_name string string
+--- @param remove_icon? boolean
+--- @return table
 function flib_data_util.copy_prototype(prototype, new_name, remove_icon)
   if not prototype.type or not prototype.name then
     error("Invalid prototype: prototypes must have name and type properties.")
@@ -42,10 +39,12 @@ function flib_data_util.copy_prototype(prototype, new_name, remove_icon)
   return p
 end
 
---- Copy prototype.icon/icons to a new fully defined icons array, optionally adds new icon layers.
--- @tparam PrototypeBase prototype
--- @tparam[opt] Types.IconSpecification[] new_layers
--- @treturn Types.IconSpecification[]|nil
+--- Copies prototype.icon/icons to a new fully defined icons array, optionally adding new icon layers.
+---
+--- Returns `nil` if the prototype's icons are incorrectly or incompletely defined.
+--- @param prototype table
+--- @param new_layers? IconSpecification[]
+--- @return IconSpecification[]|nil
 function flib_data_util.create_icons(prototype, new_layers)
   if new_layers then
     for _,new_layer in pairs(new_layers) do
@@ -58,7 +57,7 @@ function flib_data_util.create_icons(prototype, new_layers)
   if prototype.icons then
     local icons ={}
     for _, v in pairs(prototype.icons) do
-      -- over define as much as possible to minimize weirdness: https://forums.factorio.com/viewtopic.php?f=25&t=81980
+      -- Over define as much as possible to minimize weirdness: https://forums.factorio.com/viewtopic.php?f=25&t=81980
       icons[#icons+1] = {
         icon = v.icon,
         icon_size = v.icon_size or prototype.icon_size or 32,
@@ -121,10 +120,12 @@ local exponent_multipliers = {
   ['Y'] = 1000000000000000000000000,
 }
 
---- Convert an energy string to base unit value + suffix.
--- @tparam string energy_string
--- @treturn number|nil
--- @treturn string
+--- Converts an energy string to base unit value + suffix.
+---
+--- Returns `nil` if `energy_string` is incorrectly formatted.
+--- @param energy_string string
+--- @return number|nil
+--- @return string|nil
 function flib_data_util.get_energy_value(energy_string)
   if type(energy_string) == "string" then
     local v, _, exp, unit = string.match(energy_string, "([%-+]?[0-9]*%.?[0-9]+)((%D*)([WJ]))")
@@ -137,14 +138,14 @@ function flib_data_util.get_energy_value(energy_string)
   return nil
 end
 
---- Build a sprite.
--- @tparam[opt] string name
--- @tparam[opt] Concepts.Position position
--- @tparam[opt] string filename
--- @tparam[opt] Concepts.Vector size
--- @tparam[opt] number mipmap_count
--- @tparam[opt] table mods
--- @treturn Types.SpriteSpecification
+--- Builds a sprite from constituent parts.
+--- @param name? string
+--- @param position? Position
+--- @param filename? string
+--- @param size? Vector
+--- @param mipmap_count? number
+--- @param mods? table
+--- @return SpriteSpecification
 function flib_data_util.build_sprite(name, position, filename, size, mipmap_count, mods)
   local def = {
     type = "sprite",
