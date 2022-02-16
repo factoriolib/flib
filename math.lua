@@ -81,7 +81,7 @@ end
 -- @tparam number num_decimals
 -- @treturn number
 function flib_math.round_to(num, num_decimals)
-  local mult = 10^(num_decimals)
+  local mult = 10 ^ num_decimals
   return flib_math.floor(num * mult + 0.5) / mult
 end
 
@@ -91,7 +91,7 @@ end
 -- @tparam number num_decimals
 -- @treturn number
 function flib_math.ceil_to(num, num_decimals)
-  local mult = 10^(num_decimals)
+  local mult = 10 ^ num_decimals
   return flib_math.ceil(num * mult) / mult
 end
 
@@ -101,7 +101,7 @@ end
 -- @tparam number num_decimals
 -- @treturn number
 function flib_math.floor_to(num, num_decimals)
-  local mult = 10^(num_decimals)
+  local mult = 10 ^ num_decimals
   return flib_math.floor(num * mult) / mult
 end
 

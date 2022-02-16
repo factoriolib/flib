@@ -83,7 +83,7 @@ flib_event.on_nth_tick = script.on_nth_tick
 -- event.register({"my-input", defines.events.on_lua_shortcut}, nil)
 function flib_event.register(ids, handler, filters)
   if type(ids) ~= "table" then
-    ids = {ids}
+    ids = { ids }
   end
   for i = 1, #ids do
     -- the game doesn't like you passing filters to events that don't support them, even if they're `nil`
@@ -125,7 +125,7 @@ flib_event.generate_id = script.generate_event_name
 -- @function get_handler
 -- @tparam EventId id
 -- @treturn function The registered handler, or `nil` if one isn't registered.
-flib_event.get_handler =  script.get_event_handler
+flib_event.get_handler = script.get_event_handler
 
 -- TODO Nexela link EventData to https://lua-api.factorio.com/latest/events.html
 
@@ -161,7 +161,7 @@ flib_event.get_order = script.get_event_order
 -- event.set_filters(defines.events.on_robot_built_entity, nil)
 function flib_event.set_filters(ids, filters)
   if type(ids) ~= "table" then
-    ids = {ids}
+    ids = { ids }
   end
   for i = 1, #ids do
     script.set_event_filter(ids[i], filters)

@@ -48,13 +48,19 @@ end
 -- end)
 function flib_gui.read_action(event_data)
   local elem = event_data.element
-  if not elem or not elem.valid then return end
+  if not elem or not elem.valid then
+    return
+  end
 
   local mod_tags = elem.tags[mod_name]
-  if not mod_tags then return end
+  if not mod_tags then
+    return
+  end
 
   local elem_actions = mod_tags.flib
-  if not elem_actions then return end
+  if not elem_actions then
+    return
+  end
 
   local event_name = event_id_to_string_mapping[event_data.name]
   local msg = elem_actions[event_name]
@@ -68,7 +74,9 @@ end
 local function recursive_build(parent, structure, refs)
   -- If the structure has no type, just ignore it
   -- This is to make it possible to pass unit types `{}` to represent "no element" without breaking things
-  if not structure.type then return end
+  if not structure.type then
+    return
+  end
 
   -- Prepare tags
   local original_tags = structure.tags
@@ -76,7 +84,7 @@ local function recursive_build(parent, structure, refs)
   local actions = structure.actions
   local tags_flib = tags.flib
   tags.flib = actions
-  structure.tags = {[mod_name] = tags}
+  structure.tags = { [mod_name] = tags }
 
   -- Make the game not convert these into a property tree for no reason
   structure.actions = nil
@@ -168,11 +176,7 @@ end
 function flib_gui.build(parent, structures)
   local refs = {}
   for i = 1, #structures do
-    recursive_build(
-      parent,
-      structures[i],
-      refs
-    )
+    recursive_build(parent, structures[i], refs)
   end
   return refs
 end
@@ -189,14 +193,10 @@ function flib_gui.add(parent, structure)
   -- Just in case they had a ref in the structure already, extract it
   local previous_ref = structure.ref
   -- Put in a known ref that we can use later
-  structure.ref = {"FLIB_ADD_ROOT"}
+  structure.ref = { "FLIB_ADD_ROOT" }
   -- Build the element
   local refs = {}
-  recursive_build(
-    parent,
-    structure,
-    refs
-  )
+  recursive_build(parent, structure, refs)
   -- Restore the previous ref
   structure.ref = previous_ref
   -- Return the element
@@ -377,10 +377,14 @@ function flib_gui.get_action(elem, event_name)
   local elem_tags = elem.tags
   local existing = elem_tags[mod_name]
 
-  if not existing then return end
+  if not existing then
+    return
+  end
 
   local actions = existing.flib
-  if not actions then return end
+  if not actions then
+    return
+  end
 
   return actions[event_name]
 end

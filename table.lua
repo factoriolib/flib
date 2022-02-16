@@ -50,16 +50,24 @@ end
 -- @tparam table tbl2
 -- @treturn boolean If the tables are the same.
 function flib_table.deep_compare(tbl1, tbl2)
-  if tbl1 == tbl2 then return true end
+  if tbl1 == tbl2 then
+    return true
+  end
   for k, v in pairs(tbl1) do
     if type(v) == "table" and type(tbl2[k]) == "table" then
-      if not flib_table.deep_compare( v, tbl2[k] )  then return false end
+      if not flib_table.deep_compare(v, tbl2[k]) then
+        return false
+      end
     else
-      if v ~= tbl2[k] then return false end
+      if v ~= tbl2[k] then
+        return false
+      end
     end
   end
   for k in pairs(tbl2) do
-    if tbl1[k] == nil then return false end
+    if tbl1[k] == nil then
+      return false
+    end
   end
   return true
 end
@@ -74,7 +82,7 @@ function flib_table.deep_copy(tbl)
   local function _copy(object)
     if type(object) ~= "table" then
       return object
-    -- don't copy factorio rich objects
+      -- don't copy factorio rich objects
     elseif object.__self then
       return object
     elseif lookup_table[object] then
@@ -113,7 +121,7 @@ function flib_table.deep_merge(tables)
     for k, v in pairs(tbl) do
       if type(v) == "table" then
         if type(output[k] or false) == "table" then
-          output[k] = flib_table.deep_merge{output[k], v}
+          output[k] = flib_table.deep_merge({ output[k], v })
         else
           output[k] = flib_table.deep_copy(v)
         end
@@ -234,7 +242,9 @@ function flib_table.for_n_of(tbl, from_k, n, callback, _next)
       if delete then
         delete = from_k
       end
-      if abort then break end
+      if abort then
+        break
+      end
     else
       return from_k, result, true
     end
@@ -325,7 +335,9 @@ function flib_table.map(tbl, mapper)
   return output
 end
 
-local function default_comp(a, b) return a < b end
+local function default_comp(a, b)
+  return a < b
+end
 --- Partially sort an array.
 --
 -- This function utilizes [insertion sort](https://en.wikipedia.org/wiki/Insertion_sort), which is _extremely_
@@ -345,7 +357,9 @@ function flib_table.partial_sort(arr, from_index, iterations, comp)
 
   for j = start_index, end_index do
     local key = arr[j]
-    if not key then return nil end
+    if not key then
+      return nil
+    end
     local i = j - 1
 
     while i > 0 and comp(key, arr[i]) do

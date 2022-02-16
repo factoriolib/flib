@@ -10,7 +10,6 @@
 ---
 local flib_area = {}
 
-
 --- Expands an area to its outer tile edges.
 --- @param self BoundingBox
 function flib_area.ceil(self)
@@ -19,11 +18,11 @@ function flib_area.ceil(self)
   end
   self.left_top = {
     x = math.floor(self.left_top.x),
-    y = math.floor(self.left_top.y)
+    y = math.floor(self.left_top.y),
   }
   self.right_bottom = {
     x = math.ceil(self.right_bottom.x),
-    y = math.ceil(self.right_bottom.y)
+    y = math.ceil(self.right_bottom.y),
   }
 
   return self
@@ -38,7 +37,7 @@ function flib_area.center(self)
   end
   return {
     x = self.left_top.x + (flib_area.width(self) / 2),
-    y = self.left_top.y + (flib_area.height(self) / 2)
+    y = self.left_top.y + (flib_area.height(self) / 2),
   }
 end
 
@@ -56,11 +55,11 @@ function flib_area.center_on(self, center_point)
 
   self.left_top = {
     x = center_point.x - (width / 2),
-    y = center_point.y - (height / 2)
+    y = center_point.y - (height / 2),
   }
   self.right_bottom = {
     x = center_point.x + (width / 2),
-    y = center_point.y + (height / 2)
+    y = center_point.y + (height / 2),
   }
 
   return self
@@ -76,11 +75,11 @@ function flib_area.contains_area(self, other_area)
   end
 
   return (
-    self.left_top.x <= other_area.left_top.x
-    and self.left_top.y <= other_area.left_top.y
-    and self.right_bottom.x >= other_area.right_bottom.x
-    and self.right_bottom.y >= other_area.right_bottom.y
-  )
+      self.left_top.x <= other_area.left_top.x
+      and self.left_top.y <= other_area.left_top.y
+      and self.right_bottom.x >= other_area.right_bottom.x
+      and self.right_bottom.y >= other_area.right_bottom.y
+    )
 end
 
 --- Checks if the area contains the given position.
@@ -93,11 +92,11 @@ function flib_area.contains_position(self, position)
   end
 
   return (
-    self.left_top.x <= position.x
-    and self.right_bottom.x >= position.x
-    and self.left_top.y <= position.y
-    and self.right_bottom.y >= position.y
-  )
+      self.left_top.x <= position.x
+      and self.right_bottom.x >= position.x
+      and self.left_top.y <= position.y
+      and self.right_bottom.y >= position.y
+    )
 end
 
 --- Adds left_bottom and right_top keys to the area.
@@ -112,11 +111,11 @@ function flib_area.corners(self)
 
   self.left_bottom = {
     x = self.left_top.x,
-    y = self.right_bottom.y
+    y = self.right_bottom.y,
   }
   self.right_top = {
     x = self.right_bottom.x,
-    y = self.left_top.y
+    y = self.left_top.y,
   }
 
   return self
@@ -165,11 +164,11 @@ function flib_area.expand_to_contain_area(self, other_area)
 
   self.left_top = {
     x = self.left_top.x < other_area.left_top.x and self.left_top.x or other_area.left_top.x,
-    y = self.left_top.y < other_area.left_top.y and self.left_top.y or other_area.left_top.y
+    y = self.left_top.y < other_area.left_top.y and self.left_top.y or other_area.left_top.y,
   }
   self.right_bottom = {
     x = self.right_bottom.x > other_area.right_bottom.x and self.right_bottom.x or other_area.right_bottom.x,
-    y = self.right_bottom.y > other_area.right_bottom.y and self.right_bottom.y or other_area.right_bottom.y
+    y = self.right_bottom.y > other_area.right_bottom.y and self.right_bottom.y or other_area.right_bottom.y,
   }
 
   return self
@@ -206,11 +205,11 @@ function flib_area.floor(self)
 
   self.left_top = {
     x = math.ceil(self.left_top.x),
-    y = math.ceil(self.left_top.y)
+    y = math.ceil(self.left_top.y),
   }
   self.right_bottom = {
     x = math.floor(self.right_bottom.x),
-    y = math.floor(self.right_bottom.y)
+    y = math.floor(self.right_bottom.y),
   }
 
   return self
@@ -247,15 +246,15 @@ function flib_area.from_position(position, snap)
   end
 
   if snap then
-    local floored_position = {x = math.floor(position.x), y = math.floor(position.y)}
+    local floored_position = { x = math.floor(position.x), y = math.floor(position.y) }
     return {
-      left_top = {x = floored_position.x, y = floored_position.y},
-      right_bottom = {x = floored_position.x + 1, y = floored_position.y + 1}
+      left_top = { x = floored_position.x, y = floored_position.y },
+      right_bottom = { x = floored_position.x + 1, y = floored_position.y + 1 },
     }
   else
     return {
-      left_top = {x = position.x - 0.5, y = position.y - 0.5},
-      right_bottom = {x = position.x + 0.5, y = position.y + 0.5}
+      left_top = { x = position.x - 0.5, y = position.y - 0.5 },
+      right_bottom = { x = position.x + 0.5, y = position.y + 0.5 },
     }
   end
 end
@@ -269,8 +268,8 @@ end
 --- @return BoundingBox
 function flib_area.from_shorthand(area)
   return {
-    left_top = {x = area[1][1], y = area[1][2]},
-    right_bottom = {x = area[2][1], y = area[2][2]},
+    left_top = { x = area[1][1], y = area[1][2] },
+    right_bottom = { x = area[2][1], y = area[2][2] },
   }
 end
 
@@ -312,7 +311,7 @@ function flib_area.iterate(self, step)
   return function()
     if first then
       first = false
-      return {x = x, y = y}
+      return { x = x, y = y }
     end
 
     local new_x = x + step
@@ -328,7 +327,7 @@ function flib_area.iterate(self, step)
       end
     end
 
-    return {x = x, y = y}
+    return { x = x, y = y }
   end
 end
 
@@ -359,7 +358,7 @@ function flib_area.load(area)
   if not area.left_top then
     area = flib_area.from_shorthand(area)
   end
-  return setmetatable(area, {__index = flib_area})
+  return setmetatable(area, { __index = flib_area })
 end
 
 --- Moves the area by the given delta.
@@ -409,12 +408,12 @@ function flib_area.strip(self)
   return {
     left_top = {
       x = self.left_top.x,
-      y = self.left_top.y
+      y = self.left_top.y,
     },
     right_bottom = {
       x = self.right_bottom.x,
-      y = self.right_bottom.y
-    }
+      y = self.right_bottom.y,
+    },
   }
 end
 
@@ -432,8 +431,8 @@ end
 --- @return BoundingBox
 function flib_area.to_shorthand(self)
   return {
-    {self.left_top.x, self.left_top.y},
-    {self.right_bottom.x, self.right_bottom.y},
+    { self.left_top.x, self.left_top.y },
+    { self.right_bottom.x, self.right_bottom.y },
   }
 end
 

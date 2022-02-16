@@ -20,7 +20,7 @@ end
 -- MyQueue:push_right("My string")
 -- local len = MyQueue:length() -- 1
 function flib_queue.load(tbl)
-  return setmetatable(tbl, {__index = flib_queue})
+  return setmetatable(tbl, { __index = flib_queue })
 end
 
 --- Push an element onto the beginning of the queue.

@@ -45,7 +45,7 @@ function flib_train.rotate_carriage(entity)
     reconnected_back = entity.connect_rolling_stock(defines.rail_direction.front)
   end
   if disconnected_front then
-    reconnected_front= entity.connect_rolling_stock(defines.rail_direction.back)
+    reconnected_front = entity.connect_rolling_stock(defines.rail_direction.back)
   end
 
   if disconnected_front and not reconnected_front then
@@ -68,11 +68,11 @@ function flib_train.get_composition_string(train)
     local string_table = {}
     local count_wagons, count_loco_front, count_loco_back, i = 0, 0, 0, 0
     local locos_front = train.locomotives.front_movers
-    for _,carriage in pairs(carriages) do
+    for _, carriage in pairs(carriages) do
       i = i + 1
       if carriage.type == "locomotive" then
         local faces_forward = false
-        for _,loco in pairs(locos_front) do
+        for _, loco in pairs(locos_front) do
           if carriage.unit_number == loco.unit_number then
             faces_forward = true
             break
@@ -99,12 +99,13 @@ function flib_train.get_composition_string(train)
         string_table[i] = "?"
       end
     end
-    return table.concat(string_table), {
-      total = i,
-      wagons = count_wagons,
-      front_movers = count_loco_front,
-      back_movers = count_loco_back
-    }
+    return table.concat(string_table),
+      {
+        total = i,
+        wagons = count_wagons,
+        front_movers = count_loco_front,
+        back_movers = count_loco_back,
+      }
   end
 end
 

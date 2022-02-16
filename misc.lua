@@ -16,7 +16,7 @@ function flib_misc.get_distance(pos1, pos2)
   local y1 = pos1.y or pos1[2]
   local x2 = pos2.x or pos2[1]
   local y2 = pos2.y or pos2[2]
-  return math.sqrt((x1-x2)^2 + (y1-y2)^2)
+  return math.sqrt((x1 - x2) ^ 2 + (y1 - y2) ^ 2)
 end
 
 --- Calculate the squared distance in tiles between two positions.
@@ -28,7 +28,7 @@ function flib_misc.get_distance_squared(pos1, pos2)
   local y1 = pos1.y or pos1[2]
   local x2 = pos2.x or pos2[1]
   local y2 = pos2.y or pos2[2]
-  return (x1-x2)^2 + (y1-y2)^2
+  return (x1 - x2) ^ 2 + (y1 - y2) ^ 2
 end
 
 --- Convert given tick or game.tick into "[hh:]mm:ss" format.
@@ -76,12 +76,12 @@ function flib_misc.delineate_number(number, delimiter)
   local formatted = before
   local k
   while true do
-    formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", "%1"..delimiter.."%2")
+    formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", "%1" .. delimiter .. "%2")
     if k == 0 then
       break
     end
   end
-  return formatted..after
+  return formatted .. after
 end
 
 return flib_misc

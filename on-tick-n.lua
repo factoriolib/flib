@@ -20,7 +20,9 @@ end
 -- @treturn Tasks|nil The tasks to execute on this tick, or `nil`.
 function on_tick_n.retrieve(tick)
   -- Failsafe for rare cases where on_tick can fire before on_init
-  if not global.__flib or not global.__flib.on_tick_n then return end
+  if not global.__flib or not global.__flib.on_tick_n then
+    return
+  end
   local actions = global.__flib.on_tick_n[tick]
   if actions then
     global.__flib.on_tick_n[tick] = nil
@@ -38,10 +40,10 @@ function on_tick_n.add(tick, task)
   if tick_list then
     local index = #tick_list + 1
     tick_list[index] = task
-    return {index = index, tick = tick}
+    return { index = index, tick = tick }
   else
-    list[tick] = {task}
-    return {index = 1, tick = tick}
+    list[tick] = { task }
+    return { index = 1, tick = tick }
   end
 end
 
@@ -49,7 +51,9 @@ end
 -- @tparam TaskIdent ident The identifier object for the task, as returned from @{on-tick-n.add}.
 function on_tick_n.remove(ident)
   local tick_list = global.__flib.on_tick_n[ident.tick]
-  if not tick_list or not tick_list[ident.index] then return false end
+  if not tick_list or not tick_list[ident.index] then
+    return false
+  end
 
   tick_list[ident.index] = nil
 

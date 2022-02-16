@@ -17,16 +17,20 @@ function flib_translation.init()
   end
   global.__flib.translation = {
     players = {},
-    translating_players_count = 0
+    translating_players_count = 0,
   }
 end
 
 function flib_translation.iterate_batch(event_data)
   local __translation = global.__flib.translation
-  if __translation.translating_players_count == 0 then return end
+  if __translation.translating_players_count == 0 then
+    return
+  end
   local translations_per_tick = settings.global["flib-translations-per-tick"].value
   local iterations = math.ceil(translations_per_tick / __translation.translating_players_count)
-  if iterations < 1 then iterations = 1 end
+  if iterations < 1 then
+    iterations = 1
+  end
   local current_tick = event_data.tick
 
   for player_index, player_table in pairs(__translation.players) do
@@ -49,14 +53,14 @@ function flib_translation.iterate_batch(event_data)
             if translation_data then
               local dictionary_names = translation_data.names[string_data.dictionary]
               if dictionary_names then
-                dictionary_names[#dictionary_names+1] = string_data.internal
+                dictionary_names[#dictionary_names + 1] = string_data.internal
               else
-                translation_data.names[string_data.dictionary] = {string_data.internal}
+                translation_data.names[string_data.dictionary] = { string_data.internal }
               end
             else
               translate_strings[serialised] = {
                 string = string_data.localised,
-                names = {[string_data.dictionary]={string_data.internal}}
+                names = { [string_data.dictionary] = { string_data.internal } },
               }
               translate_strings.__size = translate_strings.__size + 1
             end
@@ -101,10 +105,16 @@ end
 
 function flib_translation.process_result(event_data)
   local __translation = global.__flib.translation
-  if __translation.translating_players_count == 0 then return end
+  if __translation.translating_players_count == 0 then
+    return
+  end
   local player_table = __translation.players[event_data.player_index]
-  if not player_table then return end
-  if player_table.state == "sort" then return end
+  if not player_table then
+    return
+  end
+  if player_table.state == "sort" then
+    return
+  end
 
   local serialised = flib_translation.serialise_localised_string(event_data.localised_string)
   local translate_strings = player_table.translate.strings
@@ -132,13 +142,13 @@ function flib_translation.add_requests(player_index, strings)
     if player_table.sort then
       local strings_to_sort = player_table.sort.strings
       for i = 1, #strings do
-        strings_to_sort[#strings_to_sort+1] = strings[i]
+        strings_to_sort[#strings_to_sort + 1] = strings[i]
       end
       player_table.sort.next_index = 1
     else
       player_table.sort = {
         strings = table.shallow_copy(strings),
-        next_index = 1
+        next_index = 1,
       }
     end
     player_table.translate.next_key = nil
@@ -148,15 +158,15 @@ function flib_translation.add_requests(player_index, strings)
       -- sort
       sort = {
         strings = table.shallow_copy(strings),
-        next_index = 1
+        next_index = 1,
       },
       -- translate
       translate = {
-        strings = {__size = 0},
-        next_key = nil
+        strings = { __size = 0 },
+        next_key = nil,
       },
       -- wait
-      wait_tick = nil
+      wait_tick = nil,
     }
     __translation.translating_players_count = __translation.translating_players_count + 1
   end
@@ -166,7 +176,7 @@ function flib_translation.cancel(player_index)
   local __translation = global.__flib.translation
   local player_table = __translation.players[player_index]
   if not player_table then
-    log("Tried to cancel translations for player ["..player_index.."] when no translations were running!")
+    log("Tried to cancel translations for player [" .. player_index .. "] when no translations were running!")
     return
   end
   __translation.players[player_index] = nil
@@ -182,21 +192,23 @@ function flib_translation.translating_players_count()
 end
 
 function flib_translation.serialise_localised_string(localised_string)
-  if type(localised_string) == "string" then return localised_string end
+  if type(localised_string) == "string" then
+    return localised_string
+  end
   local output = "{"
   local first = true
   for _, v in pairs(localised_string) do
     if not first then
-      output = output..","
+      output = output .. ","
     end
     if type(v) == "table" then
-      output = output..flib_translation.serialise_localised_string(v)
+      output = output .. flib_translation.serialise_localised_string(v)
     else
-      output = output.."\""..tostring(v).."\""
+      output = output .. '"' .. tostring(v) .. '"'
     end
     first = false
   end
-  output = output.."}"
+  output = output .. "}"
   return output
 end
 

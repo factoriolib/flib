@@ -13,7 +13,7 @@ local migrations = {
   end,
   ["1.1.0"] = function()
     -- logic specific to changes made in 1.1.0
-  end
+  end,
 }
 
 event.on_configuration_changed(function(e)

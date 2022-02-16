@@ -14,7 +14,7 @@ local raw = {}
 local use_local_storage = false
 
 local function key_value(key, value)
-  return key..inner_separator..value..separator
+  return key .. inner_separator .. value .. separator
 end
 
 --- @class RawDictionary
@@ -27,7 +27,7 @@ local RawDictionary = {}
 --- @param internal string An unique, language-agnostic identifier for this translation.
 --- @param translation LocalisedString
 function RawDictionary:add(internal, translation)
-  local to_add = {"", internal, inner_separator, translation, separator}
+  local to_add = { "", internal, inner_separator, translation, separator }
 
   local ref = self.ref
   local i = self.i + 1
@@ -37,7 +37,7 @@ function RawDictionary:add(internal, translation)
   else
     local r_i = self.r_i + 1
     if r_i <= max_depth then
-      local new_level = {"", to_add}
+      local new_level = { "", to_add }
       ref[i] = new_level
       self.ref = new_level
       self.i = 2
@@ -45,7 +45,7 @@ function RawDictionary:add(internal, translation)
     else
       local s_i = self.s_i + 1
       self.s_i = s_i
-      local new_set = {"", to_add}
+      local new_set = { "", to_add }
       self.ref = new_set
       self.strings[s_i] = new_set
       self.i = 2
@@ -63,30 +63,26 @@ end
 --- @return RawDictionary
 function flib_dictionary.new(name, keep_untranslated, initial_contents)
   if raw[name] then
-    error("Dictionary with the name `"..name.."` already exists.")
+    error("Dictionary with the name `" .. name .. "` already exists.")
   end
 
-  local initial_string = {""}
-  local self = setmetatable(
-    {
-      -- Indices
-      i = 1,
-      r_i = 1,
-      s_i = 1,
-      -- Internal
-      ref = initial_string,
-      strings = {initial_string},
-      -- Meta
-      name = name,
-    },
-    {__index = RawDictionary}
-  )
+  local initial_string = { "" }
+  local self = setmetatable({
+    -- Indices
+    i = 1,
+    r_i = 1,
+    s_i = 1,
+    -- Internal
+    ref = initial_string,
+    strings = { initial_string },
+    -- Meta
+    name = name,
+  }, { __index = RawDictionary })
 
   for key, value in pairs(initial_contents or {}) do
     self:add(key, value)
   end
-  raw[name] = {strings = self.strings, keep_untranslated = keep_untranslated}
-
+  raw[name] = { strings = self.strings, keep_untranslated = keep_untranslated }
 
   return self
 end
@@ -103,7 +99,7 @@ function flib_dictionary.init()
     in_process = {},
     players = {},
     raw = {},
-    translated = {}
+    translated = {},
   }
   if use_local_storage then
     raw = {}
@@ -139,7 +135,9 @@ function flib_dictionary.translate(player)
     error("Player must be connected to the game before this function can be called!")
   end
   local player_data = global.__flib.dictionary.players[player.index]
-  if player_data then return end
+  if player_data then
+    return
+  end
 
   global.__flib.dictionary.players[player.index] = {
     player = player,
@@ -147,7 +145,7 @@ function flib_dictionary.translate(player)
     requested_tick = game.tick,
   }
 
-  player.request_translation({"", "FLIB_LOCALE_IDENTIFIER", separator, {"locale-identifier"}})
+  player.request_translation({ "", "FLIB_LOCALE_IDENTIFIER", separator, { "locale-identifier" } })
 end
 
 local function request_translation(player_data)
@@ -168,14 +166,14 @@ local function request_translation(player_data)
     end
   end
 
-  player_data.player.request_translation{
+  player_data.player.request_translation({
     "",
     key_value("FLIB_DICTIONARY_MOD", script.mod_name),
     key_value("FLIB_DICTIONARY_NAME", player_data.dictionary),
     key_value("FLIB_DICTIONARY_LANGUAGE", player_data.language),
     key_value("FLIB_DICTIONARY_STRING_INDEX", player_data.i),
     string,
-  }
+  })
 
   player_data.requested_tick = game.tick
 end
@@ -195,7 +193,7 @@ function flib_dictionary.check_skipped()
     -- is saved will not be returned when that save is loaded
     if (player_data.requested_tick or 0) + translation_timeout <= tick then
       if player_data.status == "get_language" then
-        player_data.player.request_translation({"", "FLIB_LOCALE_IDENTIFIER", separator, {"locale-identifier"}})
+        player_data.player.request_translation({ "", "FLIB_LOCALE_IDENTIFIER", separator, { "locale-identifier" } })
       end
       if player_data.status == "translating" then
         request_translation(player_data)
@@ -204,17 +202,16 @@ function flib_dictionary.check_skipped()
   end
 end
 
-
 --- Escape match special characters
 local function match_literal(s)
-    return string.gsub(s, "%-", "%%-")
+  return string.gsub(s, "%-", "%%-")
 end
 
 local dictionary_match_string = key_value("^FLIB_DICTIONARY_MOD", match_literal(script.mod_name))
-  ..key_value("FLIB_DICTIONARY_NAME", "(.-)")
-  ..key_value("FLIB_DICTIONARY_LANGUAGE", "(.-)")
-  ..key_value("FLIB_DICTIONARY_STRING_INDEX", "(%d-)")
-  .."(.*)$"
+  .. key_value("FLIB_DICTIONARY_NAME", "(.-)")
+  .. key_value("FLIB_DICTIONARY_LANGUAGE", "(.-)")
+  .. key_value("FLIB_DICTIONARY_STRING_INDEX", "(%d-)")
+  .. "(.*)$"
 
 --- Processes a returned translation batch, then request the next batch or return the finished dictionaries.
 ---
@@ -222,7 +219,9 @@ local dictionary_match_string = key_value("^FLIB_DICTIONARY_MOD", match_literal(
 --- @param event_data on_string_translated
 --- @return TranslationFinishedOutput?
 function flib_dictionary.process_translation(event_data)
-  if not event_data.translated then return end
+  if not event_data.translated then
+    return
+  end
   local script_data = global.__flib.dictionary
   if string.find(event_data.result, "FLIB_DICTIONARY_NAME") then
     local _, _, dict_name, dict_lang, string_index, translation = string.find(
@@ -233,17 +232,21 @@ function flib_dictionary.process_translation(event_data)
     if dict_name and dict_lang and string_index and translation then
       local language_data = script_data.in_process[dict_lang]
       -- In some cases, this can fire before on_configuration_changed
-      if not language_data then return end
+      if not language_data then
+        return
+      end
       local dictionary = language_data.dictionaries[dict_name]
-      if not dictionary then return end
+      if not dictionary then
+        return
+      end
       local dict_data = raw[dict_name]
       local player_data = script_data.players[event_data.player_index]
 
       -- If this number does not match, this is a duplicate, so ignore it
       if tonumber(string_index) == player_data.i then
         -- Extract current string's translations
-        for str in string.gmatch(translation, "(.-)"..separator) do
-          local _, _, key, value = string.find(str, "^(.-)"..inner_separator.."(.-)$")
+        for str in string.gmatch(translation, "(.-)" .. separator) do
+          local _, _, key, value = string.find(str, "^(.-)" .. inner_separator .. "(.-)$")
           if key then
             -- If `keep_untranslated` is true, then use the key as the value if it failed
             local failed = string.find(value, "Unknown key:")
@@ -269,16 +272,18 @@ function flib_dictionary.process_translation(event_data)
           for _, player_index in pairs(language_data.players) do
             script_data.players[player_index] = nil
           end
-          return {dictionaries = language_data.dictionaries, language = dict_lang, players = language_data.players}
+          return { dictionaries = language_data.dictionaries, language = dict_lang, players = language_data.players }
         end
       end
     end
   elseif string.find(event_data.result, "^FLIB_LOCALE_IDENTIFIER") then
-    local _, _, language = string.find(event_data.result, "^FLIB_LOCALE_IDENTIFIER"..separator.."(.*)$")
+    local _, _, language = string.find(event_data.result, "^FLIB_LOCALE_IDENTIFIER" .. separator .. "(.*)$")
     if language then
       local player_data = script_data.players[event_data.player_index]
       -- Handle a duplicate
-      if not player_data or player_data.status == "translating" then return end
+      if not player_data or player_data.status == "translating" then
+        return
+      end
 
       player_data.language = language
 
@@ -286,7 +291,7 @@ function flib_dictionary.process_translation(event_data)
       local dictionaries = script_data.translated[language]
       if dictionaries then
         script_data.players[event_data.player_index] = nil
-        return {dictionaries = dictionaries, language = language, players = {event_data.player_index}}
+        return { dictionaries = dictionaries, language = language, players = { event_data.player_index } }
       end
       local in_process = script_data.in_process[language]
       if in_process then
@@ -302,8 +307,10 @@ function flib_dictionary.process_translation(event_data)
 
       -- Add language to in process data
       script_data.in_process[language] = {
-        dictionaries = table.map(raw, function(_) return {} end),
-        players = {event_data.player_index}
+        dictionaries = table.map(raw, function(_)
+          return {}
+        end),
+        players = { event_data.player_index },
       }
 
       -- Start translating
@@ -325,7 +332,9 @@ function flib_dictionary.cancel_translation(player_index)
   if player_data then
     if player_data.status == "translating" then
       local in_process = script_data.in_process[player_data.language]
-      if not in_process then error("Dafuq?") end
+      if not in_process then
+        error("Dafuq?")
+      end
       if #in_process.players > 1 then
         -- Copy progress to another player with the same language
         local first_player = in_process.players[1]

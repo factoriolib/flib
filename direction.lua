@@ -83,7 +83,7 @@ function flib_direction.to_vector(direction, distance)
   elseif direction == flib_direction.northwest then
     x, y = x - distance, y - distance
   end
-  return {x = x, y = y}
+  return { x = x, y = y }
 end
 
 --- Returns a two-dimensional vector from a cardinal direction.
@@ -96,13 +96,13 @@ end
 -- @treturn Concepts.Position
 function flib_direction.to_vector_2d(direction, longitudinal, orthogonal)
   if direction == defines.direction.north then
-    return {x=orthogonal, y=-longitudinal}
+    return { x = orthogonal, y = -longitudinal }
   elseif direction == defines.direction.south then
-    return {x=-orthogonal, y=longitudinal}
+    return { x = -orthogonal, y = longitudinal }
   elseif direction == defines.direction.east then
-    return {x=longitudinal, y=orthogonal}
+    return { x = longitudinal, y = orthogonal }
   elseif direction == defines.direction.west then
-    return {x=-longitudinal, y=-orthogonal}
+    return { x = -longitudinal, y = -orthogonal }
   end
 end
 

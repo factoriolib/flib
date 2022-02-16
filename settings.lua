@@ -1,4 +1,4 @@
-data:extend{
+data:extend({
   {
     type = "int-setting",
     name = "flib-dictionary-levels-per-batch",
@@ -15,4 +15,4 @@ data:extend{
     minimum_value = 1,
     hidden = true,
   },
-}
+})

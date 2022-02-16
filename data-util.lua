@@ -23,7 +23,7 @@ function flib_data_util.copy_prototype(prototype, new_name, remove_icon)
     p.result = new_name
   end
   if p.results then
-    for _,result in pairs(p.results) do
+    for _, result in pairs(p.results) do
       if result.name == prototype.name then
         result.name = new_name
       end
@@ -47,7 +47,7 @@ end
 --- @return IconSpecification[]|nil
 function flib_data_util.create_icons(prototype, new_layers)
   if new_layers then
-    for _,new_layer in pairs(new_layers) do
+    for _, new_layer in pairs(new_layers) do
       if not new_layer.icon or not new_layer.icon_size then
         return nil
       end
@@ -55,10 +55,10 @@ function flib_data_util.create_icons(prototype, new_layers)
   end
 
   if prototype.icons then
-    local icons ={}
+    local icons = {}
     for _, v in pairs(prototype.icons) do
       -- Over define as much as possible to minimize weirdness: https://forums.factorio.com/viewtopic.php?f=25&t=81980
-      icons[#icons+1] = {
+      icons[#icons + 1] = {
         icon = v.icon,
         icon_size = v.icon_size or prototype.icon_size or 32,
         icon_mipmaps = v.icon_mipmaps or prototype.icon_mipmaps or 0,
@@ -69,55 +69,52 @@ function flib_data_util.create_icons(prototype, new_layers)
     end
     if new_layers then
       for _, new_layer in pairs(new_layers) do
-        icons[#icons+1] = new_layer
+        icons[#icons + 1] = new_layer
       end
     end
     return icons
-
   elseif prototype.icon then
-    local icons =
-    {
+    local icons = {
       {
         icon = prototype.icon,
         icon_size = prototype.icon_size,
         icon_mipmaps = prototype.icon_mipmaps,
-        tint = {r=1, g=1, b=1, a=1}
+        tint = { r = 1, g = 1, b = 1, a = 1 },
       },
     }
     if new_layers then
       for _, new_layer in pairs(new_layers) do
-        icons[#icons+1] = new_layer
+        icons[#icons + 1] = new_layer
       end
     end
     return icons
-
   else
     return nil
   end
 end
 
 local exponent_multipliers = {
-  ['y'] = 0.000000000000000000000001,
-  ['z'] = 0.000000000000000000001,
-  ['a'] = 0.000000000000000001,
-  ['f'] = 0.000000000000001,
-  ['p'] = 0.000000000001,
-  ['n'] = 0.000000001,
-  ['u'] = 0.000001, -- μ is invalid
-  ['m'] = 0.001,
-  ['c'] = 0.01,
-  ['d'] = 0.1,
-  [''] = 1,
-  ['da'] = 10,
-  ['h'] = 100,
-  ['k'] = 1000,
-  ['M'] = 1000000,
-  ['G'] = 1000000000,
-  ['T'] = 1000000000000,
-  ['P'] = 1000000000000000,
-  ['E'] = 1000000000000000000,
-  ['Z'] = 1000000000000000000000,
-  ['Y'] = 1000000000000000000000000,
+  ["y"] = 0.000000000000000000000001,
+  ["z"] = 0.000000000000000000001,
+  ["a"] = 0.000000000000000001,
+  ["f"] = 0.000000000000001,
+  ["p"] = 0.000000000001,
+  ["n"] = 0.000000001,
+  ["u"] = 0.000001, -- μ is invalid
+  ["m"] = 0.001,
+  ["c"] = 0.01,
+  ["d"] = 0.1,
+  [""] = 1,
+  ["da"] = 10,
+  ["h"] = 100,
+  ["k"] = 1000,
+  ["M"] = 1000000,
+  ["G"] = 1000000000,
+  ["T"] = 1000000000000,
+  ["P"] = 1000000000000000,
+  ["E"] = 1000000000000000000,
+  ["Z"] = 1000000000000000000000,
+  ["Y"] = 1000000000000000000000000,
 }
 
 --- Converts an energy string to base unit value + suffix.
@@ -154,10 +151,10 @@ function flib_data_util.build_sprite(name, position, filename, size, mipmap_coun
     position = position,
     size = size,
     mipmap_count = mipmap_count,
-    flags = {"icon"}
+    flags = { "icon" },
   }
   if mods then
-    for k,v in pairs(mods) do
+    for k, v in pairs(mods) do
       def[k] = v
     end
   end

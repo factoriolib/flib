@@ -11,12 +11,12 @@ local dictionary = require("__flib__.dictionary")
 local migration = require("__flib__.migration")
 
 local function create_demo_dictionaries()
-  for _, type in pairs{"entity", "fluid", "item", "recipe", "technology", "tile"} do
+  for _, type in pairs({ "entity", "fluid", "item", "recipe", "technology", "tile" }) do
     -- If the object's name doesn't have a translation, use its internal name as the translation
-    local Names = dictionary.new(type.."_names", true)
+    local Names = dictionary.new(type .. "_names", true)
     -- If a description doesn't exist, it won't exist in the resulting dictionary either
-    local Descriptions = dictionary.new(type.."_descriptions")
-    for name, prototype in pairs(game[type.."_prototypes"]) do
+    local Descriptions = dictionary.new(type .. "_descriptions")
+    for name, prototype in pairs(game[type .. "_prototypes"]) do
       Names:add(name, prototype.localised_name)
       Descriptions:add(name, prototype.localised_description)
     end
@@ -72,7 +72,7 @@ event.on_string_translated(function(e)
   if language_data then
     for _, player_index in pairs(language_data.players) do
       global.player_dictionaries[player_index] = language_data.dictionaries
-      game.print("Player "..player_index.." now has dictionaries for their language!")
+      game.print("Player " .. player_index .. " now has dictionaries for their language!")
     end
   end
 end)
