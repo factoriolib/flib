@@ -278,6 +278,20 @@ function flib_table.filter(tbl, filter, array_insert)
   return output
 end
 
+--- Retrieve the value at the key, or insert the default value.
+-- @param table table
+-- @param any key
+-- @param any default_value
+-- @return any
+function flib_table.get_or_insert(table, key, default_value)
+  local value = table[key]
+  if not value then
+    table[key] = default_value
+    return default_value
+  end
+  return value
+end
+
 --- Invert the given table such that `[value] = key`, returning a new table.
 --
 -- Non-unique values are overwritten based on the ordering from `pairs()`.
