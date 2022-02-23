@@ -215,7 +215,7 @@ local dictionary_match_string = key_value("^FLIB_DICTIONARY_MOD", match_literal(
   .. key_value("FLIB_DICTIONARY_STRING_INDEX", "(%d-)")
   .. "(.*)$"
 
---- Processes a returned translation batch, then request the next batch or return the finished dictionaries.
+--- Processes a returned translation batch, then requests the next batch or returns the finished dictionaries.
 ---
 --- Must be called **during** `on_string_translated`.
 --- @param event_data on_string_translated
