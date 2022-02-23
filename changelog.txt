@@ -2,10 +2,12 @@
 Version: 0.10.0
 Date: ????
   Features:
+    - [direction] Added `direction.from_positions()`
     - [table] Added `table.get_or_insert()`
   Changes:
     - Converted from LDoc to EmmyLua annotations, enabling language server intellisense
     - [area] All functions will ensure that any passed areas have `left_top` and `right_bottom` keys, and will automatically convert ones that do not
+    - [migration] `migration.on_config_changed()` version migrations table is now optional
 ---------------------------------------------------------------------------------------------------
 Version: 0.9.2
 Date: 2021-11-18
