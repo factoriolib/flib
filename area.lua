@@ -10,7 +10,7 @@
 ---
 local flib_area = {}
 
---- Expands an area to its outer tile edges.
+--- Expand an area to its outer tile edges.
 --- @param self BoundingBox
 function flib_area.ceil(self)
   if not self.left_top then
@@ -28,7 +28,7 @@ function flib_area.ceil(self)
   return self
 end
 
---- Calculates the centerpoint of the area.
+--- Calculate the centerpoint of the area.
 --- @param self BoundingBox
 --- @return Position center_point
 function flib_area.center(self)
@@ -41,7 +41,7 @@ function flib_area.center(self)
   }
 end
 
---- Re-centers the area on the given position.
+--- Re-center the area on the given position.
 --- @param self BoundingBox
 --- @param center_point Position
 --- @return BoundingBox self
@@ -82,7 +82,7 @@ function flib_area.contains_area(self, other_area)
     )
 end
 
---- Checks if the area contains the given position.
+--- Check if the area contains the given position.
 --- @param self BoundingBox
 --- @param position Position
 --- @return boolean
@@ -99,7 +99,7 @@ function flib_area.contains_position(self, position)
     )
 end
 
---- Adds left_bottom and right_top keys to the area.
+--- Add left_bottom and right_top keys to the area.
 ---
 --- These keys will not be updated when you modify the area, so the recommended usage is to call this function whenever you need to read the extra keys.
 --- @param self BoundingBox
@@ -121,7 +121,7 @@ function flib_area.corners(self)
   return self
 end
 
---- Finds the distance between a position and the nearest edge of the area.
+--- Find the distance between a position and the nearest edge of the area.
 --- @param self BoundingBox
 --- @param position Position
 --- @return number
@@ -136,7 +136,7 @@ function flib_area.distance_to_nearest_edge(self, position)
   return math.min(x_distance, y_distance)
 end
 
---- Expands the area by the given amount.
+--- Expand the area by the given amount.
 --- @param self BoundingBox
 --- @param delta number
 --- @return BoundingBox
@@ -153,7 +153,7 @@ function flib_area.expand(self, delta)
   return self
 end
 
---- Expands the area to contain the other area.
+--- Expand the area to contain the other area.
 --- @param self BoundingBox
 --- @param other_area BoundingBox
 --- @return BoundingBox
@@ -174,7 +174,7 @@ function flib_area.expand_to_contain_area(self, other_area)
   return self
 end
 
---- Expands the area to contain the given position.
+--- Expand the area to contain the given position.
 --- @param self BoundingBox
 --- @param position Position
 --- @return BoundingBox
@@ -195,7 +195,7 @@ function flib_area.expand_to_contain_position(self, position)
   return self
 end
 
---- Shrinks the  area to its inner tile edges.
+--- Shrink the area to its inner tile edges.
 --- @param self BoundingBox
 --- @return BoundingBox
 function flib_area.floor(self)
@@ -215,7 +215,7 @@ function flib_area.floor(self)
   return self
 end
 
---- Creates an area from dimensions and a centerpoint.
+--- Create an area from dimensions and a centerpoint.
 --- @param dimensions DisplayResolution
 --- @param center? Position
 --- @return BoundingBox
@@ -233,7 +233,7 @@ function flib_area.from_dimensions(dimensions, center)
   }
 end
 
---- Creates a 1x1 tile area from the given position.
+--- Create a 1x1 tile area from the given position.
 --- @param position Position
 --- @param snap boolean? If true, snap the created area to the tile edges the position is contained in.
 function flib_area.from_position(position, snap)
@@ -251,11 +251,11 @@ function flib_area.from_position(position, snap)
   end
 end
 
---- Creates a proper area from a shorthanded area.
+--- Create a proper area from a shorthanded area.
 ---
 --- A "shorthand" area is an area without the `left_top` and `right_bottom` keys, which is sometimes used by the game in the data stage.
 ---
---- This function will automatically be called when using any other function in this module.
+--- This function will automatically be called when using any other non-constructor function in this module.
 --- @param area BoundingBox
 --- @return BoundingBox
 function flib_area.from_shorthand(area)
@@ -265,7 +265,7 @@ function flib_area.from_shorthand(area)
   }
 end
 
---- Calculates the height of the area.
+--- Calculate the height of the area.
 --- @param self BoundingBox
 --- @return number
 function flib_area.height(self)
@@ -276,14 +276,14 @@ function flib_area.height(self)
   return math.abs(self.right_bottom.y - self.left_top.y)
 end
 
---- Creates an iterator of positions in the area from the left-top to the right-bottom, incrementing by `step`.
+--- Create an iterator of positions in the area from the left-top to the right-bottom, incrementing by `step`.
 ---
 --- The iterator function, when called, will return a `Position` that is within the area.
 ---
 --- # Examples
 ---
 --- ```lua
---- local Area = area.from_dimensions({ height = 10, width = 10 }, { x = 0, y = 0 })
+--- local MyArea = area.from_dimensions({ height = 10, width = 10 }, { x = 0, y = 0 })
 --- for position in MyArea:iterate() do
 ---   log(serpent.line(position))
 --- end
@@ -327,7 +327,7 @@ function flib_area.iterate(self, step)
   end
 end
 
---- Creates an area object from a plain area.
+--- Create an area object from a plain area.
 ---
 --- Doing this allows one to use area methods directly on an area "object" via the `:` operator. The area will be passed
 --- in as `self` to each function automatically.
@@ -357,7 +357,7 @@ function flib_area.load(area)
   return setmetatable(area, { __index = flib_area })
 end
 
---- Moves the area by the given delta.
+--- Move the area by the given delta.
 --- @param self BoundingBox
 --- @param delta Position
 --- @return BoundingBox
@@ -374,7 +374,7 @@ function flib_area.move(self, delta)
   return self
 end
 
---- Rotates the area 90 degrees around its center.
+--- Rotate the area 90 degrees around its center.
 --- @param self BoundingBox
 --- @return BoundingBox
 function flib_area.rotate(self)
@@ -395,7 +395,7 @@ function flib_area.rotate(self)
   return self
 end
 
---- Creates a new area table from the given area, removing any extra fields and metatables.
+--- Create a new area table from the given area, removing any extra fields and metatables.
 ---
 --- This is useful when passing an area to API functions that will complain about any unknown fields.
 --- @param self BoundingBox
@@ -413,7 +413,7 @@ function flib_area.strip(self)
   }
 end
 
---- Removes keys from the area to create a shorthanded area.
+--- Remove keys from the area to create a shorthanded area.
 ---
 --- # Examples
 ---
@@ -436,7 +436,7 @@ function flib_area.to_shorthand(self)
   }
 end
 
---- Calculates the width of the area.
+--- Calculate the width of the area.
 --- @param self BoundingBox
 --- @return number
 function flib_area.width(self)

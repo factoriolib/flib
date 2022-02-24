@@ -1,7 +1,7 @@
 --- Miscellaneous functions for data stage prototype manipulation.
 local flib_data_util = {}
 
---- Copies a prototype, assigning a new name and minable properties.
+--- Copy a prototype, assigning a new name and minable properties.
 --- @param prototype table
 --- @param new_name string string
 --- @param remove_icon? boolean
@@ -39,7 +39,7 @@ function flib_data_util.copy_prototype(prototype, new_name, remove_icon)
   return p
 end
 
---- Copies prototype.icon/icons to a new fully defined icons array, optionally adding new icon layers.
+--- Copy prototype.icon/icons to a new fully defined icons array, optionally adding new icon layers.
 ---
 --- Returns `nil` if the prototype's icons are incorrectly or incompletely defined.
 --- @param prototype table
@@ -117,12 +117,12 @@ local exponent_multipliers = {
   ["Y"] = 1000000000000000000000000,
 }
 
---- Converts an energy string to base unit value + suffix.
+--- Convert an energy string to base unit value + suffix.
 ---
 --- Returns `nil` if `energy_string` is incorrectly formatted.
 --- @param energy_string string
---- @return number|nil
---- @return string|nil
+--- @return number?
+--- @return string?
 function flib_data_util.get_energy_value(energy_string)
   if type(energy_string) == "string" then
     local v, _, exp, unit = string.match(energy_string, "([%-+]?[0-9]*%.?[0-9]+)((%D*)([WJ]))")
@@ -135,7 +135,7 @@ function flib_data_util.get_energy_value(energy_string)
   return nil
 end
 
---- Builds a sprite from constituent parts.
+--- Build a sprite from constituent parts.
 --- @param name? string
 --- @param position? Position
 --- @param filename? string

@@ -20,14 +20,14 @@ flib_direction.southeast = defines.direction.southeast
 --- defines.direction.southwest
 flib_direction.southwest = defines.direction.southwest
 
---- Returns the opposite direction.
+--- Calculate the opposite direction.
 --- @param direction defines.direction
 --- @return defines.direction
 function flib_direction.opposite(direction)
   return (direction + 4) % 8
 end
 
---- Returns the next four-way or eight-way direction.
+--- Calculate the next four-way or eight-way direction.
 --- @param direction defines.direction
 --- @param eight_way? boolean
 --- @return defines.direction
@@ -35,7 +35,7 @@ function flib_direction.next(direction, eight_way)
   return (direction + (eight_way and 1 or 2)) % 8
 end
 
---- Returns the previous four-way or eight-way direction.
+--- Calculate the previous four-way or eight-way direction.
 --- @param direction defines.direction
 --- @param eight_way? boolean
 --- @return defines.direction
@@ -43,14 +43,14 @@ function flib_direction.previous(direction, eight_way)
   return (direction + (eight_way and -1 or -2)) % 8
 end
 
---- Returns an orientation from a direction.
+--- Calculate an orientation from a direction.
 --- @param direction defines.direction
 --- @return RealOrientation
 function flib_direction.to_orientation(direction)
   return direction / 8
 end
 
---- Returns a vector from a direction.
+--- Calculate a vector from a direction.
 --- @param direction defines.direction
 --- @param distance? number default: `1`
 --- @return Position
@@ -77,7 +77,7 @@ function flib_direction.to_vector(direction, distance)
   return { x = x, y = y }
 end
 
---- Returns a two-dimensional vector from a cardinal direction.
+--- Calculate a two-dimensional vector from a cardinal direction.
 --- @param direction defines.direction
 --- @param longitudinal number Distance to move in the specified direction.
 --- @param orthogonal number Distance to move perpendicular to the specified direction. A negative distance will move "left" and a positive distance will move "right" from the perspective of the direction.
@@ -94,7 +94,7 @@ function flib_direction.to_vector_2d(direction, longitudinal, orthogonal)
   end
 end
 
---- Returns the direction of travel from the source to the target.
+--- Calculate the direction of travel from the source to the target.
 --- @param source Position
 --- @param target Position
 --- @param round? boolean If true, round to the nearest `defines.direction`.

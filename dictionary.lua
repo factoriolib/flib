@@ -20,7 +20,7 @@ end
 --- @class RawDictionary
 local RawDictionary = {}
 
---- Adds a new translation to this dictionary.
+--- Add a new translation to this dictionary.
 ---
 --- This method **must not** be called after control stage initialization and migration. Doing so will result in
 --- different languages having different sets of data.
@@ -54,7 +54,7 @@ function RawDictionary:add(internal, translation)
   end
 end
 
---- Creates a new `RawDictionary`.
+--- Create a new `RawDictionary`.
 ---
 --- If `keep_untranslated` is `true`, translations that failed (begin with `Unknown key: `) will be added to the dictionary with their internal name as their translated name.
 --- @param name string
@@ -89,7 +89,7 @@ function flib_dictionary.new(name, keep_untranslated, initial_contents)
   return self
 end
 
---- Initializes the module's script data table.
+--- Initialize the module's script data table.
 ---
 --- Must be called at the **beginning** of `on_init` for initial setup, and at the **beginning** of
 --- `on_configuration_changed` to reset all ongoing translations.
@@ -110,7 +110,7 @@ function flib_dictionary.init()
   end
 end
 
---- Sets up the module's local references.
+--- Set up the module's local references.
 ---
 --- Must be called at the **beginning** of `on_load`.
 ---
@@ -180,7 +180,7 @@ local function request_translation(player_data)
   player_data.requested_tick = game.tick
 end
 
---- Checks for a skipped translation and re-request it after three seconds.
+--- Check for a skipped translation and re-request it after three seconds.
 ---
 --- Must be called **during** `on_tick`.
 ---
@@ -215,7 +215,7 @@ local dictionary_match_string = key_value("^FLIB_DICTIONARY_MOD", match_literal(
   .. key_value("FLIB_DICTIONARY_STRING_INDEX", "(%d-)")
   .. "(.*)$"
 
---- Processes a returned translation batch, then requests the next batch or returns the finished dictionaries.
+--- Process a returned translation batch, then request the next batch or return the finished dictionaries.
 ---
 --- Must be called **during** `on_string_translated`.
 --- @param event_data on_string_translated
@@ -321,7 +321,7 @@ function flib_dictionary.process_translation(event_data)
   end
 end
 
---- Cancels the translation of the player's dictionaries if they are the currently translating player.
+--- Cancel the translation of the player's dictionaries if they are the currently translating player.
 ---
 --- If multiple players are waiting on these dictionaries, the translation duties will be handed off to the next player
 --- in the list.
