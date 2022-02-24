@@ -1,14 +1,16 @@
 --- Defines reverse lookup table.
--- @module reverse-defines
--- @alias flib_reverse_defines
--- @usage local reverse_defines = require('__flib__.reverse-defines')
---
--- event.on_built_entity(function(e)
---   local player = game.get_player(e.player_index)
---   local controller_name = reverse_defines.controllers[player.controller_type]
--- end)
+---
+--- # Examples
+---
+--- ```lua
+--- event.on_built_entity(function(e)
+---   local player = game.get_player(e.player_index)
+---   local controller_name = reverse_defines.controllers[player.controller_type]
+--- end)
+--- ```
 local flib_reverse_defines = {}
 
+-- TODO: Figure out how to document this. Will likely require parsing Factorio's docs.
 local function build_reverse_defines(lookup_table, base_table)
   lookup_table = lookup_table or {}
   for k, v in pairs(base_table) do
