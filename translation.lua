@@ -1,6 +1,5 @@
 -- NOTICE: This module is deprecated and has been replaced by the new `dictionary` module. This will remain in flib for
--- the foreseeable future, but is no longer documented or supported.
-
+-- the foreseeable future for backwards compatibility, but is no longer documented or supported.
 local flib_translation = {}
 
 local table = require("__flib__.table")
@@ -8,7 +7,6 @@ local table = require("__flib__.table")
 local math = math
 local next = next
 local pairs = pairs
-local string = string
 local type = type
 
 function flib_translation.init()
