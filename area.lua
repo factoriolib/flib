@@ -220,10 +220,6 @@ end
 --- @param center? Position
 --- @return BoundingBox
 function flib_area.from_dimensions(dimensions, center)
-  if not self.left_top then
-    self = flib_area.from_shorthand(self)
-  end
-
   center = center or { x = 0, y = 0 }
   return {
     left_top = {
@@ -241,10 +237,6 @@ end
 --- @param position Position
 --- @param snap boolean? If true, snap the created area to the tile edges the position is contained in.
 function flib_area.from_position(position, snap)
-  if not self.left_top then
-    self = flib_area.from_shorthand(self)
-  end
-
   if snap then
     local floored_position = { x = math.floor(position.x), y = math.floor(position.y) }
     return {
@@ -277,6 +269,10 @@ end
 --- @param self BoundingBox
 --- @return number
 function flib_area.height(self)
+  if not self.left_top then
+    self = flib_area.from_shorthand(self)
+  end
+
   return math.abs(self.right_bottom.y - self.left_top.y)
 end
 
@@ -430,6 +426,10 @@ end
 --- @param self BoundingBox
 --- @return BoundingBox
 function flib_area.to_shorthand(self)
+  if not self.left_top then
+    return self
+  end
+
   return {
     { self.left_top.x, self.left_top.y },
     { self.right_bottom.x, self.right_bottom.y },
@@ -440,6 +440,10 @@ end
 --- @param self BoundingBox
 --- @return number
 function flib_area.width(self)
+  if not self.left_top then
+    self = flib_area.from_shorthand(self)
+  end
+
   return math.abs(self.right_bottom.x - self.left_top.x)
 end
 
