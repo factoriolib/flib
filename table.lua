@@ -11,7 +11,7 @@ end
 
 --- Shallow copy an array's values into a new array.
 ---
---- This function is optimized specifically for arrays, and should be used in place of @{table.shallow_copy} for arrays.
+--- This function is optimized specifically for arrays, and should be used in place of `table.shallow_copy` for arrays.
 --- @param arr array
 --- @return array
 function flib_table.array_copy(arr)
@@ -450,7 +450,7 @@ function flib_table.shallow_copy(tbl, use_rawset)
 end
 
 --- Shallowly merge two or more tables.
---- Unlike @{table.deep_merge}, this will only combine the top level of the tables.
+--- Unlike `table.deep_merge`, this will only combine the top level of the tables.
 --- @param tables table[]
 --- @return table
 function flib_table.shallow_merge(tables)

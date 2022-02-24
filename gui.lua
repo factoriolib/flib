@@ -514,7 +514,7 @@ end
 
 --- A table representing a tab <-> content pair.
 ---
---- When used in @{gui.build}, both fields are required. When used in @{gui.update}, both fields are optional.
+--- When used in `gui.build`, both fields are required. When used in `gui.update`, both fields are optional.
 --- @class TabAndContent
 --- @field tab GuiBuildStructure|GuiUpdateStructure
 --- @field content GuiBuildStructure|GuiUpdateStructure

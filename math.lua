@@ -58,7 +58,7 @@ flib_math.min_int53 = -0x20000000000000
 
 --- Round a number to the nearest integer.
 ---
---- This function is measurably faster than @{math.round_to} and should be used in place of it where applicable.
+--- This function is measurably faster than `math.round_to` and should be used in place of it where applicable.
 ---
 --- From [lua-users.org](http://lua-users.org/wiki/SimpleRound).
 --- @param num number
@@ -75,7 +75,7 @@ end
 
 --- Round a number to the nearest N decimal places.
 ---
---- Use @{math.round} if no decimals are needed.
+--- Use `math.round` if no decimals are needed.
 ---
 --- From [lua-users.org](http://lua-users.org/wiki/SimpleRound).
 --- @param num number
