@@ -1,18 +1,11 @@
 --- Functions for working with trains.
--- @module train
--- @alias flib_train
--- @usage local train = require("__flib__.train")
--- @see LuaTrain
 local flib_train = {}
 
 local table = table
 
---- Functions
--- @section
-
 --- Get the main locomotive in a given train.
--- @tparam LuaTrain train
--- @treturn LuaEntity|nil
+--- @param train LuaTrain
+--- @return LuaEntity?
 function flib_train.get_main_locomotive(train)
   if
     train.valid
@@ -24,16 +17,16 @@ function flib_train.get_main_locomotive(train)
 end
 
 --- Get the backer_name of the main locomotive in a given train.
--- @tparam LuaTrain train
--- @treturn LuaEntity|nil
+--- @param train LuaEntity
+--- @return LuaEntity?
 function flib_train.get_backer_name(train)
   local loco = flib_train.get_main_locomotive(train)
   return loco and loco.backer_name
 end
 
 --- Rotate a single carriage of a train.
--- @tparam LuaEntity entity
--- @treturn boolean Whether or not the rotation was successful.
+--- @param entity LuaEntity
+--- @return boolean successful Whether or not the rotation was successful.
 function flib_train.rotate_carriage(entity)
   local disconnected_back = entity.disconnect_rolling_stock(defines.rail_direction.back)
   local disconnected_front = entity.disconnect_rolling_stock(defines.rail_direction.front)
@@ -57,11 +50,14 @@ function flib_train.rotate_carriage(entity)
   return true
 end
 
---- Create a string representing train composition.
--- '<L<' and '>L>' for locomotives, 'C' for cargo wagons, 'F' for fluid wagons, 'A' for artillery wagon.
--- @tparam LuaTrain train
--- @treturn string|nil
--- @treturn TrainCompositionCounts|nil
+--- Create a string representing train composition, and return a count of locomotives and wagons in the train.
+--- - `<L<`, `>L>`: Locomotives
+--- - `C`: Cargo wagon
+--- - `F`: Fluid wagon
+--- - `A`: Artillery wagon
+--- @param train LuaTrain
+--- @return string? composition The composition string, or `nil` if the train was invalid.
+--- @return TrainCompositionCounts?
 function flib_train.get_composition_string(train)
   if train and train.valid then
     local carriages = train.carriages
@@ -110,9 +106,9 @@ function flib_train.get_composition_string(train)
 end
 
 --- Open train GUI for one player.
--- @param player_index number
--- @tparam LuaTrain train
--- @treturn boolean If the GUI was opened.
+--- @param player_index number
+--- @param train LuaTrain
+--- @return boolean gui_opened If the GUI was opened.
 function flib_train.open_gui(player_index, train)
   if train and train.valid and game.players[player_index] then
     local loco = flib_train.get_main_locomotive(train)
@@ -126,12 +122,8 @@ end
 
 return flib_train
 
---- Concepts
--- @section
-
---- @Concept TrainCompositionCounts
--- A @{table} with the following fields:
--- @tfield number total The total number of rolling stocks in the train.
--- @tfield number wagons The number of wagons in the train.
--- @tfield number front_movers The number of front-facing locomotives in the train.
--- @tfield number back_movers The number of back-facing locomotives in the train.
+--- @class TrainCompositionCounts
+--- @field total number The total number of rolling stocks in the train.
+--- @field wagons number The number of wagons in the train.
+--- @field front_movers number The number of front-facing locomotives in the train.
+--- @field back_movers number The number of back-facing locomotives in the train.
