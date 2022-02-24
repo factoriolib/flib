@@ -7,6 +7,7 @@ Date: ????
   Changes:
     - Converted from LDoc to EmmyLua annotations, enabling language server intellisense, but removing the docs website
       - A new website or other solution for online docs will be added someday. For now, in-line documentation was decided to be more beneficial.
+    - [area] All constructor functions will automatically call `area.load()` to add the metatable
     - [area] All functions will ensure that any passed areas have `left_top` and `right_bottom` keys, and will automatically convert ones that do not
     - [migration] `migration.on_config_changed()` version migrations table is now optional
 ---------------------------------------------------------------------------------------------------

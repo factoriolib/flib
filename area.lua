@@ -221,7 +221,7 @@ end
 --- @return BoundingBox
 function flib_area.from_dimensions(dimensions, center)
   center = center or { x = 0, y = 0 }
-  return {
+  local self = {
     left_top = {
       x = center.x - (dimensions.width / 2),
       y = center.y - (dimensions.height / 2),
@@ -231,23 +231,31 @@ function flib_area.from_dimensions(dimensions, center)
       y = center.y + (dimensions.height / 2),
     },
   }
+  flib_area.load(self)
+  return self
 end
 
 --- Create a 1x1 tile area from the given position.
 --- @param position Position
 --- @param snap boolean? If true, snap the created area to the tile edges the position is contained in.
 function flib_area.from_position(position, snap)
+  local self
   if snap then
     local floored_position = { x = math.floor(position.x), y = math.floor(position.y) }
-    return {
+    self = {
       left_top = { x = floored_position.x, y = floored_position.y },
       right_bottom = { x = floored_position.x + 1, y = floored_position.y + 1 },
     }
   else
-    return {
+    self = {
       left_top = { x = position.x - 0.5, y = position.y - 0.5 },
       right_bottom = { x = position.x + 0.5, y = position.y + 0.5 },
     }
+  end
+
+  if self then
+    flib_area.load(self)
+    return self
   end
 end
 
@@ -259,10 +267,12 @@ end
 --- @param area BoundingBox
 --- @return BoundingBox
 function flib_area.from_shorthand(area)
-  return {
+  local self = {
     left_top = { x = area[1][1], y = area[1][2] },
     right_bottom = { x = area[2][1], y = area[2][2] },
   }
+  flib_area.load(self)
+  return self
 end
 
 --- Calculate the height of the area.
