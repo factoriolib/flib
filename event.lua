@@ -163,7 +163,7 @@ end
 --- ```
 --- @param id EventId
 --- @param event_data table The event data that will be passed to the handlers.
-function flib_event.raise_event(id, event_data)
+function flib_event.raise(id, event_data)
   script.raise_event(id, event_data)
 end
 
