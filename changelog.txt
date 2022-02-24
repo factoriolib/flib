@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.10.0
-Date: ????
+Date: 2022-02-24
   Features:
     - [direction] Added `direction.from_positions()`
     - [table] Added `table.get_or_insert()`
