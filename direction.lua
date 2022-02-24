@@ -1,11 +1,6 @@
 local flib_math = require("__flib__.math")
 
 --- Functions for working with directions.
--- @module direction
--- @alias flib_direction
--- @usage local direction = require('__flib__.direction')
--- @see defines.direction
-
 local flib_direction = {}
 
 --- defines.direction.north
@@ -25,44 +20,40 @@ flib_direction.southeast = defines.direction.southeast
 --- defines.direction.southwest
 flib_direction.southwest = defines.direction.southwest
 
---- Returns the opposite direction
--- @tparam defines.direction direction the direction
--- @treturn defines.direction the opposite direction
+--- Returns the opposite direction.
+--- @param direction defines.direction
+--- @return defines.direction
 function flib_direction.opposite(direction)
   return (direction + 4) % 8
 end
 
---- Returns the next direction.
---> For entities that only support two directions, see @{opposite}.
--- @tparam defines.direction direction the starting direction
--- @tparam[opt=false] boolean eight_way true to get the next direction in 8-way (note: not many prototypes support
--- 8-way)
--- @treturn defines.direction the next direction
+--- Returns the next four-way or eight-way direction.
+--- @param direction defines.direction
+--- @param eight_way? boolean
+--- @return defines.direction
 function flib_direction.next(direction, eight_way)
   return (direction + (eight_way and 1 or 2)) % 8
 end
 
---- Returns the previous direction.
---> For entities that only support two directions, see @{opposite}.
--- @tparam defines.direction direction the starting direction
--- @tparam[opt=false] boolean eight_way true to get the previous direction in 8-way (note: not many prototypes support
--- 8-way)
--- @treturn defines.direction the next direction
+--- Returns the previous four-way or eight-way direction.
+--- @param direction defines.direction
+--- @param eight_way? boolean
+--- @return defines.direction
 function flib_direction.previous(direction, eight_way)
   return (direction + (eight_way and -1 or -2)) % 8
 end
 
 --- Returns an orientation from a direction.
--- @tparam defines.direction direction
--- @treturn number
+--- @param direction defines.direction
+--- @return RealOrientation
 function flib_direction.to_orientation(direction)
   return direction / 8
 end
 
 --- Returns a vector from a direction.
--- @tparam defines.direction direction
--- @tparam[opt = 1] number distance
--- @treturn Position
+--- @param direction defines.direction
+--- @param distance? number default: `1`
+--- @return Position
 function flib_direction.to_vector(direction, distance)
   distance = distance or 1
   local x, y = 0, 0
@@ -87,13 +78,10 @@ function flib_direction.to_vector(direction, distance)
 end
 
 --- Returns a two-dimensional vector from a cardinal direction.
---
--- Only supports cardinal (four-way) directions.
--- @tparam defines.direction direction
--- @tparam number longitudinal Distance to move in the specified direction.
--- @tparam number orthogonal Distance to move perpendicular to the specified direction. A negative distance will move
--- "left" and a positive distance will move "right" from the perspective of the direction.
--- @treturn Concepts.Position
+--- @param direction defines.direction
+--- @param longitudinal number Distance to move in the specified direction.
+--- @param orthogonal number Distance to move perpendicular to the specified direction. A negative distance will move "left" and a positive distance will move "right" from the perspective of the direction.
+--- @return Position
 function flib_direction.to_vector_2d(direction, longitudinal, orthogonal)
   if direction == defines.direction.north then
     return { x = orthogonal, y = -longitudinal }
@@ -109,13 +97,13 @@ end
 --- Returns the direction of travel from the source to the target.
 --- @param source Position
 --- @param target Position
---- @param round boolean If true, round to the nearest `defines.direction`.
+--- @param round? boolean If true, round to the nearest `defines.direction`.
 --- @return defines.direction
 function flib_direction.from_positions(source, target, round)
   local deg = math.deg(math.atan2(target.y - source.y, target.x - source.x))
   local direction = (deg + 90) / 45
   if direction < 0 then
-    direction = 8 + direction
+    direction = direction + 8
   end
   if round then
     direction = flib_math.round(direction)
