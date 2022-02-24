@@ -71,10 +71,14 @@ end
 --- -- Deregister the registered handler, if one exists
 --- event.on_nth_tick(30, nil)
 --- ```
---- @param nth_tick number|number[] The nth-tick(s) to invoke the handler on.
+--- @param nth_tick? number|number[] The nth-tick(s) to invoke the handler on, or `nil` to deregister all nth-tick handlers.
 --- @param handler? function The handler to register, or `nil` to deregister the registered handler.
 function flib_event.on_nth_tick(nth_tick, handler)
-  script.on_nth_tick(nth_tick, handler)
+  if handler then
+    script.on_nth_tick(nth_tick, handler)
+  else
+    script.on_nth_tick(nth_tick)
+  end
 end
 
 --- Register or deregister a handler to or from an event or group of events.
