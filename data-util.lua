@@ -174,3 +174,8 @@ flib_data_util.planner_base_image = "__flib__/graphics/planner.png"
 flib_data_util.dark_red_button_tileset = "__flib__/graphics/dark-red-button.png"
 
 return flib_data_util
+
+--- @class IconSpecification
+--- @field icon string
+--- @field icon_size int
+--- @class SpriteSpecification
