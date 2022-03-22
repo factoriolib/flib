@@ -2,6 +2,7 @@
 Version: 0.11.0
 Date: ????
   Features:
+    - [area] Added `area.square()` to turn the area into a square
     - [area] Added `starting_offset` argument to `area.iterate()`
 ---------------------------------------------------------------------------------------------------
 Version: 0.10.1

@@ -328,7 +328,7 @@ function flib_area.iterate(self, step, starting_offset)
     else
       local new_y = y + step
       if y < max_y and new_y < max_y then
-        x = self.left_top.x
+        x = self.left_top.x + starting_offset.x
         y = new_y
       else
         return nil
@@ -405,6 +405,15 @@ function flib_area.rotate(self)
   self.right_bottom.y = center.y + radius_y
 
   return self
+end
+
+--- Expand the area to create a square.
+--- @param self BoundingBox
+--- @return BoundingBox
+function flib_area.square(self)
+  local radius = math.max(flib_area.height(self), flib_area.width(self))
+
+  return flib_area.from_dimensions({ height = radius, width = radius }, flib_area.center(self))
 end
 
 --- Create a new area table from the given area, removing any extra fields and metatables.
