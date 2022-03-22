@@ -300,16 +300,18 @@ end
 --- ```
 --- @param self BoundingBox
 --- @param step number? The distance between each returned position (default: `1`).
+--- @param starting_offset MapPosition? Positional offset from left_top (default: `0,0`)
 --- @return fun(): Position
-function flib_area.iterate(self, step)
+function flib_area.iterate(self, step, starting_offset)
+  starting_offset = starting_offset or { x = 0, y = 0 }
   if not self.left_top then
     self = flib_area.from_shorthand(self)
   end
 
   step = step or 1
 
-  local x = self.left_top.x
-  local y = self.left_top.y
+  local x = self.left_top.x + starting_offset.x
+  local y = self.left_top.y + starting_offset.y
   local max_x = self.right_bottom.x
   local max_y = self.right_bottom.y
   local first = true
