@@ -53,7 +53,7 @@ end
 --- Calculate a vector from a direction.
 --- @param direction defines.direction
 --- @param distance? number default: `1`
---- @return Position
+--- @return MapPosition
 function flib_direction.to_vector(direction, distance)
   distance = distance or 1
   local x, y = 0, 0
@@ -81,7 +81,7 @@ end
 --- @param direction defines.direction
 --- @param longitudinal number Distance to move in the specified direction.
 --- @param orthogonal number Distance to move perpendicular to the specified direction. A negative distance will move "left" and a positive distance will move "right" from the perspective of the direction.
---- @return Position
+--- @return MapPosition
 function flib_direction.to_vector_2d(direction, longitudinal, orthogonal)
   if direction == defines.direction.north then
     return { x = orthogonal, y = -longitudinal }
@@ -95,8 +95,8 @@ function flib_direction.to_vector_2d(direction, longitudinal, orthogonal)
 end
 
 --- Calculate the direction of travel from the source to the target.
---- @param source Position
---- @param target Position
+--- @param source MapPosition
+--- @param target MapPosition
 --- @param round? boolean If true, round to the nearest `defines.direction`.
 --- @return defines.direction
 function flib_direction.from_positions(source, target, round)

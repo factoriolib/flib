@@ -30,7 +30,7 @@ end
 
 --- Calculate the centerpoint of the area.
 --- @param self BoundingBox
---- @return Position center_point
+--- @return MapPosition center_point
 function flib_area.center(self)
   if not self.left_top then
     self = flib_area.from_shorthand(self)
@@ -43,7 +43,7 @@ end
 
 --- Re-center the area on the given position.
 --- @param self BoundingBox
---- @param center_point Position
+--- @param center_point MapPosition
 --- @return BoundingBox self
 function flib_area.center_on(self, center_point)
   if not self.left_top then
@@ -84,7 +84,7 @@ end
 
 --- Check if the area contains the given position.
 --- @param self BoundingBox
---- @param position Position
+--- @param position MapPosition
 --- @return boolean
 function flib_area.contains_position(self, position)
   if not self.left_top then
@@ -123,7 +123,7 @@ end
 
 --- Find the distance between a position and the nearest edge of the area.
 --- @param self BoundingBox
---- @param position Position
+--- @param position MapPosition
 --- @return number
 function flib_area.distance_to_nearest_edge(self, position)
   if not self.left_top then
@@ -176,7 +176,7 @@ end
 
 --- Expand the area to contain the given position.
 --- @param self BoundingBox
---- @param position Position
+--- @param position MapPosition
 --- @return BoundingBox
 function flib_area.expand_to_contain_position(self, position)
   if not self.left_top then
@@ -217,7 +217,7 @@ end
 
 --- Create an area from dimensions and a centerpoint.
 --- @param dimensions DisplayResolution
---- @param center? Position
+--- @param center? MapPosition
 --- @return BoundingBox
 function flib_area.from_dimensions(dimensions, center)
   center = center or { x = 0, y = 0 }
@@ -236,7 +236,7 @@ function flib_area.from_dimensions(dimensions, center)
 end
 
 --- Create a 1x1 tile area from the given position.
---- @param position Position
+--- @param position MapPosition
 --- @param snap boolean? If true, snap the created area to the tile edges the position is contained in.
 function flib_area.from_position(position, snap)
   local self
@@ -288,7 +288,7 @@ end
 
 --- Create an iterator of positions in the area from the left-top to the right-bottom, incrementing by `step`.
 ---
---- The iterator function, when called, will return a `Position` that is within the area.
+--- The iterator function, when called, will return a `MapPosition` that is within the area.
 ---
 --- # Examples
 ---
@@ -301,7 +301,7 @@ end
 --- @param self BoundingBox
 --- @param step number? The distance between each returned position (default: `1`).
 --- @param starting_offset MapPosition? Positional offset from left_top (default: `0,0`)
---- @return fun(): Position
+--- @return fun(): MapPosition
 function flib_area.iterate(self, step, starting_offset)
   starting_offset = starting_offset or { x = 0, y = 0 }
   if not self.left_top then
@@ -362,7 +362,6 @@ end
 --- @param area BoundingBox
 --- @return BoundingBox
 function flib_area.load(area)
-  local area = area
   if not area.left_top then
     area = flib_area.from_shorthand(area)
   end
@@ -371,7 +370,7 @@ end
 
 --- Move the area by the given delta.
 --- @param self BoundingBox
---- @param delta Position
+--- @param delta MapPosition
 --- @return BoundingBox
 function flib_area.move(self, delta)
   if not self.left_top then

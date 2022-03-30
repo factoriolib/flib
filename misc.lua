@@ -5,8 +5,8 @@ local math = math
 local string = string
 
 --- Calculate the distance in tiles between two positions.
---- @param pos1 Position
---- @param pos2 Position
+--- @param pos1 MapPosition
+--- @param pos2 MapPosition
 --- @return number
 function flib_misc.get_distance(pos1, pos2)
   local x1 = pos1.x or pos1[1]
@@ -17,8 +17,8 @@ function flib_misc.get_distance(pos1, pos2)
 end
 
 --- Calculate the squared distance in tiles between two positions.
---- @param pos1 Position
---- @param pos2 Position
+--- @param pos1 MapPosition
+--- @param pos2 MapPosition
 --- @return number
 function flib_misc.get_distance_squared(pos1, pos2)
   local x1 = pos1.x or pos1[1]

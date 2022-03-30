@@ -137,7 +137,7 @@ end
 
 --- Build a sprite from constituent parts.
 --- @param name? string
---- @param position? Position
+--- @param position? MapPosition
 --- @param filename? string
 --- @param size? Vector
 --- @param mipmap_count? number
