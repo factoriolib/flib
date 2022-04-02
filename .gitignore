@@ -4,6 +4,7 @@
 flib-docs/
 NOTES.txt
 workspace.html
+tests/  #Temporarily Adding tests for now. Nexela
 
 # Compiled Lua sources
 luac.out

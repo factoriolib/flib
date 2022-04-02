@@ -1,4 +1,6 @@
---- Extends the [Lua 5.2 math library](https://www.lua.org/manual/5.2/manual.html#6.6), adding more capabilities and functions.
+--- Extends the [Lua 5.2 math library](https://www.lua.org/manual/5.2/manual.html#6.6),
+--- adding more capabilities and functions.
+--- @class flib_math: mathlib
 local flib_math = {}
 
 -- Import lua math functions

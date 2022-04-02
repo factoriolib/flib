@@ -1,10 +1,13 @@
---- Extends the [Lua 5.2 table library](https://www.lua.org/manual/5.2/manual.html#6.5), adding more capabilities and functions.
+--- Extends the [Lua 5.2 table library](https://www.lua.org/manual/5.2/manual.html#6.5),
+--- adding more capabilities and functions.
 ---
---- **NOTE:** Several functions in this module will only work with [arrays](https://www.lua.org/pil/11.1.html), which are tables with sequentially numbered keys. All table functions will work with arrays as well, but array functions **will not** work with tables.
+--- **NOTE:** Several functions in this module will only work with [arrays](https://www.lua.org/pil/11.1.html),
+--- which are tables with sequentially numbered keys. All table functions will work with arrays as well, but
+--- array functions **will not** work with tables.
+--- @class flib_table: tablelib
 local flib_table = {}
 
 -- Import lua table functions
--- TODO: Figure out how to document this
 for name, func in pairs(table) do
   flib_table[name] = func
 end
