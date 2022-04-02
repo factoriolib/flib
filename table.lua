@@ -466,11 +466,8 @@ end
 --- Retrieve the size of a table.
 ---
 --- Uses Factorio's built-in `table_size` function.
---- @param tbl table
---- @return number
-function flib_table.size(tbl)
-  return table_size(tbl)
-end
+--- @type fun(tbl: table) : number
+flib_table.size = _ENV.table_size
 
 --- Retrieve a shallow copy of a portion of an array, selected from `start` to `end` inclusive.
 ---
