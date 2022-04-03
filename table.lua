@@ -5,6 +5,8 @@
 --- which are tables with sequentially numbered keys. All table functions will work with arrays as well, but
 --- array functions **will not** work with tables.
 --- @class flib_table: tablelib
+--- @alias result any
+--- @alias array any[]
 local flib_table = {}
 
 -- Import lua table functions
@@ -26,7 +28,7 @@ function flib_table.array_copy(arr)
 end
 
 --- Merge all of the given arrays into a single array.
---- @param arrays array An array of arrays to merge.
+--- @param arrays array[] An array of arrays to merge.
 --- @return array
 function flib_table.array_merge(arrays)
   local output = {}
@@ -80,8 +82,8 @@ function flib_table.deep_copy(tbl)
   local function _copy(object)
     if type(object) ~= "table" then
       return object
-      -- don't copy factorio rich objects
     elseif object.__self then
+      -- don't copy factorio rich objects
       return object
     elseif lookup_table[object] then
       return lookup_table[object]
@@ -115,11 +117,11 @@ end
 --- log(tbl.foo) -- logs "baz"
 --- log(tbl.bar) -- logs "3"
 --- ```
---- @param tables array An array of tables to merge.
+--- @param array table[]  An array of tables to merge.
 --- @return table
-function flib_table.deep_merge(tables)
+function flib_table.deep_merge(array)
   local output = {}
-  for _, tbl in ipairs(tables) do
+  for _, tbl in ipairs(array) do
     for k, v in pairs(tbl) do
       if type(v) == "table" then
         if type(output[k] or false) == "table" then
@@ -171,11 +173,12 @@ end
 --- local all_values_less_than_six = not table.for_each(tbl, function(v) return not (v < 6) end)
 --- ```
 --- @param tbl table
---- @param callback function Receives `value`, `key`, and `tbl` as parameters.
---- @return boolean Whether the callback returned truthy for any one item, and thus halted iteration.
-function flib_table.for_each(tbl, callback)
+--- @param callback fun(value, key, ...):boolean Receives `value`, `key`, `...` as parameters.
+--- @vararg ...? Additional arguments for callback.
+--- @return boolean #Whether the callback returned truthy for any one item, and thus halted iteration.
+function flib_table.for_each(tbl, callback, ...)
   for k, v in pairs(tbl) do
-    if callback(v, k) then
+    if callback(v, k, ...) then
       return true
     end
   end
@@ -213,15 +216,19 @@ end
 ---   global.from_k = table.for_n_of(extremely_large_table, global.from_k, 10, function(v) game.print(v) end)
 --- end)
 --- ```
+--- @generic k, v
+--- @alias delete boolean
+--- @alias abort boolean
 --- @param tbl table The table to iterate over.
---- @param from_k any The key to start iteration at, or `nil` to start at the beginning of `tbl`. If the key does not exist in `tbl`, it will be treated as `nil`, _unless_ a custom `_next` function is used.
+--- @param from_k k The key to start iteration at, or `nil` to start at the beginning of `tbl`. If the key does not exist in `tbl`, it will be treated as `nil`, _unless_ a custom `_next` function is used.
 --- @param n number The number of items to iterate.
---- @param callback function Receives `value` and `key` as parameters.
---- @param _next? function A custom `next()` function. If not provided, the default `next()` will be used.
---- @return any? next_key Where the iteration ended. Can be any valid table key, or `nil`. Pass this as `from_k` in the next call to `for_n_of` for `tbl`.
---- @return table rsults The results compiled from the first return of `callback`.
+--- @param callback fun(V: v, from_k: k, ...):result, delete, abort #Receives `value`, `key`, `...` as parameters.
+--- @param _next? fun(tbl: table<k, v>, index:k|nil, ...):k, v #A custom `next()` function. If not provided, the default `next()` will be used. Reveives `tbl`, `key`, `...` as parameters.
+--- @vararg ...? Additional parameters for callback/next if needed.
+--- @return any next_key Where the iteration ended. Can be any valid table key, or `nil`. Pass this as `from_k` in the next call to `for_n_of` for `tbl`.
+--- @return table<k, result> results The results compiled from the first return of `callback`.
 --- @return boolean reached_end Whether or not the end of the table was reached on this iteration.
-function flib_table.for_n_of(tbl, from_k, n, callback, _next)
+function flib_table.for_n_of(tbl, from_k, n, callback, _next, ...)
   -- Bypass if a custom `next` function was provided
   if not _next then
     -- Verify start key exists, else start from scratch
@@ -229,7 +236,7 @@ function flib_table.for_n_of(tbl, from_k, n, callback, _next)
       from_k = nil
     end
     -- Use default `next`
-    _next = next
+    _next = _next or next
   end
 
   local delete
@@ -243,13 +250,13 @@ function flib_table.for_n_of(tbl, from_k, n, callback, _next)
     if not delete then
       prev = from_k
     end
-    from_k, v = _next(tbl, from_k)
+    from_k, v = _next(tbl, from_k, ...)
     if delete then
       tbl[delete] = nil
     end
 
     if from_k then
-      result[from_k], delete, abort = callback(v, from_k)
+      result[from_k], delete, abort = callback(v, from_k, ...)
       if delete then
         delete = from_k
       end
@@ -283,10 +290,11 @@ end
 --- local just_evens_arr = table.filter(tbl, function(v) return v % 2 == 0 end, true) -- {2, 4, 6}
 --- ```
 --- @param tbl table
---- @param filter function Takes in `value`, `key`, and `tbl` as parameters.
+--- @param filter fun(v, k, ...):boolean Takes in `value`, `key`, `...` as parameters.
 --- @param array_insert? boolean If true, the result will be constructed as an array of values that matched the filter. Key references will be lost.
+--- @vararg ...? Additional parameters for callback if needed.
 --- @return table
-function flib_table.filter(tbl, filter, array_insert)
+function flib_table.filter(tbl, filter, array_insert, ...)
   local output = {}
   local i = 0
   for k, v in pairs(tbl) do
@@ -303,17 +311,37 @@ function flib_table.filter(tbl, filter, array_insert)
 end
 
 --- Retrieve the value at the key, or insert the default value.
---- @param table table
+--- @param tbl table
 --- @param key any
 --- @param default_value any
 --- @return any
-function flib_table.get_or_insert(table, key, default_value)
-  local value = table[key]
+function flib_table.get_or_insert(tbl, key, default_value)
+  local value = tbl[key]
   if not value then
-    table[key] = default_value
+    tbl[key] = default_value
     return default_value
   end
   return value
+end
+
+--- Inserts element value at position pos in list if element does not exist.
+--- @param list array
+--- @param pos number
+--- @param value any
+--- @return boolean #true if the item was inserted. false if item was already in the list.
+--- @overload fun(list: array, value: any):boolean
+function flib_table.unique_insert(list, pos, value)
+  if value == nil then
+    value = pos
+    pos = #list + 1
+  end
+  for _, val in ipairs(list) do
+    if val == value then
+      return false
+    end
+  end
+  table.insert(list, pos, value)
+  return true
 end
 
 --- Invert the given table such that `[value] = key`, returning a new table.
@@ -346,13 +374,15 @@ end
 --- local tbl = {1, 2, 3, 4, 5}
 --- local tbl_times_ten = table.map(tbl, function(v) return v * 10 end) -- {10, 20, 30, 40, 50}
 --- ```
+--- @generic k, v
 --- @param tbl table
---- @param mapper function Takes in `value`, `key`, and `tbl` as parameters.
---- @return table
-function flib_table.map(tbl, mapper)
+--- @param mapper fun(v:v, k:k, ...):result? Takes in `value`, `key`, `...` as parameters.
+--- @vararg ...? Additional parameters for mapper if needed.
+--- @return table<k, result>
+function flib_table.map(tbl, mapper, ...)
   local output = {}
   for k, v in pairs(tbl) do
-    output[k] = mapper(v, k)
+    output[k] = mapper(v, k, ...)
   end
   return output
 end
@@ -367,9 +397,10 @@ end
 --- @param arr array
 --- @param from_index number The index to start iteration at (inclusive). Pass `nil` or a number less than `2` to begin at the start of the array.
 --- @param iterations number The number of iterations to perform. Higher is more performance-heavy. This number should be adjusted based on the performance impact of the custom `comp` function (if any) and the size of the array.
---- @param comp? function A comparison function for sorting. Must return truthy if `a < b`.
+--- @param comp? fun(a, b, ...):boolean A comparison function for sorting. Must return truthy if `a < b`.
+--- @vararg ...? Additional parameters for comp if needed.
 --- @return number? next_index The index to start the next iteration at, or `nil` if the end was reached.
-function flib_table.partial_sort(arr, from_index, iterations, comp)
+function flib_table.partial_sort(arr, from_index, iterations, comp, ...)
   comp = comp or default_comp
   local start_index = (from_index and from_index > 2) and from_index or 2
   local end_index = start_index + (iterations - 1)
@@ -404,14 +435,15 @@ end
 --- local sum_minus_ten = table.reduce(tbl, function(acc, v) return acc + v end, -10)
 --- ```
 --- @param tbl table
---- @param reducer function
+--- @param reducer fun(accumulator, value, key, ...):any
 --- @param initial_value? any The initial value for the accumulator. If not provided or is falsy, the first value in the table will be used as the initial `accumulator` value and skipped as `key`. Calling `reduce()` on an empty table without an `initial_value` will cause a crash.
+--- @vararg ...? Additional parameters for comp if needed.
 --- @return any The accumulated value.
-function flib_table.reduce(tbl, reducer, initial_value)
+function flib_table.reduce(tbl, reducer, initial_value, ...)
   local accumulator = initial_value
   for key, value in pairs(tbl) do
     if accumulator then
-      accumulator = reducer(accumulator, value, key)
+      accumulator = reducer(accumulator, value, key, ...)
     else
       accumulator = value
     end
@@ -483,13 +515,13 @@ flib_table.size = _ENV.table_size
 --- local sliced = table.slice(arr, 3, 7) -- {30, 40, 50, 60, 70}
 --- log(serpent.line(arr)) -- {10, 20, 30, 40, 50, 60, 70, 80, 90} (unchanged)
 --- ```
---- @param arr array
+--- @param array array
 --- @param start? int default: `1`
---- @param stop? int Stop at this index. If zero or negative, will stop `n` items from the end of the array (default: `#arr`).
---- @return array A new array with the copied values.
-function flib_table.slice(arr, start, stop)
+--- @param stop? int Stop at this index. If zero or negative, will stop `n` items from the end of the array (default: `#array`).
+--- @return array #A new array with the copied values.
+function flib_table.slice(array, start, stop)
   local output = {}
-  local n = #arr
+  local n = #array
 
   start = start or 1
   stop = stop or n
@@ -501,7 +533,7 @@ function flib_table.slice(arr, start, stop)
 
   local k = 1
   for i = start, stop do
-    output[k] = arr[i]
+    output[k] = array[i]
     k = k + 1
   end
   return output
@@ -518,13 +550,13 @@ end
 --- local spliced = table.splice(arr, 3, 7) -- {30, 40, 50, 60, 70}
 --- log(serpent.line(arr)) -- {10, 20, 80, 90} (values were removed)
 --- ```
---- @param arr array
+--- @param array array
 --- @param start int default: `1`
---- @param stop? int Stop at this index. If zero or negative, will stop `n` items from the end of the array (default: `#arr`).
---- @return array A new array with the extracted values.
-function flib_table.splice(arr, start, stop)
+--- @param stop? int Stop at this index. If zero or negative, will stop `n` items from the end of the array (default: `#array`).
+--- @return array #A new array with the extracted values.
+function flib_table.splice(array, start, stop)
   local output = {}
-  local n = #arr
+  local n = #array
 
   start = start or 1
   stop = stop or n
@@ -536,12 +568,10 @@ function flib_table.splice(arr, start, stop)
 
   local k = 1
   for _ = start, stop do
-    output[k] = table.remove(arr, start)
+    output[k] = table.remove(array, start)
     k = k + 1
   end
   return output
 end
-
---- @alias array any[]
 
 return flib_table

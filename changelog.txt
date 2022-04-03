@@ -4,6 +4,8 @@ Date: ????
   Features:
     - [area] Added `area.square()` to turn the area into a square
     - [area] Added `starting_offset` argument to `area.iterate()`
+    - [table] Added `unique_insert`
+    - [table] `filter`, `for_each`, `for_n_of`, `map` `partial_sort`, `reduce` accept additional parameters for their callback functions
 ---------------------------------------------------------------------------------------------------
 Version: 0.10.1
 Date: 2022-02-24
