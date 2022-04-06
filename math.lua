@@ -8,13 +8,19 @@ local unpack = table.unpack
 -- Import lua math functions
 for name, func in pairs(math) do flib_math[name] = func end
 
---- Multiply by degrees to get radians.
-flib_math.radians = flib_math.pi / 180 --- @type number
-flib_math.deg_to_rad = flib_math.radians --- @deprecated use flib_math.degrees
 
---- Multiply by radians to get degrees.
-flib_math.degrees = 180 / flib_math.pi --- @type number
-flib_math.rad_to_deg = flib_math.degrees --- @deprecated use flib_math.radians
+--- Multiply by degrees to convert to radians.
+--- ```lua
+--- local rad = 1 x flib_math.deg_to_rad -- 0.0174533
+--- ```
+flib_math.deg_to_rad = flib_math.pi / 180 --- @type number
+
+--- Multiply by radians to convert to degrees.
+---
+--- ```lua
+--- local deg = 1 x flib_math.rad_to_deg -- 57.2958
+--- ```
+flib_math.rad_to_deg = 180 / flib_math.pi --- @type number
 
 flib_math.max_double = 0X1.FFFFFFFFFFFFFP+1023
 flib_math.min_double = -0X1.FFFFFFFFFFFFFP+1023
@@ -140,7 +146,6 @@ function flib_math.range(set)
 end
 
 --- Clamp a number between minimum and maximum values.
---- @TODO assert min <= max?
 --- @param x number
 --- @param min? number default 0
 --- @param max? number default 1

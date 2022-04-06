@@ -5,11 +5,10 @@ Date: ????
     - [area] Added `area.square()` to turn the area into a square
     - [area] Added `starting_offset` argument to `area.iterate()`
     - [math] Added `floored` and `ceiled` for flooring and ceiling to N decimal places.
-    - [math] Added `radians` and `degrees` constants to replace `rad_to_deg` and `deg_to_rad`
     - [math] Added `sign` to return the signedness of a number as a multiplier
     - [math] Added `sum`, `maximum`, `minimum`, `midrange`, `range` for sets of numbers
   Changes:
-    - [math] Deprecated `round_to`, `ceil_to`, `floor_to`, `rad_to_deg` and `deg_to_rad`
+    - [math] Deprecated `round_to`, `ceil_to`, `floor_to`
     - [math] `clamp` defaults to clamping between 0, 1 when min or max are not set
   Bugfixes:
     - Fixed missing annotations in math and table libraries
