@@ -4,6 +4,8 @@
 flib-docs/
 NOTES.txt
 workspace.html
+faketorio
+faketorio_path.lua
 
 # Compiled Lua sources
 luac.out
