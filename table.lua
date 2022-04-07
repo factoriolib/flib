@@ -437,8 +437,8 @@ end
 --- @param tbl table
 --- @param reducer fun(accumulator, value, key, ...):any
 --- @param initial_value? any The initial value for the accumulator. If not provided or is falsy, the first value in the table will be used as the initial `accumulator` value and skipped as `key`. Calling `reduce()` on an empty table without an `initial_value` will cause a crash.
---- @vararg ...? Additional parameters for comp if needed.
---- @return any The accumulated value.
+--- @vararg ...? Additional parameters for reducer if needed.
+--- @return any #The accumulated value.
 function flib_table.reduce(tbl, reducer, initial_value, ...)
   local accumulator = initial_value
   for key, value in pairs(tbl) do
@@ -470,16 +470,11 @@ end
 ---
 --- Does not copy metatables.
 --- @param tbl table
---- @param use_rawset boolean Use rawset to set the values (ignores metamethods).
---- @return table The copied table.
-function flib_table.shallow_copy(tbl, use_rawset)
+--- @return table
+function flib_table.shallow_copy(tbl)
   local output = {}
   for k, v in pairs(tbl) do
-    if use_rawset then
-      rawset(output, k, v)
-    else
-      output[k] = v
-    end
+    output[k] = v
   end
   return output
 end
@@ -520,17 +515,17 @@ flib_table.size = _ENV.table_size
 --- @param stop? int Stop at this index. If zero or negative, will stop `n` items from the end of the array (default: `#array`).
 --- @return array #A new array with the copied values.
 function flib_table.slice(array, start, stop)
-  local output = {}
   local n = #array
 
   start = start or 1
-  stop = stop or n
-  stop = stop <= 0 and (n + stop) or stop
-
   if start < 1 or start > n then
     return {}
   end
 
+  stop = stop or n
+  stop = stop <= 0 and (n + stop) or stop
+
+  local output = {}
   local k = 1
   for i = start, stop do
     output[k] = array[i]
@@ -555,17 +550,17 @@ end
 --- @param stop? int Stop at this index. If zero or negative, will stop `n` items from the end of the array (default: `#array`).
 --- @return array #A new array with the extracted values.
 function flib_table.splice(array, start, stop)
-  local output = {}
   local n = #array
 
   start = start or 1
-  stop = stop or n
-  stop = stop <= 0 and (n + stop) or stop
-
   if start < 1 or start > n then
     return {}
   end
 
+  stop = stop or n
+  stop = stop <= 0 and (n + stop) or stop
+
+  local output = {}
   local k = 1
   for _ = start, stop do
     output[k] = table.remove(array, start)
