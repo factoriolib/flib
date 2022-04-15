@@ -6,7 +6,9 @@ local flib_math = {}
 local unpack = table.unpack
 
 -- Import lua math functions
-for name, func in pairs(math) do flib_math[name] = func end
+for name, func in pairs(math) do
+  flib_math[name] = func
+end
 
 
 --- Multiply by degrees to convert to radians.
@@ -36,7 +38,8 @@ flib_math.max_uint = 4294967295 --- 4,294,967,295
 flib_math.max_int53 = 0x1FFFFFFFFFFFFF --- 9,007,199,254,740,991
 flib_math.min_int53 = -0x20000000000000 --- -9,007,199,254,740,992
 
---- Round a number to the nearest integer.
+--- Round a number to the nearest multiple of divisor.
+--- Defaults to nearest integer if divisor is not provided.
 ---
 --- From [lua-users.org](http://lua-users.org/wiki/SimpleRound).
 --- @param num number
@@ -51,17 +54,17 @@ function flib_math.round(num, divisor)
   end
 end
 
---- Ceil a number to N decimal places.
+--- Ceil a number to the nearest multiple of divisor.
 --- @param num number
---- @param divisor? number `num` will be rounded to the nearest multiple of `divisor` (default: 1).
+--- @param divisor? number `num` will be ceiled to the nearest multiple of `divisor` (default: 1).
 function flib_math.ceiled(num, divisor)
   if divisor then return flib_math.ceil(num / divisor) * divisor end
   return flib_math.ceil(num)
 end
 
---- Floor a number to N decimal places.
+--- Floor a number to the nearest multiple of divisor.
 --- @param num number
---- @param divisor? number `num` will be rounded to the nearest multiple of `divisor` (default: 1).
+--- @param divisor? number `num` will be floored to the nearest multiple of `divisor` (default: 1).
 function flib_math.floored(num, divisor)
   if divisor then return flib_math.floor(num / divisor) * divisor end
   return flib_math.floor(num)
@@ -178,9 +181,5 @@ end
 function flib_math.lerp(num1, num2, amount)
   return num1 + (num2 - num1) * flib_math.clamp(amount, 0, 1)
 end
-
---- The number of ticks in a real unit of time.
---- @return number
-flib_math.time = { second = 60, minute = 3600, hour = 216000, day = 5184000 }
 
 return flib_math
