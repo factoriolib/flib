@@ -117,11 +117,11 @@ end
 --- log(tbl.foo) -- logs "baz"
 --- log(tbl.bar) -- logs "3"
 --- ```
---- @param array table[]  An array of tables to merge.
+--- @param tables table[]  An tables of tables to merge.
 --- @return table
-function flib_table.deep_merge(array)
+function flib_table.deep_merge(tables)
   local output = {}
-  for _, tbl in ipairs(array) do
+  for _, tbl in ipairs(tables) do
     for k, v in pairs(tbl) do
       if type(v) == "table" then
         if type(output[k] or false) == "table" then
@@ -236,7 +236,7 @@ function flib_table.for_n_of(tbl, from_k, n, callback, _next, ...)
       from_k = nil
     end
     -- Use default `next`
-    _next = _next or next
+    _next = next
   end
 
   local delete
@@ -250,6 +250,7 @@ function flib_table.for_n_of(tbl, from_k, n, callback, _next, ...)
     if not delete then
       prev = from_k
     end
+    ---@diagnostic disable-next-line: redundant-parameter
     from_k, v = _next(tbl, from_k, ...)
     if delete then
       tbl[delete] = nil
@@ -325,6 +326,8 @@ function flib_table.get_or_insert(tbl, key, default_value)
 end
 
 --- Inserts element value at position pos in list if element does not exist.
+---
+--- This function is O(n) and should be used sparingly.
 --- @param list array
 --- @param pos number
 --- @param value any
