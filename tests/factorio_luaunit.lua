@@ -1,8 +1,81 @@
-local ok, faketorio_path = pcall(require, 'tests/faketorio_path')
+local ok, faketorio_path = pcall(require, 'tests.faketorio_path')
 if ok then
   dofile(faketorio_path)
 else
-  dofile('tests/faketorio/init.lua')
+  if not _ENV._FAKETORIO_globals then
+    _ENV._FAKETORIO_globals = true
+
+    _ENV.defines = { direction = { north = 0, northeast = 1, east = 2, southeast = 3, south = 4, southwest = 5, west = 6, northwest = 7 } }
+    _ENV.settings = {
+      startup = {
+        __index = function()
+          return { value = true }
+        end
+      },
+      global = {
+        __index = function()
+          return { value = true }
+        end
+      },
+      player = {}
+    }
+    setmetatable(_ENV.settings.startup, _ENV.settings.startup)
+    setmetatable(_ENV.settings.global, _ENV.settings.global)
+
+    _ENV.log = function(...)
+    end
+
+    _ENV.table_size = function(tbl)
+      local count = 0
+      for _ in pairs(tbl) do count = count + 1 end
+      return count
+    end
+  end
+
+  if not _ENV._FAKETORIO_searcher then
+    _ENV._FAKETORIO_searcher = true
+
+    do
+      local paths = {}
+      for str in string.gmatch(package.path, '([^;]+)') do table.insert(paths, str) end
+      local path = debug.getinfo(1, 'S').source:sub(2, -19)
+      paths[#paths + 1] = path .. '?.lua'
+      paths[#paths + 1] = path .. '?/init.lua'
+      paths[#paths + 1] = path .. 'faketorio/lualib/?.lua'
+      paths[#paths + 1] = './?/init.lua'
+      paths[#paths + 1] = '../?.lua'
+      paths[#paths + 1] = '../?/init.lua'
+
+      local patterns = { '^%./%?', '^%.%.', '^/h', '^/u', '.' }
+      local function special_sort(a, b)
+        for _, pattern in ipairs(patterns) do
+          local A = string.find(a, pattern)
+          local B = string.find(b, pattern)
+          if A and not B then return true end
+          if B and not A then return false end
+          if A and B then return a < b end
+        end
+        return false
+      end
+      table.sort(paths, special_sort)
+      package.path = table.concat(paths, ';')
+    end
+
+    local function mod_searcher(original)
+      -- First search for `modname.some.path`
+      local modname = original:gsub('%_%_(%w+)%_%_', '%1')
+      local filepath = package.searchpath(modname, package.path, '.', '/')
+      if not filepath then
+        -- Then search for `some.path`
+        modname = original:gsub('%_%_(%w+)%_%_[%.%\\]', '')
+        filepath = package.searchpath(modname, package.path, '.', '/')
+        if not filepath then return nil end
+      end
+      local loader = loadfile(filepath)
+      return loader
+    end
+    table.insert(package.searchers, mod_searcher)
+  end
 end
 
 ---@diagnostic disable
