@@ -117,7 +117,7 @@ end
 --- log(tbl.foo) -- logs "baz"
 --- log(tbl.bar) -- logs "3"
 --- ```
---- @param tables table[]  An tables of tables to merge.
+--- @param tables table[] An array of of tables to merge.
 --- @return table
 function flib_table.deep_merge(tables)
   local output = {}
