@@ -28,29 +28,13 @@ function flib_misc.get_distance_squared(pos1, pos2)
   return (x1 - x2) ^ 2 + (y1 - y2) ^ 2
 end
 
---- Convert given tick or game.tick into "[hh:]mm:ss" format.
+local flib_time = require('__flib__.time')
+--- Use flib_time.ticks_to_timestring.
 --- @param tick number? default: `game.tick`
---- @param include_leading_zeroes boolean? If true, leading zeroes will be included in single-digit minute and hour values.
---- @return string
+--- @param include_leading_zeroes boolean?
+--- @deprecated
 function flib_misc.ticks_to_timestring(tick, include_leading_zeroes)
-  local total_seconds = math.floor((tick or game.ticks_played) / 60)
-  local seconds = total_seconds % 60
-  local minutes = math.floor(total_seconds / 60)
-  if minutes > 59 then
-    minutes = minutes % 60
-    local hours = math.floor(total_seconds / 3600)
-    if include_leading_zeroes then
-      return string.format("%02d:%02d:%02d", hours, minutes, seconds)
-    else
-      return string.format("%d:%02d:%02d", hours, minutes, seconds)
-    end
-  else
-    if include_leading_zeroes then
-      return string.format("%02d:%02d", minutes, seconds)
-    else
-      return string.format("%d:%02d", minutes, seconds)
-    end
-  end
+  return flib_time.ticks_to_timestring(tick, include_leading_zeroes)
 end
 
 --- Split numerical values by a delimiter.
