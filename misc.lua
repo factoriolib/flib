@@ -28,14 +28,8 @@ function flib_misc.get_distance_squared(pos1, pos2)
   return (x1 - x2) ^ 2 + (y1 - y2) ^ 2
 end
 
-local flib_time = require('__flib__.time')
---- Use flib_time.ticks_to_timestring.
---- @param tick number? default: `game.tick`
---- @param include_leading_zeroes boolean?
---- @deprecated
-function flib_misc.ticks_to_timestring(tick, include_leading_zeroes)
-  return flib_time.ticks_to_timestring(tick, include_leading_zeroes)
-end
+--- @deprecated Use flib_time.ticks_to_timestring.
+flib_misc.ticks_to_timestring = require('__flib__.time').ticks_to_timestring
 
 --- Split numerical values by a delimiter.
 ---
