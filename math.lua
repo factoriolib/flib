@@ -154,6 +154,7 @@ end
 --- @param max? number default 1
 --- @return number
 function flib_math.clamp(x, min, max)
+  x = x == 0 and 0 or x -- Treat -0 as 0
   min, max = min or 0, max or 1
   return x < min and min or (x > max and max or x)
 end
