@@ -5,11 +5,11 @@ math.randomseed(os.clock())
 --- @diagnostic disable: undefined-field
 
 function Test_radians()
-  for i = 1, 90 do Test.assertAlmostEquals(i * math.radians, math.rad(i), .1) end
+  for i = 1, 90 do Test.assertAlmostEquals(i * math.deg_to_rad, math.rad(i), .1) end
 end
 
 function Test_degrees()
-  for i = 1, 90 do Test.assertAlmostEquals(i * math.degrees, math.deg(i), .1) end
+  for i = 1, 90 do Test.assertAlmostEquals(i * math.rad_to_deg, math.deg(i), .1) end
 end
 
 function Test_round()
@@ -50,7 +50,6 @@ function Test_clamp()
   Test.assertEquals(math.clamp(0, 1, 0), 1)
   Test.assertEquals(math.clamp(2, 1, 0), 0)
   Test.assertEquals(math.clamp(1, 1, 0), 0)
-
 end
 
 local values1 = { 25, 25, 25, 25 }
