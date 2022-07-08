@@ -31,7 +31,7 @@ function RawDictionary:add(internal, translation)
   local ref = self.ref
   local i = self.i + 1
   -- Due to network saturation concerns, only group five strings together
-  -- See
+  -- See https://github.com/factoriolib/flib/issues/45
   if i < 5 then
     ref[i] = to_add
     self.i = i
