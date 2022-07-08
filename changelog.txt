@@ -10,6 +10,8 @@ Date: ????
   Changes:
     - [math] Deprecated `round_to`, `ceil_to`, `floor_to`
     - [math] `clamp` defaults to clamping between 0, 1 when min or max are not set
+    - [dictionary] Removed string nesting to significantly reduce network traffic
+      - This makes translation take significantly longer
   Bugfixes:
     - Fixed missing annotations in math and table libraries
 ---------------------------------------------------------------------------------------------------
