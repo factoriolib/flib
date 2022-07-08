@@ -75,11 +75,11 @@ function flib_area.contains_area(self, other_area)
   end
 
   return (
-      self.left_top.x <= other_area.left_top.x
-      and self.left_top.y <= other_area.left_top.y
-      and self.right_bottom.x >= other_area.right_bottom.x
-      and self.right_bottom.y >= other_area.right_bottom.y
-    )
+    self.left_top.x <= other_area.left_top.x
+    and self.left_top.y <= other_area.left_top.y
+    and self.right_bottom.x >= other_area.right_bottom.x
+    and self.right_bottom.y >= other_area.right_bottom.y
+  )
 end
 
 --- Check if the area contains the given position.
@@ -92,11 +92,11 @@ function flib_area.contains_position(self, position)
   end
 
   return (
-      self.left_top.x <= position.x
-      and self.right_bottom.x >= position.x
-      and self.left_top.y <= position.y
-      and self.right_bottom.y >= position.y
-    )
+    self.left_top.x <= position.x
+    and self.right_bottom.x >= position.x
+    and self.left_top.y <= position.y
+    and self.right_bottom.y >= position.y
+  )
 end
 
 --- Add left_bottom and right_top keys to the area.

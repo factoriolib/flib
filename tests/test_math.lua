@@ -1,20 +1,24 @@
-local Test = require('tests.factorio_luaunit')
-local math = require('__flib__.math')
+local Test = require("tests.factorio_luaunit")
+local math = require("__flib__.math")
 math.randomseed(os.clock())
 
 --- @diagnostic disable: undefined-field
 
 function Test_radians()
-  for i = 1, 90 do Test.assertAlmostEquals(i * math.deg_to_rad, math.rad(i), .1) end
+  for i = 1, 90 do
+    Test.assertAlmostEquals(i * math.deg_to_rad, math.rad(i), 0.1)
+  end
 end
 
 function Test_degrees()
-  for i = 1, 90 do Test.assertAlmostEquals(i * math.rad_to_deg, math.deg(i), .1) end
+  for i = 1, 90 do
+    Test.assertAlmostEquals(i * math.rad_to_deg, math.deg(i), 0.1)
+  end
 end
 
 function Test_round()
   Test.assertEquals(math.round(3.51), 4)
-  Test.assertEquals(math.round(3.51, .1), 3.5)
+  Test.assertEquals(math.round(3.51, 0.1), 3.5)
 end
 
 function Test_ceiled()
@@ -22,7 +26,7 @@ function Test_ceiled()
   Test.assertEquals(math.ceiled(3.7), math.ceil(3.7))
   Test.assertEquals(math.ceiled(-3.7), -3)
   Test.assertEquals(math.ceiled(-3.7), math.ceil(-3.7))
-  Test.assertAlmostEquals(math.ceiled(-3.75, .1), -3.8, .1)
+  Test.assertAlmostEquals(math.ceiled(-3.75, 0.1), -3.8, 0.1)
 end
 
 function Test_floored()
@@ -30,7 +34,7 @@ function Test_floored()
   Test.assertEquals(math.floored(3.7), math.floor(3.7))
   Test.assertEquals(math.floored(-3.7), -4)
   Test.assertEquals(math.floored(-3.7), math.floor(-3.7))
-  Test.assertAlmostEquals(math.floored(-3.75, .1), -3.8, .1)
+  Test.assertAlmostEquals(math.floored(-3.75, 0.1), -3.8, 0.1)
 end
 
 function Test_clamp()
@@ -43,7 +47,7 @@ function Test_clamp()
   Test.assertEquals(math.clamp(100, -10, 10), 10)
 
   Test.assertEquals(math.clamp(-2), 0)
-  Test.assertEquals(math.clamp(.5), .5)
+  Test.assertEquals(math.clamp(0.5), 0.5)
   Test.assertEquals(math.clamp(3), 1)
 
   --- Max is smaller than min
@@ -54,8 +58,8 @@ end
 
 local values1 = { 25, 25, 25, 25 }
 local values2 = { 10, 25, 40, 45, 50 }
-local values3 = { 10, 25, 40, -50, -45  }
-local values4 = {-23, -12, -50, -10, -33}
+local values3 = { 10, 25, 40, -50, -45 }
+local values4 = { -23, -12, -50, -10, -33 }
 
 function Test_maximum()
   Test.assertEquals(math.maximum(values1), 25)
@@ -64,7 +68,9 @@ function Test_maximum()
   Test.assertEquals(math.maximum(values4), -10)
   for _ = 1, 5 do
     local rando = {}
-    while #rando < 11 do rando[#rando + 1] = math.random(-50, 50) end
+    while #rando < 11 do
+      rando[#rando + 1] = math.random(-50, 50)
+    end
     Test.assertEquals(math.maximum(rando), math.max(table.unpack(rando)))
   end
 end
@@ -76,7 +82,9 @@ function Test_minimum()
   Test.assertEquals(math.minimum(values4), -50)
   for _ = 1, 5 do
     local rando = {}
-    while #rando < 11 do rando[#rando + 1] = math.random(-50, 50) end
+    while #rando < 11 do
+      rando[#rando + 1] = math.random(-50, 50)
+    end
     Test.assertEquals(math.minimum(rando), math.min(table.unpack(rando)))
   end
 end
@@ -116,8 +124,8 @@ function Test_sign()
 end
 
 function Test_lerp()
-  Test.assertEquals(math.lerp(1, 2, .5), 1.5)
-  Test.assertEquals(math.lerp(0, 10, .25), 2.5)
+  Test.assertEquals(math.lerp(1, 2, 0.5), 1.5)
+  Test.assertEquals(math.lerp(0, 10, 0.25), 2.5)
 end
 
 Test.Run()

@@ -216,10 +216,8 @@ function flib_dictionary.process_translation(event_data)
   end
   local script_data = global.__flib.dictionary
   if string.find(event_data.result, "FLIB_DICTIONARY_NAME") then
-    local _, _, dict_name, dict_lang, string_index, translation = string.find(
-      event_data.result,
-      dictionary_match_string
-    )
+    local _, _, dict_name, dict_lang, string_index, translation =
+      string.find(event_data.result, dictionary_match_string)
 
     if dict_name and dict_lang and string_index and translation then
       local language_data = script_data.in_process[dict_lang]

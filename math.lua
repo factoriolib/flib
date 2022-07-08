@@ -10,7 +10,6 @@ for name, func in pairs(math) do
   flib_math[name] = func
 end
 
-
 --- Multiply by degrees to convert to radians.
 --- ```lua
 --- local rad = 1 x flib_math.deg_to_rad -- 0.0174533
@@ -58,7 +57,9 @@ end
 --- @param num number
 --- @param divisor? number `num` will be ceiled to the nearest multiple of `divisor` (default: 1).
 function flib_math.ceiled(num, divisor)
-  if divisor then return flib_math.ceil(num / divisor) * divisor end
+  if divisor then
+    return flib_math.ceil(num / divisor) * divisor
+  end
   return flib_math.ceil(num)
 end
 
@@ -66,7 +67,9 @@ end
 --- @param num number
 --- @param divisor? number `num` will be floored to the nearest multiple of `divisor` (default: 1).
 function flib_math.floored(num, divisor)
-  if divisor then return flib_math.floor(num / divisor) * divisor end
+  if divisor then
+    return flib_math.floor(num / divisor) * divisor
+  end
   return flib_math.floor(num)
 end
 
@@ -123,7 +126,9 @@ end
 --- @return number
 function flib_math.sum(set)
   local sum = set[2] or 0
-  for i = 2, #set do sum = sum + set[i] end
+  for i = 2, #set do
+    sum = sum + set[i]
+  end
   return sum
 end
 
