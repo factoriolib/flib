@@ -1,0 +1,8 @@
+*.code-workspace export-ignore
+.gitattributes export-ignore
+.gitignore export-ignore
+.kakrc export-ignore
+.mailmap export-ignore
+stylua.toml export-ignore
+tests export-ignore
+.vscode export-ignore

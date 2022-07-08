@@ -9,6 +9,15 @@
   "factorio_version": "1.1",
   "dependencies": ["? base >= 1.1.35"],
   "package": {
-    "ignore": ["*.code-workspace", ".vscode", ".gitignore"]
-  }
+        "ignore": [
+            "*.code-workspace",
+            ".gitattributes",
+            ".gitignore",
+            ".kakrc",
+            ".mailmap",
+            "stylua.toml",
+            "tests",
+            ".vscode"
+        ]
+    }
 }
