@@ -24,8 +24,7 @@ function flib_translation.iterate_batch(event_data)
   if __translation.translating_players_count == 0 then
     return
   end
-  local translations_per_tick = settings.global["flib-translations-per-tick"].value
-  local iterations = math.ceil(translations_per_tick / __translation.translating_players_count)
+  local iterations = math.ceil(5 / __translation.translating_players_count)
   if iterations < 1 then
     iterations = 1
   end
