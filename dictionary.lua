@@ -5,7 +5,6 @@ local flib_dictionary = {}
 
 local inner_separator = "⤬"
 local separator = "⤬⤬⤬"
-local max_depth = settings.global["flib-dictionary-levels-per-batch"].value
 local translation_timeout = 180
 
 -- Depending on the value of `use_local_storage`, this will be tied to `global` or will be re-generated during `on_load`
@@ -31,26 +30,18 @@ function RawDictionary:add(internal, translation)
 
   local ref = self.ref
   local i = self.i + 1
-  if i < 20 then
+  -- Due to network saturation concerns, only group five strings together
+  -- See
+  if i < 5 then
     ref[i] = to_add
     self.i = i
   else
-    local r_i = self.r_i + 1
-    if r_i <= max_depth then
-      local new_level = { "", to_add }
-      ref[i] = new_level
-      self.ref = new_level
-      self.i = 2
-      self.r_i = r_i
-    else
-      local s_i = self.s_i + 1
-      self.s_i = s_i
-      local new_set = { "", to_add }
-      self.ref = new_set
-      self.strings[s_i] = new_set
-      self.i = 2
-      self.r_i = 1
-    end
+    local s_i = self.s_i + 1
+    self.s_i = s_i
+    local new_set = { "", to_add }
+    self.ref = new_set
+    self.strings[s_i] = new_set
+    self.i = 2
   end
 end
 
@@ -67,11 +58,10 @@ function flib_dictionary.new(name, keep_untranslated, initial_contents)
   end
 
   local initial_string = { "" }
-  --- @type RawDictionary
+  --- @class RawDictionary
   local self = {
     -- Indices
     i = 1,
-    r_i = 1,
     s_i = 1,
     -- Internal
     ref = initial_string,
