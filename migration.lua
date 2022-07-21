@@ -82,7 +82,7 @@ end
 --- @vararg any Any additional arguments will be passed to each function within `migrations`.
 --- @return boolean run_generic_micrations
 function flib_migration.on_config_changed(event_data, migrations, mod_name, ...)
-  local changes = event_data.mod_changes[mod_name or script.mod_name]
+  local changes = event_data.mod_changes and event_data.mod_changes[mod_name or script.mod_name]
   if changes then
     local old_version = changes.old_version
     if old_version then
