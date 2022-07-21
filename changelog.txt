@@ -4,6 +4,7 @@ Date: ????
   Features:
     - [area] Added `area.square()` to turn the area into a square
     - [area] Added `starting_offset` argument to `area.iterate()`
+    - [dictionary] Added a GUI that shows translation progress
     - [math] Added `floored` and `ceiled` for flooring and ceiling to N decimal places.
     - [math] Added `sign` to return the signedness of a number as a multiplier
     - [math] Added `sum`, `maximum`, `minimum`, `midrange`, `range` for sets of numbers

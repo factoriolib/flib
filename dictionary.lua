@@ -1,3 +1,5 @@
+local gui = require("__flib__.gui")
+local mod_gui = require("__core__.lualib.mod-gui")
 local table = require("__flib__.table")
 
 --- An easy-to-use dictionary system for storing localised string translations.
@@ -5,10 +7,10 @@ local flib_dictionary = {}
 
 local inner_separator = "⤬"
 local separator = "⤬⤬⤬"
-local translation_timeout = 180
+local translation_timeout = 600
 
 -- Depending on the value of `use_local_storage`, this will be tied to `global` or will be re-generated during `on_load`
-local raw = {}
+local raw = { _total_strings = 0 }
 
 local use_local_storage = false
 
@@ -29,20 +31,22 @@ function RawDictionary:add(internal, translation)
   local to_add = { "", internal, inner_separator, translation, separator }
 
   local ref = self.ref
-  local i = self.i + 1
+  local i = self.batch_i + 1
   -- Due to network saturation concerns, only group five strings together
   -- See https://github.com/factoriolib/flib/issues/45
   if i < 5 then
     ref[i] = to_add
-    self.i = i
+    self.batch_i = i
   else
-    local s_i = self.s_i + 1
-    self.s_i = s_i
+    local s_i = self.dict_i + 1
+    self.dict_i = s_i
     local new_set = { "", to_add }
     self.ref = new_set
     self.strings[s_i] = new_set
-    self.i = 2
+    self.batch_i = 2
   end
+  self.total = self.total + 1
+  raw._total_strings = raw._total_strings + 1
 end
 
 --- Create a new `RawDictionary`.
@@ -61,8 +65,9 @@ function flib_dictionary.new(name, keep_untranslated, initial_contents)
   --- @class RawDictionary
   local self = {
     -- Indices
-    i = 1,
-    s_i = 1,
+    batch_i = 1,
+    dict_i = 1,
+    total = 1,
     -- Internal
     ref = initial_string,
     strings = { initial_string },
@@ -90,11 +95,11 @@ function flib_dictionary.init()
   global.__flib.dictionary = {
     in_process = {},
     players = {},
-    raw = {},
+    raw = { _total_strings = 0 },
     translated = {},
   }
   if use_local_storage then
-    raw = {}
+    raw = { _total_strings = 0 }
   else
     raw = global.__flib.dictionary.raw
   end
@@ -199,6 +204,29 @@ local function match_literal(s)
   return string.gsub(s, "%-", "%%-")
 end
 
+--- @param dict_lang string
+local function clean_gui(dict_lang)
+  for _, player in pairs(game.players) do
+    local window = mod_gui.get_frame_flow(player).flib_translation_progress
+    if window then
+      local pane = window.pane
+      local mod_flow = pane[script.mod_name]
+      if mod_flow then
+        local lang_flow = mod_flow[dict_lang]
+        if lang_flow then
+          lang_flow.destroy()
+        end
+        if #mod_flow.children == 1 then
+          mod_flow.destroy()
+        end
+      end
+      if #pane.children == 0 then
+        window.destroy()
+      end
+    end
+  end
+end
+
 local dictionary_match_string = key_value("^FLIB_DICTIONARY_MOD", match_literal(script.mod_name))
   .. key_value("FLIB_DICTIONARY_NAME", "(.-)")
   .. key_value("FLIB_DICTIONARY_LANGUAGE", "(.-)")
@@ -248,6 +276,7 @@ function flib_dictionary.process_translation(event_data)
             if value then
               dictionary[key] = value
             end
+            language_data.translated_i = language_data.translated_i + 1
           end
         end
 
@@ -255,13 +284,67 @@ function flib_dictionary.process_translation(event_data)
         player_data.i = player_data.i + 1
         request_translation(player_data)
 
+        -- GUI
+        for _, player in pairs(game.players) do
+          --- @type LuaGuiElement
+          local flow = mod_gui.get_frame_flow(player)
+          if not flow.flib_translation_progress then
+            gui.add(flow, {
+              type = "frame",
+              name = "flib_translation_progress",
+              style = mod_gui.frame_style,
+              style_mods = { width = 350 },
+              caption = { "gui.flib-translating-dictionaries" },
+              {
+                type = "frame",
+                name = "pane",
+                style = "inside_shallow_frame_with_padding",
+                style_mods = { top_padding = 8 },
+                direction = "vertical",
+              },
+            })
+          end
+          local pane = flow.flib_translation_progress.pane
+          if not pane[script.mod_name] then
+            gui.add(pane, {
+              type = "flow",
+              name = script.mod_name,
+              direction = "vertical",
+              { type = "label", style = "caption_label", style_mods = { top_margin = 4 }, caption = script.mod_name },
+            })
+          end
+          local mod_flow = pane[script.mod_name]
+          if not mod_flow[dict_lang] then
+            gui.add(mod_flow, {
+              type = "flow",
+              name = dict_lang,
+              style_mods = { vertical_align = "center", horizontal_spacing = 8 },
+              { type = "label", style = "bold_label", caption = dict_lang },
+              { type = "progressbar", name = "bar", style_mods = { horizontally_stretchable = true } },
+              { type = "label", name = "label", style = "bold_label" },
+            })
+          end
+          local progress = language_data.translated_i / raw._total_strings
+          mod_flow[dict_lang].bar.value = progress --[[@as double]]
+          mod_flow[dict_lang].label.caption = tostring(math.ceil(progress * 100)) .. "%"
+          mod_flow[dict_lang].label.tooltip = dict_name
+            .. "\n"
+            .. language_data.translated_i
+            .. " / "
+            .. raw._total_strings
+        end
+
         if player_data.status == "finished" then
-          -- We're done!
+          -- Clean up translation data
           script_data.translated[dict_lang] = language_data.dictionaries
           script_data.in_process[dict_lang] = nil
           for _, player_index in pairs(language_data.players) do
             script_data.players[player_index] = nil
           end
+
+          -- Clean up GUI
+          clean_gui(dict_lang)
+
           return { dictionaries = language_data.dictionaries, language = dict_lang, players = language_data.players }
         end
       end
@@ -292,15 +375,18 @@ function flib_dictionary.process_translation(event_data)
 
       -- Set up player data for translating
       player_data.status = "translating"
-      player_data.dictionary = next(raw)
+      player_data.dictionary = next(raw, "_total_strings")
       player_data.i = 1
 
       -- Add language to in process data
       script_data.in_process[language] = {
-        dictionaries = table.map(raw, function(_)
-          return {}
+        dictionaries = table.map(raw, function(_, k)
+          if k ~= "_total_strings" then
+            return {}
+          end
         end),
         players = { event_data.player_index },
+        translated_i = 0,
       }
 
       -- Start translating
@@ -322,22 +408,23 @@ function flib_dictionary.cancel_translation(player_index)
   if player_data then
     if player_data.status == "translating" then
       local in_process = script_data.in_process[player_data.language]
-      if not in_process then
-        error("Dafuq?")
-      end
-      if #in_process.players > 1 then
-        -- Copy progress to another player with the same language
-        local first_player = in_process.players[1]
-        local first_player_data = script_data.players[first_player]
-        first_player_data.status = "translating"
-        first_player_data.dictionary = player_data.dictionary
-        first_player_data.i = player_data.i
+      if in_process then
+        if #in_process.players > 1 then
+          -- Copy progress to another player with the same language
+          local first_player = in_process.players[1]
+          local first_player_data = script_data.players[first_player]
+          first_player_data.status = "translating"
+          first_player_data.dictionary = player_data.dictionary
+          first_player_data.i = player_data.i
 
-        -- Resume translating with the new player
-        request_translation(first_player_data)
-      else
-        -- Completely cancel the translation
-        script_data.in_process[player_data.language] = nil
+          -- Resume translating with the new player
+          request_translation(first_player_data)
+        else
+          -- Completely cancel the translation
+          script_data.in_process[player_data.language] = nil
+          -- Clean up GUI
+          clean_gui(player_data.language)
+        end
       end
     elseif player_data.status == "waiting" then
       local in_process = script_data.in_process[player_data.language]
