@@ -15,6 +15,7 @@ Date: ????
       - This makes translation take significantly longer
   Bugfixes:
     - Fixed missing annotations in math and table libraries
+    - [dictionary] Fixed that an empty translation would cause the translation after it to be skipped
     - [migration] Fixed a crash when loading the tutorial scenario
 ---------------------------------------------------------------------------------------------------
 Version: 0.10.1

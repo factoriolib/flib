@@ -5,8 +5,8 @@ local table = require("__flib__.table")
 --- An easy-to-use dictionary system for storing localised string translations.
 local flib_dictionary = {}
 
-local inner_separator = "⤬"
-local separator = "⤬⤬⤬"
+local inner_separator = "" -- U+E000
+local separator = "" -- U+E001
 local translation_timeout = 600
 
 -- Depending on the value of `use_local_storage`, this will be tied to `global` or will be re-generated during `on_load`
