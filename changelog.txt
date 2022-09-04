@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.11.0
-Date: ????
+Date: 2022-09-04
   Features:
     - [area] Added `area.square()` to turn the area into a square
     - [area] Added `starting_offset` argument to `area.iterate()`
