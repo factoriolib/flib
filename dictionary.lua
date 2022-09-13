@@ -294,7 +294,13 @@ function flib_dictionary.process_translation(event_data)
               name = "flib_translation_progress",
               style = mod_gui.frame_style,
               style_mods = { width = 350 },
-              caption = { "gui.flib-translating-dictionaries" },
+              direction = "vertical",
+              {
+                type = "label",
+                style = "frame_title",
+                caption = { "gui.flib-translating-dictionaries" },
+                tooltip = { "gui.flib-translating-dictionaries-description" },
+              },
               {
                 type = "frame",
                 name = "pane",

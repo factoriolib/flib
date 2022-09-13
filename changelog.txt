@@ -1,6 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.11.1
 Date: ????
+  Changes:
+    - [dictionary] Added tooltip to GUI header explaining what it is
   Bugfixes:
     - [dictionary] Fixed that translations would stop being requested under certain circumstances
 ---------------------------------------------------------------------------------------------------
