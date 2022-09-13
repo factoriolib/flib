@@ -135,7 +135,7 @@ function flib_table.deep_merge(tables)
   return output
 end
 
---- Find the value in the table.
+--- Find and return the first key containing the given value.
 ---
 --- # Examples
 ---
@@ -146,7 +146,7 @@ end
 --- ```
 --- @param tbl table The table to search.
 --- @param value any The value to match. Must have an `eq` metamethod set, otherwise will error.
---- @return any?
+--- @return any? key The first key corresponding to `value`, if any.
 function flib_table.find(tbl, value)
   for k, v in pairs(tbl) do
     if v == value then
