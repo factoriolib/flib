@@ -1,7 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.11.1
 Date: ????
-  Features:
+  Bugfixes:
+    - [dictionary] Fixed that translations would stop being requested under certain circumstances
 ---------------------------------------------------------------------------------------------------
 Version: 0.11.0
 Date: 2022-09-04

@@ -131,11 +131,11 @@ function flib_dictionary.translate(player)
   if not player.connected then
     error("Player must be connected to the game before this function can be called!")
   end
+
   local player_data = global.__flib.dictionary.players[player.index]
   if player_data then
     return
   end
-
   global.__flib.dictionary.players[player.index] = {
     player = player,
     status = "get_language",
@@ -353,8 +353,8 @@ function flib_dictionary.process_translation(event_data)
     local _, _, language = string.find(event_data.result, "^FLIB_LOCALE_IDENTIFIER" .. separator .. "(.*)$")
     if language then
       local player_data = script_data.players[event_data.player_index]
-      -- Handle a duplicate
-      if not player_data or player_data.status == "translating" then
+      -- Handle duplicates
+      if not player_data or player_data.status ~= "get_language" then
         return
       end
 
@@ -405,41 +405,49 @@ end
 function flib_dictionary.cancel_translation(player_index)
   local script_data = global.__flib.dictionary
   local player_data = script_data.players[player_index]
-  if player_data then
-    if player_data.status == "translating" then
-      local in_process = script_data.in_process[player_data.language]
-      if in_process then
-        if #in_process.players > 1 then
-          -- Copy progress to another player with the same language
-          local first_player = in_process.players[1]
-          local first_player_data = script_data.players[first_player]
-          first_player_data.status = "translating"
-          first_player_data.dictionary = player_data.dictionary
-          first_player_data.i = player_data.i
-
-          -- Resume translating with the new player
-          request_translation(first_player_data)
-        else
-          -- Completely cancel the translation
-          script_data.in_process[player_data.language] = nil
-          -- Clean up GUI
-          clean_gui(player_data.language)
-        end
-      end
-    elseif player_data.status == "waiting" then
-      local in_process = script_data.in_process[player_data.language]
-      -- Remove this player from the players table
-      for i, pi in pairs(in_process.players) do
-        if pi == player_index then
-          table.remove(in_process.players, i)
-          break
-        end
-      end
-    end
-
-    -- Delete this player's data
-    script_data.players[player_index] = nil
+  if not player_data then
+    return
   end
+  -- Delete this player's data from global
+  script_data.players[player_index] = nil
+
+  local in_process = script_data.in_process[player_data.language]
+  if not in_process then
+    return
+  end
+
+  -- Remove this player from the players table
+  local i = table.find(in_process.players, player_index)
+  if i then
+    table.remove(in_process.players, i)
+  end
+
+  if not player_data.status == "translating" then
+    return
+  end
+
+  -- Find the next player in the list with valid data
+  local next_player_data
+  for _, player_index in pairs(in_process.players) do
+    local player_data = script_data.players[player_index]
+    if player_data then
+      next_player_data = player_data
+      break
+    end
+  end
+  -- If there are no more valid players
+  if not next_player_data then
+    -- Completely cancel the translation
+    script_data.in_process[player_data.language] = nil
+    clean_gui(player_data.language)
+    return
+  end
+  --Update player info
+  next_player_data.status = "translating"
+  next_player_data.dictionary = player_data.dictionary
+  next_player_data.i = player_data.i
+  -- Resume translating with the new player
+  request_translation(next_player_data)
 end
 
 --- Set whether or not the module is using local storage mode.
