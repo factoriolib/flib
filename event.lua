@@ -71,7 +71,7 @@ end
 --- -- Deregister the registered handler, if one exists
 --- event.on_nth_tick(30, nil)
 --- ```
---- @param nth_tick? number|number[] The nth-tick(s) to invoke the handler on, or `nil` to deregister all nth-tick handlers.
+--- @param nth_tick? uint|uint[] The nth-tick(s) to invoke the handler on, or `nil` to deregister all nth-tick handlers.
 --- @param handler? function The handler to register, or `nil` to deregister the registered handler.
 function flib_event.on_nth_tick(nth_tick, handler)
   if handler then
@@ -150,8 +150,8 @@ function flib_event.generate_id()
 end
 
 --- Retrieve the handler for an event, if one exists.
---- @param id EventId
---- @return function handler The registered handler, or `nil` if one isn't registered.
+--- @param id uint
+--- @return fun(e: EventData)? handler The registered handler, or `nil` if one isn't registered.
 function flib_event.get_handler(id)
   return script.get_event_handler(id)
 end
@@ -165,7 +165,7 @@ end
 --- ```lua
 --- event.raise(defines.events.on_gui_click, {player_index=e.player_index, element=my_button, ...})
 --- ```
---- @param id EventId
+--- @param id uint
 --- @param event_data table The event data that will be passed to the handlers.
 function flib_event.raise(id, event_data)
   script.raise_event(id, event_data)
@@ -195,7 +195,7 @@ end
 --- -- Clear event filters if any are set
 --- event.set_filters(defines.events.on_robot_built_entity, nil)
 --- ```
---- @param ids EventId|EventId[]
+--- @param ids uint|uint[]
 --- @param filters? EventFilter The filters to set, or `nil` to clear the filters.
 function flib_event.set_filters(ids, filters)
   if type(ids) ~= "table" then
@@ -207,7 +207,7 @@ function flib_event.set_filters(ids, filters)
 end
 
 --- Retrieve the filters for the given event.
---- @param id EventId
+--- @param id uint
 --- @return EventFilter? filters The filters, or `nil` if there are none defined.
 function flib_event.get_filters(id)
   script.get_event_filter(id)
@@ -217,6 +217,6 @@ end
 --- - A member of `defines.events`
 --- - A positive `number` corresponding to a custom event ID.
 --- - A `string` corresponding to a custom-input name.
---- @class EventId
+--- @alias EventId defines.events|uint|string
 
 return flib_event

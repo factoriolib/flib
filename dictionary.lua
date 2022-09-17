@@ -53,7 +53,7 @@ end
 ---
 --- If `keep_untranslated` is `true`, translations that failed (begin with `Unknown key: `) will be added to the dictionary with their internal name as their translated name.
 --- @param name string
---- @param keep_untranslated boolean
+--- @param keep_untranslated boolean?
 --- @param initial_contents? table<string, LocalisedString>
 --- @return RawDictionary
 function flib_dictionary.new(name, keep_untranslated, initial_contents)
