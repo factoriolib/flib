@@ -428,7 +428,7 @@ function flib_dictionary.cancel_translation(player_index)
     table.remove(in_process.players, i)
   end
 
-  if not player_data.status == "translating" then
+  if player_data.status ~= "translating" then
     return
   end
 
