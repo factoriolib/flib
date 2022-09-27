@@ -240,6 +240,21 @@ styles.flib_indicator = {
   stretch_image_to_widget_size = true,
 }
 
+-- LINE STYLES
+
+styles.flib_subheader_horizontal_line = {
+  type = "line_style",
+  horizontally_stretchable = "on",
+  left_margin = -8,
+  right_margin = -8,
+  top_margin = -2,
+  bottom_margin = -2,
+  border = {
+    border_width = 8,
+    horizontal_line = { filename = "__flib__/graphics/subheader-line.png", size = { 1, 8 } },
+  },
+}
+
 -- SCROLL-PANE STYLES
 
 styles.flib_naked_scroll_pane = {
