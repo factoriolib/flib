@@ -144,7 +144,7 @@ end
 --- -- Raise that event with custom parameters
 --- event.raise(my_event, {whatever_you_want=true, ...})
 --- ```
---- @return number
+--- @return uint
 function flib_event.generate_id()
   return script.generate_event_name()
 end
