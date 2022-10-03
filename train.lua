@@ -5,7 +5,7 @@ local table = table
 
 --- Get the main locomotive in a given train.
 --- @param train LuaTrain
---- @return LuaEntity?
+--- @return LuaEntity? The primary locomotive entity or `nil` when no locomotive was found
 function flib_train.get_main_locomotive(train)
   if
     train.valid
@@ -18,7 +18,7 @@ end
 
 --- Get the backer_name of the main locomotive in a given train.
 --- @param train LuaEntity
---- @return LuaEntity?
+--- @return string? The backer_name of the primary locomotive or `nil` when no locomotive was found
 function flib_train.get_backer_name(train)
   local loco = flib_train.get_main_locomotive(train)
   return loco and loco.backer_name
@@ -26,7 +26,7 @@ end
 
 --- Rotate a single carriage of a train.
 --- @param entity LuaEntity
---- @return boolean successful Whether or not the rotation was successful.
+--- @return boolean `true` when rotation was successful.
 function flib_train.rotate_carriage(entity)
   local disconnected_back = entity.disconnect_rolling_stock(defines.rail_direction.back)
   local disconnected_front = entity.disconnect_rolling_stock(defines.rail_direction.front)
@@ -108,7 +108,7 @@ end
 --- Open train GUI for one player.
 --- @param player_index number
 --- @param train LuaTrain
---- @return boolean gui_opened If the GUI was opened.
+--- @return boolean `true` if the GUI was opened.
 function flib_train.open_gui(player_index, train)
   if train and train.valid and game.players[player_index] then
     local loco = flib_train.get_main_locomotive(train)
