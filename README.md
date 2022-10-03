@@ -5,6 +5,8 @@ The Factorio Library is a set of high-quality, commonly-used utilities for creat
 
 [DOCUMENTATION](https://factoriolib.github.io/flib/index.html)
 
+[GITHUB](https://github.com/factoriolib/flib)
+
 [SOURCEHUT](https://git.sr.ht/~raiguard/flib)
 
 [MOD PORTAL](https://mods.factorio.com/mod/flib)
