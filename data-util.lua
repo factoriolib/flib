@@ -135,6 +135,25 @@ function flib_data_util.get_energy_value(energy_string)
   return nil
 end
 
+--- Map the energy value
+---
+--- Returns `nil` if `energy_string` is incorrectly formatted.
+--- @param energy_string string
+--- @param f function
+--- @return string?
+function flib_data_util.map_energy_value(energy_string, f)
+  if energy_string and f then
+    local value, unit = data_util.get_energy_value(energy_string)
+    if value and unit then
+      local mapped_value = f(value)
+      if mapped_value then
+        return mapped_value .. unit
+      end
+    end
+  end
+  return nil
+end
+
 --- Build a sprite from constituent parts.
 --- @param name? string
 --- @param position? MapPosition
