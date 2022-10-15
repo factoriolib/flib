@@ -17,7 +17,7 @@ function flib_train.get_main_locomotive(train)
 end
 
 --- Get the backer_name of the main locomotive in a given train.
---- @param train LuaEntity
+--- @param train LuaTrain
 --- @return string? The backer_name of the primary locomotive or `nil` when no locomotive was found
 function flib_train.get_backer_name(train)
   local loco = flib_train.get_main_locomotive(train)
