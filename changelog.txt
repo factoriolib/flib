@@ -1,7 +1,10 @@
 ---------------------------------------------------------------------------------------------------
-Version: 0.11.3
+Version: 0.12.0
 Date: ????
   Features:
+    - Added `gui-lite` module
+      - A(nother) new GUI library that is much leaner and more convenient to use than the existing one
+      - Removes redundant features, simplifies the building process, and enhances type-checking and autocomplete
 ---------------------------------------------------------------------------------------------------
 Version: 0.11.2
 Date: 2022-09-18
