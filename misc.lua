@@ -57,14 +57,14 @@ end
 ---
 --- Adapted from [lua-users.org](http://lua-users.org/wiki/FormattingNumbers).
 --- @param number number
---- @param delimiter string default: `","`
+--- @param delimiter string? default: `","`
 --- @return string
 function flib_misc.delineate_number(number, delimiter)
   delimiter = delimiter or ","
   -- Handle decimals
-  local _, _, before, after = string.find(number, "^(%d*)(%.%d*)")
+  local _, _, before, after = string.find(tostring(number), "^(%d*)(%.%d*)")
   if before and after then
-    number = tonumber(before)
+    number = tonumber(before) --[[@as number]]
     after = after
   else
     before = math.floor(number)

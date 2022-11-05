@@ -444,7 +444,7 @@ end
 ---   }
 --- })
 --- ```
---- @class GuiBuildStructure
+--- @class GuiBuildStructure: LuaGuiElement.add_param
 --- @field style_mods? table<string, any>
 --- @field elem_mods? table<string, any>
 --- @field tags? table

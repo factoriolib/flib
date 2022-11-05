@@ -56,7 +56,7 @@ end
 --- -- Deregister the registered handler, if one exists
 --- event.on_configuration_changed(nil)
 --- ```
---- @param handler? function The handler to register, or `nil` to deregister the registered handler.
+--- @param handler? fun(e: ConfigurationChangedData) The handler to register, or `nil` to deregister the registered handler.
 function flib_event.on_configuration_changed(handler)
   script.on_configuration_changed(handler)
 end

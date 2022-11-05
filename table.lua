@@ -438,7 +438,7 @@ end
 ---
 --- Does not copy metatables.
 --- @param tbl table
---- @param use_rawset boolean Use rawset to set the values (ignores metamethods).
+--- @param use_rawset boolean? Use rawset to set the values (ignores metamethods).
 --- @return table The copied table.
 function flib_table.shallow_copy(tbl, use_rawset)
   local output = {}
