@@ -27,10 +27,12 @@ function flib_gui.add(parent, defs, elems)
       local elem_mods = def.elem_mods
       local handler = def.handler
       local style_mods = def.style_mods
+      local drag_target = def.drag_target
       def.children = nil
       def.elem_mods = nil
       def.handler = nil
       def.style_mods = nil
+      def.drag_target = nil
       -- If children were defined in the array portion, remove and collect them
       if def[1] then
         if children then
@@ -57,6 +59,13 @@ function flib_gui.add(parent, defs, elems)
         for key, value in pairs(elem_mods) do
           elem[key] = value
         end
+      end
+      if drag_target then
+        local target = elems[drag_target]
+        if not target then
+          error("Drag target '" .. drag_target .. "' not found.")
+        end
+        elem.drag_target = target
       end
       if handler then
         local out
@@ -92,14 +101,23 @@ end
 
 --- Add the given handler functions to the registry.
 --- @param new_handlers table<string, fun(e: GuiEventData)>
-function flib_gui.add_handlers(new_handlers)
+--- @param wrapper fun(e: GuiEventData, handler: function)? If specified, dispatch() will call this function instead
+--- of directly calling the handler. Useful for gathering information or writing other boilerplate that all of the
+--- handlers need.
+function flib_gui.add_handlers(new_handlers, wrapper)
   for name, handler in pairs(new_handlers) do
     if type(handler) == "function" then
       if handlers_lookup[name] then
         error("Attempted to register two GUI event handlers with the same name: " .. name)
       end
       handlers[handler] = name
-      handlers_lookup[name] = handler
+      if wrapper then
+        handlers_lookup[name] = function(e)
+          wrapper(e, handler)
+        end
+      else
+        handlers_lookup[name] = handler
+      end
     end
   end
 end
@@ -124,21 +142,12 @@ function flib_gui.dispatch(e)
   if handler_def then
     local handler = handlers_lookup[handler_def]
     if handler then
-      if flib_gui.dispatch_wrapper then
-        flib_gui.dispatch_wrapper(e, handler)
-      else
-        handler(e)
-      end
+      handler(e)
       return true
     end
   end
   return false
 end
-
---- If defined, `gui.dispatch` will call this function instead of the handler function.
---- Intended use is to assemble common data that your handlers need.
---- @type fun(e: GuiEventData, handler: GuiElemHandler)?
-flib_gui.dispatch_wrapper = nil
 
 --- Handle all GUI events with `flib_gui.dispatch`.
 function flib_gui.handle_events()
@@ -151,16 +160,20 @@ end
 
 --- A GUI element definition. This extends `LuaGuiElement.add_param` with several new attributes.
 --- Children may be defined in the array portion as an alternative to the `children` subtable.
---- @class GuiElemDef: LuaGuiElement.add_param
---- @field style_mods table? Modifications to make to the element's style
---- @field elem_mods table? Modifications to make to the element itself
+--- @class GuiElemDefClass: LuaGuiElement.add_param
+--- @field style_mods LuaStyle? Modifications to make to the element's style
+--- @field elem_mods LuaGuiElement? Modifications to make to the element itself
+--- @field drag_target string? Set the element's drag target to the element whose name matches this string. The drag
+--- target must be present in the `elems` table.
 --- @field handler GuiElemHandler? Handler(s) to assign to this element
 --- @field children GuiElemDef[]? Children to add to this element
 --- @field tab GuiElemDef? To add a tab, specify `tab` and `content` and leave all other fields unset.
 --- @field content GuiElemDef? To add a tab, specify `tab` and `content` and leave all other fields unset.
 
---- A handler function to invoke when receiving GUI events for this element. Alternatively, handlers may be specified
---- for specific events.
+--- @alias GuiElemDef GuiElemDefClass|GuiElemDef[]
+
+--- A handler function to invoke when receiving GUI events for this element. Alternatively, separate handlers may be
+--- specified for different events.
 --- @alias GuiElemHandler fun(e: GuiEventData)|table<defines.events, fun(e: GuiEventData)>
 
 --- Aggregate type of all possible GUI events.
