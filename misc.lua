@@ -28,10 +28,7 @@ function flib_misc.get_distance_squared(pos1, pos2)
   return (x1 - x2) ^ 2 + (y1 - y2) ^ 2
 end
 
---- Convert given tick or game.tick into "[hh:]mm:ss" format.
---- @param tick number? default: `game.tick`
---- @param include_leading_zeroes boolean? If true, leading zeroes will be included in single-digit minute and hour values.
---- @return string
+--- @deprecated Use `flib_format.time`.
 function flib_misc.ticks_to_timestring(tick, include_leading_zeroes)
   local total_seconds = math.floor((tick or game.ticks_played) / 60)
   local seconds = total_seconds % 60
@@ -53,12 +50,7 @@ function flib_misc.ticks_to_timestring(tick, include_leading_zeroes)
   end
 end
 
---- Split numerical values by a delimiter.
----
---- Adapted from [lua-users.org](http://lua-users.org/wiki/FormattingNumbers).
---- @param number number
---- @param delimiter string? default: `","`
---- @return string
+--- @deprecated Use `flib_format.number`.
 function flib_misc.delineate_number(number, delimiter)
   delimiter = delimiter or ","
   -- Handle decimals
