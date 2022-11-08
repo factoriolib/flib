@@ -35,7 +35,7 @@ end
 --- Check if current_version is newer than old_version.
 --- @param old_version string
 --- @param current_version string
---- @param format string default: `%02d`
+--- @param format string? default: `%02d`
 --- @return boolean?
 function flib_migration.is_newer_version(old_version, current_version, format)
   local v1 = flib_migration.format_version(old_version, format)
