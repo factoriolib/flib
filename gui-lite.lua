@@ -1,5 +1,3 @@
-local flib_event = require("__flib__.event")
-
 local handler_tag_key = script.mod_name .. "_handler"
 
 --- `gui-lite` is a slimmer and more convenient GUI library.
@@ -149,11 +147,13 @@ function flib_gui.dispatch(e)
   return false
 end
 
---- Handle all GUI events with `flib_gui.dispatch`.
+--- Handle all GUI events with `flib_gui.dispatch`. This will add handlers for all `on_gui_*` events. If you need to
+--- have custom logic for a handler, create it after calling this function and call `flib_gui.dispatch` in that
+--- function.
 function flib_gui.handle_events()
   for name, id in pairs(defines.events) do
     if string.find(name, "on_gui_") then
-      flib_event.register(id, flib_gui.dispatch)
+      script.on_event(id, flib_gui.dispatch)
     end
   end
 end
