@@ -70,7 +70,7 @@ function flib_gui.add(parent, defs, elems)
         if type(handler) == "table" then
           out = {}
           for name, handler in pairs(handler) do
-            out[name] = handlers[handler]
+            out[tostring(name)] = handlers[handler]
           end
         else
           out = handlers[handler]
