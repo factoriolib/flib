@@ -2,13 +2,14 @@
 Version: 0.12.0
 Date: ????
   Features:
+    - Added `format` module with various string formatting functions
     - Added `gui-lite` module
       - A(nother) new GUI library that is much leaner and more convenient to use than the existing one
       - Removes redundant features, simplifies the building process, and enhances type-checking and autocomplete
-      - Using the `gui` module is no longer encouraged, use `gui-lite` instead.
+      - Using the `gui` module is no longer encouraged, use `gui-lite` instead
     - Added `position` module
   Changes:
-      - Deprecated misc.get_distance() and misc.get_distance_squared() in favor of the position module
+      - Deprecated `misc` module in favor of the `format` and `position` modules
 ---------------------------------------------------------------------------------------------------
 Version: 0.11.2
 Date: 2022-09-18

@@ -2,33 +2,46 @@
 --- @module '__flib__.format'
 local flib_format = {}
 
---- Format a number for display, adding commas and an optional suffix.
---- @param amount number The number to format
---- @param append_suffix boolean? If true, the number will be shortened and an SI suffix will be added to the end.
+local suffix_list = {
+  { "Y", 1e24 }, -- yotta
+  { "Z", 1e21 }, -- zetta
+  { "E", 1e18 }, -- exa
+  { "P", 1e15 }, -- peta
+  { "T", 1e12 }, -- tera
+  { "G", 1e9 }, -- giga
+  { "M", 1e6 }, -- mega
+  { "k", 1e3 }, -- kilo
+}
+
+--- Format a number for display, adding commas and an optional SI suffix.
+--- Specify `fixed_precision` to display the number with the given width,
+--- adjusting precision as necessary.
+--- @param amount number
+--- @param append_suffix boolean?
+--- @param fixed_precision number?
 --- @return string
-function flib_format.number(amount, append_suffix)
+function flib_format.number(amount, append_suffix, fixed_precision)
   local suffix = ""
   if append_suffix then
-    local suffix_list = {
-      ["Y"] = 1e24, -- yotta
-      ["Z"] = 1e21, -- zetta
-      ["E"] = 1e18, -- exa
-      ["P"] = 1e15, -- peta
-      ["T"] = 1e12, -- tera
-      ["G"] = 1e9, -- giga
-      ["M"] = 1e6, -- mega
-      ["k"] = 1e3, -- kilo
-    }
-    for letter, limit in pairs(suffix_list) do
-      if math.abs(amount) >= limit then
-        amount = math.floor(amount / (limit / 10)) / 10
-        suffix = letter
+    for _, data in ipairs(suffix_list) do
+      if math.abs(amount) >= data[2] then
+        amount = amount / data[2]
+        suffix = " " .. data[1]
         break
       end
     end
-    -- TODO: Fixed precision format
+    if not fixed_precision then
+      amount = math.floor(amount * 10) / 10
+    end
   end
   local formatted, k = tostring(amount), nil
+  if fixed_precision then
+    -- Show the number with fixed width precision
+    local len_before = #tostring(math.floor(amount))
+    local len_after = math.max(0, fixed_precision - len_before - 1)
+    formatted = string.format("%." .. len_after .. "f", amount)
+  end
+  -- Add commas to result
   while true do
     formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", "%1,%2")
     if k == 0 then
@@ -39,9 +52,8 @@ function flib_format.number(amount, append_suffix)
 end
 
 --- Convert the given tick or game.tick into "[hh:]mm:ss" format.
---- @param tick uint? default: `game.tick`
---- @param include_leading_zeroes boolean? If true, leading zeroes will be
---- included in single-digit minute and hour values.
+--- @param tick uint?
+--- @param include_leading_zeroes boolean?
 --- @return string
 function flib_format.time(tick, include_leading_zeroes)
   local total_seconds = math.floor((tick or game.ticks_played) / 60)
