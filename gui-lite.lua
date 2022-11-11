@@ -1,7 +1,8 @@
-local handler_tag_key = script.mod_name .. "_handler"
-
---- `gui-lite` is a slimmer and more convenient GUI library.
+--- A slimmer and more convenient GUI library.
+--- @module '__flib__.gui-lite'
 local flib_gui = {}
+
+local handler_tag_key = script.mod_name .. "_handler"
 
 --- @type table<GuiElemHandler, string>
 local handlers = {}
