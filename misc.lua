@@ -1,13 +1,10 @@
---- Miscellaneous control-stage functions that don't yet have a proper home.
+--- @deprecated use `format` and `position` modules instead.`
 local flib_misc = {}
 
 local math = math
 local string = string
 
---- Calculate the distance in tiles between two positions.
---- @param pos1 MapPosition
---- @param pos2 MapPosition
---- @return number
+--- @deprecated use `flib_position.get_distance` instead.`
 function flib_misc.get_distance(pos1, pos2)
   local x1 = pos1.x or pos1[1]
   local y1 = pos1.y or pos1[2]
@@ -16,10 +13,7 @@ function flib_misc.get_distance(pos1, pos2)
   return math.sqrt((x1 - x2) ^ 2 + (y1 - y2) ^ 2)
 end
 
---- Calculate the squared distance in tiles between two positions.
---- @param pos1 MapPosition
---- @param pos2 MapPosition
---- @return number
+--- @deprecated use `flib_position.get_distance_squared` instead.`
 function flib_misc.get_distance_squared(pos1, pos2)
   local x1 = pos1.x or pos1[1]
   local y1 = pos1.y or pos1[2]
