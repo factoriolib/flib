@@ -431,18 +431,8 @@ function flib_table.reduce(tbl, reducer, initial_value)
   return accumulator
 end
 
---- Remove and return a value from the table.
---- @generic K, V
---- @param tbl table<K, V>
---- @param key K The key to retrieve.
---- @return V?
-function flib_table.retrieve(tbl, key)
-  local value = tbl[key]
-  if value ~= nil then
-    tbl[key] = nil
-    return value
-  end
-end
+--- @deprecated use `table.remove`.
+flib_table.retrieve = flib_table.remove
 
 --- Shallowly copy the contents of a table into a new table.
 ---
