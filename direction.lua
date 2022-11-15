@@ -24,7 +24,7 @@ flib_direction.southwest = defines.direction.southwest
 --- @param direction defines.direction
 --- @return defines.direction
 function flib_direction.opposite(direction)
-  return (direction + 4) % 8
+  return (direction + 4) % 8 --[[@as defines.direction]]
 end
 
 --- Calculate the next four-way or eight-way direction.
@@ -32,7 +32,7 @@ end
 --- @param eight_way? boolean
 --- @return defines.direction
 function flib_direction.next(direction, eight_way)
-  return (direction + (eight_way and 1 or 2)) % 8
+  return (direction + (eight_way and 1 or 2)) % 8 --[[@as defines.direction]]
 end
 
 --- Calculate the previous four-way or eight-way direction.
@@ -40,14 +40,14 @@ end
 --- @param eight_way? boolean
 --- @return defines.direction
 function flib_direction.previous(direction, eight_way)
-  return (direction + (eight_way and -1 or -2)) % 8
+  return (direction + (eight_way and -1 or -2)) % 8 --[[@as defines.direction]]
 end
 
 --- Calculate an orientation from a direction.
 --- @param direction defines.direction
 --- @return RealOrientation
 function flib_direction.to_orientation(direction)
-  return direction / 8
+  return direction / 8 --[[@as RealOrientation]]
 end
 
 --- Calculate a vector from a direction.
@@ -81,7 +81,7 @@ end
 --- @param direction defines.direction
 --- @param longitudinal number Distance to move in the specified direction.
 --- @param orthogonal number Distance to move perpendicular to the specified direction. A negative distance will move "left" and a positive distance will move "right" from the perspective of the direction.
---- @return MapPosition
+--- @return MapPosition?
 function flib_direction.to_vector_2d(direction, longitudinal, orthogonal)
   if direction == defines.direction.north then
     return { x = orthogonal, y = -longitudinal }
@@ -108,7 +108,7 @@ function flib_direction.from_positions(source, target, round)
   if round then
     direction = flib_math.round(direction)
   end
-  return direction
+  return direction --[[@as defines.direction]]
 end
 
 return flib_direction

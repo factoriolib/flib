@@ -9,7 +9,7 @@ local flib_data_util = {}
 function flib_data_util.copy_prototype(prototype, new_name, remove_icon)
   if not prototype.type or not prototype.name then
     error("Invalid prototype: prototypes must have name and type properties.")
-    return nil
+    return --- @diagnostic disable-line
   end
   local p = table.deepcopy(prototype)
   p.name = new_name

@@ -6,7 +6,10 @@ local flib_queue = {}
 --- Create a new queue.
 --- @return Queue
 function flib_queue.new()
-  return setmetatable({ first = 0, last = -1 }, { __index = flib_queue })
+  --- @class Queue
+  local self = { first = 0, last = -1 }
+  setmetatable(self, { __index = flib_queue })
+  return self
 end
 
 --- Set a queue's metatable to allow directly calling the module's methods.
@@ -131,7 +134,5 @@ end
 function flib_queue.length(self)
   return math.abs(self.last - self.first + 1)
 end
-
---- @class Queue
 
 return flib_queue

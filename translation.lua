@@ -1,5 +1,5 @@
--- NOTICE: This module is deprecated and has been replaced by the new `dictionary` module. This will remain in flib for
--- the foreseeable future for backwards compatibility, but is no longer documented or supported.
+--- @diagnostic disable
+--- @deprecated use `flib_dictionary` instead
 local flib_translation = {}
 
 local table = require("__flib__.table")
@@ -210,3 +210,4 @@ function flib_translation.serialise_localised_string(localised_string)
 end
 
 return flib_translation
+--- @diagnostic enable

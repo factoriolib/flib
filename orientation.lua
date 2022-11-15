@@ -10,8 +10,6 @@ flib_orientation.northwest = defines.direction.northwest / 8
 flib_orientation.southeast = defines.direction.southeast / 8
 flib_orientation.southwest = defines.direction.southwest / 8
 
-local floor = math.floor
-
 --- Returns a 4way or 8way direction from an orientation.
 --- @param orientation number
 --- @param eight_way boolean
@@ -19,7 +17,7 @@ local floor = math.floor
 function flib_orientation.to_direction(orientation, eight_way)
   local ways = eight_way and 8 or 4
   local mod = eight_way and 1 or 2
-  return floor(orientation * ways + 0.5) % ways * mod
+  return math.floor(orientation * ways + 0.5) % ways * mod --[[@as defines.direction]]
 end
 
 --- Returns the opposite orientation.

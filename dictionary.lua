@@ -35,7 +35,7 @@ function RawDictionary:add(internal, translation)
   -- Due to network saturation concerns, only group five strings together
   -- See https://github.com/factoriolib/flib/issues/45
   if i < 5 then
-    ref[i] = to_add
+    ref[i] = to_add --- @diagnostic disable-line
     self.batch_i = i
   else
     local s_i = self.dict_i + 1
@@ -61,6 +61,7 @@ function flib_dictionary.new(name, keep_untranslated, initial_contents)
     error("Dictionary with the name `" .. name .. "` already exists.")
   end
 
+  --- @type LocalisedString
   local initial_string = { "" }
   --- @class RawDictionary
   local self = {
@@ -70,6 +71,7 @@ function flib_dictionary.new(name, keep_untranslated, initial_contents)
     total = 1,
     -- Internal
     ref = initial_string,
+    --- @type LocalisedString
     strings = { initial_string },
     -- Meta
     name = name,
@@ -79,6 +81,7 @@ function flib_dictionary.new(name, keep_untranslated, initial_contents)
   for key, value in pairs(initial_contents or {}) do
     self:add(key, value)
   end
+  --- @diagnostic disable-next-line
   raw[name] = { strings = self.strings, keep_untranslated = keep_untranslated }
 
   return self
@@ -310,7 +313,7 @@ function flib_dictionary.process_translation(event_data)
               },
             })
           end
-          local pane = flow.flib_translation_progress.pane
+          local pane = flow.flib_translation_progress.pane --[[@as LuaGuiElement]]
           if not pane[script.mod_name] then
             gui.add(pane, {
               type = "flow",
@@ -319,7 +322,7 @@ function flib_dictionary.process_translation(event_data)
               { type = "label", style = "caption_label", style_mods = { top_margin = 4 }, caption = script.mod_name },
             })
           end
-          local mod_flow = pane[script.mod_name]
+          local mod_flow = pane[script.mod_name] --[[@as LuaGuiElement]]
           if not mod_flow[dict_lang] then
             gui.add(mod_flow, {
               type = "flow",

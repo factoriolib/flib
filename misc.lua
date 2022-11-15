@@ -1,10 +1,11 @@
+--- @diagnostic disable
 --- @deprecated use `format` and `position` modules instead.`
 local flib_misc = {}
 
 local math = math
 local string = string
 
---- @deprecated use `flib_position.get_distance` instead.`
+--- @deprecated use `flib_position.distance` instead.`
 function flib_misc.get_distance(pos1, pos2)
   local x1 = pos1.x or pos1[1]
   local y1 = pos1.y or pos1[2]
@@ -13,7 +14,7 @@ function flib_misc.get_distance(pos1, pos2)
   return math.sqrt((x1 - x2) ^ 2 + (y1 - y2) ^ 2)
 end
 
---- @deprecated use `flib_position.get_distance_squared` instead.`
+--- @deprecated use `flib_position.distance_squared` instead.`
 function flib_misc.get_distance_squared(pos1, pos2)
   local x1 = pos1.x or pos1[1]
   local y1 = pos1.y or pos1[2]
@@ -68,3 +69,4 @@ function flib_misc.delineate_number(number, delimiter)
 end
 
 return flib_misc
+--- @diagnostic enable
