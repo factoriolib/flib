@@ -10,6 +10,7 @@ Date: ????
     - Added `position` module
   Changes:
       - Deprecated `misc` module in favor of the `format` and `position` modules
+      - Updated type definitions to use generics where possible
 ---------------------------------------------------------------------------------------------------
 Version: 0.11.2
 Date: 2022-09-18
