@@ -6,7 +6,6 @@
 ---
 --- To use a shortcut, replace `event.register(defines.events.on_built_entity, handler, filters)` with
 --- `event.on_built_entity(handler, filters)`. You can also deregister the handler using `event.on_built_entity(nil)`.
---- @module '__flib__.event'
 local flib_event = {}
 
 -- Generate syntax shortcuts

@@ -1,5 +1,4 @@
 --- A slimmer and more convenient GUI library.
---- @module '__flib__.gui-lite'
 local flib_gui = {}
 
 local handler_tag_key = script.mod_name .. "_handler"
