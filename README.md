@@ -7,7 +7,7 @@ creating Factorio mods.
 Download the latest release from the
 [mod portal](https://mods.factorio.com/mod/flib) unzip it, and put it in your
 mods directory. You can access libraries provided by flib with
-`require("__flib__.event")`, etc.
+`require("__flib__/event")`, etc.
 
 Add the flib directory to your language server's library and install the
 [Factorio LSP plugin](https://github.com/JanSharp/FactorioSumnekoLuaPlugin) to

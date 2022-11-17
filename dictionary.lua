@@ -1,6 +1,6 @@
-local gui = require("__flib__.gui")
-local mod_gui = require("__core__.lualib.mod-gui")
-local table = require("__flib__.table")
+local gui = require("__flib__/gui")
+local mod_gui = require("__core__/lualib/mod-gui")
+local table = require("__flib__/table")
 
 --- An easy-to-use dictionary system for storing localised string translations.
 local flib_dictionary = {}
@@ -472,7 +472,7 @@ end
 --- # Examples
 ---
 --- ```lua
---- local dictionary = require("__flib__.dictionary")
+--- local dictionary = require("__flib__/dictionary")
 --- dictionary.set_use_local_storage(true)
 --- ```
 --- @param value boolean

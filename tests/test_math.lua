@@ -1,5 +1,5 @@
-local Test = require("tests.factorio_luaunit")
-local math = require("__flib__.math")
+local Test = require("tests/factorio_luaunit")
+local math = require("__flib__/math")
 math.randomseed(os.clock())
 
 --- @diagnostic disable: undefined-field

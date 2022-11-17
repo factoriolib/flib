@@ -11,10 +11,10 @@
 -- GUI itself, and demonstrates some of the control flow involved.
 -- ---------------------------------------------------------------------------------------------------------------------
 
-local event = require("__flib__.event")
-local gui = require("__flib__.gui")
-local mod_gui = require("__core__.lualib.mod-gui")
-local table = require("__flib__.table")
+local event = require("__flib__/event")
+local gui = require("__flib__/gui")
+local mod_gui = require("__core__/lualib/mod-gui")
+local table = require("__flib__/table")
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- GUI CODE

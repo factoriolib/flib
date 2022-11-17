@@ -1,4 +1,4 @@
-local event = require("__flib__.event")
+local event = require("__flib__/event")
 
 -- LuaBootstrap events are usable simply by replacing `script` with `event`
 event.on_init(function()

@@ -1,4 +1,4 @@
-local flib_math = require("__flib__.math")
+local flib_math = require("__flib__/math")
 
 --- Functions for working with directions.
 local flib_direction = {}

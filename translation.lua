@@ -2,7 +2,7 @@
 --- @deprecated use `flib_dictionary` instead
 local flib_translation = {}
 
-local table = require("__flib__.table")
+local table = require("__flib__/table")
 
 local math = math
 local next = next

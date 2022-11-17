@@ -1,5 +1,5 @@
-local event = require("__flib__.event")
-local migration = require("__flib__.migration")
+local event = require("__flib__/event")
+local migration = require("__flib__/migration")
 
 -- the migrations table - this will probably go into its own file
 local migrations = {

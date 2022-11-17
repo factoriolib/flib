@@ -6,9 +6,9 @@
 -- its InternalString as its TranslatedString. See the `dictionary.new()` documentation for further information.
 -- ---------------------------------------------------------------------------------------------------------------------
 
-local event = require("__flib__.event")
-local dictionary = require("__flib__.dictionary")
-local migration = require("__flib__.migration")
+local event = require("__flib__/event")
+local dictionary = require("__flib__/dictionary")
+local migration = require("__flib__/migration")
 
 local function create_demo_dictionaries()
   for _, type in pairs({ "entity", "fluid", "item", "recipe", "technology", "tile" }) do

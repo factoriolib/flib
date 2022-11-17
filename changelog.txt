@@ -9,6 +9,7 @@ Date: ????
       - Using the `gui` module is no longer encouraged, use `gui-lite` instead
     - Added `position` module
   Changes:
+      - Changed preferred require syntax to / instead of .
       - Deprecated `misc` module in favor of the `format` and `position` modules
       - Updated type definitions to use generics where possible
 ---------------------------------------------------------------------------------------------------
