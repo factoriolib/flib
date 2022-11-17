@@ -2,15 +2,16 @@
 Version: 0.12.0
 Date: ????
   Features:
-    - Added `format` module with various string formatting functions
-    - Added `gui-lite` module
+    - Added 'format' module with various string formatting functions
+    - Added 'gui-lite' module
       - A(nother) new GUI library that is much leaner and more convenient to use than the existing one
       - Removes redundant features, simplifies the building process, and enhances type-checking and autocomplete
-      - Using the `gui` module is no longer encouraged, use `gui-lite` instead
-    - Added `position` module
+    - Added 'position' module with various position manipulation functions
   Changes:
-      - Changed preferred require syntax to / instead of .
-      - Deprecated `misc` module in favor of the `format` and `position` modules
+      - Changed preferred require syntax to '/' instead of '.'
+      - Deprecated 'gui' module in favor of 'gui-lite'
+        - 'gui' will be removed and replaced with 'gui-lite` when Factorio 1.2 is released
+      - Deprecated 'misc' module in favor of the 'format' and 'position' modules
       - Updated type definitions to use generics where possible
 ---------------------------------------------------------------------------------------------------
 Version: 0.11.2
