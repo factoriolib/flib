@@ -1,24 +1,30 @@
---- A slimmer and more convenient GUI library.
+--- A slim and convenient GUI library. See 'docs/examples/gui-lite.lua' for a usage demonstration.
 local flib_gui = {}
 
-local handler_tag_key = script.mod_name .. "_handler"
+local handler_tag_key = "__" .. script.mod_name .. "_handler"
 
 --- @type table<GuiElemHandler, string>
 local handlers = {}
 --- @type table<string, GuiElemHandler>
 local handlers_lookup = {}
 
---- Add new children to the given GUI element.
+--- Add a new child or children to the given GUI element.
 --- @param parent LuaGuiElement
---- @param defs GuiElemDef[]
+--- @param def GuiElemDef Can have a single topmost element, or be an array of elements to add.
 --- @param elems table<string, LuaGuiElement>? Elems table to use; a new table will be created if this is not specified.
 --- @return table<string, LuaGuiElement> elems Elements with names will be collected into this table.
-function flib_gui.add(parent, defs, elems)
+--- @return LuaGuiElement first The element that was created first.
+function flib_gui.add(parent, def, elems)
   if not elems then
     elems = {}
   end
-  for i = 1, #defs do
-    local def = defs[i]
+  -- If a single def was passed, wrap it in an array
+  if def.type or (def.tab and def.content) then
+    def = { def }
+  end
+  local first
+  for i = 1, #def do
+    local def = def[i]
     if def.type then
       -- Remove custom attributes from the def so the game doesn't serialize them
       local children = def.children
@@ -45,6 +51,9 @@ function flib_gui.add(parent, defs, elems)
 
       local elem = parent.add(def)
 
+      if not first then
+        first = elem
+      end
       if def.name then
         elems[def.name] = elem
       end
@@ -82,19 +91,19 @@ function flib_gui.add(parent, defs, elems)
       if children then
         flib_gui.add(elem, children, elems)
       end
+
       -- Re-add custom attributes
       def.children = children -- FIXME: Array portion
       def.elem_mods = elem_mods
       def.handler = handler
       def.style_mods = style_mods
     elseif def.tab and def.content then
-      flib_gui.add(parent, def.tab, elems)
-      flib_gui.add(parent, def.content, elems)
-      local children = parent.children
-      parent.add_tab(children[#children - 1], children[#children])
+      local _, tab = flib_gui.add(parent, def.tab, elems)
+      local _, content = flib_gui.add(parent, def.content, elems)
+      parent.add_tab(tab, content)
     end
   end
-  return elems
+  return elems, first
 end
 
 --- Add the given handler functions to the registry.
@@ -128,7 +137,7 @@ function flib_gui.dispatch(e)
   if not elem then
     return false
   end
-  local tags = elem.tags
+  local tags = elem.tags --[[@as Tags]]
   local handler_def = tags[handler_tag_key]
   if not handler_def then
     return false
@@ -163,8 +172,7 @@ end
 --- @class GuiElemDefClass: LuaGuiElement.add_param
 --- @field style_mods LuaStyle? Modifications to make to the element's style
 --- @field elem_mods LuaGuiElement? Modifications to make to the element itself
---- @field drag_target string? Set the element's drag target to the element whose name matches this string. The drag
---- target must be present in the `elems` table.
+--- @field drag_target string? Set the element's drag target to the element whose name matches this string. The drag target must be present in the `elems` table.
 --- @field handler GuiElemHandler? Handler(s) to assign to this element
 --- @field children GuiElemDef[]? Children to add to this element
 --- @field tab GuiElemDef? To add a tab, specify `tab` and `content` and leave all other fields unset.
