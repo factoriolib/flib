@@ -3,6 +3,7 @@ Version: 0.12.0
 Date: ????
   Features:
     - Added 'format' module with various string formatting functions
+    - Added 'migration.handle_on_configuration_changed()'
     - Added 'gui-lite' module
       - A(nother) new GUI library that is much leaner and more convenient to use than the existing one
       - Removes redundant features, simplifies the building process, and enhances type-checking and autocomplete

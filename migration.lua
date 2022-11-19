@@ -96,6 +96,26 @@ function flib_migration.on_config_changed(event_data, migrations, mod_name, ...)
   return true
 end
 
+--- Handle on_configuration_changed with the given generic migration and version-specific migrations. The generic
+--- migration will run every time except for when the mod is first added.
+--- @param generic_handler fun(e: ConfigurationChangedData)?
+--- @param version_migrations MigrationsTable?
+function flib_migration.handle_on_configuration_changed(generic_handler, version_migrations)
+  script.on_configuration_changed(function(e)
+    local changes = e.mod_changes[script.mod_name]
+    local old_version = changes and changes.old_version
+    -- Do not run migrations if this mod was just added
+    if old_version or not changes then
+      if generic_handler then
+        generic_handler(e)
+      end
+      if old_version and version_migrations then
+        flib_migration.run(old_version, version_migrations)
+      end
+    end
+  end)
+end
+
 return flib_migration
 
 --- A table of migrations to run for given versions.
