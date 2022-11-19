@@ -10,6 +10,7 @@ Date: ????
     - Added 'position' module with various position manipulation functions
   Changes:
       - Changed preferred require syntax to '/' instead of '.'
+      - Deprecated 'event' module - type checking did not work and it didn't provide much over using 'script' directly
       - Deprecated 'gui' module in favor of 'gui-lite'
         - 'gui' will be removed and replaced with 'gui-lite` when Factorio 1.2 is released
       - Deprecated 'misc' module in favor of the 'format' and 'position' modules
