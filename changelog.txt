@@ -12,6 +12,7 @@ Date: ????
       - Deprecated 'gui' module in favor of 'gui-lite'
         - 'gui' will be removed and replaced with 'gui-lite` when Factorio 1.2 is released
       - Deprecated 'misc' module in favor of the 'format' and 'position' modules
+      - Removed 'queue.load()' and queue metatables
       - Updated type definitions to use generics where possible
 ---------------------------------------------------------------------------------------------------
 Version: 0.11.2

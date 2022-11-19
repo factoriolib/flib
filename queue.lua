@@ -7,25 +7,7 @@ local flib_queue = {}
 --- @return Queue
 function flib_queue.new()
   --- @class Queue
-  local self = { first = 0, last = -1 }
-  setmetatable(self, { __index = flib_queue })
-  return self
-end
-
---- Set a queue's metatable to allow directly calling the module's methods.
----
---- This will need to be re-called if the game is saved and loaded.
----
---- # Examples
----
---- ```lua
---- local MyQueue = queue.load(queue.new())
---- MyQueue:push_right("My string")
---- local len = MyQueue:length() -- 1
---- ```
---- @param self Queue
-function flib_queue.load(self)
-  return setmetatable(self, { __index = flib_queue })
+  return { first = 0, last = -1 }
 end
 
 --- Push an element onto the beginning of the queue.
