@@ -1,5 +1,5 @@
 --- @diagnostic disable
---- @deprecated use `flib_dictionary` instead
+--- @deprecated use `dictionary` instead
 local flib_translation = {}
 
 local table = require("__flib__/table")
@@ -9,6 +9,7 @@ local next = next
 local pairs = pairs
 local type = type
 
+--- @deprecated use `dictionary` instead
 function flib_translation.init()
   if not global.__flib then
     global.__flib = {}
@@ -19,6 +20,7 @@ function flib_translation.init()
   }
 end
 
+--- @deprecated use `dictionary` instead
 function flib_translation.iterate_batch(event_data)
   local __translation = global.__flib.translation
   if __translation.translating_players_count == 0 then
@@ -100,6 +102,7 @@ function flib_translation.iterate_batch(event_data)
   end
 end
 
+--- @deprecated use `dictionary` instead
 function flib_translation.process_result(event_data)
   local __translation = global.__flib.translation
   if __translation.translating_players_count == 0 then
@@ -131,6 +134,7 @@ function flib_translation.process_result(event_data)
   return nil, false
 end
 
+--- @deprecated use `dictionary` instead
 function flib_translation.add_requests(player_index, strings)
   local __translation = global.__flib.translation
   local player_table = __translation.players[player_index]
@@ -169,6 +173,7 @@ function flib_translation.add_requests(player_index, strings)
   end
 end
 
+--- @deprecated use `dictionary` instead
 function flib_translation.cancel(player_index)
   local __translation = global.__flib.translation
   local player_table = __translation.players[player_index]
@@ -180,14 +185,17 @@ function flib_translation.cancel(player_index)
   __translation.translating_players_count = __translation.translating_players_count - 1
 end
 
+--- @deprecated use `dictionary` instead
 function flib_translation.is_translating(player_index)
   return global.__flib.translation.players[player_index] and true or false
 end
 
+--- @deprecated use `dictionary` instead
 function flib_translation.translating_players_count()
   return global.__flib.translation.translating_players_count
 end
 
+--- @deprecated use `dictionary` instead
 function flib_translation.serialise_localised_string(localised_string)
   if type(localised_string) == "string" then
     return localised_string
@@ -210,4 +218,3 @@ function flib_translation.serialise_localised_string(localised_string)
 end
 
 return flib_translation
---- @diagnostic enable
