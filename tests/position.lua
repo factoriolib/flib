@@ -1,4 +1,4 @@
-local position = require("position")
+local position = require("__flib__/position")
 
 local res = position.add({ 1, 3 }, { -2, 1 })
 assert(res[1] == -1)
