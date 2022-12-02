@@ -1,6 +1,7 @@
 --- Lua queue implementation.
 ---
 --- Based on "Queues and Double Queues" from [Programming in Lua](http://www.lua.org/pil/11.4.html).
+--- @class flib_queue
 local flib_queue = {}
 
 --- Create a new queue.

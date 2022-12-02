@@ -1,5 +1,4 @@
---- Extends the [Lua 5.2 table library](https://www.lua.org/manual/5.2/manual.html#6.5),
---- adding more capabilities and functions.
+--- Extension of the Lua 5.2 table library.
 ---
 --- **NOTE:** Several functions in this module will only work with [arrays](https://www.lua.org/pil/11.1.html),
 --- which are tables with sequentially numbered keys. All table functions will work with arrays as well, but

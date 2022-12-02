@@ -1,5 +1,6 @@
 --- Utilities for manipulating positions. All functions support both the shorthand and explicit syntaxes and will
 --- preserve the syntax that was passed in.
+--- @class flib_position
 local flib_position = {}
 
 --- Aggregate type of the various Factorio position types.

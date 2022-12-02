@@ -1,4 +1,5 @@
 --- Various string formatting functions.
+--- @class flib_format
 local flib_format = {}
 
 local suffix_list = {

@@ -1,4 +1,5 @@
 --- Functions for working with trains.
+--- @class flib_train
 local flib_train = {}
 
 local table = table

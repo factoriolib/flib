@@ -1,4 +1,5 @@
 --- A slim and convenient GUI library. See 'docs/examples/gui-lite.lua' for a usage demonstration.
+--- @class flib_gui_lite
 local flib_gui = {}
 
 local handler_tag_key = "__" .. script.mod_name .. "_handler"

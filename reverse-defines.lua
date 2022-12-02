@@ -8,6 +8,7 @@
 ---   local controller_name = reverse_defines.controllers[player.controller_type]
 --- end)
 --- ```
+--- @class flib_reverse_defines
 local flib_reverse_defines = {}
 
 -- TODO: Figure out how to document this. Will likely require parsing Factorio's docs.

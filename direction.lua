@@ -1,6 +1,7 @@
 local flib_math = require("__flib__/math")
 
 --- Functions for working with directions.
+--- @class flib_direction
 local flib_direction = {}
 
 --- defines.direction.north

@@ -1,4 +1,5 @@
---- Miscellaneous functions for data stage prototype manipulation.
+--- Utilities for data stage prototype manipulation.
+--- @class flib_data_util
 local flib_data_util = {}
 
 --- Copy a prototype, assigning a new name and minable properties.

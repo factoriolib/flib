@@ -1,4 +1,5 @@
 --- Schedule tasks to be executed later.
+--- @class flib_on_tick_n
 local on_tick_n = {}
 
 --- Initialize the module's script data table.

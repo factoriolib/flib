@@ -1,4 +1,5 @@
 --- Functions for working with orientations.
+--- @class flib_orientation
 local flib_orientation = {}
 
 flib_orientation.north = defines.direction.north / 8

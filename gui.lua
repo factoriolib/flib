@@ -11,7 +11,7 @@ for name, id in pairs(defines.events) do
   end
 end
 
---- GUI structuring tools and event handling.
+--- @deprecated use `gui-lite` instead
 local flib_gui = {}
 
 --- @deprecated use `gui-lite` instead

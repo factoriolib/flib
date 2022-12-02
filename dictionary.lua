@@ -3,6 +3,7 @@ local mod_gui = require("__core__/lualib/mod-gui")
 local table = require("__flib__/table")
 
 --- An easy-to-use dictionary system for storing localised string translations.
+--- @class flib_dictionary
 local flib_dictionary = {}
 
 local inner_separator = "" -- U+E000

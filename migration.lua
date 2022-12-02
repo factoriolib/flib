@@ -1,4 +1,5 @@
 --- Mod migration and version comparison functions.
+--- @class flib_migration
 local flib_migration = {}
 
 local string = string
