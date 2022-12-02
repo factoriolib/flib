@@ -1,17 +1,8 @@
--- TODO: Using `self` makes the language server treat `flib_area` as a BoundingBox...
-
---- Functions for manipulating areas.
----
---- All functions in this module, with the exception of `area.to_shorthand()`, will ensure that the all passed areas have `left_top` and `right_bottom` keys.
----
---- All functions in this module will modify the area in-place as well as return it, to provide maximum flexibility.
----
---- All constructor functions in this module will apply a metatable allowing module methods to be called directly on the area objects (see `area.load()`).
----
+--- @diagnostic disable
+--- @deprecated Use `bounding-box` instead.
 local flib_area = {}
 
---- Expand an area to its outer tile edges.
---- @param self BoundingBox
+--- @deprecated Use `bounding-box` instead.
 function flib_area.ceil(self)
   if not self.left_top then
     self = flib_area.from_shorthand(self)
@@ -28,9 +19,7 @@ function flib_area.ceil(self)
   return self
 end
 
---- Calculate the centerpoint of the area.
---- @param self BoundingBox
---- @return MapPosition center_point
+--- @deprecated Use `bounding-box` instead.
 function flib_area.center(self)
   if not self.left_top then
     self = flib_area.from_shorthand(self)
@@ -41,10 +30,7 @@ function flib_area.center(self)
   }
 end
 
---- Re-center the area on the given position.
---- @param self BoundingBox
---- @param center_point MapPosition
---- @return BoundingBox self
+--- @deprecated Use `bounding-box` instead.
 function flib_area.center_on(self, center_point)
   if not self.left_top then
     self = flib_area.from_shorthand(self)
@@ -65,10 +51,7 @@ function flib_area.center_on(self, center_point)
   return self
 end
 
---- Check if the area contains the other area.
---- @param self BoundingBox
---- @param other_area BoundingBox
---- @return boolean
+--- @deprecated Use `bounding-box` instead.
 function flib_area.contains_area(self, other_area)
   if not self.left_top then
     self = flib_area.from_shorthand(self)
@@ -82,10 +65,7 @@ function flib_area.contains_area(self, other_area)
   )
 end
 
---- Check if the area contains the given position.
---- @param self BoundingBox
---- @param position MapPosition
---- @return boolean
+--- @deprecated Use `bounding-box` instead.
 function flib_area.contains_position(self, position)
   if not self.left_top then
     self = flib_area.from_shorthand(self)
@@ -99,11 +79,7 @@ function flib_area.contains_position(self, position)
   )
 end
 
---- Add left_bottom and right_top keys to the area.
----
---- These keys will not be updated when you modify the area, so the recommended usage is to call this function whenever you need to read the extra keys.
---- @param self BoundingBox
---- @return BoundingBox
+--- @deprecated Use `bounding-box` instead.
 function flib_area.corners(self)
   if not self.left_top then
     self = flib_area.from_shorthand(self)
@@ -121,10 +97,7 @@ function flib_area.corners(self)
   return self
 end
 
---- Find the distance between a position and the nearest edge of the area.
---- @param self BoundingBox
---- @param position MapPosition
---- @return number
+--- @deprecated Use `bounding-box` instead.
 function flib_area.distance_to_nearest_edge(self, position)
   if not self.left_top then
     self = flib_area.from_shorthand(self)
@@ -136,10 +109,7 @@ function flib_area.distance_to_nearest_edge(self, position)
   return math.min(x_distance, y_distance)
 end
 
---- Expand the area by the given amount.
---- @param self BoundingBox
---- @param delta number
---- @return BoundingBox
+--- @deprecated Use `bounding-box` instead.
 function flib_area.expand(self, delta)
   if not self.left_top then
     self = flib_area.from_shorthand(self)
@@ -153,10 +123,7 @@ function flib_area.expand(self, delta)
   return self
 end
 
---- Expand the area to contain the other area.
---- @param self BoundingBox
---- @param other_area BoundingBox
---- @return BoundingBox
+--- @deprecated Use `bounding-box` instead.
 function flib_area.expand_to_contain_area(self, other_area)
   if not self.left_top then
     self = flib_area.from_shorthand(self)
@@ -174,10 +141,7 @@ function flib_area.expand_to_contain_area(self, other_area)
   return self
 end
 
---- Expand the area to contain the given position.
---- @param self BoundingBox
---- @param position MapPosition
---- @return BoundingBox
+--- @deprecated Use `bounding-box` instead.
 function flib_area.expand_to_contain_position(self, position)
   if not self.left_top then
     self = flib_area.from_shorthand(self)
@@ -195,9 +159,7 @@ function flib_area.expand_to_contain_position(self, position)
   return self
 end
 
---- Shrink the area to its inner tile edges.
---- @param self BoundingBox
---- @return BoundingBox
+--- @deprecated Use `bounding-box` instead.
 function flib_area.floor(self)
   if not self.left_top then
     self = flib_area.from_shorthand(self)
@@ -215,10 +177,7 @@ function flib_area.floor(self)
   return self
 end
 
---- Create an area from dimensions and a centerpoint.
---- @param dimensions DisplayResolution
---- @param center? MapPosition
---- @return BoundingBox
+--- @deprecated Use `bounding-box` instead.
 function flib_area.from_dimensions(dimensions, center)
   center = center or { x = 0, y = 0 }
   local self = {
@@ -235,9 +194,7 @@ function flib_area.from_dimensions(dimensions, center)
   return self
 end
 
---- Create a 1x1 tile area from the given position.
---- @param position MapPosition
---- @param snap boolean? If true, snap the created area to the tile edges the position is contained in.
+--- @deprecated Use `bounding-box` instead.
 function flib_area.from_position(position, snap)
   local self
   if snap then
@@ -259,13 +216,7 @@ function flib_area.from_position(position, snap)
   end
 end
 
---- Create a proper area from a shorthanded area.
----
---- A "shorthand" area is an area without the `left_top` and `right_bottom` keys, which is sometimes used by the game in the data stage.
----
---- This function will automatically be called when using any other non-constructor function in this module.
---- @param area BoundingBox
---- @return BoundingBox
+--- @deprecated Use `bounding-box` instead.
 function flib_area.from_shorthand(area)
   local self = {
     left_top = { x = area[1][1], y = area[1][2] },
@@ -275,9 +226,7 @@ function flib_area.from_shorthand(area)
   return self
 end
 
---- Calculate the height of the area.
---- @param self BoundingBox
---- @return number
+--- @deprecated Use `bounding-box` instead.
 function flib_area.height(self)
   if not self.left_top then
     self = flib_area.from_shorthand(self)
@@ -286,22 +235,7 @@ function flib_area.height(self)
   return math.abs(self.right_bottom.y - self.left_top.y)
 end
 
---- Create an iterator of positions in the area from the left-top to the right-bottom, incrementing by `step`.
----
---- The iterator function, when called, will return a `MapPosition` that is within the area.
----
---- # Examples
----
---- ```lua
---- local MyArea = area.from_dimensions({ height = 10, width = 10 }, { x = 0, y = 0 })
---- for position in MyArea:iterate() do
----   log(serpent.line(position))
---- end
---- ```
---- @param self BoundingBox
---- @param step number? The distance between each returned position (default: `1`).
---- @param starting_offset MapPosition? Positional offset from left_top (default: `0,0`)
---- @return fun(): MapPosition
+--- @deprecated Use `bounding-box` instead.
 function flib_area.iterate(self, step, starting_offset)
   starting_offset = starting_offset or { x = 0, y = 0 }
   if not self.left_top then
@@ -339,28 +273,7 @@ function flib_area.iterate(self, step, starting_offset)
   end
 end
 
---- Create an area object from a plain area.
----
---- Doing this allows one to use area methods directly on an area "object" via the `:` operator. The area will be passed
---- in as `self` to each function automatically.
----
---- Metatables do not persist across save/load, so when using area objects, this function must be called on them whenever
---- they are retrieved from `global` or during `on_load`.
----
---- # Examples
----
---- ```lua
---- -- Create the area object
---- local MyArea = area.load(event_data.area)
----
---- -- Use module methods directly on the object
---- log("Center: " .. MyArea:center())
---- for position in MyArea:iterate(0.5) do
----   log(serpent.line(position))
---- end
---- ```
---- @param area BoundingBox
---- @return BoundingBox
+--- @deprecated Use `bounding-box` instead.
 function flib_area.load(area)
   if not area.left_top then
     area = flib_area.from_shorthand(area)
@@ -368,10 +281,7 @@ function flib_area.load(area)
   return setmetatable(area, { __index = flib_area })
 end
 
---- Move the area by the given delta.
---- @param self BoundingBox
---- @param delta MapPosition
---- @return BoundingBox
+--- @deprecated Use `bounding-box` instead.
 function flib_area.move(self, delta)
   if not self.left_top then
     self = flib_area.from_shorthand(self)
@@ -385,9 +295,7 @@ function flib_area.move(self, delta)
   return self
 end
 
---- Rotate the area 90 degrees around its center.
---- @param self BoundingBox
---- @return BoundingBox
+--- @deprecated Use `bounding-box` instead.
 function flib_area.rotate(self)
   -- save current properties
   local center = flib_area.center(self)
@@ -406,20 +314,14 @@ function flib_area.rotate(self)
   return self
 end
 
---- Expand the area to create a square.
---- @param self BoundingBox
---- @return BoundingBox
+--- @deprecated Use `bounding-box` instead.
 function flib_area.square(self)
   local radius = math.max(flib_area.height(self), flib_area.width(self))
 
   return flib_area.from_dimensions({ height = radius, width = radius }, flib_area.center(self))
 end
 
---- Create a new area table from the given area, removing any extra fields and metatables.
----
---- This is useful when passing an area to API functions that will complain about any unknown fields.
---- @param self BoundingBox
---- @return BoundingBox
+--- @deprecated Use `bounding-box` instead.
 function flib_area.strip(self)
   return {
     left_top = {
@@ -433,18 +335,7 @@ function flib_area.strip(self)
   }
 end
 
---- Remove keys from the area to create a shorthanded area.
----
---- # Examples
----
---- ```lua
---- local Area = area.from_dimensions({ height = 5, width = 5 }, { x = 0, y = 0 })
---- local stripped_area = area.strip(Area)
---- log(serpent.line(Area)) -- { left_top = { x = -2.5, y = -2.5 }, right_bottom = { x = 2.5, y = 2.5 } }
---- log(serpent.line(stripped_area)) -- { { -2.5, -2.5 }, { 2.5, 2.5 } }
---- ```
---- @param self BoundingBox
---- @return BoundingBox
+--- @deprecated Use `bounding-box` instead.
 function flib_area.to_shorthand(self)
   if not self.left_top then
     return self
@@ -456,9 +347,7 @@ function flib_area.to_shorthand(self)
   }
 end
 
---- Calculate the width of the area.
---- @param self BoundingBox
---- @return number
+--- @deprecated Use `bounding-box` instead.
 function flib_area.width(self)
   if not self.left_top then
     self = flib_area.from_shorthand(self)
