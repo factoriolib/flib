@@ -1,4 +1,4 @@
-local gui = require("__flib__/gui")
+local gui = require("__flib__/gui-lite")
 local mod_gui = require("__core__/lualib/mod-gui")
 local table = require("__flib__/table")
 
