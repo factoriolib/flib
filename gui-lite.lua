@@ -110,9 +110,13 @@ end
 --- @param new_handlers table<string, fun(e: GuiEventData)>
 --- @param wrapper fun(e: GuiEventData, handler: function)? If specified, dispatch() will call this function instead
 --- of directly calling the handler. Useful for gathering information or writing other boilerplate that all of the
+--- @param prefix string? If provided, handler names will be prefixed with this value.
 --- handlers need.
-function flib_gui.add_handlers(new_handlers, wrapper)
+function flib_gui.add_handlers(new_handlers, wrapper, prefix)
   for name, handler in pairs(new_handlers) do
+    if prefix then
+      name = prefix .. ":" .. name
+    end
     if type(handler) == "function" then
       if handlers_lookup[name] then
         error("Attempted to register two GUI event handlers with the same name: " .. name)
