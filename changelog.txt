@@ -18,6 +18,8 @@ Date: ????
       - Deprecated 'misc' module in favor of the 'format' and 'position' modules
       - Removed 'queue.load()' and queue metatables
       - Updated type definitions to use generics where possible
+  Bugfixes:
+    - Fixed translations getting stuck on Factorio 1.1.73+
 ---------------------------------------------------------------------------------------------------
 Version: 0.11.2
 Date: 2022-09-18

@@ -29,7 +29,7 @@ local RawDictionary = {}
 --- @param internal string An unique, language-agnostic identifier for this translation.
 --- @param translation LocalisedString
 function RawDictionary:add(internal, translation)
-  local to_add = { "", internal, inner_separator, translation, separator }
+  local to_add = { "", internal, inner_separator, { "?", translation, "FLIB_TRANSLATION_FAILED" }, separator }
 
   local ref = self.ref
   local i = self.batch_i + 1
@@ -271,7 +271,7 @@ function flib_dictionary.process_translation(event_data)
           local _, _, key, value = string.find(str, "^(.-)" .. inner_separator .. "(.-)$")
           if key then
             -- If `keep_untranslated` is true, then use the key as the value if it failed
-            local failed = string.find(value, "Unknown key:")
+            local failed = string.find(value, "FLIB_TRANSLATION_FAILED")
             if failed and dict_data.keep_untranslated then
               value = key
             elseif failed then
