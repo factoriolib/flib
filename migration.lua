@@ -54,7 +54,7 @@ end
 --- @param old_version string
 --- @param migrations MigrationsTable
 --- @param format? string default: `%02d`
---- @vararg any Any additional arguments will be passed to each function within `migrations`.
+--- @param ... any All additional arguments will be passed to each function within `migrations`.
 function flib_migration.run(old_version, migrations, format, ...)
   local migrate = false
   for version, func in pairs(migrations) do
@@ -70,64 +70,48 @@ end
 --- # Examples
 ---
 --- ```lua
---- event.on_configuration_changed(function(e)
+--- script.on_configuration_changed(function(e)
 ---   if migration.on_config_changed(e, migrations) then
 ---     -- Run generic (non-init) migrations
 ---     rebuild_prototype_data()
 ---   end
 --- end
 --- ```
---- @param event_data ConfigurationChangedData
+--- @param e ConfigurationChangedData
 --- @param migrations? MigrationsTable
 --- @param mod_name? string The mod to check against. Defaults to the current mod.
---- @vararg any Any additional arguments will be passed to each function within `migrations`.
+--- @param ... any All additional arguments will be passed to each function within `migrations`.
 --- @return boolean run_generic_micrations
-function flib_migration.on_config_changed(event_data, migrations, mod_name, ...)
-  local changes = event_data.mod_changes and event_data.mod_changes[mod_name or script.mod_name]
-  if changes then
-    local old_version = changes.old_version
-    if old_version then
-      if migrations then
-        flib_migration.run(old_version, migrations, nil, ...)
-      end
-    else
-      return false -- Don't do generic migrations, because we just initialized
+function flib_migration.on_config_changed(e, migrations, mod_name, ...)
+  local changes = e.mod_changes[mod_name or script.mod_name]
+  local old_version = changes and changes.old_version
+  if old_version or not changes then
+    if migrations then
+      flib_migration.run(old_version, migrations, nil, ...)
     end
+    return true
   end
-  return true
+  return false
 end
 
---- Handle on_configuration_changed with the given generic migration and version-specific migrations. The generic
---- migration will run every time except for when the mod is first added.
---- @param generic_handler fun(e: ConfigurationChangedData)?
+--- Handle on_configuration_changed with the given generic and version-specific migrations. Will override any existing
+--- on_configuration_changed event handler. Both arguments are optional.
 --- @param version_migrations MigrationsTable?
-function flib_migration.handle_on_configuration_changed(generic_handler, version_migrations)
+--- @param generic_handler fun(e: ConfigurationChangedData)?
+function flib_migration.handle_on_configuration_changed(version_migrations, generic_handler)
   script.on_configuration_changed(function(e)
-    local changes = e.mod_changes[script.mod_name]
-    local old_version = changes and changes.old_version
-    -- Do not run migrations if this mod was just added
-    if old_version or not changes then
-      if generic_handler then
-        generic_handler(e)
-      end
-      if old_version and version_migrations then
-        flib_migration.run(old_version, version_migrations)
-      end
+    if flib_migration.on_config_changed(e, version_migrations) and generic_handler then
+      generic_handler(e)
     end
   end)
 end
 
 return flib_migration
 
---- A table of migrations to run for given versions.
+--- Migration code to run for specific mod version. A given function will run if the previous mod version is less
+--- than the given version.
 ---
---- Dictionary `string` -> `function`. Each string is a version number, and each function is logic to run for that
---- version. When passed into `migration.run` or `migration.on_config_changed`, the module will check `old_version`
---- against each version in this table, and for any that are newer, will run that version's corresponding logic.
----
---- A version function can accept arguments that are passed in through `migration.run`.
----
---- # Examples
+--- # Example
 ---
 --- ```lua
 --- {
@@ -137,9 +121,14 @@ return flib_migration
 ---       player_table.bar = "Lorem ipsum"
 ---     end
 ---   end,
+---   ["1.0.7"] = function()
+---     global.bar = {}
+---   end
 ---   ["1.1.0"] = function(arg)
 ---     global.foo = arg
 ---   end
 --- }
 --- ```
---- @alias MigrationsTable table<string, function>
+---
+--- If the mod is upgraded from 1.0.4 to 1.1.0, then the migrations for 1.0.7 and 1.1.0 will be run.
+--- @alias MigrationsTable table<string, fun(...: any)>
