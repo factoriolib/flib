@@ -4,6 +4,8 @@ Date: ????
   Features:
     - Added 'bounding-box' module
       - Similar to the 'area' module, but treats boxes as immutable and does not use metatables
+    - Added 'dictionary-lite' module
+      - Takes advantage of new Factorio API features to drastically simplify translation
     - Added 'format' module with various string formatting functions
     - Added 'gui-lite' module
       - Removes redundant features, simplifies the building process, and enhances type-checking and autocomplete
@@ -12,14 +14,14 @@ Date: ????
   Changes:
       - Changed preferred require syntax to '/' instead of '.'
       - Deprecated 'area' module in favor of the 'bounding-box' module
+      - Deprecated 'dictionary' module in favor of the 'dictionary-lite' module
       - Deprecated 'event' module - type checking did not work and it didn't provide much over using 'script' directly
-      - Deprecated 'gui' module in favor of 'gui-lite'
-        - 'gui' will be removed and replaced with 'gui-lite` when Factorio 1.2 is released
+      - Deprecated 'gui' module in favor of the 'gui-lite' module
       - Deprecated 'misc' module in favor of the 'format' and 'position' modules
       - Removed 'queue.load()' and queue metatables
       - Updated type definitions to use generics where possible
   Bugfixes:
-    - Fixed translations getting stuck on Factorio 1.1.73+
+    - [dictionary] Fixed translations getting stuck on Factorio 1.1.73+
 ---------------------------------------------------------------------------------------------------
 Version: 0.11.2
 Date: 2022-09-18
