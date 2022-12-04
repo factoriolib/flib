@@ -5,7 +5,8 @@ Date: ????
     - Added 'bounding-box' module
       - Similar to the 'area' module, but treats boxes as immutable and does not use metatables
     - Added 'dictionary-lite' module
-      - Takes advantage of new Factorio API features to drastically simplify translation
+      - Takes advantage of new Factorio API features to drastically simplify the process
+      - Increases translation speed in singleplayer by a factor of 10
     - Added 'format' module with various string formatting functions
     - Added 'gui-lite' module
       - Removes redundant features, simplifies the building process, and enhances type-checking and autocomplete
