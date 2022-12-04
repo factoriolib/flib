@@ -6,7 +6,6 @@ local table = require("__flib__/table")
 --- @class flib_dictionary_new
 local flib_dictionary = {}
 
-local request_batch_size = 10
 local request_timeout_ticks = (60 * 5)
 
 --- @param init_only boolean?
@@ -131,7 +130,7 @@ local function request_next_batch(data)
     return false
   end
   local requests, strings = {}, {}
-  for i = 1, request_batch_size do
+  for i = 1, game.is_multiplayer() and 5 or 50 do
     local string
     repeat
       wip.key, string = next(raw[wip.dict], wip.key)
