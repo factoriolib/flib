@@ -43,6 +43,86 @@ local function get_translator(data, language)
 end
 
 --- @param data flib_dictionary_global
+local function update_gui(data)
+  local wip = data.wip
+  for _, player in pairs(game.players) do
+    local frame_flow = mod_gui.get_frame_flow(player)
+    local window = frame_flow.flib_translation_progress
+    if wip then
+      if not window then
+        _, window = gui.add(frame_flow, {
+          type = "frame",
+          name = "flib_translation_progress",
+          style = mod_gui.frame_style,
+          style_mods = { width = 350 },
+          direction = "vertical",
+          {
+            type = "label",
+            style = "frame_title",
+            caption = { "gui.flib-translating-dictionaries" },
+            tooltip = { "gui.flib-translating-dictionaries-description" },
+          },
+          {
+            type = "frame",
+            name = "pane",
+            style = "inside_shallow_frame_with_padding",
+            style_mods = { top_padding = 8 },
+            direction = "vertical",
+          },
+        })
+      end
+      local pane = window.pane --[[@as LuaGuiElement]]
+      local mod_flow = pane[script.mod_name]
+      if not mod_flow then
+        _, mod_flow = gui.add(pane, {
+          type = "flow",
+          name = script.mod_name,
+          style = "centering_horizontal_flow",
+          style_mods = { top_margin = 4, horizontal_spacing = 8 },
+          {
+            type = "label",
+            style = "caption_label",
+            caption = { "?", { "mod-name." .. script.mod_name }, script.mod_name },
+            ignored_by_interaction = true,
+          },
+          { type = "empty-widget", style = "flib_horizontal_pusher" },
+          { type = "label", name = "language", style = "bold_label", ignored_by_interaction = true },
+          {
+            type = "progressbar",
+            name = "bar",
+            style_mods = { top_margin = 1, width = 100 },
+            ignored_by_interaction = true,
+          },
+          {
+            type = "label",
+            name = "percentage",
+            style = "bold_label",
+            style_mods = { width = 24, horizontal_align = "right" },
+            ignored_by_interaction = true,
+          },
+        })
+      end
+      local progress = wip.received_count / data.raw_count
+      mod_flow.language.caption = wip.language
+      mod_flow.bar.value = progress --[[@as double]]
+      mod_flow.percentage.caption = tostring(math.min(math.floor(progress * 100), 99)) .. "%"
+      mod_flow.tooltip =
+        { "", (wip.dict or { "gui.flib-finishing" }), "\n" .. wip.received_count .. " / " .. data.raw_count }
+    else
+      if window then
+        local mod_flow = window.pane[script.mod_name]
+        if mod_flow then
+          mod_flow.destroy()
+        end
+        if #window.pane.children == 0 then
+          window.destroy()
+        end
+      end
+    end
+  end
+end
+
+--- @param data flib_dictionary_global
 --- @return boolean success
 local function request_next_batch(data)
   local raw = data.raw
@@ -95,6 +175,8 @@ local function request_next_batch(data)
   end
   wip.request_tick = game.tick
 
+  update_gui(data)
+
   return true
 end
 
@@ -130,78 +212,6 @@ local function handle_next_language(data)
           request_tick = 0,
           translator = translator,
         }
-      end
-    end
-  end
-end
-
---- @param data flib_dictionary_global
-local function update_gui(data)
-  local wip = data.wip
-  for _, player in pairs(game.players) do
-    local frame_flow = mod_gui.get_frame_flow(player)
-    local window = frame_flow.flib_translation_progress
-    if wip then
-      if not window then
-        _, window = gui.add(frame_flow, {
-          type = "frame",
-          name = "flib_translation_progress",
-          style = mod_gui.frame_style,
-          style_mods = { width = 350 },
-          direction = "vertical",
-          {
-            type = "label",
-            style = "frame_title",
-            caption = { "gui.flib-translating-dictionaries" },
-            tooltip = { "gui.flib-translating-dictionaries-description" },
-          },
-          {
-            type = "frame",
-            name = "pane",
-            style = "inside_shallow_frame_with_padding",
-            direction = "vertical",
-          },
-        })
-      end
-      local pane = window.pane --[[@as LuaGuiElement]]
-      local mod_flow = pane[script.mod_name]
-      if not mod_flow then
-        _, mod_flow = gui.add(pane, {
-          type = "flow",
-          name = script.mod_name,
-          style = "centering_horizontal_flow",
-          style_mods = { top_margin = 4, horizontal_spacing = 8 },
-          {
-            type = "label",
-            style = "caption_label",
-            caption = { "?", { "mod-name." .. script.mod_name }, script.mod_name },
-            ignored_by_interaction = true,
-          },
-          { type = "label", name = "language", style = "bold_label", ignored_by_interaction = true },
-          {
-            type = "progressbar",
-            name = "bar",
-            style_mods = { horizontally_stretchable = true },
-            ignored_by_interaction = true,
-          },
-          { type = "label", name = "percentage", style = "bold_label", ignored_by_interaction = true },
-        })
-      end
-      local progress = wip.received_count / data.raw_count
-      mod_flow.language.caption = wip.language
-      mod_flow.bar.value = progress --[[@as double]]
-      mod_flow.percentage.caption = tostring(math.ceil(progress * 100)) .. "%"
-      mod_flow.tooltip =
-        { "", (wip.dict or { "gui.flib-finishing" }), "\n" .. wip.received_count .. " / " .. data.raw_count }
-    else
-      if window then
-        local mod_flow = window.pane[script.mod_name]
-        if mod_flow then
-          mod_flow.destroy()
-        end
-        if #window.pane.children == 0 then
-          window.destroy()
-        end
       end
     end
   end
@@ -354,11 +364,9 @@ function flib_dictionary.on_string_translated(e)
       end
     end
     handle_next_language(data)
+    update_gui(data)
     wip = data.wip
   end
-
-  -- Update GUI
-  update_gui(data)
 end
 
 --- @param e on_player_joined_game
