@@ -1,5 +1,5 @@
---- A slim and convenient GUI library. See 'docs/examples/gui-lite.lua' for a usage demonstration.
---- @class flib_gui_lite
+--- Utilities for building GUIs and handling GUI events.
+--- @class flib_gui
 local flib_gui = {}
 
 local handler_tag_key = "__" .. script.mod_name .. "_handler"
@@ -107,17 +107,12 @@ function flib_gui.add(parent, def, elems)
   return elems, first
 end
 
---- Add the given handler functions to the registry.
+--- Add the given handler functions to the registry. Each handler must have a unique name. If a `wrapper` function is
+--- provided, it will receive the event data and handler function, and it is responsible for calling the handler.
 --- @param new_handlers table<string, fun(e: GuiEventData)>
---- @param wrapper fun(e: GuiEventData, handler: function)? If specified, dispatch() will call this function instead
---- of directly calling the handler. Useful for gathering information or writing other boilerplate that all of the
---- @param prefix string? If provided, handler names will be prefixed with this value.
---- handlers need.
-function flib_gui.add_handlers(new_handlers, wrapper, prefix)
+--- @param wrapper fun(e: GuiEventData, handler: function)?
+function flib_gui.add_handlers(new_handlers, wrapper)
   for name, handler in pairs(new_handlers) do
-    if prefix then
-      name = prefix .. ":" .. name
-    end
     if type(handler) == "function" then
       if handlers_lookup[name] then
         error("Attempted to register two GUI event handlers with the same name: " .. name)
@@ -161,12 +156,10 @@ function flib_gui.dispatch(e)
   return false
 end
 
---- Handle all GUI events with `flib_gui.dispatch`. This will add handlers for all `on_gui_*` events. If you need to
---- have custom logic for a handler, create it after calling this function and call `flib_gui.dispatch` in that
---- function.
+--- Handle all GUI events with `flib_gui.dispatch`. Will not override existing handlers.
 function flib_gui.handle_events()
   for name, id in pairs(defines.events) do
-    if string.find(name, "on_gui_") then
+    if string.find(name, "on_gui_") and not script.get_event_handler(id) then
       script.on_event(id, flib_gui.dispatch)
     end
   end

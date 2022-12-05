@@ -385,9 +385,17 @@ end
 --- on_string_translated, and on_player_joined_game. If you overwrite any handlers, ensure that you call the
 --- corresponding lifecycle method in your handler.
 function flib_dictionary.handle_events()
-  script.on_event(defines.events.on_tick, flib_dictionary.on_tick)
-  script.on_event(defines.events.on_string_translated, flib_dictionary.on_string_translated)
-  script.on_event(defines.events.on_player_joined_game, flib_dictionary.on_player_joined_game)
+  for id, handler in pairs({
+    [defines.events.on_tick] = flib_dictionary.on_tick,
+    [defines.events.on_string_translated] = flib_dictionary.on_string_translated,
+    [defines.events.on_player_joined_game] = flib_dictionary.on_player_joined_game,
+  }) do
+    if
+      not script.get_event_handler(id --[[@as uint]])
+    then
+      script.on_event(id, handler)
+    end
+  end
 end
 
 -- Dictionary creation
