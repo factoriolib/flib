@@ -25,7 +25,7 @@ end
 
 --- Calculate the centerpoint of the box.
 --- @param box BoundingBox
---- @return Position
+--- @return MapPosition
 function flib_bounding_box.center(box)
   if box.left_top then
     return {
@@ -56,7 +56,7 @@ end
 
 --- Check if the given box contains the given position.
 --- @param box BoundingBox
---- @param pos Position
+--- @param pos MapPosition
 --- @return boolean
 function flib_bounding_box.contains_position(box, pos)
   local box = flib_bounding_box.ensure_explicit(box)
@@ -119,7 +119,7 @@ end
 
 --- Return a new box expanded to contain the given position.
 --- @param box BoundingBox
---- @param pos Position
+--- @param pos MapPosition
 --- @return BoundingBox
 function flib_bounding_box.expand_to_contain_position(box, pos)
   local pos = position.ensure_xy(pos)
@@ -155,7 +155,7 @@ function flib_bounding_box.floor(box)
 end
 
 --- Create a new box from a centerpoint and dimensions.
---- @param center Position
+--- @param center MapPosition
 --- @param width number
 --- @param height number
 --- @return BoundingBox
@@ -174,7 +174,7 @@ function flib_bounding_box.from_dimensions(center, width, height)
 end
 
 --- Create a 1x1 box from the given position, optionally snapped to the containing tile edges.
---- @param pos Position
+--- @param pos MapPosition
 --- @param snap boolean?
 --- @return BoundingBox
 function flib_bounding_box.from_position(pos, snap)
@@ -225,7 +225,7 @@ end
 
 --- Return a new box with  the same dimensions, moved by the given delta.
 --- @param box BoundingBox
---- @param delta Position
+--- @param delta MapPosition
 --- @return BoundingBox
 function flib_bounding_box.move(box, delta)
   local dx = delta.x or delta[1]
@@ -245,7 +245,7 @@ end
 
 --- Return a new box with the same dimensions centered on the given position.
 --- @param box BoundingBox
---- @param pos Position
+--- @param pos MapPosition
 --- @return BoundingBox
 function flib_bounding_box.recenter_on(box, pos)
   local height = flib_bounding_box.height(box)
