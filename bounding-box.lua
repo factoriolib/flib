@@ -60,7 +60,7 @@ end
 --- @return boolean
 function flib_bounding_box.contains_position(box, pos)
   local box = flib_bounding_box.ensure_explicit(box)
-  local pos = position.ensure_xy(pos)
+  local pos = position.ensure_explicit(pos)
   return
     box.left_top.x <= pos.x and box.left_top.y <= pos.y and box.right_bottom.x >= pos.x and box.right_bottom.y >= pos.y
 end
@@ -70,8 +70,8 @@ end
 --- @return BoundingBox
 function flib_bounding_box.ensure_explicit(box)
   return {
-    left_top = position.ensure_xy(box.left_top or box[1]),
-    right_bottom = position.ensure_xy(box.right_bottom or box[2]),
+    left_top = position.ensure_explicit(box.left_top or box[1]),
+    right_bottom = position.ensure_explicit(box.right_bottom or box[2]),
   }
 end
 
@@ -122,7 +122,7 @@ end
 --- @param pos MapPosition
 --- @return BoundingBox
 function flib_bounding_box.expand_to_contain_position(box, pos)
-  local pos = position.ensure_xy(pos)
+  local pos = position.ensure_explicit(pos)
 
   if box.left_top then
     return {
