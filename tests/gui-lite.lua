@@ -48,6 +48,8 @@ function gui.build(player)
       -- The string must be the name of an element that is present in the `elems` table. To set drag_target to a
       -- LuaGuiElement reference, do so inside of the `elem_mods` table.
       drag_target = "flib_todo_window",
+      -- For a real mod, you would want to use localised strings for the captions. They are omitted here to keep this
+      -- demo in one file.
       { type = "label", style = "frame_title", caption = "TodoMVC", ignored_by_interaction = true },
       { type = "empty-widget", style = "flib_titlebar_drag_handle", ignored_by_interaction = true },
       -- You can use helper functions for repetitive elements.
@@ -147,6 +149,7 @@ function gui.build(player)
     },
   })
 
+  -- In a real mod, you would want to initially hide the GUI and not set opened until the player opens it.
   player.opened = elems.flib_todo_window
 
   --- @class Gui
