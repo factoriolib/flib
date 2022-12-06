@@ -1,5 +1,5 @@
 -- TodoMVC implementation using gui-lite.
--- The following is how I (raiguard) prefere to structure GUIs, but it is not the only way.
+-- The following is how I (raiguard) prefer to structure GUIs, but it is not the only way.
 
 -- GUI
 
