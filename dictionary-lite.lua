@@ -275,16 +275,18 @@ function flib_dictionary.on_tick()
   -- Player language requests
   for id, request in pairs(data.player_language_requests) do
     if game.tick - request.tick > request_timeout_ticks then
-      -- Yes, this is safe to do here, pairs() will handle it
-      data.player_language_requests[id] = nil
       local player = request.player
       if player.valid and player.connected then
         local id = player.request_translation({ "locale-identifier" })
-        data.player_language_requests[id] = {
-          player = player,
-          tick = game.tick,
-        }
+        if id then
+          data.player_language_requests[id] = {
+            player = player,
+            tick = game.tick,
+          }
+        end
       end
+      -- Deletion must be last so that the deleted entry isn't re-used for the new entry in memory
+      data.player_language_requests[id] = nil
     end
   end
 

@@ -1,7 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.12.2
 Date: ????
-  Features:
+  Bugfixes:
+    - [dictionary-lite] Fixed an occasional crash related to Lua memory management internals
 ---------------------------------------------------------------------------------------------------
 Version: 0.12.1
 Date: 2022-12-06
