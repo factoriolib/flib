@@ -279,7 +279,7 @@ function flib_dictionary.on_tick()
       data.player_language_requests[id] = nil
       local player = request.player
       if player.valid and player.connected then
-        local id = player.request_translation({ "locale-identifier" })[1]
+        local id = player.request_translation({ "locale-identifier" })
         data.player_language_requests[id] = {
           player = player,
           tick = game.tick,
