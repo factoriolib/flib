@@ -165,7 +165,7 @@ local function request_next_batch(data)
     end
   end
 
-  local ids = wip.translator.request_translation(table.unpack(strings))
+  local ids = wip.translator.request_translations(strings)
   if not ids then
     return false
   end
@@ -372,7 +372,10 @@ end
 function flib_dictionary.on_player_joined_game(e)
   -- Request the player's locale identifier
   local player = game.get_player(e.player_index) --[[@as LuaPlayer]]
-  local id = player.request_translation({ "locale-identifier" })[1]
+  local id = player.request_translation({ "locale-identifier" })
+  if not id then
+    return
+  end
   local data = get_data()
   data.player_language_requests[id] = {
     player = player,
