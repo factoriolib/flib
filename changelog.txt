@@ -3,7 +3,8 @@ Version: 0.12.0
 Date: ????
   Features:
     - Added 'bounding-box' module
-      - Similar to the 'area' module, but treats boxes as immutable and does not use metatables
+      - A cleaned up version of the 'area' module that treats bounding boxes as immutable and does not use metatables
+      - Since the cleanup was a breaking change, a new module was created
     - Added 'dictionary-lite' module
       - Takes advantage of new Factorio API features to drastically simplify the process
       - Increases translation speed in singleplayer by a factor of 10
