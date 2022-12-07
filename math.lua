@@ -1,5 +1,5 @@
 --- Extension of the Lua 5.2 math library.
---- @class flib_math: mathlib
+--- @class flib_math: factorio.mathlib
 local flib_math = {}
 
 local unpack = table.unpack

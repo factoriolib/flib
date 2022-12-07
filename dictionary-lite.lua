@@ -3,7 +3,7 @@ local mod_gui = require("__core__/lualib/mod-gui")
 local table = require("__flib__/table")
 
 --- Utilities for creating dictionaries of localised string translations.
---- @class flib_dictionary_new
+--- @class flib_dictionary
 local flib_dictionary = {}
 
 local request_timeout_ticks = (60 * 5)
@@ -307,7 +307,7 @@ function flib_dictionary.on_tick()
   end
 end
 
---- @param e on_string_translated
+--- @param e EventData.on_string_translated
 function flib_dictionary.on_string_translated(e)
   local data = get_data()
   local id = e.id
@@ -370,7 +370,7 @@ function flib_dictionary.on_string_translated(e)
   end
 end
 
---- @param e on_player_joined_game
+--- @param e EventData.on_player_joined_game
 function flib_dictionary.on_player_joined_game(e)
   -- Request the player's locale identifier
   local player = game.get_player(e.player_index) --[[@as LuaPlayer]]
@@ -386,9 +386,9 @@ function flib_dictionary.on_player_joined_game(e)
   update_gui(data)
 end
 
---- Handle all non-bootstrap events with default event handlers. This will overwrite existing handlers for on_tick,
---- on_string_translated, and on_player_joined_game. If you overwrite any handlers, ensure that you call the
---- corresponding lifecycle method in your handler.
+--- Handle all non-bootstrap events with default event handlers. Will not overwrite any existing handlers. If you have
+--- custom handlers for on_tick, on_string_translated, or on_player_joined_game, ensure that you call the corresponding
+--- module lifecycle handler..
 function flib_dictionary.handle_events()
   for id, handler in pairs({
     [defines.events.on_tick] = flib_dictionary.on_tick,

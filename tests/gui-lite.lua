@@ -164,7 +164,7 @@ function gui.build(player)
   }
 end
 
---- @param e on_gui_confirmed
+--- @param e EventData.on_gui_confirmed
 function gui.on_textfield_text_changed(_, e)
   if #e.element.text == 0 then
     e.element.placeholder.visible = true
@@ -174,7 +174,7 @@ function gui.on_textfield_text_changed(_, e)
 end
 
 --- @param self Gui
---- @param e on_gui_checked_state_changed
+--- @param e EventData.on_gui_checked_state_changed
 function gui.change_mode(self, e)
   local mode = e.element.tags.mode --[[@as string]]
   self.mode = mode
@@ -204,7 +204,7 @@ function gui.hide(self)
 end
 
 --- @param self Gui
---- @param e on_gui_checked_state_changed
+--- @param e EventData.on_gui_checked_state_changed
 function gui.on_todo_toggled(self, e)
   local checkbox = e.element
   if checkbox.state then
@@ -223,7 +223,7 @@ function gui.on_todo_toggled(self, e)
 end
 
 --- @param self Gui
---- @param e on_gui_confirmed
+--- @param e EventData.on_gui_confirmed
 function gui.on_textfield_confirmed(self, e)
   local title = e.element.text
   if #title == 0 then

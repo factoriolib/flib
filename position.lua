@@ -3,7 +3,7 @@
 --- @class flib_position
 local flib_position = {}
 
---- Sumneko doesn't properly handle generics yet and throws a bunch of bogus warnings.
+--- FIXME: Sumneko doesn't properly handle generics yet and throws a bunch of bogus warnings.
 --- @diagnostic disable
 
 --- Add two positions.
