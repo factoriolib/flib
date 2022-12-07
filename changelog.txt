@@ -1,6 +1,9 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.12.2
 Date: ????
+  Changes:
+    - [queue] Renamed functions to be much more clear, updated types to use generics
+    - Updated types to work with recent FMTK releases
   Bugfixes:
     - [dictionary-lite] Fixed an occasional crash related to Lua memory management internals
 ---------------------------------------------------------------------------------------------------
