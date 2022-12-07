@@ -2,6 +2,7 @@
 Version: 0.12.2
 Date: ????
   Changes:
+    - [queue] If the queue is empty, returns nil instead of throwing an error
     - [queue] Renamed functions to be much more clear, updated types to use generics
     - Updated types to work with recent FMTK releases
   Bugfixes:

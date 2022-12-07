@@ -39,10 +39,10 @@ end
 function flib_queue.pop_front(self)
   local first = self.first
   if first > self.last then
-    error("list is empty")
+    return
   end
   local value = self[first]
-  self[first] = nil -- to allow garbage collection
+  self[first] = nil
   self.first = first + 1
   return value
 end
@@ -54,10 +54,10 @@ end
 function flib_queue.pop_back(self)
   local last = self.last
   if self.first > last then
-    error("list is empty")
+    return
   end
   local value = self[last]
-  self[last] = nil -- to allow garbage collection
+  self[last] = nil
   self.last = last - 1
   return value
 end
