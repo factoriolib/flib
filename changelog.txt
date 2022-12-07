@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.12.2
-Date: ????
+Date: 2022-12-06
   Changes:
     - [queue] If the queue is empty, returns nil instead of throwing an error
     - [queue] Renamed functions to be much more clear, updated types to use generics
