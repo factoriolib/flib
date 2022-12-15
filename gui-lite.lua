@@ -16,6 +16,9 @@ local handlers_lookup = {}
 --- @return table<string, LuaGuiElement> elems Elements with names will be collected into this table.
 --- @return LuaGuiElement first The element that was created first;  the "top level" element.
 function flib_gui.add(parent, def, elems)
+  if not parent or not parent.valid then
+    error("Parent element is missing or invalid")
+  end
   if not elems then
     elems = {}
   end
