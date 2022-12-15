@@ -296,13 +296,13 @@ function flib_bounding_box.rotate(box)
 
   if box.left_top then
     return {
-      left_top = { x = center - radius_y, y = center - radius_x },
-      right_bottom = { x = center + radius_y, y = center + radius_x },
+      left_top = { x = center.x - radius_y, y = center.y - radius_x },
+      right_bottom = { x = center.x + radius_y, y = center.y + radius_x },
     }
   else
     return {
-      { center - radius_y, center - radius_x },
-      { center + radius_y, center + radius_x },
+      { center.x - radius_y, center.y - radius_x },
+      { center.x + radius_y, center.y + radius_x },
     }
   end
 end
