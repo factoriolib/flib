@@ -2,8 +2,10 @@
 Version: 0.12.4
 Date: ????
   Changes:
+    - Improved slot style coloring to be more consistent
     - Updated table module to use more generics for callback return values
   Bugfixes:
+    - Fixed missing clicked graphical sets on slot styles
     - Fixed missing return types in table module callback functions
     - Fixed that long mod names would cut off in the dictionary-lite progress window
 ---------------------------------------------------------------------------------------------------

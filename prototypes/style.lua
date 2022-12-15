@@ -18,8 +18,9 @@ local function gen_slot(x, y, default_offset)
     hovered_graphical_set = {
       base = { border = 4, position = { x + 80, y }, size = 80, filename = slot_tileset },
     },
-    clicked_graphical_set = {},
-    base = { border = 4, position = { x + 160, y }, size = 80, filename = slot_tileset },
+    clicked_graphical_set = {
+      base = { border = 4, position = { x + 160, y }, size = 80, filename = slot_tileset },
+    },
     disabled_graphical_set = { -- identical to default graphical set
       base = { border = 4, position = { x + default_offset, y }, size = 80, filename = slot_tileset },
     },
