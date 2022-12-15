@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.12.3
-Date: ????
+Date: 2022-12-14
   Bugfixes:
     - Fixed a crash when calling `bounding_box.rotate()`
     - The base mod dependency is no longer optional - it was causing the game to download flib versions that it could not run
