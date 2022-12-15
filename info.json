@@ -7,18 +7,18 @@
   "homepage": "https://git.sr.ht/~raiguard/flib",
   "description": "A set of high-quality, commonly-used utilities for creating Factorio mods.",
   "factorio_version": "1.1",
-  "dependencies": ["? base >= 1.1.74"],
+  "dependencies": [ "base >= 1.1.74" ],
   "package": {
-        "ignore": [
-            "*.code-workspace",
-            "crowdin.yml",
-            ".gitattributes",
-            ".gitignore",
-            ".kakrc",
-            ".mailmap",
-            "stylua.toml",
-            "tests",
-            ".vscode"
-        ]
-    }
+    "ignore": [
+      "*.code-workspace",
+      "crowdin.yml",
+      ".gitattributes",
+      ".gitignore",
+      ".kakrc",
+      ".mailmap",
+      "stylua.toml",
+      "tests",
+      ".vscode"
+    ]
+  }
 }
