@@ -173,7 +173,7 @@ end
 --- ```
 --- @generic K, V
 --- @param tbl table<K, V>
---- @param callback fun(value: V, key: K):boolean Receives `value` and `key` as parameters.
+--- @param callback fun(value: V, key: K): boolean Receives `value` and `key` as parameters.
 --- @return boolean Whether the callback returned truthy for any one item, and thus halted iteration.
 function flib_table.for_each(tbl, callback)
   for k, v in pairs(tbl) do
@@ -215,14 +215,14 @@ end
 ---   global.from_k = table.for_n_of(extremely_large_table, global.from_k, 10, function(v) game.print(v) end)
 --- end)
 --- ```
---- @generic K, V
+--- @generic K, V, C
 --- @param tbl table<K, V> The table to iterate over.
 --- @param from_k K The key to start iteration at, or `nil` to start at the beginning of `tbl`. If the key does not exist in `tbl`, it will be treated as `nil`, _unless_ a custom `_next` function is used.
 --- @param n number The number of items to iterate.
---- @param callback fun(value: V, key: K) Receives `value` and `key` as parameters.
+--- @param callback fun(value: V, key: K):C,boolean,boolean Receives `value` and `key` as parameters.
 --- @param _next? fun(tbl: table<K, V>, from_k: K):K,V A custom `next()` function. If not provided, the default `next()` will be used.
 --- @return K? next_key Where the iteration ended. Can be any valid table key, or `nil`. Pass this as `from_k` in the next call to `for_n_of` for `tbl`.
---- @return table<K, any> results The results compiled from the first return of `callback`.
+--- @return table<K, C> results The results compiled from the first return of `callback`.
 --- @return boolean reached_end Whether or not the end of the table was reached on this iteration.
 function flib_table.for_n_of(tbl, from_k, n, callback, _next)
   -- Bypass if a custom `next` function was provided
@@ -289,7 +289,7 @@ end
 --- ```
 --- @generic K, V
 --- @param tbl table<K, V>
---- @param filter fun(value: V, key: K)
+--- @param filter fun(value: V, key: K): boolean
 --- @param array_insert boolean? If true, the result will be constructed as an array of values that matched the filter. Key references will be lost.
 --- @return table<K, V>
 function flib_table.filter(tbl, filter, array_insert)
@@ -354,10 +354,10 @@ end
 --- local tbl = {1, 2, 3, 4, 5}
 --- local tbl_times_ten = table.map(tbl, function(v) return v * 10 end) -- {10, 20, 30, 40, 50}
 --- ```
---- @generic K, V
+--- @generic K, V, N
 --- @param tbl table<K, V>
---- @param mapper fun(value: V, key: V):any
---- @return table<K, any>
+--- @param mapper fun(value: V, key: V):N
+--- @return table<K, N>
 function flib_table.map(tbl, mapper)
   local output = {}
   for k, v in pairs(tbl) do
