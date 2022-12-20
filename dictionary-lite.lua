@@ -53,7 +53,6 @@ local function update_gui(data)
           type = "frame",
           name = "flib_translation_progress",
           style = mod_gui.frame_style,
-          style_mods = { width = 350 },
           direction = "vertical",
           {
             type = "label",
@@ -81,6 +80,7 @@ local function update_gui(data)
           {
             type = "label",
             style = "caption_label",
+            style_mods = { minimal_width = 130 },
             caption = { "?", { "mod-name." .. script.mod_name }, script.mod_name },
             ignored_by_interaction = true,
           },

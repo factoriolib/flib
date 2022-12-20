@@ -5,6 +5,7 @@ Date: ????
     - Updated table module to use more generics for callback return values
   Bugfixes:
     - Fixed missing return types in table module callback functions
+    - Fixed that long mod names would cut off in the dictionary-lite progress window
 ---------------------------------------------------------------------------------------------------
 Version: 0.12.3
 Date: 2022-12-14
