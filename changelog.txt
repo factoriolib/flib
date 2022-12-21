@@ -2,6 +2,7 @@
 Version: 0.12.4
 Date: ????
   Changes:
+    - flib_selected_frame_action_button style now has a vertical offset
     - Improved slot style coloring to be more consistent
     - Updated table module to use more generics for callback return values
   Bugfixes:

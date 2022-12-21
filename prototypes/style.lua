@@ -120,6 +120,9 @@ styles.flib_selected_frame_action_button = {
     base = { position = { 352, 17 }, corner_size = 8 },
     shadow = { position = { 440, 24 }, corner_size = 8, draw_type = "outer" },
   },
+  -- Simulate clicked-vertical-offset
+  top_padding = 1,
+  bottom_padding = -1,
 }
 
 local btn = styles.button
