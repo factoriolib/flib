@@ -2,6 +2,7 @@
 Version: 0.12.5
 Date: ????
   Features:
+    - `dictionary-lite` and `gui-lite` modules are now compatible with the core `event_handler`
 ---------------------------------------------------------------------------------------------------
 Version: 0.12.4
 Date: 2022-12-30

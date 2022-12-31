@@ -403,6 +403,14 @@ function flib_dictionary.handle_events()
   end
 end
 
+--- For use with `__core__/lualib/event_handler`. Pass `flib_dictionary` into `handler.add_lib` to
+--- handle all relevant events automatically.
+flib_dictionary.events = {
+  [defines.events.on_player_joined_game] = flib_dictionary.on_player_joined_game,
+  [defines.events.on_string_translated] = flib_dictionary.on_string_translated,
+  [defines.events.on_tick] = flib_dictionary.on_tick,
+}
+
 -- Dictionary creation
 
 --- Create a new dictionary. The name must be unique.
