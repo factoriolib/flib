@@ -136,6 +136,9 @@ styles.flib_selected_tool_button = {
   hovered_graphical_set = btn.selected_hovered_graphical_set,
   clicked_font_color = btn.selected_clicked_font_color,
   clicked_graphical_set = btn.selected_clicked_graphical_set,
+  -- Simulate clicked-vertical-offset
+  top_padding = 1,
+  bottom_padding = -1,
 }
 
 styles.flib_tool_button_light_green = {
