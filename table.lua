@@ -356,7 +356,7 @@ end
 --- ```
 --- @generic K, V, N
 --- @param tbl table<K, V>
---- @param mapper fun(value: V, key: V):N
+--- @param mapper fun(value: V, key: V):N?
 --- @return table<K, N>
 function flib_table.map(tbl, mapper)
   local output = {}

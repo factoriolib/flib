@@ -1,6 +1,9 @@
 --- Defines reverse lookup table.
 ---
---- # Examples
+--- NOTE: Type intellisense simply does not work for this module, and there is no easy way to fix
+--- it. Use of this module is discouraged.
+---
+--- # Example
 ---
 --- ```lua
 --- event.on_built_entity(function(e)
@@ -8,10 +11,8 @@
 ---   local controller_name = reverse_defines.controllers[player.controller_type]
 --- end)
 --- ```
---- @class flib_reverse_defines
 local flib_reverse_defines = {}
 
--- TODO: Figure out how to document this. Will likely require parsing Factorio's docs.
 local function build_reverse_defines(lookup_table, base_table)
   lookup_table = lookup_table or {}
   for k, v in pairs(base_table) do
