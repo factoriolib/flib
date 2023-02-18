@@ -8,8 +8,8 @@ local flib_position = {}
 
 --- Add two positions.
 --- @generic P
---- @param pos1 `P`
---- @param pos2 `P`
+--- @param pos1 P
+--- @param pos2 P
 --- @return P
 function flib_position.add(pos1, pos2)
   local x1 = pos1.x or pos1[1]
@@ -25,7 +25,7 @@ end
 
 --- Ceil the given position.
 --- @generic P
---- @param pos `P`
+--- @param pos P
 --- @return P
 function flib_position.ceil(pos)
   if pos.x then
@@ -37,8 +37,8 @@ end
 
 --- Calculate the distance between two positions.
 --- @generic P
---- @param pos1 `P`
---- @param pos2 `P`
+--- @param pos1 P
+--- @param pos2 P
 --- @return number
 function flib_position.distance(pos1, pos2)
   local x1 = pos1.x or pos1[1]
@@ -50,8 +50,8 @@ end
 
 --- Calculate the squared distance between two positions.
 --- @generic P
---- @param pos1 `P`
---- @param pos2 `P`
+--- @param pos1 P
+--- @param pos2 P
 --- @return number
 function flib_position.distance_squared(pos1, pos2)
   local x1 = pos1.x or pos1[1]
@@ -63,8 +63,8 @@ end
 
 --- Divide two positions.
 --- @generic P
---- @param pos1 `P`
---- @param pos2 `P`
+--- @param pos1 P
+--- @param pos2 P
 --- @return P
 function flib_position.div(pos1, pos2)
   local x1 = pos1.x or pos1[1]
@@ -80,7 +80,7 @@ end
 
 --- Return the position in explicit form.
 --- @generic P
---- @param pos `P`
+--- @param pos P
 --- @return P
 function flib_position.ensure_explicit(pos)
   if pos.x then
@@ -92,7 +92,7 @@ end
 
 --- Return the  position in shorthand form.
 --- @generic P
---- @param pos `P`
+--- @param pos P
 --- @return P
 function flib_position.ensure_short(pos)
   if pos.x then
@@ -104,8 +104,8 @@ end
 
 --- Test if two positions are equal.
 --- @generic P
---- @param pos1 `P`
---- @param pos2 `P`
+--- @param pos1 P
+--- @param pos2 P
 --- @return boolean
 function flib_position.eq(pos1, pos2)
   local x1 = pos1.x or pos1[1]
@@ -117,7 +117,7 @@ end
 
 --- Floor the given position.
 --- @generic P
---- @param pos `P`
+--- @param pos P
 --- @return P
 function flib_position.floor(pos)
   if pos.x then
@@ -140,8 +140,8 @@ end
 
 --- Test if `pos1` is less than or equal to `pos2`.
 --- @generic P
---- @param pos1 `P`
---- @param pos2 `P`
+--- @param pos1 P
+--- @param pos2 P
 --- @return boolean
 function flib_position.le(pos1, pos2)
   local x1 = pos1.x or pos1[1]
@@ -153,8 +153,8 @@ end
 
 --- Test if `pos1` is less than `pos2`.
 --- @generic P
---- @param pos1 `P`
---- @param pos2 `P`
+--- @param pos1 P
+--- @param pos2 P
 --- @return boolean
 function flib_position.lt(pos1, pos2)
   local x1 = pos1.x or pos1[1]
@@ -166,8 +166,8 @@ end
 
 --- Take the remainder (modulus) of two positions.
 --- @generic P
---- @param pos1 `P`
---- @param pos2 `P`
+--- @param pos1 P
+--- @param pos2 P
 --- @return P
 function flib_position.mod(pos1, pos2)
   local x1 = pos1.x or pos1[1]
@@ -183,8 +183,8 @@ end
 
 --- Multiply two positions.
 --- @generic P
---- @param pos1 `P`
---- @param pos2 `P`
+--- @param pos1 P
+--- @param pos2 P
 --- @return P
 function flib_position.mul(pos1, pos2)
   local x1 = pos1.x or pos1[1]
@@ -200,8 +200,8 @@ end
 
 --- Subtract two positions.
 --- @generic P
---- @param pos1 `P`
---- @param pos2 `P`
+--- @param pos1 P
+--- @param pos2 P
 --- @return P
 function flib_position.sub(pos1, pos2)
   local x1 = pos1.x or pos1[1]
@@ -217,8 +217,8 @@ end
 
 --- Take the power of two positions. `pos1^pos2`.
 --- @generic P
---- @param pos1 `P`
---- @param pos2 `P`
+--- @param pos1 P
+--- @param pos2 P
 --- @return P
 function flib_position.pow(pos1, pos2)
   local x1 = pos1.x or pos1[1]
