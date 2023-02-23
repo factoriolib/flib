@@ -3,6 +3,7 @@
 [![shield](https://img.shields.io/badge/dynamic/json?color=orange&label=Factorio&query=downloads_count&suffix=%20downloads&url=https%3A%2F%2Fmods.factorio.com%2Fapi%2Fmods%2Fflib)](https://mods.factorio.com/mod/flib)
 
 # Factorio Library
+
 The Factorio Library is a set of high-quality, commonly-used utilities for
 creating Factorio mods.
 
