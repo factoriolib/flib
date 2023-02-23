@@ -27,5 +27,5 @@ future.
 
 ## Contributing
 
-Please use the [factorio-mods-devel](https://lists.sr.ht/~raiguard/factorio-mods-devel)
-mailing list for support, suggestions, and/or patches.
+Please use the [GitHub repository](https://github.com/factoriolib/flib) for
+questions, bug reports, or pull requests.
