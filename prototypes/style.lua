@@ -123,6 +123,7 @@ styles.flib_selected_frame_action_button = {
   -- Simulate clicked-vertical-offset
   top_padding = 1,
   bottom_padding = -1,
+  clicked_vertical_offset = 0,
 }
 
 local btn = styles.button
@@ -139,6 +140,7 @@ styles.flib_selected_tool_button = {
   -- Simulate clicked-vertical-offset
   top_padding = 1,
   bottom_padding = -1,
+  clicked_vertical_offset = 0,
 }
 
 styles.flib_tool_button_light_green = {
