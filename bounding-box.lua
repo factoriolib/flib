@@ -163,12 +163,12 @@ function flib_bounding_box.from_dimensions(center, width, height)
   if center.x then
     return {
       left_top = { x = center.x - width / 2, y = center.y - height / 2 },
-      right_bottom = { x = center.x - width / 2, y = center.y - height / 2 },
+      right_bottom = { x = center.x + width / 2, y = center.y + height / 2 },
     }
   else
     return {
       { center[1] - width / 2, center[2] - height / 2 },
-      { center[1] - width / 2, center[2] - height / 2 },
+      { center[1] + width / 2, center[2] + height / 2 },
     }
   end
 end

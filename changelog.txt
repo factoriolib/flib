@@ -3,6 +3,8 @@ Version: 0.12.5
 Date: ????
   Features:
     - `dictionary-lite` and `gui-lite` modules are now compatible with the core `event_handler`
+  Bugfixes:
+    - Fixed `bounding_box.from_dimensions()` returning a 0x0 area at left_top (#49)
 ---------------------------------------------------------------------------------------------------
 Version: 0.12.4
 Date: 2022-12-30
