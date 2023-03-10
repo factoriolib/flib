@@ -113,7 +113,7 @@ end
 --- log (tbl.bar) -- errors (key is nil)
 --- tbl = table.merge{tbl, {foo = "baz", set = 3}}
 --- log(tbl.foo) -- logs "baz"
---- log(tbl.bar) -- logs "3"
+--- log(tbl.set) -- logs "3"
 --- ```
 --- @param tables Array An array of tables to merge.
 --- @return table
