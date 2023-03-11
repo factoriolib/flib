@@ -1,4 +1,7 @@
 --- Various string formatting functions.
+--- ```lua
+--- local flib_format = require("__flib__/format")
+--- ```
 --- @class flib_format
 local flib_format = {}
 

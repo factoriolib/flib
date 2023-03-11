@@ -1,0 +1,40 @@
+title { display: none }
+
+body {
+    background-color: #282828;
+    color: #fff;
+    font-family: sans-serif;
+    margin: 0 auto;
+    max-width: 1200px;
+    padding: 1rem;
+    width: auto;
+}
+
+h1 {
+    font-size: 1.5rem;
+    color: #ffe6c0;
+}
+
+h2 {
+    font-size: 1.2rem;
+}
+
+h3 {
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+pre {
+    background-color: #353535;
+    padding: 0.5rem;
+    overflow: scroll;
+    font-family: monospace;
+}
+
+a {
+    color: #ff9f1c;
+}
+
+nav a {
+    margin: 0 1rem;
+}

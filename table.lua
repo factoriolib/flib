@@ -3,6 +3,9 @@
 --- **NOTE:** Several functions in this module will only work with [arrays](https://www.lua.org/pil/11.1.html),
 --- which are tables with sequentially numbered keys. All table functions will work with arrays as well, but
 --- array functions **will not** work with tables.
+--- ```lua
+--- local flib_table: = require("__flib__/table")
+--- ```
 --- @class flib_table: tablelib
 local flib_table = {}
 
@@ -105,7 +108,7 @@ end
 ---
 --- Non-merged tables are deep-copied, so the result is brand-new.
 ---
---- # Examples
+--- ### Examples
 ---
 --- ```lua
 --- local tbl = {foo = "bar"}
@@ -137,7 +140,7 @@ end
 
 --- Find and return the first key containing the given value.
 ---
---- # Examples
+--- ### Examples
 ---
 --- ```lua
 --- local tbl = {"foo", "bar"}
@@ -160,7 +163,7 @@ end
 ---
 --- Calls `callback(value, key)` for each item in the table, and immediately ceases iteration if the callback returns truthy.
 ---
---- # Examples
+--- ### Examples
 ---
 --- ```lua
 --- local tbl = {1, 2, 3, 4, 5}
@@ -200,7 +203,7 @@ end
 --- **DO NOT** delete entires from `tbl` from within `callback`, this will break the iteration. Use the deletion flag
 --- instead.
 ---
---- # Examples
+--- ### Examples
 ---
 --- ```lua
 --- local extremely_large_table = {
@@ -280,7 +283,7 @@ end
 --- Calls `filter(value, key)` on each element in the table, returning a new table with only pairs for which
 --- `filter` returned a truthy value.
 ---
---- # Examples
+--- ### Examples
 ---
 --- ```lua
 --- local tbl = {1, 2, 3, 4, 5, 6}
@@ -327,7 +330,7 @@ end
 ---
 --- Non-unique values are overwritten based on the ordering from `pairs()`.
 ---
---- # Examples
+--- ### Examples
 ---
 --- ```lua
 --- local tbl = {"foo", "bar", "baz", set = "baz"}
@@ -348,7 +351,7 @@ end
 ---
 --- Calls `mapper(value, key)` on each element in the table, using the return as the new value for the key.
 ---
---- # Examples
+--- ### Examples
 ---
 --- ```lua
 --- local tbl = {1, 2, 3, 4, 5}
@@ -406,7 +409,7 @@ end
 ---
 --- Calls `reducer(accumulator, value, key)` on each element in the table, returning a single accumulated output value.
 ---
---- # Examples
+--- ### Examples
 ---
 --- ```lua
 --- local tbl = {10, 20, 30, 40, 50}
@@ -479,7 +482,7 @@ flib_table.size = _ENV.table_size
 ---
 --- The original array **will not** be modified.
 ---
---- # Examples
+--- ### Examples
 ---
 --- ```lua
 --- local arr = {10, 20, 30, 40, 50, 60, 70, 80, 90}
@@ -515,7 +518,7 @@ end
 --
 --- The original array **will** be modified.
 ---
---- # Examples
+--- ### Examples
 ---
 --- ```lua
 --- local arr = {10, 20, 30, 40, 50, 60, 70, 80, 90}

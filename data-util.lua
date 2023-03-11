@@ -1,4 +1,7 @@
 --- Utilities for data stage prototype manipulation.
+--- ```lua
+--- local flib_data_util = require("__flib__/data-util")
+--- ```
 --- @class flib_data_util
 local flib_data_util = {}
 

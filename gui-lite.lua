@@ -1,4 +1,7 @@
 --- Utilities for building GUIs and handling GUI events.
+--- ```lua
+--- local flib_gui = require("__flib__/gui-lite")
+--- ```
 --- @class flib_gui
 local flib_gui = {}
 

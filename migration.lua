@@ -1,4 +1,7 @@
 --- Mod migration and version comparison functions.
+--- ```lua
+--- local flib_migration = require("__flib__/migration")
+--- ```
 --- @class flib_migration
 local flib_migration = {}
 
@@ -10,7 +13,7 @@ local version_format = "%02d"
 
 --- Normalize version strings for easy comparison.
 ---
---- # Examples
+--- ### Examples
 ---
 --- ```lua
 --- migration.format_version("1.10.1234", "%04d")
@@ -67,7 +70,7 @@ end
 
 --- Determine if migrations need to be run for this mod, then run them if needed.
 ---
---- # Examples
+--- ### Examples
 ---
 --- ```lua
 --- script.on_configuration_changed(function(e)

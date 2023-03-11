@@ -1,4 +1,7 @@
 --- Functions for working with orientations.
+--- ```lua
+--- local flib_orientation = require("__flib__/orientation")
+--- ```
 --- @class flib_orientation
 local flib_orientation = {}
 

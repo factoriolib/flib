@@ -3,6 +3,9 @@ local position = require("__flib__/position")
 --- Utilities for manipulating bounding boxes. All functions support both the shorthand and explicit syntaxes for boxes
 --- and positions, and will preserve the syntax that was passed in. Boxes are considered immutable; all functions will
 --- return new boxes.
+--- ```lua
+--- local flib_bounding_box = require("__flib__/bounding-box")
+--- ```
 --- @class flib_bounding_box
 local flib_bounding_box = {}
 

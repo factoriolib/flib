@@ -3,6 +3,9 @@ local mod_gui = require("__core__/lualib/mod-gui")
 local table = require("__flib__/table")
 
 --- Utilities for creating dictionaries of localised string translations.
+--- ```lua
+--- local flib_dictionary = require("__flib__/dictionary-lite")
+--- ```
 --- @class flib_dictionary
 local flib_dictionary = {}
 

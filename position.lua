@@ -1,5 +1,8 @@
 --- Utilities for manipulating positions. All functions support both the shorthand and explicit syntaxes and will
 --- preserve the syntax that was passed in.
+--- ```lua
+--- local flib_position = require("__flib__/position")
+--- ```
 --- @class flib_position
 local flib_position = {}
 

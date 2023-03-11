@@ -1,4 +1,7 @@
 --- Functions for working with trains.
+--- ```lua
+--- local flib_train = require("__flib__/train")
+--- ```
 --- @class flib_train
 local flib_train = {}
 

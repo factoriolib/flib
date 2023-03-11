@@ -1,7 +1,7 @@
 .vscode
 ./*.code-workspace
 *.code-workspace
-flib-docs/
+doc-html/
 NOTES.txt
 workspace.html
 faketorio

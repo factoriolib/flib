@@ -1,4 +1,7 @@
 --- Schedule tasks to be executed later.
+--- ```lua
+--- local flib_on_tick_n = require("__flib__/on-tick-n")
+--- ```
 --- @class flib_on_tick_n
 local on_tick_n = {}
 
