@@ -112,6 +112,7 @@ function flib_gui.add(parent, def, elems)
       def.elem_mods = elem_mods
       def.handler = handler
       def.style_mods = style_mods
+      def.drag_target = drag_target
     elseif def.tab and def.content then
       local _, tab = flib_gui.add(parent, def.tab, elems)
       local _, content = flib_gui.add(parent, def.content, elems)

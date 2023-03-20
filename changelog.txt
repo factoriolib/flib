@@ -1,7 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.12.6
 Date: ????
-  Features:
+  Bugfixes:
+    - [gui-lite] Fixed that drag_target was not restored to GUI elem definitions after being used in gui.add
 ---------------------------------------------------------------------------------------------------
 Version: 0.12.5
 Date: 2023-03-09
