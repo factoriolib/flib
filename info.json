@@ -9,16 +9,6 @@
   "factorio_version": "1.1",
   "dependencies": [ "base >= 1.1.74" ],
   "package": {
-    "ignore": [
-      "*.code-workspace",
-      "crowdin.yml",
-      ".gitattributes",
-      ".gitignore",
-      ".kakrc",
-      ".mailmap",
-      "stylua.toml",
-      "tests",
-      ".vscode"
-    ]
+    "ignore": [ "crowdin.yml", "stylua.toml", "tests" ]
   }
 }
