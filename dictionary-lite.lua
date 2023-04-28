@@ -78,8 +78,7 @@ local function update_gui(data)
         _, mod_flow = gui.add(pane, {
           type = "flow",
           name = script.mod_name,
-          style = "centering_horizontal_flow",
-          style_mods = { top_margin = 4, horizontal_spacing = 8 },
+          style_mods = { vertical_align = "center", top_margin = 4, horizontal_spacing = 8 },
           {
             type = "label",
             style = "caption_label",
