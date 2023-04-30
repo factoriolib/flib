@@ -11,6 +11,9 @@
   "package": {
     "git_publish_branch": "master",
     "ignore": [ "crowdin.yml", "imgui.ini", "stylua.toml", "tests" ],
+    "scripts": {
+      "prepublish": "factorio-crowdin-sync"
+    },
     "sync_portal_details": true
   }
 }
