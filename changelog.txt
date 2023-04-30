@@ -2,6 +2,8 @@
 Version: 0.12.7
 Date: ????
   Features:
+    - Added `flib_nav_(backward|forward)_(black|white|disabled)` sprites
+    - Added `flib_titlebar_separator_line` and `flib_titlebar_search_textfield` styles
 ---------------------------------------------------------------------------------------------------
 Version: 0.12.6
 Date: 2023-03-20

@@ -264,6 +264,12 @@ styles.flib_subheader_horizontal_line = {
   },
 }
 
+styles.flib_titlebar_separator_line = {
+  type = "line_style",
+  top_margin = -2,
+  bottom_margin = 2,
+}
+
 -- SCROLL-PANE STYLES
 
 styles.flib_naked_scroll_pane = {
@@ -334,4 +340,11 @@ styles.flib_widthless_invalid_textfield = {
   type = "textbox_style",
   parent = "invalid_value_textfield",
   width = 0,
+}
+
+styles.flib_titlebar_search_textfield = {
+  type = "textbox_style",
+  top_margin = -2,
+  bottom_margin = 1,
+  width = 150,
 }
