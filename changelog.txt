@@ -1,7 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.12.8
 Date: ????
-  Changes:
+  Bugfixes:
+    - [dictionary-lite] Fixed that the total strings count did not include "initial_contents" strings
 ---------------------------------------------------------------------------------------------------
 Version: 0.12.7
 Date: 2023-04-30
