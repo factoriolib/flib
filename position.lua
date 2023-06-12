@@ -141,6 +141,32 @@ function flib_position.from_chunk(pos)
   end
 end
 
+--- Test if `pos1` is greater than or equal to `pos2`.
+--- @generic P
+--- @param pos1 P
+--- @param pos2 P
+--- @return boolean
+function flib_position.ge(pos1, pos2)
+  local x1 = pos1.x or pos1[1]
+  local y1 = pos1.y or pos1[2]
+  local x2 = pos2.x or pos2[1]
+  local y2 = pos2.y or pos2[2]
+  return x1 >= x2 and y1 >= y2
+end
+
+--- Test if `pos1` is greater than `pos2`.
+--- @generic P
+--- @param pos1 P
+--- @param pos2 P
+--- @return boolean
+function flib_position.gt(pos1, pos2)
+  local x1 = pos1.x or pos1[1]
+  local y1 = pos1.y or pos1[2]
+  local x2 = pos2.x or pos2[1]
+  local y2 = pos2.y or pos2[2]
+  return x1 > x2 and y1 > y2
+end
+
 --- Test if `pos1` is less than or equal to `pos2`.
 --- @generic P
 --- @param pos1 P
