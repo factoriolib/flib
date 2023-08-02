@@ -259,13 +259,13 @@ function flib_bounding_box.recenter_on(box, pos)
 
   if box.left_top then
     return {
-      left_top = { x = pos_x - (width / 2), y = pos_y - (width / 2) },
-      right_bottom = { x = pos_x + (height / 2), y = pos_y + (height / 2) },
+      left_top = { x = pos_x - (width / 2), y = pos_y - (height / 2) },
+      right_bottom = { x = pos_x + (width / 2), y = pos_y + (height / 2) },
     }
   else
     return {
-      { pos_x - (width / 2), pos_y - (width / 2) },
-      { pos_x + (height / 2), pos_y + (height / 2) },
+      { pos_x - (width / 2), pos_y - (height / 2) },
+      { pos_x + (width / 2), pos_y + (height / 2) },
     }
   end
 end

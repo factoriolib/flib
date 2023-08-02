@@ -419,11 +419,15 @@ flib_dictionary.events = {
 --- @param name string
 --- @param initial_strings Dictionary?
 function flib_dictionary.new(name, initial_strings)
-  local raw = get_data(true).raw
+  local data = get_data(true)
+  local raw = data.raw
   if raw[name] then
     error("Attempted to create dictionary '" .. name .. "' twice.")
   end
   raw[name] = initial_strings or {}
+  if initial_strings then
+    data.raw_count = data.raw_count + table_size(initial_strings)
+  end
 end
 
 --- Add the given string to the dictionary.

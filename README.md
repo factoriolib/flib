@@ -31,3 +31,6 @@ wherever possible.
 
 Please use the [GitHub repository](https://github.com/factoriolib/flib) for
 questions, bug reports, or pull requests.
+
+For locale contributions, please use
+[Crowdin](https://crowdin.com/project/raiguards-factorio-mods).

@@ -1,3 +1,5 @@
+local flib_math = require("__flib__/math")
+
 --- Utilities for manipulating positions. All functions support both the shorthand and explicit syntaxes and will
 --- preserve the syntax that was passed in.
 --- ```lua
@@ -141,6 +143,32 @@ function flib_position.from_chunk(pos)
   end
 end
 
+--- Test if `pos1` is greater than or equal to `pos2`.
+--- @generic P
+--- @param pos1 P
+--- @param pos2 P
+--- @return boolean
+function flib_position.ge(pos1, pos2)
+  local x1 = pos1.x or pos1[1]
+  local y1 = pos1.y or pos1[2]
+  local x2 = pos2.x or pos2[1]
+  local y2 = pos2.y or pos2[2]
+  return x1 >= x2 and y1 >= y2
+end
+
+--- Test if `pos1` is greater than `pos2`.
+--- @generic P
+--- @param pos1 P
+--- @param pos2 P
+--- @return boolean
+function flib_position.gt(pos1, pos2)
+  local x1 = pos1.x or pos1[1]
+  local y1 = pos1.y or pos1[2]
+  local x2 = pos2.x or pos2[1]
+  local y2 = pos2.y or pos2[2]
+  return x1 > x2 and y1 > y2
+end
+
 --- Test if `pos1` is less than or equal to `pos2`.
 --- @generic P
 --- @param pos1 P
@@ -152,6 +180,20 @@ function flib_position.le(pos1, pos2)
   local x2 = pos2.x or pos2[1]
   local y2 = pos2.y or pos2[2]
   return x1 <= x2 and y1 <= y2
+end
+
+--- Linearly interpolate between two positions. For example, an amount of 0.5 will return the midpoint.
+--- @generic P
+--- @param pos1 P
+--- @param pos2 P
+--- @param amount number
+--- @return P
+function flib_position.lerp(pos1, pos2, amount)
+  if pos1.x then
+    return { x = flib_math.lerp(pos1.x, pos2.x, amount), y = flib_math.lerp(pos1.y, pos2.y, amount) }
+  else
+    return { flib_math.lerp(pos1[1], pos2[1], amount), flib_math.lerp(pos1[2], pos2[2], amount) }
+  end
 end
 
 --- Test if `pos1` is less than `pos2`.

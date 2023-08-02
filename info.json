@@ -9,6 +9,11 @@
   "factorio_version": "1.2",
   "dependencies": [ "base >= 1.2.0" ],
   "package": {
-    "ignore": [ "crowdin.yml", "stylua.toml", "tests" ]
+    "git_publish_branch": "master",
+    "ignore": [ "crowdin.yml", "imgui.ini", "stylua.toml", "tests" ],
+    "scripts": {
+      "prepublish": "factorio-crowdin-sync"
+    },
+    "sync_portal_details": true
   }
 }
