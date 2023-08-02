@@ -35,20 +35,20 @@ local function gen_slot_button(x, y, default_offset, glow)
     size = 40,
     default_graphical_set = {
       base = { border = 4, position = { x + default_offset, y }, size = 80, filename = slot_tileset },
-      shadow = _ENV.offset_by_2_rounded_corners_glow(_ENV.default_dirt_color),
+      shadow = offset_by_2_rounded_corners_glow(default_dirt_color),
     },
     hovered_graphical_set = {
       base = { border = 4, position = { x + 80, y }, size = 80, filename = slot_tileset },
-      shadow = _ENV.offset_by_2_rounded_corners_glow(_ENV.default_dirt_color),
-      glow = _ENV.offset_by_2_rounded_corners_glow(glow),
+      shadow = offset_by_2_rounded_corners_glow(default_dirt_color),
+      glow = offset_by_2_rounded_corners_glow(glow),
     },
     clicked_graphical_set = {
       base = { border = 4, position = { x + 160, y }, size = 80, filename = slot_tileset },
-      shadow = _ENV.offset_by_2_rounded_corners_glow(_ENV.default_dirt_color),
+      shadow = offset_by_2_rounded_corners_glow(default_dirt_color),
     },
     disabled_graphical_set = { -- identical to default graphical set
       base = { border = 4, position = { x + default_offset, y }, size = 80, filename = slot_tileset },
-      shadow = _ENV.offset_by_2_rounded_corners_glow(_ENV.default_dirt_color),
+      shadow = offset_by_2_rounded_corners_glow(default_dirt_color),
     },
   }
 end
@@ -61,26 +61,26 @@ local function gen_standalone_slot_button(x, y, default_offset)
     size = 40,
     default_graphical_set = {
       base = { border = 4, position = { x + default_offset, y }, size = 80, filename = slot_tileset },
-      shadow = _ENV.offset_by_4_rounded_corners_subpanel_inset,
+      shadow = offset_by_4_rounded_corners_shallow_inset,
     },
     hovered_graphical_set = {
       base = { border = 4, position = { x + 80, y }, size = 80, filename = slot_tileset },
-      shadow = _ENV.offset_by_4_rounded_corners_subpanel_inset,
+      shadow = offset_by_4_rounded_corners_shallow_inset,
     },
     clicked_graphical_set = {
       base = { border = 4, position = { x + 160, y }, size = 80, filename = slot_tileset },
-      shadow = _ENV.offset_by_4_rounded_corners_subpanel_inset,
+      shadow = offset_by_4_rounded_corners_shallow_inset,
     },
     disabled_graphical_set = { -- identical to default graphical set
       base = { border = 4, position = { x + default_offset, y }, size = 80, filename = slot_tileset },
-      shadow = _ENV.offset_by_4_rounded_corners_subpanel_inset,
+      shadow = offset_by_4_rounded_corners_shallow_inset,
     },
   }
 end
 
 local slot_data = {
-  { name = "default", y = 0, glow = _ENV.default_glow_color },
-  { name = "grey", y = 80, glow = _ENV.default_glow_color },
+  { name = "default", y = 0, glow = default_glow_color },
+  { name = "grey", y = 80, glow = default_glow_color },
   { name = "red", y = 160, glow = { 230, 135, 135 } },
   { name = "orange", y = 240, glow = { 216, 169, 122 } },
   { name = "yellow", y = 320, glow = { 230, 218, 135 } },
@@ -105,17 +105,17 @@ end
 styles.flib_selected_frame_action_button = {
   type = "button_style",
   parent = "frame_action_button",
-  default_font_color = _ENV.button_hovered_font_color,
+  default_font_color = button_hovered_font_color,
   default_graphical_set = {
     base = { position = { 225, 17 }, corner_size = 8 },
     shadow = { position = { 440, 24 }, corner_size = 8, draw_type = "outer" },
   },
-  hovered_font_color = _ENV.button_hovered_font_color,
+  hovered_font_color = button_hovered_font_color,
   hovered_graphical_set = {
     base = { position = { 369, 17 }, corner_size = 8 },
     shadow = { position = { 440, 24 }, corner_size = 8, draw_type = "outer" },
   },
-  clicked_font_color = _ENV.button_hovered_font_color,
+  clicked_font_color = button_hovered_font_color,
   clicked_graphical_set = {
     base = { position = { 352, 17 }, corner_size = 8 },
     shadow = { position = { 440, 24 }, corner_size = 8, draw_type = "outer" },
@@ -155,16 +155,16 @@ styles.flib_tool_button_dark_red = {
   parent = "tool_button",
   default_graphical_set = {
     base = { filename = data_util.dark_red_button_tileset, position = { 0, 0 }, corner_size = 8 },
-    shadow = _ENV.default_dirt,
+    shadow = default_dirt,
   },
   hovered_graphical_set = {
     base = { filename = data_util.dark_red_button_tileset, position = { 17, 0 }, corner_size = 8 },
-    shadow = _ENV.default_dirt,
-    glow = _ENV.default_glow({ 236, 130, 130, 127 }, 0.5),
+    shadow = default_dirt,
+    glow = default_glow({ 236, 130, 130, 127 }, 0.5),
   },
   clicked_graphical_set = {
     base = { filename = data_util.dark_red_button_tileset, position = { 34, 0 }, corner_size = 8 },
-    shadow = _ENV.default_dirt,
+    shadow = default_dirt,
   },
 }
 
@@ -233,7 +233,7 @@ styles.flib_shallow_frame_in_shallow_frame = {
       center = { position = { 76, 8 }, size = { 1, 1 } },
       draw_type = "outer",
     },
-    shadow = _ENV.default_inner_shadow,
+    shadow = default_inner_shadow,
   },
   vertical_flow_style = {
     type = "vertical_flow_style",
@@ -247,6 +247,15 @@ styles.flib_indicator = {
   type = "image_style",
   size = 16,
   stretch_image_to_widget_size = true,
+}
+
+-- LABEL STYLES
+
+styles.flib_frame_title = {
+  type = "label_style",
+  parent = "frame_title",
+  bottom_padding = 3,
+  top_margin = -3,
 }
 
 -- LINE STYLES
@@ -277,7 +286,7 @@ styles.flib_naked_scroll_pane = {
   extra_padding_when_activated = 0,
   padding = 12,
   graphical_set = {
-    shadow = _ENV.default_inner_shadow,
+    shadow = default_inner_shadow,
   },
 }
 
@@ -289,7 +298,7 @@ styles.flib_naked_scroll_pane_under_tabs = {
       top = { position = { 93, 0 }, size = { 1, 8 } },
       draw_type = "outer",
     },
-    shadow = _ENV.default_inner_shadow,
+    shadow = default_inner_shadow,
   },
 }
 
@@ -304,7 +313,7 @@ styles.flib_shallow_scroll_pane = {
   padding = 0,
   graphical_set = {
     base = { position = { 85, 0 }, corner_size = 8, draw_type = "outer" },
-    shadow = _ENV.default_inner_shadow,
+    shadow = default_inner_shadow,
   },
 }
 
@@ -324,7 +333,7 @@ styles.flib_tabbed_pane_with_no_padding = {
         top = { position = { 76, 0 }, size = { 1, 8 } },
         center = { position = { 76, 8 }, size = { 1, 1 } },
       },
-      shadow = _ENV.top_shadow,
+      shadow = top_shadow,
     },
   },
 }
