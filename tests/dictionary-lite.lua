@@ -45,6 +45,8 @@ end)
 -- `on_player_dictionaries_ready` is raised when a given player's dictionaries are... ready. Shocking!
 script.on_event(flib_dictionary.on_player_dictionaries_ready, function(e)
   -- Alternatively, you can get specific dictionaries with `flib_dictionary.get(e.player_index, "item")` et al.
+  -- For the aforementioned "search" dictionary, I do not handle this event, and instead call `get()` during my
+  -- search logic and use it if it exists, otherwise falling back to the internal prototype names.
   local dicts = flib_dictionary.get_all(e.player_index)
   if not dicts then
     return
