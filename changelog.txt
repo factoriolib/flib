@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.13.0
-Date: ????
+Date: 2023-10-14
   Features:
     - [position] Added `position.ge`, `position.gt`, and `position.lerp` functions.
   Bugfixes:
