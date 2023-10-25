@@ -127,8 +127,12 @@ end
 --- can be used to execute logic or gather data common to all handler functions for this GUI.
 --- @param new_handlers table<string, fun(e: GuiEventData)>
 --- @param wrapper fun(e: GuiEventData, handler: function)?
-function flib_gui.add_handlers(new_handlers, wrapper)
+--- @param prefix string?
+function flib_gui.add_handlers(new_handlers, wrapper, prefix)
   for name, handler in pairs(new_handlers) do
+    if prefix then
+      name = prefix .. "/" .. name
+    end
     if type(handler) == "function" then
       if handlers_lookup[name] then
         error("Attempted to register two GUI event handlers with the same name: " .. name)
