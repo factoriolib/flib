@@ -12,6 +12,7 @@ local function gen_slot(x, y, default_offset)
     type = "button_style",
     parent = "slot",
     size = 40,
+    clicked_vertical_offset = 0,
     default_graphical_set = {
       base = { border = 4, position = { x + default_offset, y }, size = 80, filename = slot_tileset },
     },
@@ -33,6 +34,7 @@ local function gen_slot_button(x, y, default_offset, glow)
     type = "button_style",
     parent = "slot_button",
     size = 40,
+    clicked_vertical_offset = 0,
     default_graphical_set = {
       base = { border = 4, position = { x + default_offset, y }, size = 80, filename = slot_tileset },
       shadow = _ENV.offset_by_2_rounded_corners_glow(_ENV.default_dirt_color),
@@ -59,6 +61,7 @@ local function gen_standalone_slot_button(x, y, default_offset)
     type = "button_style",
     parent = "slot_button",
     size = 40,
+    clicked_vertical_offset = 0,
     default_graphical_set = {
       base = { border = 4, position = { x + default_offset, y }, size = 80, filename = slot_tileset },
       shadow = _ENV.offset_by_4_rounded_corners_subpanel_inset,
