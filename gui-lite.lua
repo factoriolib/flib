@@ -191,6 +191,21 @@ function flib_gui.handle_events()
   end
 end
 
+--- @param input GuiElemHandler
+--- @return Tags
+function flib_gui.format_handlers(input)
+  local out
+  if type(input) == "table" then
+    out = {}
+    for name, handler in pairs(input) do
+      out[tostring(name)] = handlers[handler]
+    end
+  else
+    out = handlers[input]
+  end
+  return { [handler_tag_key] = out }
+end
+
 --- A GUI element definition. This extends `LuaGuiElement.add_param` with several new attributes.
 --- Children may be defined in the array portion as an alternative to the `children` subtable.
 --- @class GuiElemDefClass: LuaGuiElement.add_param
