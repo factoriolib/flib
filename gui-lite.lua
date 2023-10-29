@@ -66,6 +66,12 @@ function flib_gui.add(parent, def, elems)
       if def.name then
         elems[def.name] = elem
       end
+      if style_mods.column_alignments then
+        for ikey, ivalue in ipairs(style_mods.column_alignments) do
+          elem.style.column_alignments[ikey] = ivalue
+        end
+        style_mods.column_alignments = nil
+      end
       if style_mods then
         for key, value in pairs(style_mods) do
           elem.style[key] = value
