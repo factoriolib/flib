@@ -42,6 +42,47 @@ function flib_technology.is_multilevel(technology)
   return technology.level ~= technology.max_level
 end
 
+--- Returns `true` if the first technology should be ordered before the second technology. For use in `table.sort`.
+--- @param tech_a LuaTechnologyPrototype
+--- @param tech_b LuaTechnologyPrototype
+--- @return boolean
+function flib_technology.sort_predicate(tech_a, tech_b)
+  local ingredients_a = tech_a.research_unit_ingredients
+  local ingredients_b = tech_b.research_unit_ingredients
+  local len_a = #ingredients_a
+  local len_b = #ingredients_b
+  -- Always put technologies with zero ingredients at the front
+  if (len_a == 0) ~= (len_b == 0) then
+    return len_a == 0
+  end
+  if #ingredients_a > 0 then
+    -- Compare ingredient order strings
+    -- Check the most expensive packs first, and sort based on the first difference
+    for i = 0, math.min(len_a, len_b) - 1 do
+      local ingredient_a = ingredients_a[len_a - i]
+      local ingredient_b = ingredients_b[len_b - i]
+      local order_a = game[ingredient_a.type .. "_prototypes"][ingredient_a.name].order
+      local order_b = game[ingredient_b.type .. "_prototypes"][ingredient_b.name].order
+      -- Cheaper pack goes in front
+      if order_a ~= order_b then
+        return order_a < order_b
+      end
+    end
+    -- Sort the technology with fewer ingredients in front
+    if len_a ~= len_b then
+      return len_a < len_b
+    end
+  end
+  -- Compare technology order strings
+  local order_a = tech_a.order
+  local order_b = tech_b.order
+  if order_a ~= order_b then
+    return order_a < order_b
+  end
+  -- Compare prototype names
+  return tech_a.name < tech_b.name
+end
+
 --- @enum TechnologyResearchState
 flib_technology.research_state = {
   available = 1,
