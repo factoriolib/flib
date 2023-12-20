@@ -6,6 +6,19 @@
 local flib_gui = require("__flib__/gui-lite")
 local mod_gui = require("__core__/lualib/mod-gui")
 
+--- @alias FlibTestGuiMode
+--- | "all"
+--- | "active"
+--- | "completed"
+
+--- @class FlibTestGui
+--- @field elems table<string, LuaGuiElement>
+--- @field player LuaPlayer
+--- @field completed_count integer
+--- @field items_left integer
+--- @field mode FlibTestGuiMode
+--- @field pinned boolean
+
 --- @class FlibTestGuiBase
 local gui = {}
 
@@ -37,6 +50,7 @@ function gui.build(player)
     name = "flib_todo_window",
     direction = "vertical",
     -- Use `elem_mods` to make modifications to the GUI element after creation.
+    --- @diagnostic disable-next-line: missing-fields
     elem_mods = { auto_center = true },
     -- If `handler` is a function, it will call that function for any GUI event on this element.
     -- If it is a dictioanry of event -> function, it will call the corresponding function for the corresponding event.
@@ -60,6 +74,7 @@ function gui.build(player)
       type = "frame",
       style = "inside_shallow_frame",
       -- Use `style_mods` to make modifications to the element's style.
+      --- @diagnostic disable-next-line: missing-fields
       style_mods = { width = 500 },
       direction = "vertical",
       {
@@ -152,7 +167,7 @@ function gui.build(player)
   -- In a real mod, you would want to initially hide the GUI and not set opened until the player opens it.
   player.opened = elems.flib_todo_window
 
-  --- @class FlibTestGui
+  --- @type FlibTestGui
   global.guis[player.index] = {
     elems = elems,
     player = player,
@@ -176,7 +191,7 @@ end
 --- @param self FlibTestGui
 --- @param e EventData.on_gui_checked_state_changed
 function gui.change_mode(self, e)
-  local mode = e.element.tags.mode --[[@as string]]
+  local mode = e.element.tags.mode --[[@as FlibTestGuiMode]]
   self.mode = mode
   self.elems.all_radio.state = mode == "all"
   self.elems.active_radio.state = mode == "active"
@@ -233,6 +248,7 @@ function gui.on_textfield_confirmed(self, e)
   local todos_flow = self.elems.todos_flow
   flib_gui.add(todos_flow, {
     type = "checkbox",
+    --- @diagnostic disable-next-line: missing-fields
     style_mods = { horizontally_stretchable = true },
     caption = title,
     state = false,

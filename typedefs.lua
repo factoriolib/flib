@@ -1,0 +1,3 @@
+--- @meta
+
+default_shadow = {}

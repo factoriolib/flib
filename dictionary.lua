@@ -70,7 +70,6 @@ function flib_dictionary.new(name, keep_untranslated, initial_contents)
   for key, value in pairs(initial_contents or {}) do
     self:add(key, value)
   end
-  --- @diagnostic disable-next-line
   raw[name] = { strings = self.strings, keep_untranslated = keep_untranslated }
 
   return self

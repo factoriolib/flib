@@ -5,11 +5,12 @@ local flib_technology = require("__flib__/technology")
 
 local flib_gui_templates = {}
 
+--- Create and return a technology slot.
 --- @param parent LuaGuiElement
 --- @param technology LuaTechnology
 --- @param level uint
 --- @param research_state TechnologyResearchState
---- @param on_click function
+--- @param on_click GuiElemHandler?
 --- @return LuaGuiElement
 function flib_gui_templates.technology_slot(parent, technology, level, research_state, on_click)
   local progress = flib_technology.get_research_progress(technology, level)
