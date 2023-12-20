@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------------------------------
-Version: 0.13.1
+Version: 0.14.0
 Date: ????
   Features:
     - Added `gui-templates` module for building various common and/or annoying GUI components, including technology slots.
