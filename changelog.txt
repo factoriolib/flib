@@ -5,6 +5,8 @@ Date: ????
     - Added `gui-templates` module for building various common and/or annoying GUI components, including technology slots.
     - Added `technology` module with various runtime technology-related utilities.
     - Added technology slot styles.
+  Bugfixes:
+    - Fixed `data_util.get_energy_value` not accepting capital `K` as a unit suffix. (#59)
 ---------------------------------------------------------------------------------------------------
 Version: 0.13.0
 Date: 2023-10-14

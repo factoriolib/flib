@@ -112,6 +112,7 @@ local exponent_multipliers = {
   ["da"] = 10,
   ["h"] = 100,
   ["k"] = 1000,
+  ["K"] = 1000, -- This isn't SI, but meh
   ["M"] = 1000000,
   ["G"] = 1000000000,
   ["T"] = 1000000000000,
