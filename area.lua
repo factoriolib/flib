@@ -1,3 +1,7 @@
+if ... ~= "__flib__.area" then
+  return require("__flib__.area")
+end
+
 --- @diagnostic disable
 --- @deprecated Use `bounding-box` instead.
 local flib_area = {}

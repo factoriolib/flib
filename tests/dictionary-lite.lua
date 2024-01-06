@@ -1,4 +1,4 @@
-local flib_dictionary = require("__flib__/dictionary-lite")
+local flib_dictionary = require("__flib__.dictionary-lite")
 
 -- Build demo dictionaries for various kinds of prototypes. Dictionaries don't need to be sorted like this, they can
 -- contain anything and everything. For example, in many of my mods I will make a "search" dictionary containing all

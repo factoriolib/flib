@@ -1,3 +1,7 @@
+if ... ~= "__flib__.gui" then
+  return require("__flib__.gui")
+end
+
 --- @diagnostic disable
 
 local mod_name = script.mod_name

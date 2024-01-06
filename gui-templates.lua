@@ -1,7 +1,11 @@
-local flib_math = require("__flib__/math")
-local flib_gui = require("__flib__/gui-lite")
-local flib_table = require("__flib__/table")
-local flib_technology = require("__flib__/technology")
+if ... ~= "__flib__.gui-templates" then
+  return require("__flib__.gui-templates")
+end
+
+local flib_math = require("__flib__.math")
+local flib_gui = require("__flib__.gui-lite")
+local flib_table = require("__flib__.table")
+local flib_technology = require("__flib__.technology")
 
 local flib_gui_templates = {}
 
@@ -26,8 +30,10 @@ function flib_gui_templates.technology_slot(parent, technology, level, research_
     name = technology.name,
     style = style,
     elem_tooltip = { type = "technology", name = technology.name },
-    tags = flib_gui.format_handlers({ [defines.events.on_gui_click] = on_click }),
   })
+  if on_click then
+    base.tags = flib_gui.format_handlers({ [defines.events.on_gui_click] = on_click })
+  end
   base
     .add({ type = "flow", style = "flib_technology_slot_sprite_flow", ignored_by_interaction = true })
     .add({ type = "sprite", style = "flib_technology_slot_sprite", sprite = "technology/" .. technology.name })

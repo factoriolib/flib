@@ -6,6 +6,7 @@ Date: ????
     - Added `gui-templates` module for building various common and/or annoying GUI components, including technology slots.
     - Added `technology` module with various runtime technology-related utilities.
     - Added technology slot styles.
+    - Added require guards to allow requiring flib modules with any syntax without breaking upvalues.
   Bugfixes:
     - Fixed `data_util.get_energy_value` not accepting capital `K` as a unit suffix. (#59)
 ---------------------------------------------------------------------------------------------------

@@ -1,6 +1,10 @@
+if ... ~= "__flib__.migration" then
+  return require("__flib__.migration")
+end
+
 --- Mod migration and version comparison functions.
 --- ```lua
---- local flib_migration = require("__flib__/migration")
+--- local flib_migration = require("__flib__.migration")
 --- ```
 --- @class flib_migration
 local flib_migration = {}

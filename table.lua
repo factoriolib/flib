@@ -1,10 +1,14 @@
+if ... ~= "__flib__.table" then
+  return require("__flib__.table")
+end
+
 --- Extension of the Lua 5.2 table library.
 ---
 --- **NOTE:** Several functions in this module will only work with [arrays](https://www.lua.org/pil/11.1.html),
 --- which are tables with sequentially numbered keys. All table functions will work with arrays as well, but
 --- array functions **will not** work with tables.
 --- ```lua
---- local flib_table: = require("__flib__/table")
+--- local flib_table: = require("__flib__.table")
 --- ```
 --- @class flib_table: tablelib
 local flib_table = {}

@@ -1,8 +1,12 @@
+if ... ~= "__flib__.translation" then
+  return require("__flib__.translation")
+end
+
 --- @diagnostic disable
 --- @deprecated use `dictionary` instead
 local flib_translation = {}
 
-local table = require("__flib__/table")
+local table = require("__flib__.table")
 
 local math = math
 local next = next

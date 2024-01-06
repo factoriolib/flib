@@ -1,3 +1,7 @@
+if ... ~= "__flib__.technology" then
+  return require("__flib__.technology")
+end
+
 --- @class flib_technology
 local flib_technology = {}
 

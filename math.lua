@@ -1,6 +1,10 @@
+if ... ~= "__flib__.math" then
+  return require("__flib__.math")
+end
+
 --- Extension of the Lua 5.2 math library.
 --- ```lua
---- local flib_math = require("__flib__/math")
+--- local flib_math = require("__flib__.math")
 --- ```
 --- @class flib_math: factorio.mathlib
 local flib_math = {}

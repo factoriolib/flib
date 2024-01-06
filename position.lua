@@ -1,9 +1,13 @@
-local flib_math = require("__flib__/math")
+if ... ~= "__flib__.position" then
+  return require("__flib__.position")
+end
+
+local flib_math = require("__flib__.math")
 
 --- Utilities for manipulating positions. All functions support both the shorthand and explicit syntaxes and will
 --- preserve the syntax that was passed in.
 --- ```lua
---- local flib_position = require("__flib__/position")
+--- local flib_position = require("__flib__.position")
 --- ```
 --- @class flib_position
 local flib_position = {}

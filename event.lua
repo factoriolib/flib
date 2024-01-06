@@ -1,3 +1,7 @@
+if ... ~= "__flib__.event" then
+  return require("__flib__.event")
+end
+
 --- @diagnostic disable
 --- @deprecated use `script` directly
 local flib_event = {}

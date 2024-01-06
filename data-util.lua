@@ -1,6 +1,10 @@
+if ... ~= "__flib__.data-util" then
+  return require("__flib__.data-util")
+end
+
 --- Utilities for data stage prototype manipulation.
 --- ```lua
---- local flib_data_util = require("__flib__/data-util")
+--- local flib_data_util = require("__flib__.data-util")
 --- ```
 --- @class flib_data_util
 local flib_data_util = {}

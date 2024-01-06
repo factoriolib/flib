@@ -1,4 +1,4 @@
-local data_util = require("__flib__/data-util")
+local data_util = require("__flib__.data-util")
 
 local styles = data.raw["gui-style"].default
 

@@ -1,6 +1,10 @@
+if ... ~= "__flib__.train" then
+  return require("__flib__.train")
+end
+
 --- Functions for working with trains.
 --- ```lua
---- local flib_train = require("__flib__/train")
+--- local flib_train = require("__flib__.train")
 --- ```
 --- @class flib_train
 local flib_train = {}

@@ -1,6 +1,10 @@
+if ... ~= "__flib__.on-tick-n" then
+  return require("__flib__.on-tick-n")
+end
+
 --- Schedule tasks to be executed later.
 --- ```lua
---- local flib_on_tick_n = require("__flib__/on-tick-n")
+--- local flib_on_tick_n = require("__flib__.on-tick-n")
 --- ```
 --- @class flib_on_tick_n
 local on_tick_n = {}

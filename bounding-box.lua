@@ -1,10 +1,14 @@
-local position = require("__flib__/position")
+if ... ~= "__flib__.bounding-box" then
+  return require("__flib__.bounding-box")
+end
+
+local position = require("__flib__.position")
 
 --- Utilities for manipulating bounding boxes. All functions support both the shorthand and explicit syntaxes for boxes
 --- and positions, and will preserve the syntax that was passed in. Boxes are considered immutable; all functions will
 --- return new boxes.
 --- ```lua
---- local flib_bounding_box = require("__flib__/bounding-box")
+--- local flib_bounding_box = require("__flib__.bounding-box")
 --- ```
 --- @class flib_bounding_box
 local flib_bounding_box = {}
@@ -64,8 +68,10 @@ end
 function flib_bounding_box.contains_position(box, pos)
   local box = flib_bounding_box.ensure_explicit(box)
   local pos = position.ensure_explicit(pos)
-  return
-    box.left_top.x <= pos.x and box.left_top.y <= pos.y and box.right_bottom.x >= pos.x and box.right_bottom.y >= pos.y
+  return box.left_top.x <= pos.x
+    and box.left_top.y <= pos.y
+    and box.right_bottom.x >= pos.x
+    and box.right_bottom.y >= pos.y
 end
 
 --- Return the box in explicit form.
@@ -219,11 +225,10 @@ end
 function flib_bounding_box.intersects_box(box1, box2)
   local box1 = flib_bounding_box.ensure_explicit(box1)
   local box2 = flib_bounding_box.ensure_explicit(box2)
-  return
-    box1.left_top.x < box2.right_bottom.x
-      and box2.left_top.x < box1.right_bottom.x
-      and box1.left_top.y < box2.right_bottom.y
-      and box2.left_top.y < box1.right_bottom.y
+  return box1.left_top.x < box2.right_bottom.x
+    and box2.left_top.x < box1.right_bottom.x
+    and box1.left_top.y < box2.right_bottom.y
+    and box2.left_top.y < box1.right_bottom.y
 end
 
 --- Return a new box with  the same dimensions, moved by the given delta.

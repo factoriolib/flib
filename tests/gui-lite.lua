@@ -3,8 +3,8 @@
 
 -- GUI
 
-local flib_gui = require("__flib__/gui-lite")
-local mod_gui = require("__core__/lualib/mod-gui")
+local flib_gui = require("__flib__.gui-lite")
+local mod_gui = require("__core__.lualib.mod-gui")
 
 --- @alias FlibTestGuiMode
 --- | "all"
