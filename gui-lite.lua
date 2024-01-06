@@ -211,8 +211,10 @@ end
 ---   caption = "Click me!",
 ---   tags = flib_gui.format_handlers({ [defines.events.on_gui_click] = on_button_clicked }),
 --- })
+---
+--- flib_gui.handle_events({ on_button_clicked = on_button_clicked })
 --- ```
---- @param input GuiElemHandler|table<defines.events, GuiElemHandler>
+--- @param input GuiElemHandler|table<defines.events, GuiElemHandler?>
 --- @return Tags
 function flib_gui.format_handlers(input)
   local out
