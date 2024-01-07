@@ -4,6 +4,7 @@ Date: ????
   Features:
     - Added `gui-lite.format_handlers` function.
     - Added `gui-templates` module for building various common and/or annoying GUI components, including technology slots.
+    - Added `table.binary_search` function.
     - Added `technology` module with various runtime technology-related utilities.
     - Added technology slot styles.
     - Added require guards to allow requiring flib modules with any syntax without breaking upvalues.

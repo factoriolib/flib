@@ -47,6 +47,43 @@ function flib_table.array_merge(arrays)
   return output
 end
 
+--- Perform a binary search of the array using the given comparator function. The array must be sorted
+--- in a manner compatible with the comparator and must not be modified during the search. The
+--- comparator should return `0` if the element matches the target, a negative number if the element
+--- precedes the target, or a positive number if the element succeeds the target.
+---
+--- ### Example
+---
+--- ```lua
+--- local nums = {1, 3, 4, 8, 20, 69}
+--- local looking_for = 20
+--- local i, match = flib_table.binary_search(nums, function(elem) return looking_for - elem end)
+--- assert(i == 5)
+--- assert(match == looking_for)
+--- ```
+--- @generic T
+--- @param array T[]
+--- @param comparator fun(elem: T): integer
+--- @return integer? The index of the matched element.
+--- @return T? The matched element.
+function flib_table.binary_search(array, comparator)
+  local low, high = 1, #array
+  assert(high, "Invalid array was passed to binary search.")
+  while low < high do
+    local i = low + math.floor((high - low) / 2)
+    local elem = array[i]
+    assert(elem, "Found a nil element during binary search; array was modified or is invalid.")
+    local res = comparator(elem)
+    if res < 0 then
+      high = i - 1
+    elseif res > 0 then
+      low = i + 1
+    else
+      return i, array[i]
+    end
+  end
+end
+
 --- Recursively compare two tables for inner equality.
 ---
 --- Does not compare metatables.
