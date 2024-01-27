@@ -21,6 +21,7 @@ local table = require("__flib__.table")
 --- @field dicts table<string, RawDictionary>
 --- @field finished boolean
 --- @field key string?
+--- @field last_batch_start DictTranslationRequest?
 --- @field language string
 --- @field received_count integer
 --- @field requests table<uint, DictTranslationRequest>
@@ -159,10 +160,13 @@ end
 local function request_next_batch(data)
   local raw = data.raw
   local wip = data.wip --[[@as DictWipData]]
+  wip.last_batch_start = nil
   if wip.finished then
     return false
   end
   local requests, strings = {}, {}
+  --- @type DictTranslationRequest?
+  local first_request = nil
   for i = 1, game.is_multiplayer() and 5 or 50 do
     local string
     repeat
@@ -178,13 +182,18 @@ local function request_next_batch(data)
     if wip.finished then
       break
     end
-    requests[i] = { dict = wip.dict, key = wip.key }
+    local request = { dict = wip.dict, key = wip.key }
+    requests[i] = request
+    if not first_request then
+      first_request = request
+    end
     strings[i] = string
   end
 
-  if #strings == 0 then
+  if not first_request then
     return false -- Finished
   end
+  wip.last_batch_start = first_request
 
   local translator = wip.translator
   if not translator.valid or not translator.connected then
@@ -327,8 +336,11 @@ function flib_dictionary.on_tick()
   end
 
   if game.tick - wip.request_tick > request_timeout_ticks then
-    -- next() will return the first string from the last batch because it was inserted first
-    local _, request = next(wip.requests)
+    local request = wip.last_batch_start
+    if not request then
+      -- TODO: Remove WIP because we actually finished somehow? This should never happen I think
+      error("We're screwed")
+    end
     wip.dict = request.dict
     wip.finished = false
     wip.key = request.key
@@ -385,7 +397,7 @@ function flib_dictionary.on_string_translated(e)
     end
   end
 
-  while wip and table_size(wip.requests) == 0 and not request_next_batch(data) do
+  while wip and not next(wip.requests) and not request_next_batch(data) do
     if wip.finished then
       data.translated[wip.language] = wip.dicts
       data.wip = nil

@@ -10,6 +10,7 @@ Date: ????
     - Added require guards to allow requiring flib modules with any syntax without breaking upvalues.
   Bugfixes:
     - Fixed `data_util.get_energy_value` not accepting capital `K` as a unit suffix. (#59)
+    - [dictionary-lite] Maybe fixed that translation batches would not always be re-requested in their entirety due to undefined Lua next() behavior.
 ---------------------------------------------------------------------------------------------------
 Version: 0.13.0
 Date: 2023-10-14
