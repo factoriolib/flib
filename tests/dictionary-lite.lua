@@ -1,6 +1,8 @@
-local dictionary = require("__flib__/dictionary-lite")
-local migration = require("__flib__/migration")
+local flib_dictionary = require("__flib__.dictionary-lite")
 
+-- Build demo dictionaries for various kinds of prototypes. Dictionaries don't need to be sorted like this, they can
+-- contain anything and everything. For example, in many of my mods I will make a "search" dictionary containing all
+-- of the things I need to search, prefixed by their type (i.e. `fluid/crude-oil`, `item/iron-plate`, etc).
 local function build_dictionaries()
   for type, prototypes in pairs({
     entity = game.entity_prototypes,
@@ -15,33 +17,40 @@ local function build_dictionaries()
     resource_category = game.resource_category_prototypes,
     technology = game.technology_prototypes,
   }) do
-    dictionary.new(type)
+    flib_dictionary.new(type)
     for name, prototype in pairs(prototypes) do
-      -- Use the internal name if the localised name isn't valid
-      dictionary.add(type, name, { "?", prototype.localised_name, name })
-      -- dictionary.add(type, name, prototype.localised_name)
+      -- Fall back to the internal name if the localised name is invalid. If you don't want to include invalid strings
+      -- then simply pass `prototype.localised_name` and the resulting dictionary will only include valid translations.
+      flib_dictionary.add(type, name, { "?", prototype.localised_name, name })
     end
   end
 end
 
-dictionary.handle_events()
+-- Handle all relevant events automatically. Be sure to add this line before defining any of your own event handlers.
+-- `dictionary-lite` has handlers for `on_init`, `on_configuration_changed`, `on_tick`, `on_string_translated`, and `on_player_joined_game`.
+flib_dictionary.handle_events()
 
 script.on_init(function()
-  dictionary.on_init()
+  -- If you override any handlers for the events listed above, you will need to manually call the requisite functions.
+  flib_dictionary.on_init()
   build_dictionaries()
 end)
 
-migration.handle_on_configuration_changed(nil, function()
-  dictionary.on_configuration_changed()
+script.on_configuration_changed(function()
+  flib_dictionary.on_configuration_changed()
+  -- Dictionaries should be built both during `on_init` and `on_configuration_changed`.
   build_dictionaries()
 end)
 
-script.on_event(dictionary.on_player_dictionaries_ready, function(e)
-  local dicts = dictionary.get_all(e.player_index)
+-- `on_player_dictionaries_ready` is raised when a given player's dictionaries are... ready. Shocking!
+script.on_event(flib_dictionary.on_player_dictionaries_ready, function(e)
+  -- Alternatively, you can get specific dictionaries with `flib_dictionary.get(e.player_index, "item")` et al.
+  -- For the aforementioned "search" dictionary, I do not handle this event, and instead call `get()` during my
+  -- search logic and use it if it exists, otherwise falling back to the internal prototype names.
+  local dicts = flib_dictionary.get_all(e.player_index)
   if not dicts then
     return
   end
-  -- TODO: Ensure that all translations are present
   if __DebugAdapter then
     __DebugAdapter.print(dicts)
   else

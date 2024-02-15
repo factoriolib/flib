@@ -1,6 +1,10 @@
+if ... ~= "__flib__.train" then
+  return require("__flib__.train")
+end
+
 --- Functions for working with trains.
 --- ```lua
---- local flib_train = require("__flib__/train")
+--- local flib_train = require("__flib__.train")
 --- ```
 --- @class flib_train
 local flib_train = {}
@@ -34,7 +38,7 @@ end
 function flib_train.rotate_carriage(entity)
   local disconnected_back = entity.disconnect_rolling_stock(defines.rail_direction.back)
   local disconnected_front = entity.disconnect_rolling_stock(defines.rail_direction.front)
-  entity.rotate()
+  entity.rotate({})
   -- Only reconnect the side that was disconnected
   local reconnected_front = disconnected_front
   local reconnected_back = disconnected_back

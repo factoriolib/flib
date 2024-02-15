@@ -1,8 +1,12 @@
+if ... ~= "__flib__.queue" then
+  return require("__flib__.queue")
+end
+
 --- Lua queue implementation.
 ---
 --- Based on "Queues and Double Queues" from [Programming in Lua](http://www.lua.org/pil/11.4.html).
 --- ```lua
---- local flib_queue = require("__flib__/queue")
+--- local flib_queue = require("__flib__.queue")
 --- ```
 --- @class flib_queue
 local flib_queue = {}

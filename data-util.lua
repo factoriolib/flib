@@ -1,6 +1,10 @@
+if ... ~= "__flib__.data-util" then
+  return require("__flib__.data-util")
+end
+
 --- Utilities for data stage prototype manipulation.
 --- ```lua
---- local flib_data_util = require("__flib__/data-util")
+--- local flib_data_util = require("__flib__.data-util")
 --- ```
 --- @class flib_data_util
 local flib_data_util = {}
@@ -112,6 +116,7 @@ local exponent_multipliers = {
   ["da"] = 10,
   ["h"] = 100,
   ["k"] = 1000,
+  ["K"] = 1000, -- This isn't SI, but meh
   ["M"] = 1000000,
   ["G"] = 1000000000,
   ["T"] = 1000000000000,

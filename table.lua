@@ -1,10 +1,14 @@
+if ... ~= "__flib__.table" then
+  return require("__flib__.table")
+end
+
 --- Extension of the Lua 5.2 table library.
 ---
 --- **NOTE:** Several functions in this module will only work with [arrays](https://www.lua.org/pil/11.1.html),
 --- which are tables with sequentially numbered keys. All table functions will work with arrays as well, but
 --- array functions **will not** work with tables.
 --- ```lua
---- local flib_table: = require("__flib__/table")
+--- local flib_table: = require("__flib__.table")
 --- ```
 --- @class flib_table: tablelib
 local flib_table = {}
@@ -41,6 +45,43 @@ function flib_table.array_merge(arrays)
     end
   end
   return output
+end
+
+--- Perform a binary search of the array using the given comparator function. The array must be sorted
+--- in a manner compatible with the comparator and must not be modified during the search. The
+--- comparator should return `0` if the element matches the target, a negative number if the element
+--- precedes the target, or a positive number if the element succeeds the target.
+---
+--- ### Example
+---
+--- ```lua
+--- local nums = {1, 3, 4, 8, 20, 69}
+--- local looking_for = 20
+--- local i, match = flib_table.binary_search(nums, function(elem) return looking_for - elem end)
+--- assert(i == 5)
+--- assert(match == looking_for)
+--- ```
+--- @generic T
+--- @param array T[]
+--- @param comparator fun(elem: T): integer
+--- @return integer? The index of the matched element.
+--- @return T? The matched element.
+function flib_table.binary_search(array, comparator)
+  local low, high = 1, #array
+  assert(high, "Invalid array was passed to binary search.")
+  while low < high do
+    local i = low + math.floor((high - low) / 2)
+    local elem = array[i]
+    assert(elem, "Found a nil element during binary search; array was modified or is invalid.")
+    local res = comparator(elem)
+    if res < 0 then
+      high = i - 1
+    elseif res > 0 then
+      low = i + 1
+    else
+      return i, array[i]
+    end
+  end
 end
 
 --- Recursively compare two tables for inner equality.

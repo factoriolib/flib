@@ -1,3 +1,7 @@
+if ... ~= "__flib__.misc" then
+  return require("__flib__.misc")
+end
+
 --- @diagnostic disable
 --- @deprecated use `format` and `position` modules instead.`
 local flib_misc = {}

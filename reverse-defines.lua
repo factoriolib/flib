@@ -1,3 +1,7 @@
+if ... ~= "__flib__.reverse-defines" then
+  return require("__flib__.reverse-defines")
+end
+
 --- Defines reverse lookup table.
 ---
 --- NOTE: Type intellisense simply does not work for this module, and there is no easy way to fix
