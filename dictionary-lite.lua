@@ -8,12 +8,10 @@ local table = require("__flib__.table")
 
 --- @class FlibDictionaryGlobal
 --- @field init_ran boolean
---- @field player_language_requests table<uint, DictLangRequest>
---- @field player_languages table<uint, string>
 --- @field raw table<string, Dictionary>
 --- @field raw_count integer
 --- @field to_translate string[]
---- @field translated table<string, table<string, TranslatedDictionary>>
+--- @field translated table<string, table<string, TranslatedDictionary>?>
 --- @field wip DictWipData?
 
 --- @class DictWipData
@@ -50,22 +48,12 @@ local function get_data(init_only)
   return data
 end
 
---- @param data FlibDictionaryGlobal
 --- @param language string
 --- @return LuaPlayer?
-local function get_translator(data, language)
-  for player_index, player_language in pairs(data.player_languages) do
-    if player_language == language then
-      local player = game.get_player(player_index)
-      if player and player.connected then
-        return player
-      end
-    end
-  end
-  -- There is no available translator, so remove this language from the pool
-  for player_index, player_language in pairs(data.player_languages) do
-    if player_language == language then
-      data.player_languages[player_index] = nil
+local function get_translator(language)
+  for _, player in pairs(game.players) do
+    if player.connected and player.locale == language then
+      return player
     end
   end
 end
@@ -194,8 +182,8 @@ local function request_next_batch(data)
   wip.last_batch_start = first_request
 
   local translator = wip.translator
-  if not translator.valid or not translator.connected then
-    local new_translator = get_translator(data, wip.language)
+  if not translator.valid or not translator.connected or translator.locale ~= wip.language then
+    local new_translator = get_translator(wip.language)
     if new_translator then
       wip.translator = new_translator
     else
@@ -225,7 +213,7 @@ local function handle_next_language(data)
   while not data.wip and #data.to_translate > 0 do
     local next_language = table.remove(data.to_translate, 1)
     if next_language then
-      local translator = get_translator(data, next_language)
+      local translator = get_translator(next_language)
       if translator then
         -- Start translation
         local dicts = {}
@@ -253,6 +241,7 @@ local function handle_next_language(data)
           request_tick = 0,
           translator = translator,
         }
+        request_next_batch(data)
       end
     end
   end
@@ -264,12 +253,6 @@ flib_dictionary.on_player_dictionaries_ready = script.generate_event_name()
 --- Called when a player's dictionaries are ready to be used. Handling this event is not required.
 --- @class EventData.on_player_dictionaries_ready: EventData
 --- @field player_index uint
-
-flib_dictionary.on_player_language_changed = script.generate_event_name()
---- Called when a player's language changes. Handling this event is not required.
---- @class EventData.on_player_language_changed: EventData
---- @field player_index uint
---- @field language string
 
 -- Lifecycle handlers
 
@@ -310,74 +293,32 @@ function flib_dictionary.on_tick()
     data.init_ran = true
   end
 
-  -- Player language requests
-  for id, request in pairs(data.player_language_requests) do
-    if game.tick - request.tick > request_timeout_ticks then
-      local player = request.player
-      if player.valid and player.connected then
-        local id = player.request_translation({ "locale-identifier" })
-        if id then
-          data.player_language_requests[id] = {
-            player = player,
-            tick = game.tick,
-          }
-        end
-      end
-      -- Deletion must be last so that the deleted entry isn't re-used for the new entry in memory
-      data.player_language_requests[id] = nil
-    end
-  end
-
   local wip = data.wip
   if not wip then
     return
   end
 
-  if game.tick - wip.request_tick > request_timeout_ticks then
-    local request = wip.last_batch_start
-    if not request then
-      -- TODO: Remove WIP because we actually finished somehow? This should never happen I think
-      error("We're screwed")
-    end
-    wip.dict = request.dict
-    wip.finished = false
-    wip.key = request.key
-    wip.requests = {}
-    request_next_batch(data)
-    update_gui(data)
+  if game.tick - wip.request_tick <= request_timeout_ticks then
+    return
   end
+
+  local request = wip.last_batch_start
+  if not request then
+    -- TODO: Remove WIP because we actually finished somehow? This should never happen I think
+    error("We're screwed")
+  end
+  wip.dict = request.dict
+  wip.finished = false
+  wip.key = request.key
+  wip.requests = {}
+  request_next_batch(data)
+  update_gui(data)
 end
 
 --- @param e EventData.on_string_translated
 function flib_dictionary.on_string_translated(e)
   local data = get_data()
   local id = e.id
-
-  -- Player language requests
-  local request = data.player_language_requests[id]
-  if request then
-    data.player_language_requests[id] = nil
-    if not e.translated then
-      error("Language key request for player " .. e.player_index .. " failed")
-    end
-    if data.player_languages[e.player_index] ~= e.result then
-      data.player_languages[e.player_index] = e.result
-      script.raise_event(
-        flib_dictionary.on_player_language_changed,
-        { player_index = e.player_index, language = e.result }
-      )
-      if data.translated[e.result] then
-        script.raise_event(flib_dictionary.on_player_dictionaries_ready, { player_index = e.player_index })
-        return
-      elseif data.wip and data.wip.language == e.result then
-        return
-      elseif table.find(data.to_translate, e.result) then
-        return
-      else
-        table.insert(data.to_translate, e.result)
-      end
-    end
-  end
 
   handle_next_language(data)
 
@@ -399,8 +340,8 @@ function flib_dictionary.on_string_translated(e)
     if wip.finished then
       data.translated[wip.language] = wip.dicts
       data.wip = nil
-      for player_index, language in pairs(data.player_languages) do
-        if wip.language == language then
+      for player_index, player in pairs(game.players) do
+        if player.locale == wip.language then
           script.raise_event(flib_dictionary.on_player_dictionaries_ready, { player_index = player_index })
         end
       end
@@ -413,19 +354,26 @@ end
 
 --- @param e EventData.on_player_joined_game
 function flib_dictionary.on_player_joined_game(e)
-  -- Request the player's locale identifier
-  local player = game.get_player(e.player_index) --[[@as LuaPlayer]]
-  local id = player.request_translation({ "locale-identifier" })
-  if not id then
+  local player = game.get_player(e.player_index) --- @unwrap
+  if not player then
     return
   end
+  local language = player.locale
   local data = get_data()
-  data.player_language_requests[id] = {
-    player = player,
-    tick = game.tick,
-  }
+  if data.translated[language] then
+    script.raise_event(flib_dictionary.on_player_dictionaries_ready, { player_index = e.player_index })
+    return
+  elseif data.wip and data.wip.language == language then
+    return
+  elseif table.find(data.to_translate, language) then
+    return
+  end
+  table.insert(data.to_translate, language)
+  handle_next_language(data)
   update_gui(data)
 end
+
+flib_dictionary.on_player_locale_changed = flib_dictionary.on_player_joined_game
 
 --- Handle all non-bootstrap events with default event handlers. Will not overwrite any existing handlers. If you have
 --- custom handlers for on_tick, on_string_translated, or on_player_joined_game, ensure that you call the corresponding
@@ -448,6 +396,7 @@ end
 --- handle all relevant events automatically.
 flib_dictionary.events = {
   [defines.events.on_player_joined_game] = flib_dictionary.on_player_joined_game,
+  [defines.events.on_player_locale_changed] = flib_dictionary.on_player_locale_changed,
   [defines.events.on_string_translated] = flib_dictionary.on_string_translated,
   [defines.events.on_tick] = flib_dictionary.on_tick,
 }
@@ -489,12 +438,11 @@ end
 --- @param player_index uint
 --- @return table<string, TranslatedDictionary>?
 function flib_dictionary.get_all(player_index)
-  local data = get_data()
-  local language = data.player_languages[player_index]
-  if not language then
+  local player = game.get_player(player_index)
+  if not player then
     return
   end
-  return data.translated[language]
+  return get_data().translated[player.locale]
 end
 
 --- Get the specified dictionary for the player. Will return `nil` if the dictionary has not finished translating.
