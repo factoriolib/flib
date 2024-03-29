@@ -68,10 +68,10 @@ function flib_data_util.create_icons(prototype, new_layers)
       -- Over define as much as possible to minimize weirdness: https://forums.factorio.com/viewtopic.php?f=25&t=81980
       icons[#icons + 1] = {
         icon = v.icon,
-        icon_size = v.icon_size or prototype.icon_size or 32,
+        icon_size = v.icon_size or prototype.icon_size,
         icon_mipmaps = v.icon_mipmaps or prototype.icon_mipmaps or 0,
         tint = v.tint,
-        scale = v.scale or 1,
+        scale = v.scale,
         shift = v.shift,
       }
     end
