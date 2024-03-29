@@ -3,7 +3,7 @@ Version: 0.14.0
 Date: ????
   Features:
     - Added `gui-lite.format_handlers` function.
-    - Added `gui-templates` module for building various common and/or annoying GUI components, including technology slots.
+    - Added `gui-templates` module for building various common and/or annoying GUI components. Currently just makes technology slots.
     - Added `table.binary_search` function.
     - Added `technology` module with various runtime technology-related utilities.
     - Added technology slot styles.
@@ -12,7 +12,7 @@ Date: ????
     - `data_util.create_icons` no longer defines default icon size or scale. (#64)
   Bugfixes:
     - Fixed `data_util.get_energy_value` not accepting capital `K` as a unit suffix. (#59)
-    - [dictionary-lite] Maybe fixed that translation batches would not always be re-requested in their entirety due to undefined Lua next() behavior.
+    - Fixed that dictionary-lite translation batches would not always be re-requested in their entirety due to undefined Lua next() behavior.
 ---------------------------------------------------------------------------------------------------
 Version: 0.13.0
 Date: 2023-10-14
