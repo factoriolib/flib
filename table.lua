@@ -230,7 +230,7 @@ end
 
 --- Call the given function on a set number of items in a table, returning the next starting key.
 ---
---- Calls `callback(value, key)` over `n` items from `tbl`, starting after `from_k`.
+--- Calls `callback(value, key)` over `n` items from `tbl` or until the end is reached, starting after `from_k`.
 ---
 --- The first return value of each invocation of `callback` will be collected and returned in a table keyed by the
 --- current item's key.
