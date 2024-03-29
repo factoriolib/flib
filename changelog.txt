@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.14.0
-Date: ????
+Date: 2024-03-29
   Features:
     - Added `gui-lite.format_handlers` function.
     - Added `gui-templates` module for building various common and/or annoying GUI components. Currently just makes technology slots.
