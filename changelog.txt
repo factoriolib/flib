@@ -8,6 +8,8 @@ Date: ????
     - Added `technology` module with various runtime technology-related utilities.
     - Added technology slot styles.
     - Added require guards to allow requiring flib modules with any syntax without breaking upvalues.
+  Changes:
+    - `data_util.create_icons` no longer defines default icon size or scale. (#64)
   Bugfixes:
     - Fixed `data_util.get_energy_value` not accepting capital `K` as a unit suffix. (#59)
     - [dictionary-lite] Maybe fixed that translation batches would not always be re-requested in their entirety due to undefined Lua next() behavior.
