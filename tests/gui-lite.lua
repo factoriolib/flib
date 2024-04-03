@@ -290,7 +290,6 @@ function gui.toggle_pinned(self)
     self.elems.close_button.tooltip = { "gui.close" }
     self.elems.pin_button.sprite = "flib_pin_black"
     self.elems.pin_button.style = "flib_selected_frame_action_button"
-    self.player.opened = self.elems.flib_todo_window
     if self.player.opened == self.elems.flib_todo_window then
       self.player.opened = nil
     end
