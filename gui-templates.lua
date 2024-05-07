@@ -15,8 +15,10 @@ local flib_gui_templates = {}
 --- @param level uint
 --- @param research_state TechnologyResearchState
 --- @param on_click GuiElemHandler?
+--- @param tags Tags?
+--- @param index uint?
 --- @return LuaGuiElement
-function flib_gui_templates.technology_slot(parent, technology, level, research_state, on_click)
+function flib_gui_templates.technology_slot(parent, technology, level, research_state, on_click, tags, index)
   local technology_prototype = technology.prototype
 
   local is_multilevel = flib_technology.is_multilevel(technology)
@@ -29,16 +31,22 @@ function flib_gui_templates.technology_slot(parent, technology, level, research_
 
   local base = parent.add({
     type = "sprite-button",
-    name = technology.name,
     style = style,
     elem_tooltip = { type = "technology", name = technology.name },
+    tags = tags,
+    index = index,
   })
   if on_click then
-    base.tags = flib_gui.format_handlers({ [defines.events.on_gui_click] = on_click })
+    base.tags = flib_gui.format_handlers({ [defines.events.on_gui_click] = on_click }, tags)
   end
   base
-    .add({ type = "flow", style = "flib_technology_slot_sprite_flow", ignored_by_interaction = true })
-    .add({ type = "sprite", style = "flib_technology_slot_sprite", sprite = "technology/" .. technology.name })
+    .add({ type = "flow", name = "icon_flow", style = "flib_technology_slot_sprite_flow", ignored_by_interaction = true })
+    .add({
+      type = "sprite",
+      name = "icon",
+      style = "flib_technology_slot_sprite",
+      sprite = "technology/" .. technology.name,
+    })
 
   if technology.upgrade or is_multilevel or technology_prototype.level > 1 then
     base.add({
