@@ -2,6 +2,9 @@
 Version: 0.14.1
 Date: ????
   Changes:
+    - Adjusted technology slot GUI template to work with Ultimate Research Queue.
+  Bugfixes:
+    - Fixed that the technology slot GUI styles did not have selected styles.
 ---------------------------------------------------------------------------------------------------
 Version: 0.14.0
 Date: 2024-03-29
