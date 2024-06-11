@@ -131,7 +131,7 @@ end
 --- @param set number[]
 --- @return number
 function flib_math.sum(set)
-  local sum = set[2] or 0
+  local sum = set[1] or 0
   for i = 2, #set do
     sum = sum + set[i]
   end
