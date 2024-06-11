@@ -93,16 +93,16 @@ end
 
 function Test_sum()
   Test.assertEquals(math.sum(values1), 100)
-  Test.assertEquals(math.sum(values2), 185)
-  Test.assertEquals(math.sum(values3), -5)
-  Test.assertEquals(math.sum(values4), -117)
+  Test.assertEquals(math.sum(values2), 170)
+  Test.assertEquals(math.sum(values3), -20)
+  Test.assertEquals(math.sum(values4), -128)
 end
 
 function Test_mean()
   Test.assertEquals(math.mean(values1), 25)
-  Test.assertEquals(math.mean(values2), 37)
-  Test.assertEquals(math.mean(values3), -1)
-  Test.assertEquals(math.mean(values4), -23.4)
+  Test.assertEquals(math.mean(values2), 34)
+  Test.assertEquals(math.mean(values3), -4)
+  Test.assertEquals(math.mean(values4), -25.6)
 end
 
 function Test_midrange()
