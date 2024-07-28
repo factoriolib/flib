@@ -151,6 +151,7 @@ styles.flib_tool_button_light_green = {
   parent = "item_and_count_select_confirm",
   padding = 2,
   top_margin = 0,
+  tooltip = "",
 }
 
 styles.flib_tool_button_dark_red = {

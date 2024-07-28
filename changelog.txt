@@ -4,6 +4,7 @@ Date: ????
   Bugfixes:
     - [dictionary-lite] Fixed that the first translation in a re-requested batch would be skipped.
     - [math] Fixed that the `sum` function was ignoring the first element. (#69)
+    - Fixed that the `flib_tool_button_light_green` GUI style had a built-in tooltip. (#68)
 ---------------------------------------------------------------------------------------------------
 Version: 0.14.1
 Date: 2024-05-10
