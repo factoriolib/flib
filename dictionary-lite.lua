@@ -21,7 +21,7 @@ local table = require("__flib__.table")
 --- @field dicts table<string, RawDictionary>
 --- @field finished boolean
 --- @field key string?
---- @field last_batch_start DictTranslationRequest?
+--- @field last_batch_end DictTranslationRequest?
 --- @field language string
 --- @field received_count integer
 --- @field requests table<uint, DictTranslationRequest>
@@ -160,13 +160,12 @@ end
 local function request_next_batch(data)
   local raw = data.raw
   local wip = data.wip --[[@as DictWipData]]
-  wip.last_batch_start = nil
   if wip.finished then
+    wip.last_batch_end = nil
     return false
   end
+  wip.last_batch_end = { language = wip.language, dict = wip.dict, key = wip.key }
   local requests, strings = {}, {}
-  --- @type DictTranslationRequest?
-  local first_request = nil
   for i = 1, game.is_multiplayer() and 5 or 50 do
     local string
     repeat
@@ -184,16 +183,12 @@ local function request_next_batch(data)
     end
     local request = { dict = wip.dict, key = wip.key }
     requests[i] = request
-    if not first_request then
-      first_request = request
-    end
     strings[i] = string
   end
 
-  if not first_request then
+  if not requests[1] then
     return false -- Finished
   end
-  wip.last_batch_start = first_request
 
   local translator = wip.translator
   if not translator.valid or not translator.connected then
@@ -336,7 +331,7 @@ function flib_dictionary.on_tick()
   end
 
   if game.tick - wip.request_tick > request_timeout_ticks then
-    local request = wip.last_batch_start
+    local request = wip.last_batch_end
     if not request then
       -- TODO: Remove WIP because we actually finished somehow? This should never happen I think
       error("We're screwed")

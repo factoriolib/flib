@@ -1,7 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.14.2
 Date: ????
-  Changes:
+  Bugfixes:
+    - [dictionary-lite] Fixed that the first translation in a re-requested batch would be skipped.
 ---------------------------------------------------------------------------------------------------
 Version: 0.14.1
 Date: 2024-05-10
