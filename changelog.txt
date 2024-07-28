@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.14.2
-Date: ????
+Date: 2024-07-28
   Bugfixes:
     - [dictionary-lite] Fixed that the first translation in a re-requested batch would be skipped.
     - [math] Fixed that the `sum` function was ignoring the first element. (#69)
