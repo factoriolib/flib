@@ -205,6 +205,10 @@ end
 
 --- @param data FlibDictionaryGlobal
 local function handle_next_language(data)
+  if not next(data.raw) then
+    -- This can happen if handle_next_language is called during on_init or on_configuration_changed
+    return
+  end
   while not data.wip and #data.to_translate > 0 do
     local next_language = table.remove(data.to_translate, 1)
     if next_language then
@@ -218,10 +222,7 @@ local function handle_next_language(data)
           first_dict = first_dict or name
           dicts[name] = {}
         end
-        -- Don't do anything if there are no dictionaries to translate
-        if not first_dict then
-          return
-        end
+        assert(first_dict, "first_dict is nil")
         --- @type DictWipData
         data.wip = {
           dict = first_dict,
@@ -288,6 +289,8 @@ function flib_dictionary.on_tick()
     data.init_ran = true
   end
 
+  handle_next_language(data)
+
   local wip = data.wip
   if not wip then
     return
@@ -306,18 +309,6 @@ function flib_dictionary.on_tick()
     request_next_batch(data)
     update_gui(data)
   end
-
-  local request = wip.last_batch_start
-  if not request then
-    -- TODO: Remove WIP because we actually finished somehow? This should never happen I think
-    error("We're screwed")
-  end
-  wip.dict = request.dict
-  wip.finished = false
-  wip.key = request.key
-  wip.requests = {}
-  request_next_batch(data)
-  update_gui(data)
 end
 
 --- @param e EventData.on_string_translated
