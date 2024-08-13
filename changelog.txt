@@ -1,16 +1,36 @@
 ---------------------------------------------------------------------------------------------------
-Version: 0.14.0
+Version: 0.14.3
 Date: ????
+  Changes:
+---------------------------------------------------------------------------------------------------
+Version: 0.14.2
+Date: 2024-07-28
+  Bugfixes:
+    - [dictionary-lite] Fixed that the first translation in a re-requested batch would be skipped.
+    - [math] Fixed that the `sum` function was ignoring the first element. (#69)
+    - Fixed that the `flib_tool_button_light_green` GUI style had a built-in tooltip. (#68)
+---------------------------------------------------------------------------------------------------
+Version: 0.14.1
+Date: 2024-05-10
+  Changes:
+    - Adjusted technology slot GUI template to work with Ultimate Research Queue.
+  Bugfixes:
+    - Fixed that the technology slot GUI styles did not have selected styles.
+---------------------------------------------------------------------------------------------------
+Version: 0.14.0
+Date: 2024-03-29
   Features:
     - Added `gui-lite.format_handlers` function.
-    - Added `gui-templates` module for building various common and/or annoying GUI components, including technology slots.
+    - Added `gui-templates` module for building various common and/or annoying GUI components. Currently just makes technology slots.
     - Added `table.binary_search` function.
     - Added `technology` module with various runtime technology-related utilities.
     - Added technology slot styles.
     - Added require guards to allow requiring flib modules with any syntax without breaking upvalues.
+  Changes:
+    - `data_util.create_icons` no longer defines default icon size or scale. (#64)
   Bugfixes:
     - Fixed `data_util.get_energy_value` not accepting capital `K` as a unit suffix. (#59)
-    - [dictionary-lite] Maybe fixed that translation batches would not always be re-requested in their entirety due to undefined Lua next() behavior.
+    - Fixed that dictionary-lite translation batches would not always be re-requested in their entirety due to undefined Lua next() behavior.
 ---------------------------------------------------------------------------------------------------
 Version: 0.13.0
 Date: 2023-10-14

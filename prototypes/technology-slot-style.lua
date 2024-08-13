@@ -31,6 +31,30 @@ local function build_technology_slot(name, y, level_color, level_range_color)
       },
       shadow = default_shadow,
     },
+    selected_graphical_set = {
+      base = {
+        filename = "__flib__/graphics/technology-slots.png",
+        position = { 288, y },
+        size = { 144, 200 },
+      },
+      shadow = default_shadow,
+    },
+    selected_hovered_graphical_set = {
+      base = {
+        filename = "__flib__/graphics/technology-slots.png",
+        position = { 432, y },
+        size = { 144, 200 },
+      },
+      shadow = default_shadow,
+    },
+    selected_clicked_graphical_set = {
+      base = {
+        filename = "__flib__/graphics/technology-slots.png",
+        position = { 432, y },
+        size = { 144, 200 },
+      },
+      shadow = default_shadow,
+    },
     padding = 0,
     size = { 72, 100 },
     left_click_sound = { filename = "__core__/sound/gui-square-button-large.ogg", volume = 1 },
@@ -58,6 +82,30 @@ local function build_technology_slot(name, y, level_color, level_range_color)
       base = {
         filename = "__flib__/graphics/technology-slots.png",
         position = { 720, y },
+        size = { 144, 200 },
+      },
+      shadow = default_shadow,
+    },
+    selected_graphical_set = {
+      base = {
+        filename = "__flib__/graphics/technology-slots.png",
+        position = { 864, y },
+        size = { 144, 200 },
+      },
+      shadow = default_shadow,
+    },
+    selected_hovered_graphical_set = {
+      base = {
+        filename = "__flib__/graphics/technology-slots.png",
+        position = { 1008, y },
+        size = { 144, 200 },
+      },
+      shadow = default_shadow,
+    },
+    selected_clicked_graphical_set = {
+      base = {
+        filename = "__flib__/graphics/technology-slots.png",
+        position = { 1008, y },
         size = { 144, 200 },
       },
       shadow = default_shadow,

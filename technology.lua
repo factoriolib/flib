@@ -18,8 +18,10 @@ function flib_technology.get_research_progress(technology, level)
     else
       return 0
     end
-  else
+  elseif technology.level == level then
     return force.get_saved_technology_progress(technology) or 0
+  else
+    return 0
   end
 end
 
@@ -85,6 +87,26 @@ function flib_technology.sort_predicate(tech_a, tech_b)
   end
   -- Compare prototype names
   return tech_a.name < tech_b.name
+end
+
+--- Returns the technology's prototype name with the level suffix stripped.
+--- @param technology LuaTechnology|LuaTechnologyPrototype
+--- @return string
+function flib_technology.get_base_name(technology)
+  local result = string.gsub(technology.name, "%-%d*$", "")
+  return result
+end
+
+--- If the technology is multi-level, returns the technology's base name with that level appended, otherwise returns the technology name.
+--- @param technology LuaTechnology
+--- @param level uint
+--- @return string
+function flib_technology.get_leveled_name(technology, level)
+  if flib_technology.is_multilevel(technology) then
+    return flib_technology.get_base_name(technology) .. "-" .. level
+  else
+    return technology.name
+  end
 end
 
 --- @enum TechnologyResearchState

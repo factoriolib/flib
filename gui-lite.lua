@@ -219,8 +219,9 @@ end
 --- flib_gui.handle_events({ on_button_clicked = on_button_clicked })
 --- ```
 --- @param input GuiElemHandler|table<defines.events, GuiElemHandler?>
+--- @param existing Tags?
 --- @return Tags
-function flib_gui.format_handlers(input)
+function flib_gui.format_handlers(input, existing)
   local out
   if type(input) == "table" then
     out = {}
@@ -229,6 +230,10 @@ function flib_gui.format_handlers(input)
     end
   else
     out = handlers[input]
+  end
+  if existing then
+    existing[handler_tag_key] = out
+    return existing
   end
   return { [handler_tag_key] = out }
 end

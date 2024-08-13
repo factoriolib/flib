@@ -10,7 +10,7 @@
   "dependencies": [ "base >= 1.2.0" ],
   "package": {
     "git_publish_branch": "master",
-    "ignore": [ "crowdin.yml", "imgui.ini", "stylua.toml", "tests" ],
+    "ignore": [ "crowdin.yml", "imgui.ini", "stylua.toml", "tests", "graphics/slots.xcf" ],
     "scripts": {
       "prepublish": "factorio-crowdin-sync"
     },
