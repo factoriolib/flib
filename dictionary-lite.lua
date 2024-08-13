@@ -216,16 +216,12 @@ local function handle_next_language(data)
       if translator then
         -- Start translation
         local dicts = {}
-        --- @type string?
-        local first_dict
         for name in pairs(data.raw) do
-          first_dict = first_dict or name
           dicts[name] = {}
         end
-        assert(first_dict, "first_dict is nil")
         --- @type DictWipData
         data.wip = {
-          dict = first_dict,
+          dict = next(data.raw),
           dicts = dicts,
           finished = false,
           --- @type string?
