@@ -2,426 +2,466 @@ if ... ~= "__flib__.dictionary" then
   return require("__flib__.dictionary")
 end
 
-local gui = require("__flib__.gui-lite")
+local gui = require("__flib__.gui")
 local mod_gui = require("__core__.lualib.mod-gui")
 local table = require("__flib__.table")
 
---- @diagnostic disable
---- @deprecated Use 'dictionary-lite' instead.
+--- @class FlibDictionaryStorage
+--- @field init_ran boolean
+--- @field raw table<string, Dictionary>
+--- @field raw_count integer
+--- @field to_translate string[]
+--- @field translated table<string, table<string, TranslatedDictionary>?>
+--- @field wip DictWipData?
+
+--- @class DictWipData
+--- @field dict string
+--- @field dicts table<string, RawDictionary>
+--- @field finished boolean
+--- @field key string?
+--- @field last_batch_end DictTranslationRequest?
+--- @field language string
+--- @field received_count integer
+--- @field requests table<uint, DictTranslationRequest>
+--- @field request_tick uint
+--- @field translator LuaPlayer
+
+--- Utilities for creating dictionaries of localised string translations.
+--- ```lua
+--- local flib_dictionary = require("__flib__.dictionary")
+--- ```
+--- @class flib_dictionary
 local flib_dictionary = {}
 
-local inner_separator = "" -- U+E000
-local separator = "" -- U+E001
-local translation_timeout = 600
+local request_timeout_ticks = (60 * 5)
 
--- Depending on the value of `use_local_storage`, this will be tied to `global` or will be re-generated during `on_load`
-local raw = { _total_strings = 0 }
-
-local use_local_storage = false
-
-local function key_value(key, value)
-  return key .. inner_separator .. value .. separator
+--- @param init_only boolean?
+--- @return FlibDictionaryStorage
+local function get_data(init_only)
+  if not storage.__flib or not storage.__flib.dictionary then
+    error("Dictionary module was not properly initialized - ensure that all lifecycle events are handled.")
+  end
+  local data = storage.__flib.dictionary
+  if init_only and data.init_ran then
+    error("Dictionaries cannot be modified after initialization.")
+  end
+  return data
 end
 
-local RawDictionary = {}
-
---- @deprecated Use 'dictionary-lite' instead.
-function RawDictionary:add(internal, translation)
-  local to_add = { "", internal, inner_separator, { "?", translation, "FLIB_TRANSLATION_FAILED" }, separator }
-
-  local ref = self.ref
-  local i = self.batch_i + 1
-  -- Due to network saturation concerns, only group five strings together
-  -- See https://github.com/factoriolib/flib/issues/45
-  if i < 5 then
-    ref[i] = to_add --- @diagnostic disable-line
-    self.batch_i = i
-  else
-    local s_i = self.dict_i + 1
-    self.dict_i = s_i
-    local new_set = { "", to_add }
-    self.ref = new_set
-    self.strings[s_i] = new_set
-    self.batch_i = 2
+--- @param language string
+--- @return LuaPlayer?
+local function get_translator(language)
+  for _, player in pairs(game.players) do
+    if player.connected and player.locale == language then
+      return player
+    end
   end
-  self.total = self.total + 1
-  raw._total_strings = raw._total_strings + 1
 end
 
---- @class RawDictionary
-function flib_dictionary.new(name, keep_untranslated, initial_contents)
-  if raw[name] then
-    error("Dictionary with the name `" .. name .. "` already exists.")
+--- @param data FlibDictionaryStorage
+local function update_gui(data)
+  local wip = data.wip
+  for _, player in pairs(game.players) do
+    local frame_flow = mod_gui.get_frame_flow(player)
+    local window = frame_flow.flib_translation_progress
+    if wip then
+      if not window then
+        _, window = gui.add(frame_flow, {
+          type = "frame",
+          name = "flib_translation_progress",
+          style = mod_gui.frame_style,
+          direction = "vertical",
+          {
+            type = "label",
+            style = "frame_title",
+            caption = { "gui.flib-translating-dictionaries" },
+            tooltip = { "gui.flib-translating-dictionaries-description" },
+          },
+          {
+            type = "frame",
+            name = "pane",
+            style = "inside_shallow_frame_with_padding",
+            --- @diagnostic disable-next-line: missing-fields
+            style_mods = { top_padding = 8 },
+            direction = "vertical",
+          },
+        })
+      end
+      local pane = window.pane --[[@as LuaGuiElement]]
+      local mod_flow = pane[script.mod_name]
+      if not mod_flow then
+        _, mod_flow = gui.add(pane, {
+          type = "flow",
+          name = script.mod_name,
+          style_mods = { vertical_align = "center", top_margin = 4, horizontal_spacing = 8 },
+          {
+            type = "label",
+            style = "caption_label",
+            --- @diagnostic disable-next-line: missing-fields
+            style_mods = { minimal_width = 130 },
+            caption = { "?", { "mod-name." .. script.mod_name }, script.mod_name },
+            ignored_by_interaction = true,
+          },
+          { type = "empty-widget", style = "flib_horizontal_pusher" },
+          { type = "label", name = "language", style = "bold_label", ignored_by_interaction = true },
+          {
+            type = "progressbar",
+            name = "bar",
+            --- @diagnostic disable-next-line: missing-fields
+            style_mods = { top_margin = 1, width = 100 },
+            ignored_by_interaction = true,
+          },
+          {
+            type = "label",
+            name = "percentage",
+            style = "bold_label",
+            --- @diagnostic disable-next-line: missing-fields
+            style_mods = { width = 24, horizontal_align = "right" },
+            ignored_by_interaction = true,
+          },
+        })
+      end
+      local progress = wip.received_count / data.raw_count
+      mod_flow.language.caption = wip.language
+      mod_flow.bar.value = progress --[[@as double]]
+      mod_flow.percentage.caption = tostring(math.min(math.floor(progress * 100), 99)) .. "%"
+      mod_flow.tooltip =
+        { "", (wip.dict or { "gui.flib-finishing" }), "\n" .. wip.received_count .. " / " .. data.raw_count }
+    else
+      if window then
+        local mod_flow = window.pane[script.mod_name]
+        if mod_flow then
+          mod_flow.destroy()
+        end
+        if #window.pane.children == 0 then
+          window.destroy()
+        end
+      end
+    end
   end
-
-  --- @type LocalisedString
-  local initial_string = { "" }
-  --- @class RawDictionary
-  local self = {
-    -- Indices
-    batch_i = 1,
-    dict_i = 1,
-    total = 1,
-    -- Internal
-    ref = initial_string,
-    --- @type LocalisedString
-    strings = { initial_string },
-    -- Meta
-    name = name,
-  }
-  setmetatable(self, { __index = RawDictionary })
-
-  for key, value in pairs(initial_contents or {}) do
-    self:add(key, value)
-  end
-  raw[name] = { strings = self.strings, keep_untranslated = keep_untranslated }
-
-  return self
 end
 
---- @deprecated Use 'dictionary-lite' instead.
-function flib_dictionary.init()
+--- @param data FlibDictionaryStorage
+--- @return boolean success
+local function request_next_batch(data)
+  local raw = data.raw
+  local wip = data.wip --[[@as DictWipData]]
+  if wip.finished then
+    wip.last_batch_end = nil
+    return false
+  end
+  wip.last_batch_end = { language = wip.language, dict = wip.dict, key = wip.key }
+  local requests, strings = {}, {}
+  for i = 1, game.is_multiplayer() and 5 or 50 do
+    local string
+    repeat
+      wip.key, string = next(raw[wip.dict], wip.key)
+      if not wip.key then
+        wip.dict = next(raw, wip.dict)
+        if not wip.dict then
+          -- We are done!
+          wip.finished = true
+        end
+      end
+    until string or wip.finished
+    if wip.finished then
+      break
+    end
+    local request = { dict = wip.dict, key = wip.key }
+    requests[i] = request
+    strings[i] = string
+  end
+
+  if not requests[1] then
+    return false -- Finished
+  end
+
+  local translator = wip.translator
+  if not translator.valid or not translator.connected or translator.locale ~= wip.language then
+    local new_translator = get_translator(wip.language)
+    if new_translator then
+      wip.translator = new_translator
+    else
+      -- Cancel this translation
+      data.wip = nil
+      return false
+    end
+  end
+
+  local ids = wip.translator.request_translations(strings)
+  if not ids then
+    return false
+  end
+  for i = 1, #ids do
+    wip.requests[ids[i]] = requests[i]
+  end
+  --- @diagnostic disable-next-line: missing-fields
+  wip.request_tick = game.tick
+
+  update_gui(data)
+
+  return true
+end
+
+--- @param data FlibDictionaryStorage
+local function handle_next_language(data)
+  if not next(data.raw) then
+    -- This can happen if handle_next_language is called during on_init or on_configuration_changed
+    return
+  end
+  while not data.wip and #data.to_translate > 0 do
+    local next_language = table.remove(data.to_translate, 1)
+    if next_language then
+      local translator = get_translator(next_language)
+      if translator then
+        -- Start translation
+        local dicts = {}
+        for name in pairs(data.raw) do
+          dicts[name] = {}
+        end
+        --- @type DictWipData
+        data.wip = {
+          dict = next(data.raw),
+          dicts = dicts,
+          finished = false,
+          --- @type string?
+          key = nil,
+          language = next_language,
+          received_count = 0,
+          --- @type table<uint, DictTranslationRequest>
+          requests = {},
+          request_tick = 0,
+          translator = translator,
+        }
+        request_next_batch(data)
+      end
+    end
+  end
+end
+
+-- Events
+
+flib_dictionary.on_player_dictionaries_ready = script.generate_event_name()
+--- Called when a player's dictionaries are ready to be used. Handling this event is not required.
+--- @class EventData.on_player_dictionaries_ready: EventData
+--- @field player_index uint
+
+-- Lifecycle handlers
+
+function flib_dictionary.on_init()
   if not storage.__flib then
     storage.__flib = {}
   end
+  --- @type FlibDictionaryStorage
   storage.__flib.dictionary = {
-    in_process = {},
-    players = {},
-    raw = { _total_strings = 0 },
+    init_ran = false,
+    player_language_requests = {},
+    player_languages = {},
+    raw = {},
+    raw_count = 0,
+    to_translate = {},
     translated = {},
+    wip = nil,
   }
-  if use_local_storage then
-    raw = { _total_strings = 0 }
-  else
-    raw = storage.__flib.dictionary.raw
+  for player_index, player in pairs(game.players) do
+    if player.connected then
+      flib_dictionary.on_player_joined_game({
+        name = defines.events.on_player_joined_game,
+        tick = game.tick,
+        --- @cast player_index uint
+        player_index = player_index,
+      })
+    end
   end
 end
 
---- @deprecated Use 'dictionary-lite' instead.
-function flib_dictionary.load()
-  if not use_local_storage and storage.__flib and storage.__flib.dictionary then
-    raw = storage.__flib.dictionary.raw
-  end
-end
+flib_dictionary.on_configuration_changed = flib_dictionary.on_init
 
---- @deprecated Use 'dictionary-lite' instead.
-function flib_dictionary.translate(player)
-  if not player.connected then
-    error("Player must be connected to the game before this function can be called!")
+function flib_dictionary.on_tick()
+  local data = get_data()
+  if not data.init_ran then
+    data.init_ran = true
   end
 
-  local player_data = storage.__flib.dictionary.players[player.index]
-  if player_data then
+  handle_next_language(data)
+
+  local wip = data.wip
+  if not wip then
     return
   end
-  storage.__flib.dictionary.players[player.index] = {
-    player = player,
-    status = "get_language",
-    requested_tick = game.tick,
-  }
 
-  player.request_translation({ "", "FLIB_LOCALE_IDENTIFIER", separator, { "locale-identifier" } })
-end
-
-local function request_translation(player_data)
-  local string = raw[player_data.dictionary].strings[player_data.i]
-
-  -- We use `while` instead of `if` here just in case a dictionary doesn't have any strings in it
-  while not string do
-    local next_dictionary = next(raw, player_data.dictionary)
-    if next_dictionary then
-      -- Set the next dictionary and reset index
-      player_data.dictionary = next_dictionary
-      player_data.i = 1
-      string = raw[next_dictionary].strings[1]
-    else
-      -- We're done!
-      player_data.status = "finished"
-      return
+  if game.tick - wip.request_tick > request_timeout_ticks then
+    local request = wip.last_batch_end
+    if not request then
+      -- TODO: Remove WIP because we actually finished somehow? This should never happen I think
+      error("We're screwed")
     end
-  end
-
-  player_data.player.request_translation({
-    "",
-    key_value("FLIB_DICTIONARY_MOD", script.mod_name),
-    key_value("FLIB_DICTIONARY_NAME", player_data.dictionary),
-    key_value("FLIB_DICTIONARY_LANGUAGE", player_data.language),
-    key_value("FLIB_DICTIONARY_STRING_INDEX", player_data.i),
-    string,
-  })
-
-  player_data.requested_tick = game.tick
-end
-
---- @deprecated Use 'dictionary-lite' instead.
-function flib_dictionary.check_skipped()
-  local script_data = storage.__flib.dictionary
-  local tick = game.tick
-  for _, player_data in pairs(script_data.players) do
-    -- If it's been longer than the timeout, request the string again
-    -- This is to solve a very rare edge case where translations requested on the same tick that a singleplayer game
-    -- is saved will not be returned when that save is loaded
-    if (player_data.requested_tick or 0) + translation_timeout <= tick then
-      if player_data.status == "get_language" then
-        player_data.player.request_translation({ "", "FLIB_LOCALE_IDENTIFIER", separator, { "locale-identifier" } })
-      end
-      if player_data.status == "translating" then
-        request_translation(player_data)
-      end
-    end
+    wip.dict = request.dict
+    wip.finished = false
+    wip.key = request.key
+    wip.requests = {}
+    request_next_batch(data)
+    update_gui(data)
   end
 end
 
---- Escape match special characters
-local function match_literal(s)
-  return string.gsub(s, "%-", "%%-")
-end
+--- @param e EventData.on_string_translated
+function flib_dictionary.on_string_translated(e)
+  local data = get_data()
+  local id = e.id
 
---- @param dict_lang string
-local function clean_gui(dict_lang)
-  for _, player in pairs(game.players) do
-    local window = mod_gui.get_frame_flow(player).flib_translation_progress
-    if window then
-      local pane = window.pane
-      local mod_flow = pane[script.mod_name]
-      if mod_flow then
-        local lang_flow = mod_flow[dict_lang]
-        if lang_flow then
-          lang_flow.destroy()
-        end
-        if #mod_flow.children == 1 then
-          mod_flow.destroy()
-        end
-      end
-      if #pane.children == 0 then
-        window.destroy()
-      end
-    end
-  end
-end
+  handle_next_language(data)
 
-local dictionary_match_string = key_value("^FLIB_DICTIONARY_MOD", match_literal(script.mod_name))
-  .. key_value("FLIB_DICTIONARY_NAME", "(.-)")
-  .. key_value("FLIB_DICTIONARY_LANGUAGE", "(.-)")
-  .. key_value("FLIB_DICTIONARY_STRING_INDEX", "(%d-)")
-  .. "(.*)$"
-
---- @deprecated Use 'dictionary-lite' instead.
-function flib_dictionary.process_translation(event_data)
-  if not event_data.translated then
+  local wip = data.wip
+  if not wip then
     return
   end
-  local script_data = storage.__flib.dictionary
-  if string.find(event_data.result, "FLIB_DICTIONARY_NAME") then
-    local _, _, dict_name, dict_lang, string_index, translation =
-      string.find(event_data.result, dictionary_match_string)
 
-    if dict_name and dict_lang and string_index and translation then
-      local language_data = script_data.in_process[dict_lang]
-      -- In some cases, this can fire before on_configuration_changed
-      if not language_data then
-        return
-      end
-      local dictionary = language_data.dictionaries[dict_name]
-      if not dictionary then
-        return
-      end
-      local dict_data = raw[dict_name]
-      local player_data = script_data.players[event_data.player_index]
+  local request = wip.requests[id]
+  if request then
+    wip.requests[id] = nil
+    wip.received_count = wip.received_count + 1
+    if e.translated then
+      wip.dicts[request.dict][request.key] = e.result
+    end
+  end
 
-      -- If this number does not match, this is a duplicate, so ignore it
-      if tonumber(string_index) == player_data.i then
-        -- Extract current string's translations
-        for str in string.gmatch(translation, "(.-)" .. separator) do
-          local _, _, key, value = string.find(str, "^(.-)" .. inner_separator .. "(.-)$")
-          if key then
-            -- If `keep_untranslated` is true, then use the key as the value if it failed
-            local failed = string.find(value, "FLIB_TRANSLATION_FAILED")
-            if failed and dict_data.keep_untranslated then
-              value = key
-            elseif failed then
-              value = nil
-            end
-            if value then
-              dictionary[key] = value
-            end
-            language_data.translated_i = language_data.translated_i + 1
-          end
-        end
-
-        -- Request next translation
-        player_data.i = player_data.i + 1
-        request_translation(player_data)
-
-        -- GUI
-        for _, player in pairs(game.players) do
-          --- @type LuaGuiElement
-          local flow = mod_gui.get_frame_flow(player)
-          if not flow.flib_translation_progress then
-            gui.add(flow, {
-              type = "frame",
-              name = "flib_translation_progress",
-              style = mod_gui.frame_style,
-              style_mods = { width = 350 },
-              direction = "vertical",
-              {
-                type = "label",
-                style = "frame_title",
-                caption = { "gui.flib-translating-dictionaries" },
-                tooltip = { "gui.flib-translating-dictionaries-description" },
-              },
-              {
-                type = "frame",
-                name = "pane",
-                style = "inside_shallow_frame_with_padding",
-                style_mods = { top_padding = 8 },
-                direction = "vertical",
-              },
-            })
-          end
-          local pane = flow.flib_translation_progress.pane --[[@as LuaGuiElement]]
-          if not pane[script.mod_name] then
-            gui.add(pane, {
-              type = "flow",
-              name = script.mod_name,
-              direction = "vertical",
-              { type = "label", style = "caption_label", style_mods = { top_margin = 4 }, caption = script.mod_name },
-            })
-          end
-          local mod_flow = pane[script.mod_name] --[[@as LuaGuiElement]]
-          if not mod_flow[dict_lang] then
-            gui.add(mod_flow, {
-              type = "flow",
-              name = dict_lang,
-              style_mods = { vertical_align = "center", horizontal_spacing = 8 },
-              { type = "label", style = "bold_label", caption = dict_lang },
-              { type = "progressbar", name = "bar", style_mods = { horizontally_stretchable = true } },
-              { type = "label", name = "label", style = "bold_label" },
-            })
-          end
-          local progress = language_data.translated_i / raw._total_strings
-          mod_flow[dict_lang].bar.value = progress --[[@as double]]
-          mod_flow[dict_lang].label.caption = tostring(math.ceil(progress * 100)) .. "%"
-          mod_flow[dict_lang].label.tooltip = dict_name
-            .. "\n"
-            .. language_data.translated_i
-            .. " / "
-            .. raw._total_strings
-        end
-
-        if player_data.status == "finished" then
-          -- Clean up translation data
-          script_data.translated[dict_lang] = language_data.dictionaries
-          script_data.in_process[dict_lang] = nil
-          for _, player_index in pairs(language_data.players) do
-            script_data.players[player_index] = nil
-          end
-
-          -- Clean up GUI
-          clean_gui(dict_lang)
-
-          return { dictionaries = language_data.dictionaries, language = dict_lang, players = language_data.players }
+  while wip and not next(wip.requests) and not request_next_batch(data) do
+    if wip.finished then
+      data.translated[wip.language] = wip.dicts
+      data.wip = nil
+      for player_index, player in pairs(game.players) do
+        if player.locale == wip.language then
+          script.raise_event(flib_dictionary.on_player_dictionaries_ready, { player_index = player_index })
         end
       end
     end
-  elseif string.find(event_data.result, "^FLIB_LOCALE_IDENTIFIER") then
-    local _, _, language = string.find(event_data.result, "^FLIB_LOCALE_IDENTIFIER" .. separator .. "(.*)$")
-    if language then
-      local player_data = script_data.players[event_data.player_index]
-      -- Handle duplicates
-      if not player_data or player_data.status ~= "get_language" then
-        return
-      end
+    handle_next_language(data)
+    update_gui(data)
+    wip = data.wip
+  end
+end
 
-      player_data.language = language
+--- @param e EventData.on_player_joined_game
+function flib_dictionary.on_player_joined_game(e)
+  local player = game.get_player(e.player_index) --- @unwrap
+  if not player then
+    return
+  end
+  local language = player.locale
+  local data = get_data()
+  if data.translated[language] then
+    script.raise_event(flib_dictionary.on_player_dictionaries_ready, { player_index = e.player_index })
+    return
+  elseif data.wip and data.wip.language == language then
+    return
+  elseif table.find(data.to_translate, language) then
+    return
+  end
+  table.insert(data.to_translate, language)
+  handle_next_language(data)
+  update_gui(data)
+end
 
-      -- Check if this language is already translated or being translated
-      local dictionaries = script_data.translated[language]
-      if dictionaries then
-        script_data.players[event_data.player_index] = nil
-        return { dictionaries = dictionaries, language = language, players = { event_data.player_index } }
-      end
-      local in_process = script_data.in_process[language]
-      if in_process then
-        table.insert(in_process.players, event_data.player_index)
-        player_data.status = "waiting"
-        return
-      end
+flib_dictionary.on_player_locale_changed = flib_dictionary.on_player_joined_game
 
-      -- Set up player data for translating
-      player_data.status = "translating"
-      player_data.dictionary = next(raw, "_total_strings")
-      player_data.i = 1
-
-      -- Add language to in process data
-      script_data.in_process[language] = {
-        dictionaries = table.map(raw, function(_, k)
-          if k ~= "_total_strings" then
-            return {}
-          end
-        end),
-        players = { event_data.player_index },
-        translated_i = 0,
-      }
-
-      -- Start translating
-      request_translation(player_data)
+--- Handle all non-bootstrap events with default event handlers. Will not overwrite any existing handlers. If you have
+--- custom handlers for on_tick, on_string_translated, or on_player_joined_game, ensure that you call the corresponding
+--- module lifecycle handler..
+function flib_dictionary.handle_events()
+  for id, handler in pairs({
+    [defines.events.on_tick] = flib_dictionary.on_tick,
+    [defines.events.on_string_translated] = flib_dictionary.on_string_translated,
+    [defines.events.on_player_joined_game] = flib_dictionary.on_player_joined_game,
+  }) do
+    if
+      not script.get_event_handler(id --[[@as uint]])
+    then
+      script.on_event(id, handler)
     end
   end
 end
 
---- @deprecated Use 'dictionary-lite' instead.
-function flib_dictionary.cancel_translation(player_index)
-  local script_data = storage.__flib.dictionary
-  local player_data = script_data.players[player_index]
-  if not player_data then
-    return
-  end
-  -- Delete this player's data from global
-  script_data.players[player_index] = nil
+--- For use with `__core__/lualib/event_handler`. Pass `flib_dictionary` into `handler.add_lib` to
+--- handle all relevant events automatically.
+flib_dictionary.events = {
+  [defines.events.on_player_joined_game] = flib_dictionary.on_player_joined_game,
+  [defines.events.on_player_locale_changed] = flib_dictionary.on_player_locale_changed,
+  [defines.events.on_string_translated] = flib_dictionary.on_string_translated,
+  [defines.events.on_tick] = flib_dictionary.on_tick,
+}
 
-  local in_process = script_data.in_process[player_data.language]
-  if not in_process then
-    return
-  end
+-- Dictionary creation
 
-  -- Remove this player from the players table
-  local i = table.find(in_process.players, player_index)
-  if i then
-    table.remove(in_process.players, i)
+--- Create a new dictionary. The name must be unique.
+--- @param name string
+--- @param initial_strings Dictionary?
+function flib_dictionary.new(name, initial_strings)
+  local data = get_data(true)
+  local raw = data.raw
+  if raw[name] then
+    error("Attempted to create dictionary '" .. name .. "' twice.")
   end
-
-  if player_data.status ~= "translating" then
-    return
+  raw[name] = initial_strings or {}
+  if initial_strings then
+    data.raw_count = data.raw_count + table_size(initial_strings)
   end
-
-  -- Find the next player in the list with valid data
-  local next_player_data
-  for _, player_index in pairs(in_process.players) do
-    local player_data = script_data.players[player_index]
-    if player_data then
-      next_player_data = player_data
-      break
-    end
-  end
-  -- If there are no more valid players
-  if not next_player_data then
-    -- Completely cancel the translation
-    script_data.in_process[player_data.language] = nil
-    clean_gui(player_data.language)
-    return
-  end
-  --Update player info
-  next_player_data.status = "translating"
-  next_player_data.dictionary = player_data.dictionary
-  next_player_data.i = player_data.i
-  -- Resume translating with the new player
-  request_translation(next_player_data)
 end
 
---- @deprecated Use 'dictionary-lite' instead.
-function flib_dictionary.set_use_local_storage(value)
-  use_local_storage = value
+--- Add the given string to the dictionary.
+--- @param dict_name string
+--- @param key string
+--- @param localised LocalisedString
+function flib_dictionary.add(dict_name, key, localised)
+  local data = get_data(true)
+  local raw = data.raw[dict_name]
+  if not raw then
+    error("Dictionary '" .. dict_name .. "' does not exist.")
+  end
+  if not raw[key] then
+    data.raw_count = data.raw_count + 1
+  end
+  raw[key] = localised
 end
+
+--- Get all dictionaries for the player. Will return `nil` if the player's language has not finished translating.
+--- @param player_index uint
+--- @return table<string, TranslatedDictionary>?
+function flib_dictionary.get_all(player_index)
+  local player = game.get_player(player_index)
+  if not player then
+    return
+  end
+  return get_data().translated[player.locale]
+end
+
+--- Get the specified dictionary for the player. Will return `nil` if the dictionary has not finished translating.
+--- @param player_index uint
+--- @param dict_name string
+--- @return TranslatedDictionary?
+function flib_dictionary.get(player_index, dict_name)
+  local data = get_data()
+  if not data.raw[dict_name] then
+    error("Dictionary '" .. dict_name .. "' does not exist.")
+  end
+  local language_dicts = flib_dictionary.get_all(player_index) or {}
+  return language_dicts[dict_name]
+end
+
+--- @class DictLangRequest
+--- @field player LuaPlayer
+--- @field tick uint
+
+--- @class DictTranslationRequest
+--- @field language string
+--- @field dict string
+--- @field key string
+
+--- Localised strings identified by an internal key. Keys must be unique and language-agnostic.
+--- @alias Dictionary table<string, LocalisedString>
+
+--- Translations are identified by their internal key. If the translation failed, then it will not be present. Locale
+--- fallback groups can be used if every key needs a guaranteed translation.
+--- @alias TranslatedDictionary table<string, string>
 
 return flib_dictionary
