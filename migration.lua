@@ -123,16 +123,16 @@ return flib_migration
 --- ```lua
 --- {
 ---   ["1.0.1"] = function()
----     global.foo = nil
----     for _, player_table in pairs(global.players) do
+---     storage.foo = nil
+---     for _, player_table in pairs(storage.players) do
 ---       player_table.bar = "Lorem ipsum"
 ---     end
 ---   end,
 ---   ["1.0.7"] = function()
----     global.bar = {}
+---     storage.bar = {}
 ---   end
 ---   ["1.1.0"] = function(arg)
----     global.foo = arg
+---     storage.foo = arg
 ---   end
 --- }
 --- ```

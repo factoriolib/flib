@@ -81,10 +81,10 @@ end
 
 --- @deprecated Use 'dictionary-lite' instead.
 function flib_dictionary.init()
-  if not global.__flib then
-    global.__flib = {}
+  if not storage.__flib then
+    storage.__flib = {}
   end
-  global.__flib.dictionary = {
+  storage.__flib.dictionary = {
     in_process = {},
     players = {},
     raw = { _total_strings = 0 },
@@ -93,14 +93,14 @@ function flib_dictionary.init()
   if use_local_storage then
     raw = { _total_strings = 0 }
   else
-    raw = global.__flib.dictionary.raw
+    raw = storage.__flib.dictionary.raw
   end
 end
 
 --- @deprecated Use 'dictionary-lite' instead.
 function flib_dictionary.load()
-  if not use_local_storage and global.__flib and global.__flib.dictionary then
-    raw = global.__flib.dictionary.raw
+  if not use_local_storage and storage.__flib and storage.__flib.dictionary then
+    raw = storage.__flib.dictionary.raw
   end
 end
 
@@ -110,11 +110,11 @@ function flib_dictionary.translate(player)
     error("Player must be connected to the game before this function can be called!")
   end
 
-  local player_data = global.__flib.dictionary.players[player.index]
+  local player_data = storage.__flib.dictionary.players[player.index]
   if player_data then
     return
   end
-  global.__flib.dictionary.players[player.index] = {
+  storage.__flib.dictionary.players[player.index] = {
     player = player,
     status = "get_language",
     requested_tick = game.tick,
@@ -155,7 +155,7 @@ end
 
 --- @deprecated Use 'dictionary-lite' instead.
 function flib_dictionary.check_skipped()
-  local script_data = global.__flib.dictionary
+  local script_data = storage.__flib.dictionary
   local tick = game.tick
   for _, player_data in pairs(script_data.players) do
     -- If it's been longer than the timeout, request the string again
@@ -211,7 +211,7 @@ function flib_dictionary.process_translation(event_data)
   if not event_data.translated then
     return
   end
-  local script_data = global.__flib.dictionary
+  local script_data = storage.__flib.dictionary
   if string.find(event_data.result, "FLIB_DICTIONARY_NAME") then
     local _, _, dict_name, dict_lang, string_index, translation =
       string.find(event_data.result, dictionary_match_string)
@@ -372,7 +372,7 @@ end
 
 --- @deprecated Use 'dictionary-lite' instead.
 function flib_dictionary.cancel_translation(player_index)
-  local script_data = global.__flib.dictionary
+  local script_data = storage.__flib.dictionary
   local player_data = script_data.players[player_index]
   if not player_data then
     return

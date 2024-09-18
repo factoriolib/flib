@@ -6,7 +6,7 @@ local gui = require("__flib__.gui-lite")
 local mod_gui = require("__core__.lualib.mod-gui")
 local table = require("__flib__.table")
 
---- @class FlibDictionaryGlobal
+--- @class FlibDictionaryStorage
 --- @field init_ran boolean
 --- @field raw table<string, Dictionary>
 --- @field raw_count integer
@@ -36,12 +36,12 @@ local flib_dictionary = {}
 local request_timeout_ticks = (60 * 5)
 
 --- @param init_only boolean?
---- @return FlibDictionaryGlobal
+--- @return FlibDictionaryStorage
 local function get_data(init_only)
-  if not global.__flib or not global.__flib.dictionary then
+  if not storage.__flib or not storage.__flib.dictionary then
     error("Dictionary module was not properly initialized - ensure that all lifecycle events are handled.")
   end
-  local data = global.__flib.dictionary
+  local data = storage.__flib.dictionary
   if init_only and data.init_ran then
     error("Dictionaries cannot be modified after initialization.")
   end
@@ -58,7 +58,7 @@ local function get_translator(language)
   end
 end
 
---- @param data FlibDictionaryGlobal
+--- @param data FlibDictionaryStorage
 local function update_gui(data)
   local wip = data.wip
   for _, player in pairs(game.players) do
@@ -141,7 +141,7 @@ local function update_gui(data)
   end
 end
 
---- @param data FlibDictionaryGlobal
+--- @param data FlibDictionaryStorage
 --- @return boolean success
 local function request_next_batch(data)
   local raw = data.raw
@@ -203,7 +203,7 @@ local function request_next_batch(data)
   return true
 end
 
---- @param data FlibDictionaryGlobal
+--- @param data FlibDictionaryStorage
 local function handle_next_language(data)
   if not next(data.raw) then
     -- This can happen if handle_next_language is called during on_init or on_configuration_changed
@@ -249,12 +249,11 @@ flib_dictionary.on_player_dictionaries_ready = script.generate_event_name()
 -- Lifecycle handlers
 
 function flib_dictionary.on_init()
-  -- Initialize global data
-  if not global.__flib then
-    global.__flib = {}
+  if not storage.__flib then
+    storage.__flib = {}
   end
-  --- @type FlibDictionaryGlobal
-  global.__flib.dictionary = {
+  --- @type FlibDictionaryStorage
+  storage.__flib.dictionary = {
     init_ran = false,
     player_language_requests = {},
     player_languages = {},
@@ -264,7 +263,6 @@ function flib_dictionary.on_init()
     translated = {},
     wip = nil,
   }
-  -- Initialize all existing players
   for player_index, player in pairs(game.players) do
     if player.connected then
       flib_dictionary.on_player_joined_game({

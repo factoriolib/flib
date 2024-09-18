@@ -168,7 +168,7 @@ function gui.build(player)
   player.opened = elems.flib_todo_window
 
   --- @type FlibTestGui
-  global.guis[player.index] = {
+  storage.guis[player.index] = {
     elems = elems,
     player = player,
     -- State variables
@@ -321,7 +321,7 @@ end
 -- The second argument is an optional wrapper function that will be called in lieu of the specified handler of an
 -- element. It is used in this case to get the GUI table for the corresponding player before calling the handler.
 flib_gui.add_handlers(gui, function(e, handler)
-  local self = global.guis[e.player_index]
+  local self = storage.guis[e.player_index]
   if self then
     handler(self, e)
   end
@@ -336,7 +336,7 @@ flib_gui.handle_events()
 
 -- Initalize guis table
 script.on_init(function()
-  global.guis = {}
+  storage.guis = {}
 end)
 
 -- Create the GUI when a player is created
@@ -354,5 +354,5 @@ script.on_event(defines.events.on_player_created, function(e)
 end)
 
 -- For a real mod, you would also want to handle on_configuration_changed to rebuild your GUIs, and on_player_removed
--- to remove the GUI table from global. You would also want to ensure that the GUI is valid before running methods.
+-- to remove the GUI table from storage. You would also want to ensure that the GUI is valid before running methods.
 -- For the sake of brevity, these things were not covered in this demo.

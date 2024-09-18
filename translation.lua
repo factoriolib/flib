@@ -15,10 +15,10 @@ local type = type
 
 --- @deprecated use `dictionary` instead
 function flib_translation.init()
-  if not global.__flib then
-    global.__flib = {}
+  if not storage.__flib then
+    storage.__flib = {}
   end
-  global.__flib.translation = {
+  storage.__flib.translation = {
     players = {},
     translating_players_count = 0,
   }
@@ -26,7 +26,7 @@ end
 
 --- @deprecated use `dictionary` instead
 function flib_translation.iterate_batch(event_data)
-  local __translation = global.__flib.translation
+  local __translation = storage.__flib.translation
   if __translation.translating_players_count == 0 then
     return
   end
@@ -108,7 +108,7 @@ end
 
 --- @deprecated use `dictionary` instead
 function flib_translation.process_result(event_data)
-  local __translation = global.__flib.translation
+  local __translation = storage.__flib.translation
   if __translation.translating_players_count == 0 then
     return
   end
@@ -140,7 +140,7 @@ end
 
 --- @deprecated use `dictionary` instead
 function flib_translation.add_requests(player_index, strings)
-  local __translation = global.__flib.translation
+  local __translation = storage.__flib.translation
   local player_table = __translation.players[player_index]
   if player_table then
     player_table.state = "sort"
@@ -179,7 +179,7 @@ end
 
 --- @deprecated use `dictionary` instead
 function flib_translation.cancel(player_index)
-  local __translation = global.__flib.translation
+  local __translation = storage.__flib.translation
   local player_table = __translation.players[player_index]
   if not player_table then
     log("Tried to cancel translations for player [" .. player_index .. "] when no translations were running!")
@@ -191,12 +191,12 @@ end
 
 --- @deprecated use `dictionary` instead
 function flib_translation.is_translating(player_index)
-  return global.__flib.translation.players[player_index] and true or false
+  return storage.__flib.translation.players[player_index] and true or false
 end
 
 --- @deprecated use `dictionary` instead
 function flib_translation.translating_players_count()
-  return global.__flib.translation.translating_players_count
+  return storage.__flib.translation.translating_players_count
 end
 
 --- @deprecated use `dictionary` instead
