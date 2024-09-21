@@ -121,23 +121,18 @@ end
 --- @return T
 function flib_table.deep_copy(tbl)
   local lookup_table = {}
-  local function _copy(object)
-    if type(object) ~= "table" then
-      return object
-      -- don't copy factorio rich objects
-    elseif object.__self then
-      return object
-    elseif lookup_table[object] then
-      return lookup_table[object]
+  local function _copy(tbl)
+    if type(tbl) ~= "table" then
+      return tbl
+    elseif lookup_table[tbl] then
+      return lookup_table[tbl]
     end
-
     local new_table = {}
-    lookup_table[object] = new_table
-    for index, value in pairs(object) do
+    lookup_table[tbl] = new_table
+    for index, value in pairs(tbl) do
       new_table[_copy(index)] = _copy(value)
     end
-
-    return setmetatable(new_table, getmetatable(object))
+    return setmetatable(new_table, getmetatable(tbl))
   end
   return _copy(tbl)
 end
