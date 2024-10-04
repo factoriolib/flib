@@ -2,6 +2,8 @@
 Version: 0.15.0
 Date: ????
   Changes:
+    - Updated to Factorio 2.0.
+    - Removed `flib_direction.north` etc. constants. Use `defines.direction` instead.
 ---------------------------------------------------------------------------------------------------
 Version: 0.14.2
 Date: 2024-07-28
