@@ -1,6 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.15.0
 Date: ????
+  Features:
+    - Added support for ronna and quetta SI prefixes to `flib_format.number`.
   Changes:
     - Updated to Factorio 2.0.
     - Removed `flib_direction.north` etc. constants. Use `defines.direction` instead.

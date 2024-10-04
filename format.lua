@@ -10,6 +10,8 @@ end
 local flib_format = {}
 
 local suffix_list = {
+  { "Q", 1e30 }, -- quetta
+  { "R", 1e27 }, -- ronna
   { "Y", 1e24 }, -- yotta
   { "Z", 1e21 }, -- zetta
   { "E", 1e18 }, -- exa
