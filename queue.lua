@@ -133,17 +133,4 @@ function flib_queue.length(self)
   return math.abs(self.last - self.first + 1)
 end
 
---- @deprecated Use `flib_queue.push_front` instead
-flib_queue.push_left = flib_queue.push_front
---- @deprecated Use `flib_queue.push_back` instead
-flib_queue.push_right = flib_queue.push_back
---- @deprecated Use `flib_queue.pop_front` instead
-flib_queue.pop_left = flib_queue.pop_front
---- @deprecated Use `flib_queue.pop_back` instead
-flib_queue.pop_right = flib_queue.pop_back
---- @deprecated Use `flib_queue.iter` instead
-flib_queue.iter_left = flib_queue.iter
---- @deprecated Use `flib_queue.iter_rev` instead
-flib_queue.iter_right = flib_queue.iter_rev
-
 return flib_queue

@@ -469,9 +469,6 @@ function flib_table.reduce(tbl, reducer, initial_value)
   return accumulator
 end
 
---- @deprecated use `table.remove`.
-flib_table.retrieve = flib_table.remove
-
 --- Shallowly copy the contents of a table into a new table.
 ---
 --- The parent table will have a new table reference, but any subtables within it will still have the same table
