@@ -11,17 +11,17 @@ end
 --- @class flib_queue
 local flib_queue = {}
 
----@class Queue<T>: { [integer]: T, first: integer, last: integer }
+---@class flib.Queue<T>: { [integer]: T, first: integer, last: integer }
 
 --- Create a new queue.
---- @return Queue
+--- @return flib.Queue
 function flib_queue.new()
   return { first = 0, last = -1 }
 end
 
 --- Push an element into the front of the queue.
 --- @generic T
---- @param self Queue<T>
+--- @param self flib.Queue<T>
 --- @param value T
 function flib_queue.push_front(self, value)
   local first = self.first - 1
@@ -31,7 +31,7 @@ end
 
 --- Push an element into the back of the queue.
 --- @generic T
---- @param self Queue<T>
+--- @param self flib.Queue<T>
 --- @param value `T`
 function flib_queue.push_back(self, value)
   local last = self.last + 1
@@ -41,7 +41,7 @@ end
 
 --- Retrieve an element from the front of the queue.
 --- @generic T
---- @param self Queue<T>
+--- @param self flib.Queue<T>
 --- @return T?
 function flib_queue.pop_front(self)
   local first = self.first
@@ -56,7 +56,7 @@ end
 
 --- Retrieve an element from the back of the queue.
 --- @generic T
---- @param self Queue<T>
+--- @param self flib.Queue<T>
 --- @return T?
 function flib_queue.pop_back(self)
   local last = self.last
@@ -85,8 +85,8 @@ end
 --- end
 --- ```
 --- @generic T
---- @param self Queue<T>
---- @return fun(self: Queue<T>, index: integer): T
+--- @param self flib.Queue<T>
+--- @return fun(self: flib.Queue<T>, index: integer): T
 function flib_queue.iter(self)
   local i = self.first - 1
   return function()
@@ -113,8 +113,8 @@ end
 --- end
 --- ```
 --- @generic T
---- @param self Queue<T>
---- @return fun(self: Queue<T>, index: integer): T
+--- @param self flib.Queue<T>
+--- @return fun(self: flib.Queue<T>, index: integer): T
 function flib_queue.iter_rev(self)
   local i = self.last + 1
   return function()
@@ -127,7 +127,7 @@ end
 
 --- Get the length of the queue.
 --- @generic T
---- @param self Queue<T>
+--- @param self flib.Queue<T>
 --- @return number
 function flib_queue.length(self)
   return math.abs(self.last - self.first + 1)

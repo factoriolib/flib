@@ -6,23 +6,23 @@ local gui = require("__flib__.gui")
 local mod_gui = require("__core__.lualib.mod-gui")
 local table = require("__flib__.table")
 
---- @class FlibDictionaryStorage
+--- @class flib.DictionaryStorage
 --- @field init_ran boolean
---- @field raw table<string, Dictionary>
+--- @field raw table<string, flib.Dictionary>
 --- @field raw_count integer
 --- @field to_translate string[]
---- @field translated table<string, table<string, TranslatedDictionary>?>
---- @field wip DictWipData?
+--- @field translated table<string, table<string, flib.TranslatedDictionary>?>
+--- @field wip flib.DictionaryWipData?
 
---- @class DictWipData
+--- @class flib.DictionaryWipData
 --- @field dict string
 --- @field dicts table<string, RawDictionary>
 --- @field finished boolean
 --- @field key string?
---- @field last_batch_end DictTranslationRequest?
+--- @field last_batch_end flib.DictionaryTranslationRequest?
 --- @field language string
 --- @field received_count integer
---- @field requests table<uint, DictTranslationRequest>
+--- @field requests table<uint, flib.DictionaryTranslationRequest>
 --- @field request_tick uint
 --- @field translator LuaPlayer
 
@@ -36,7 +36,7 @@ local flib_dictionary = {}
 local request_timeout_ticks = (60 * 5)
 
 --- @param init_only boolean?
---- @return FlibDictionaryStorage
+--- @return flib.DictionaryStorage
 local function get_data(init_only)
   if not storage.__flib or not storage.__flib.dictionary then
     error("Dictionary module was not properly initialized - ensure that all lifecycle events are handled.")
@@ -58,7 +58,7 @@ local function get_translator(language)
   end
 end
 
---- @param data FlibDictionaryStorage
+--- @param data flib.DictionaryStorage
 local function update_gui(data)
   local wip = data.wip
   for _, player in pairs(game.players) do
@@ -141,11 +141,11 @@ local function update_gui(data)
   end
 end
 
---- @param data FlibDictionaryStorage
+--- @param data flib.DictionaryStorage
 --- @return boolean success
 local function request_next_batch(data)
   local raw = data.raw
-  local wip = data.wip --[[@as DictWipData]]
+  local wip = data.wip --[[@as flib.DictionaryWipData]]
   if wip.finished then
     wip.last_batch_end = nil
     return false
@@ -203,7 +203,7 @@ local function request_next_batch(data)
   return true
 end
 
---- @param data FlibDictionaryStorage
+--- @param data flib.DictionaryStorage
 local function handle_next_language(data)
   if not next(data.raw) then
     -- This can happen if handle_next_language is called during on_init or on_configuration_changed
@@ -219,7 +219,7 @@ local function handle_next_language(data)
         for name in pairs(data.raw) do
           dicts[name] = {}
         end
-        --- @type DictWipData
+        --- @type flib.DictionaryWipData
         data.wip = {
           dict = next(data.raw),
           dicts = dicts,
@@ -228,7 +228,7 @@ local function handle_next_language(data)
           key = nil,
           language = next_language,
           received_count = 0,
-          --- @type table<uint, DictTranslationRequest>
+          --- @type table<uint, flib.DictionaryTranslationRequest>
           requests = {},
           request_tick = 0,
           translator = translator,
@@ -243,7 +243,7 @@ end
 
 flib_dictionary.on_player_dictionaries_ready = script.generate_event_name()
 --- Called when a player's dictionaries are ready to be used. Handling this event is not required.
---- @class EventData.on_player_dictionaries_ready: EventData
+--- @class flib.on_player_dictionaries_ready: EventData
 --- @field player_index uint
 
 -- Lifecycle handlers
@@ -252,7 +252,7 @@ function flib_dictionary.on_init()
   if not storage.__flib then
     storage.__flib = {}
   end
-  --- @type FlibDictionaryStorage
+  --- @type flib.DictionaryStorage
   storage.__flib.dictionary = {
     init_ran = false,
     player_language_requests = {},
@@ -395,7 +395,7 @@ flib_dictionary.events = {
 
 --- Create a new dictionary. The name must be unique.
 --- @param name string
---- @param initial_strings Dictionary?
+--- @param initial_strings flib.Dictionary?
 function flib_dictionary.new(name, initial_strings)
   local data = get_data(true)
   local raw = data.raw
@@ -426,7 +426,7 @@ end
 
 --- Get all dictionaries for the player. Will return `nil` if the player's language has not finished translating.
 --- @param player_index uint
---- @return table<string, TranslatedDictionary>?
+--- @return table<string, flib.TranslatedDictionary>?
 function flib_dictionary.get_all(player_index)
   local player = game.get_player(player_index)
   if not player then
@@ -438,7 +438,7 @@ end
 --- Get the specified dictionary for the player. Will return `nil` if the dictionary has not finished translating.
 --- @param player_index uint
 --- @param dict_name string
---- @return TranslatedDictionary?
+--- @return flib.TranslatedDictionary?
 function flib_dictionary.get(player_index, dict_name)
   local data = get_data()
   if not data.raw[dict_name] then
@@ -448,20 +448,20 @@ function flib_dictionary.get(player_index, dict_name)
   return language_dicts[dict_name]
 end
 
---- @class DictLangRequest
+--- @class flib.DictionaryLanguageRequest
 --- @field player LuaPlayer
 --- @field tick uint
 
---- @class DictTranslationRequest
+--- @class flib.DictionaryTranslationRequest
 --- @field language string
 --- @field dict string
 --- @field key string
 
 --- Localised strings identified by an internal key. Keys must be unique and language-agnostic.
---- @alias Dictionary table<string, LocalisedString>
+--- @alias flib.Dictionary table<string, LocalisedString>
 
 --- Translations are identified by their internal key. If the translation failed, then it will not be present. Locale
 --- fallback groups can be used if every key needs a guaranteed translation.
---- @alias TranslatedDictionary table<string, string>
+--- @alias flib.TranslatedDictionary table<string, string>
 
 return flib_dictionary

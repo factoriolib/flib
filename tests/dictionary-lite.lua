@@ -5,17 +5,17 @@ local flib_dictionary = require("__flib__.dictionary-lite")
 -- of the things I need to search, prefixed by their type (i.e. `fluid/crude-oil`, `item/iron-plate`, etc).
 local function build_dictionaries()
   for type, prototypes in pairs({
-    entity = game.entity_prototypes,
-    equipment = game.equipment_prototypes,
-    equipment_category = game.equipment_category_prototypes,
-    fluid = game.fluid_prototypes,
-    fuel_category = game.fuel_category_prototypes,
-    item = game.item_prototypes,
-    item_group = game.item_group_prototypes,
-    recipe = game.recipe_prototypes,
-    recipe_category = game.recipe_category_prototypes,
-    resource_category = game.resource_category_prototypes,
-    technology = game.technology_prototypes,
+    entity = prototypes.entity,
+    equipment = prototypes.equipment,
+    equipment_category = prototypes.equipment_category,
+    fluid = prototypes.fluid,
+    fuel_category = prototypes.fuel_category,
+    item = prototypes.item,
+    item_group = prototypes.item_group,
+    recipe = prototypes.recipe,
+    recipe_category = prototypes.recipe_category,
+    resource_category = prototypes.resource_category,
+    technology = prototypes.technology,
   }) do
     flib_dictionary.new(type)
     for name, prototype in pairs(prototypes) do
@@ -43,6 +43,7 @@ script.on_configuration_changed(function()
 end)
 
 -- `on_player_dictionaries_ready` is raised when a given player's dictionaries are... ready. Shocking!
+--- @param e flib.on_player_dictionaries_ready
 script.on_event(flib_dictionary.on_player_dictionaries_ready, function(e)
   -- Alternatively, you can get specific dictionaries with `flib_dictionary.get(e.player_index, "item")` et al.
   -- For the aforementioned "search" dictionary, I do not handle this event, and instead call `get()` during my

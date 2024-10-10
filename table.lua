@@ -21,8 +21,8 @@ end
 --- Shallow copy an array's values into a new array.
 ---
 --- This function is optimized specifically for arrays, and should be used in place of `table.shallow_copy` for arrays.
---- @param arr Array
---- @return Array
+--- @param arr flib.Array
+--- @return flib.Array
 function flib_table.array_copy(arr)
   local new_arr = {}
   for i = 1, #arr do
@@ -32,8 +32,8 @@ function flib_table.array_copy(arr)
 end
 
 --- Merge all of the given arrays into a single array.
---- @param arrays Array An array of arrays to merge.
---- @return Array
+--- @param arrays flib.Array An array of arrays to merge.
+--- @return flib.Array
 function flib_table.array_merge(arrays)
   local output = {}
   local i = 0
@@ -154,7 +154,7 @@ end
 --- log(tbl.foo) -- logs "baz"
 --- log(tbl.set) -- logs "3"
 --- ```
---- @param tables Array An array of tables to merge.
+--- @param tables flib.Array An array of tables to merge.
 --- @return table
 function flib_table.deep_merge(tables)
   local output = {}
@@ -413,7 +413,7 @@ end
 ---
 --- This function utilizes [insertion sort](https://en.wikipedia.org/wiki/Insertion_sort), which is _extremely_ inefficient with large data sets. However, you can spread the sorting over multiple ticks, reducing the performance impact. Only use this function if `table.sort` is too slow.
 --- @generic V
---- @param arr Array<V>
+--- @param arr flib.Array<V>
 --- @param from_index number? The index to start iteration at (inclusive). Pass `nil` or a number less than `2` to begin at the start of the array.
 --- @param iterations number The number of iterations to perform. Higher is more performance-heavy. This number should be adjusted based on the performance impact of the custom `comp` function (if any) and the size of the array.
 --- @param comp fun(a: V, b: V) A comparison function for sorting. Must return truthy if `a < b`.
@@ -523,10 +523,10 @@ flib_table.size = _ENV.table_size
 --- log(serpent.line(arr)) -- {10, 20, 30, 40, 50, 60, 70, 80, 90} (unchanged)
 --- ```
 --- @generic V
---- @param arr Array<V>
+--- @param arr flib.Array<V>
 --- @param start number? default: `1`
 --- @param stop number? Stop at this index. If zero or negative, will stop `n` items from the end of the array (default: `#arr`).
---- @return Array<V> A new array with the copied values.
+--- @return flib.Array<V> A new array with the copied values.
 function flib_table.slice(arr, start, stop)
   local output = {}
   local n = #arr
@@ -559,10 +559,10 @@ end
 --- log(serpent.line(arr)) -- {10, 20, 80, 90} (values were removed)
 --- ```
 --- @generic V
---- @param arr Array<V>
+--- @param arr flib.Array<V>
 --- @param start number default: `1`
 --- @param stop number? Stop at this index. If zero or negative, will stop `n` items from the end of the array (default: `#arr`).
---- @return Array<V> A new array with the extracted values.
+--- @return flib.Array<V> A new array with the extracted values.
 function flib_table.splice(arr, start, stop)
   local output = {}
   local n = #arr
@@ -583,6 +583,6 @@ function flib_table.splice(arr, start, stop)
   return output
 end
 
---- @class Array<T>: { [integer]: T }
+--- @class flib.Array<T>: { [integer]: T }
 
 return flib_table

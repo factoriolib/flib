@@ -11,14 +11,14 @@ local flib_gui = {}
 
 local handler_tag_key = "__" .. script.mod_name .. "_handler"
 
---- @type table<GuiElemHandler, string>
+--- @type table<flib.GuiElemHandler, string>
 local handlers = {}
---- @type table<string, GuiElemHandler>
+--- @type table<string, flib.GuiElemHandler>
 local handlers_lookup = {}
 
 --- Add a new child or children to the given GUI element.
 --- @param parent LuaGuiElement
---- @param def GuiElemDef|GuiElemDef[] The element definition, or an array of element definitions.
+--- @param def flib.GuiElemDef|flib.GuiElemDef[] The element definition, or an array of element definitions.
 --- @param elems table<string, LuaGuiElement>? Optional initial `elems` table.
 --- @return table<string, LuaGuiElement> elems Elements with names will be collected into this table.
 --- @return LuaGuiElement first The element that was created first;  the "top level" element.
@@ -129,8 +129,8 @@ end
 --- Add the given handler functions to the registry for use with `flib_gui.add`. Each handler must have a unique name. If a
 --- `wrapper` function is provided, it will be called instead, and will receive the event data and handler. The wrapper
 --- can be used to execute logic or gather data common to all handler functions for this GUI.
---- @param new_handlers table<string, fun(e: GuiEventData)>
---- @param wrapper fun(e: GuiEventData, handler: function)?
+--- @param new_handlers table<string, fun(e: flib.GuiEventData)>
+--- @param wrapper fun(e: flib.GuiEventData, handler: function)?
 --- @param prefix string?
 function flib_gui.add_handlers(new_handlers, wrapper, prefix)
   for name, handler in pairs(new_handlers) do
@@ -155,7 +155,7 @@ end
 
 --- Dispatch the handler associated with this event and GUI element. The handler must have been added using
 --- `flib_gui.add_handlers`.
---- @param e GuiEventData
+--- @param e flib.GuiEventData
 --- @return boolean handled True if an event handler was called.
 function flib_gui.dispatch(e)
   local elem = e.element
@@ -218,7 +218,7 @@ end
 ---
 --- flib_gui.handle_events({ on_button_clicked = on_button_clicked })
 --- ```
---- @param input GuiElemHandler|table<defines.events, GuiElemHandler?>
+--- @param input flib.GuiElemHandler|table<defines.events, flib.GuiElemHandler?>
 --- @param existing Tags?
 --- @return Tags
 function flib_gui.format_handlers(input, existing)
@@ -240,19 +240,19 @@ end
 
 --- A GUI element definition. This extends `LuaGuiElement.add_param` with several new attributes.
 --- Children may be defined in the array portion as an alternative to the `children` subtable.
---- @class GuiElemDef: LuaGuiElement.add_param.button|LuaGuiElement.add_param.camera|LuaGuiElement.add_param.checkbox|LuaGuiElement.add_param.choose_elem_button|LuaGuiElement.add_param.drop_down|LuaGuiElement.add_param.flow|LuaGuiElement.add_param.frame|LuaGuiElement.add_param.line|LuaGuiElement.add_param.list_box|LuaGuiElement.add_param.minimap|LuaGuiElement.add_param.progressbar|LuaGuiElement.add_param.radiobutton|LuaGuiElement.add_param.scroll_pane|LuaGuiElement.add_param.slider|LuaGuiElement.add_param.sprite|LuaGuiElement.add_param.sprite_button|LuaGuiElement.add_param.switch|LuaGuiElement.add_param.tab|LuaGuiElement.add_param.table|LuaGuiElement.add_param.text_box|LuaGuiElement.add_param.textfield
+--- @class flib.GuiElemDef: LuaGuiElement.add_param.button|LuaGuiElement.add_param.camera|LuaGuiElement.add_param.checkbox|LuaGuiElement.add_param.choose_elem_button|LuaGuiElement.add_param.drop_down|LuaGuiElement.add_param.flow|LuaGuiElement.add_param.frame|LuaGuiElement.add_param.line|LuaGuiElement.add_param.list_box|LuaGuiElement.add_param.minimap|LuaGuiElement.add_param.progressbar|LuaGuiElement.add_param.radiobutton|LuaGuiElement.add_param.scroll_pane|LuaGuiElement.add_param.slider|LuaGuiElement.add_param.sprite|LuaGuiElement.add_param.sprite_button|LuaGuiElement.add_param.switch|LuaGuiElement.add_param.tab|LuaGuiElement.add_param.table|LuaGuiElement.add_param.text_box|LuaGuiElement.add_param.textfield
 --- @field style_mods LuaStyle? Modifications to make to the element's style.
 --- @field elem_mods LuaGuiElement? Modifications to make to the element itself.
 --- @field drag_target string? Set the element's drag target to the element whose name matches this string. The drag target must be present in the `elems` table.
---- @field handler (GuiElemHandler|table<defines.events, GuiElemHandler>)? Handler(s) to assign to this element. If assigned to a function, that function will be called for any GUI event on this element.
---- @field children GuiElemDef[]? Children to add to this element.
---- @field tab GuiElemDef? To add a tab, specify `tab` and `content` and leave all other fields unset.
---- @field content GuiElemDef? To add a tab, specify `tab` and `content` and leave all other fields unset.
+--- @field handler (flib.GuiElemHandler|table<defines.events, flib.GuiElemHandler>)? Handler(s) to assign to this element. If assigned to a function, that function will be called for any GUI event on this element.
+--- @field children flib.GuiElemDef[]? Children to add to this element.
+--- @field tab flib.GuiElemDef? To add a tab, specify `tab` and `content` and leave all other fields unset.
+--- @field content flib.GuiElemDef? To add a tab, specify `tab` and `content` and leave all other fields unset.
 
 --- A handler function to invoke when receiving GUI events for this element.
---- @alias GuiElemHandler fun(e: GuiEventData)
+--- @alias flib.GuiElemHandler fun(e: flib.GuiEventData)
 
 --- Aggregate type of all possible GUI events.
---- @alias GuiEventData EventData.on_gui_checked_state_changed|EventData.on_gui_click|EventData.on_gui_closed|EventData.on_gui_confirmed|EventData.on_gui_elem_changed|EventData.on_gui_location_changed|EventData.on_gui_opened|EventData.on_gui_selected_tab_changed|EventData.on_gui_selection_state_changed|EventData.on_gui_switch_state_changed|EventData.on_gui_text_changed|EventData.on_gui_value_changed
+--- @alias flib.GuiEventData EventData.on_gui_checked_state_changed|EventData.on_gui_click|EventData.on_gui_closed|EventData.on_gui_confirmed|EventData.on_gui_elem_changed|EventData.on_gui_location_changed|EventData.on_gui_opened|EventData.on_gui_selected_tab_changed|EventData.on_gui_selection_state_changed|EventData.on_gui_switch_state_changed|EventData.on_gui_text_changed|EventData.on_gui_value_changed
 
 return flib_gui

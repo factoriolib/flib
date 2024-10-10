@@ -6,20 +6,20 @@
 local flib_gui = require("__flib__.gui-lite")
 local mod_gui = require("__core__.lualib.mod-gui")
 
---- @alias FlibTestGuiMode
+--- @alias flib_test.TestGuiMode
 --- | "all"
 --- | "active"
 --- | "completed"
 
---- @class FlibTestGui
+--- @class flib_test.TestGui
 --- @field elems table<string, LuaGuiElement>
 --- @field player LuaPlayer
 --- @field completed_count integer
 --- @field items_left integer
---- @field mode FlibTestGuiMode
+--- @field mode flib_test.TestGuiMode
 --- @field pinned boolean
 
---- @class FlibTestGuiBase
+--- @class flib.TestGuiBase
 local gui = {}
 
 --- @param name string
@@ -167,7 +167,7 @@ function gui.build(player)
   -- In a real mod, you would want to initially hide the GUI and not set opened until the player opens it.
   player.opened = elems.flib_todo_window
 
-  --- @type FlibTestGui
+  --- @type flib_test.TestGui
   storage.guis[player.index] = {
     elems = elems,
     player = player,
@@ -188,10 +188,10 @@ function gui.on_textfield_text_changed(_, e)
   end
 end
 
---- @param self FlibTestGui
+--- @param self flib_test.TestGui
 --- @param e EventData.on_gui_checked_state_changed
 function gui.change_mode(self, e)
-  local mode = e.element.tags.mode --[[@as FlibTestGuiMode]]
+  local mode = e.element.tags.mode --[[@as flib_test.TestGuiMode]]
   self.mode = mode
   self.elems.all_radio.state = mode == "all"
   self.elems.active_radio.state = mode == "active"
@@ -202,7 +202,7 @@ function gui.change_mode(self, e)
   end
 end
 
---- @param self FlibTestGui
+--- @param self flib_test.TestGui
 function gui.clear_completed(self)
   for _, checkbox in pairs(self.elems.todos_flow.children) do
     if checkbox.state then
@@ -213,12 +213,12 @@ function gui.clear_completed(self)
   gui.update_footer(self)
 end
 
---- @param self FlibTestGui
+--- @param self flib_test.TestGui
 function gui.hide(self)
   self.elems.flib_todo_window.visible = false
 end
 
---- @param self FlibTestGui
+--- @param self flib_test.TestGui
 --- @param e EventData.on_gui_checked_state_changed
 function gui.on_todo_toggled(self, e)
   local checkbox = e.element
@@ -237,7 +237,7 @@ function gui.on_todo_toggled(self, e)
   gui.update_footer(self)
 end
 
---- @param self FlibTestGui
+--- @param self flib_test.TestGui
 --- @param e EventData.on_gui_confirmed
 function gui.on_textfield_confirmed(self, e)
   local title = e.element.text
@@ -263,7 +263,7 @@ function gui.on_textfield_confirmed(self, e)
   gui.update_footer(self)
 end
 
---- @param self FlibTestGui
+--- @param self flib_test.TestGui
 function gui.on_window_closed(self)
   -- Don't close when enabling the pin
   if self.pinned then
@@ -272,7 +272,7 @@ function gui.on_window_closed(self)
   gui.hide(self)
 end
 
---- @param self FlibTestGui
+--- @param self flib_test.TestGui
 function gui.show(self)
   self.elems.flib_todo_window.visible = true
   self.elems.textfield.focus()
@@ -281,7 +281,7 @@ function gui.show(self)
   end
 end
 
---- @param self FlibTestGui
+--- @param self flib_test.TestGui
 function gui.toggle_pinned(self)
   -- "Pinning" the GUI will remove it from player.opened, allowing it to coexist with other windows.
   -- I highly recommend implementing this for your GUIs. flib includes the requisite sprites and locale for the button.
@@ -301,7 +301,7 @@ function gui.toggle_pinned(self)
   end
 end
 
---- @param self FlibTestGui
+--- @param self flib_test.TestGui
 function gui.toggle_visible(self)
   if self.elems.flib_todo_window.visible then
     gui.hide(self)
@@ -310,7 +310,7 @@ function gui.toggle_visible(self)
   end
 end
 
---- @param self FlibTestGui
+--- @param self flib_test.TestGui
 function gui.update_footer(self)
   self.elems.count_label.caption = self.items_left .. " items left"
   self.elems.clear_completed_button.enabled = self.completed_count > 0

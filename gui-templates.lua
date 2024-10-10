@@ -14,7 +14,7 @@ local flib_gui_templates = {}
 --- @param technology LuaTechnology
 --- @param level uint
 --- @param research_state TechnologyResearchState
---- @param on_click GuiElemHandler?
+--- @param on_click flib.GuiElemHandler?
 --- @param tags Tags?
 --- @param index uint?
 --- @return LuaGuiElement
