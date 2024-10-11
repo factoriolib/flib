@@ -6,8 +6,8 @@
   "contact": "https://github.com/factoriolib/flib",
   "homepage": "https://github.com/factoriolib/flib",
   "description": "A set of high-quality, commonly-used utilities for creating Factorio mods.",
-  "factorio_version": "1.2",
-  "dependencies": [ "base >= 1.2.0" ],
+  "factorio_version": "2.0",
+  "dependencies": [ "base >= 2.0.0" ],
   "package": {
     "git_publish_branch": "master",
     "ignore": [ "crowdin.yml", "imgui.ini", "stylua.toml", "tests", "graphics/slots.xcf" ],
