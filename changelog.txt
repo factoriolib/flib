@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.15.0
-Date: ????
+Date: 2024-10-14
   Features:
     - Added support for ronna and quetta SI prefixes to `flib_format.number`.
   Changes:
