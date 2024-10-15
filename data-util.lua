@@ -69,7 +69,6 @@ function flib_data_util.create_icons(prototype, new_layers)
       icons[#icons + 1] = {
         icon = v.icon,
         icon_size = v.icon_size or prototype.icon_size,
-        icon_mipmaps = v.icon_mipmaps or prototype.icon_mipmaps or 0,
         tint = v.tint,
         scale = v.scale,
         shift = v.shift,
