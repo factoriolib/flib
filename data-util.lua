@@ -40,7 +40,6 @@ function flib_data_util.copy_prototype(prototype, new_name, remove_icon)
   if remove_icon then
     p.icon = nil
     p.icon_size = nil
-    p.icon_mipmaps = nil
     p.icons = nil
   end
 
@@ -85,7 +84,6 @@ function flib_data_util.create_icons(prototype, new_layers)
       {
         icon = prototype.icon,
         icon_size = prototype.icon_size,
-        icon_mipmaps = prototype.icon_mipmaps,
         tint = { r = 1, g = 1, b = 1, a = 1 },
       },
     }
@@ -151,17 +149,15 @@ end
 --- @param position? MapPosition
 --- @param filename? string
 --- @param size? Vector
---- @param mipmap_count? number
 --- @param mods? table
 --- @return SpriteSpecification
-function flib_data_util.build_sprite(name, position, filename, size, mipmap_count, mods)
+function flib_data_util.build_sprite(name, position, filename, size, mods)
   local def = {
     type = "sprite",
     name = name,
     filename = filename,
     position = position,
     size = size,
-    mipmap_count = mipmap_count,
     flags = { "icon" },
   }
   if mods then
