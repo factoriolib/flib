@@ -1,7 +1,8 @@
 ---------------------------------------------------------------------------------------------------
-Version: 0.15.1
+Version: 0.16.0
 Date: ????
-  Changes:
+  Features:
+    - Added `flib_data_util.all()`, `flib_data_util.get()` for interacting with prototypes via their base type.
 ---------------------------------------------------------------------------------------------------
 Version: 0.15.0
 Date: 2024-10-14
