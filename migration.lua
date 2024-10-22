@@ -92,7 +92,7 @@ end
 function flib_migration.on_config_changed(e, migrations, mod_name, ...)
   local changes = e.mod_changes[mod_name or script.mod_name]
   local old_version = changes and changes.old_version
-  if old_version or not changes then
+  if old_version then
     if migrations then
       flib_migration.run(old_version, migrations, nil, ...)
     end
