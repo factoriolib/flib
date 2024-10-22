@@ -5,6 +5,7 @@ Date: ????
     - Added `flib_data_util.all()`, `flib_data_util.get()` for interacting with prototypes via their base type.
   Bugfixes:
     - Removed icon mipmaps properties from `data-util`; icon mipmaps are now automatically deduced by the game engine.
+    - Fixed a crash when attempting to use the `gui-templates` module due to an outdated require path. (#72)
 ---------------------------------------------------------------------------------------------------
 Version: 0.15.0
 Date: 2024-10-14

@@ -3,7 +3,7 @@ if ... ~= "__flib__.gui-templates" then
 end
 
 local flib_math = require("__flib__.math")
-local flib_gui = require("__flib__.gui-lite")
+local flib_gui = require("__flib__.gui")
 local flib_table = require("__flib__.table")
 local flib_technology = require("__flib__.technology")
 
