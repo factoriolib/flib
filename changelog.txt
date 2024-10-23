@@ -3,6 +3,7 @@ Version: 0.16.0
 Date: ????
   Features:
     - Added `flib_data_util.all()`, `flib_data_util.get()` for interacting with prototypes via their base type.
+    - Added `flib_position.abs()`.
   Bugfixes:
     - Removed icon mipmaps properties from `data-util`; icon mipmaps are now automatically deduced by the game engine.
     - Fixed a crash when attempting to use the `gui-templates` module due to an outdated require path. (#72)

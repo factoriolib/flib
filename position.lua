@@ -15,6 +15,18 @@ local flib_position = {}
 --- FIXME: Sumneko doesn't properly handle generics yet and throws a bunch of bogus warnings.
 --- @diagnostic disable
 
+--- Return the absolute value of the position's coordinates.
+--- @generic P
+--- @param pos P
+--- @return P
+function flib_position.abs(pos)
+  if pos.x then
+    return { x = math.abs(pos.x), y = math.abs(pos.y) }
+  else
+    return { math.abs(pos[1]), math.abs(pos[2]) }
+  end
+end
+
 --- Add two positions.
 --- @generic P
 --- @param pos1 P
