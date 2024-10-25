@@ -50,8 +50,8 @@ end
 ---
 --- Returns `nil` if the prototype's icons are incorrectly or incompletely defined.
 --- @param prototype table
---- @param new_layers? IconSpecification[]
---- @return IconSpecification[]|nil
+--- @param new_layers? data.IconData[]
+--- @return data.IconData[]|nil
 function flib_data_util.create_icons(prototype, new_layers)
   if new_layers then
     for _, new_layer in pairs(new_layers) do
@@ -150,8 +150,9 @@ end
 --- @param filename? string
 --- @param size? Vector
 --- @param mods? table
---- @return SpriteSpecification
+--- @return data.Sprite
 function flib_data_util.build_sprite(name, position, filename, size, mods)
+  --- @type data.Sprite
   local def = {
     type = "sprite",
     name = name,
@@ -247,13 +248,13 @@ flib_data_util.dark_red_button_tileset = "__flib__/graphics/dark-red-button.png"
 --- @overload fun(base_type: "virtual-signal"): data.VirtualSignalPrototype[]
 function flib_data_util.all(base_type)
   if not base_type then
-    error("flib_data_util.all() root was nil")
+    error("Did not provide a root")
   end
   if type(base_type) ~= "string" then
-    error("flib_data_util.all() root was not a string")
+    error("root must be a string")
   end
   if not defines.prototypes[base_type] then
-    error("flib_data_util.all(): '" .. base_type .. "' is not a valid base prototype type")
+    error("'" .. base_type .. "' is not a valid base prototype type")
   end
 
   local result = {}
@@ -332,20 +333,20 @@ end
 --- @overload fun(base_type: "virtual-signal", name: string?): data.VirtualSignalPrototype?
 function flib_data_util.get(base_type, name)
   if not base_type then
-    error("flib_data_util.get() base_type was nil")
+    error("Did not provide a base_type")
   end
   if type(base_type) ~= "string" then
-    error("flib_data_util.get() base_type was not a string")
+    error("base_type must be a string")
   end
   if not defines.prototypes[base_type] then
-    error("flib_data_util.get(): '" .. base_type .. "' is not a valid base prototype type")
+    error("'" .. base_type .. "' is not a valid base prototype type")
   end
 
   if not name then
-    error("flib_data_util.get() name was nil")
+    error("Did not provide a name")
   end
   if type(name) ~= "string" then
-    error("flib_data_util.get() name was not a string")
+    error("name must be a string")
   end
 
   for derived_type in pairs(defines.prototypes[base_type]) do

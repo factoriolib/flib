@@ -16,7 +16,7 @@ local table = require("__flib__.table")
 
 --- @class flib.DictionaryWipData
 --- @field dict string
---- @field dicts table<string, RawDictionary>
+--- @field dicts table<string, flib.TranslatedDictionary>
 --- @field finished boolean
 --- @field key string?
 --- @field last_batch_end flib.DictionaryTranslationRequest?
