@@ -248,10 +248,10 @@ flib_data_util.dark_red_button_tileset = "__flib__/graphics/dark-red-button.png"
 --- @overload fun(base_type: "virtual-signal"): data.VirtualSignalPrototype[]
 function flib_data_util.all(base_type)
   if not base_type then
-    error("Did not provide a root")
+    error("Did not provide a base_type")
   end
   if type(base_type) ~= "string" then
-    error("root must be a string")
+    error("base_type must be a string")
   end
   if not defines.prototypes[base_type] then
     error("'" .. base_type .. "' is not a valid base prototype type")
