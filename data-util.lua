@@ -360,8 +360,3 @@ function flib_data_util.get(base_type, name)
 end
 
 return flib_data_util
-
---- @class IconSpecification
---- @field icon string
---- @field icon_size int
---- @class SpriteSpecification
