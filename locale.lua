@@ -5,8 +5,8 @@ local flib_prototypes = require("__flib__.prototypes")
 local flib_locale = {}
 
 --- Returns the localised name of the given prototype.
---- @overload fun(prototype: data.PrototypeBase): LocalisedString
---- @overload fun(base_type: string, name: string): LocalisedString
+--- @overload fun(prototype: data.PrototypeBase): data.LocalisedString
+--- @overload fun(base_type: string, name: string): data.LocalisedString
 function flib_locale.of(prototype, name)
   -- In this case, `prototype` is actually `base_type`.
   if type(prototype) == "string" then
@@ -23,7 +23,7 @@ end
 
 --- Returns the localised name of the given item.
 --- @param item data.ItemPrototype
---- @return LocalisedString
+--- @return data.LocalisedString
 function flib_locale.of_item(item)
   if item.type ~= "item" then
     error("Given prototype is not an item: " .. serpent.block(item))
@@ -53,7 +53,7 @@ end
 
 --- Returns the localised name of the given recipe.
 --- @param recipe data.RecipePrototype
---- @return LocalisedString
+--- @return data.LocalisedString
 function flib_locale.of_recipe(recipe)
   if recipe.type ~= "recipe" then
     error("Given prototype is not an recipe: " .. serpent.block(recipe))
