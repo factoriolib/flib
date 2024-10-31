@@ -9,6 +9,7 @@ Date: ????
     - Removed icon mipmaps properties from `data-util`; icon mipmaps are now automatically deduced by the game engine.
     - Fixed a crash when attempting to use the `gui-templates` module due to an outdated require path. (#72)
     - Fixed that `flib_direction.from_positions` did not work correctly. (#74)
+    - Fixed that `flib_migration.on_config_changed` would run migrations unnecessarily. (#71, #73)
 ---------------------------------------------------------------------------------------------------
 Version: 0.15.0
 Date: 2024-10-14
