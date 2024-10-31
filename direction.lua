@@ -92,7 +92,7 @@ end
 --- @return defines.direction
 function flib_direction.from_positions(source, target, round)
   local deg = math.deg(math.atan2(target.y - source.y, target.x - source.x))
-  local direction = (deg + 90) / 45
+  local direction = (deg + 90) / 22.5
   if direction < 0 then
     direction = direction + 16
   end
