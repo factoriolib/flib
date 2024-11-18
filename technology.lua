@@ -19,7 +19,7 @@ function flib_technology.get_research_progress(technology, level)
       return 0
     end
   elseif technology.level == level then
-    return force.get_saved_technology_progress(technology) or 0
+    return technology.saved_progress
   else
     return 0
   end
@@ -33,7 +33,7 @@ function flib_technology.get_research_unit_count(technology, level)
   local formula = technology.research_unit_count_formula
   if formula then
     local level = level or technology.level
-    return math.floor(game.evaluate_expression(formula, { l = level, L = level }))
+    return math.floor(helpers.evaluate_expression(formula, { l = level, L = level }))
   end
   return math.floor(technology.research_unit_count)
 end
@@ -67,8 +67,8 @@ function flib_technology.sort_predicate(tech_a, tech_b)
     for i = 0, math.min(len_a, len_b) - 1 do
       local ingredient_a = ingredients_a[len_a - i]
       local ingredient_b = ingredients_b[len_b - i]
-      local order_a = game[ingredient_a.type .. "_prototypes"][ingredient_a.name].order
-      local order_b = game[ingredient_b.type .. "_prototypes"][ingredient_b.name].order
+      local order_a = prototypes.item[ingredient_a.name].order
+      local order_b = prototypes.item[ingredient_b.name].order
       -- Cheaper pack goes in front
       if order_a ~= order_b then
         return order_a < order_b
