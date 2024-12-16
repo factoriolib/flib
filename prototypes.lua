@@ -248,7 +248,9 @@ end
 --- @overload fun(base_type: "virtual-signal", name: string): data.VirtualSignalPrototype
 function flib_prototypes.get(base_type, name)
   local result = flib_prototypes.find(base_type, name)
-  assert(result, "Prototype '" .. base_type .. "/" .. name .. "' does not exist.")
+  if not result then
+    error("Prototype '" .. base_type .. "/" .. name .. "' does not exist.")
+  end
   return result
 end
 

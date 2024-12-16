@@ -1,6 +1,7 @@
 local flib_prototypes = require("__flib__.prototypes")
 
 --- Provides utilities for deducing the localised names of various prototypes in the prototype stage.
+--- Inspired by Rusty's Locale Utilities: https://github.com/theRustyKnife/rusty-locale
 --- @class flib_locale
 local flib_locale = {}
 
