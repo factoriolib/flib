@@ -17,7 +17,7 @@ local handlers = {}
 local handlers_lookup = {}
 
 --- Add a new child or children to the given GUI element.
---- @param parent LuaGuiElement Parent GUI element
+--- @param parent LuaGuiElement The parent GUI element.
 --- @param def flib.GuiElemDef|flib.GuiElemDef[] The element definition, or an array of element definitions.
 --- @param elems table<string, LuaGuiElement>? Optional initial `elems` table.
 --- @return table<string, LuaGuiElement> elems Elements with names will be collected into this table.
