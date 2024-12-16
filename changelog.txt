@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.16.0
-Date: ????
+Date: 2024-12-16
   Features:
     - Added `flib_locale` module with various utilities for deducing the localised names of prototypes in the prototype stage.
     - Added `flib_prototypes` module with various utilities for getting prototypes from data.raw.
