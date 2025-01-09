@@ -82,7 +82,7 @@ function flib_gui_templates.technology_slot(parent, technology, level, research_
     ingredients_flow.add({
       type = "sprite",
       style = "flib_technology_slot_ingredient",
-      sprite = ingredient.type .. "/" .. ingredient.name,
+      sprite = "item/" .. ingredient.name,
       ignored_by_interaction = true,
     })
   end
