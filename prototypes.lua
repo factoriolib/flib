@@ -79,9 +79,11 @@ function flib_prototypes.all(base_type)
   end
 
   local result = {}
+  local result_len = 0
   for prototype_type in pairs(defines.prototypes[base_type]) do
     for _, prototype in pairs(data.raw[prototype_type] or {}) do
-      result[#result + 1] = prototype
+      result_len = result_len + 1
+      result[result_len] = prototype
     end
   end
   return result
