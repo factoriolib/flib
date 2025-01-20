@@ -1,7 +1,10 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.16.1
 Date: ????
-  Changes:
+  Optimizations:
+    - Improved performance of `flib_prototypes.all()`.
+  Bugfixes:
+    - Fixed a crash when using `flib_gui_templates.technology_slot()`.
 ---------------------------------------------------------------------------------------------------
 Version: 0.16.0
 Date: 2024-12-16
