@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.16.2
-Date: ????
+Date: 2025-01-24
   Bugfixes:
     - Fixed that `flib_locale.of_item` would not accept all item subtypes.
     - Fixed that `flib_locale.of_recipe` would incorrectly return the main product name in some cases.
