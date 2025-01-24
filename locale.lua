@@ -65,11 +65,11 @@ function flib_locale.of_recipe(recipe)
   local main_product = recipe.main_product -- LuaLS gets confused if we don't assign to a local.
   if main_product == "" then
     return { "recipe-name." .. recipe.name }
-  elseif main_product then
+  elseif main_product and main_product == recipe.name then
     return flib_locale.of_item(flib_prototypes.get("item", main_product))
   end
   local results = recipe.results
-  if results and #results == 1 then
+  if results and #results == 1 and results[1].name == recipe.name then
     return flib_locale.of_item(flib_prototypes.get("item", results[1].name))
   end
   return { "recipe-name." .. recipe.name }
