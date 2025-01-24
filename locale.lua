@@ -26,7 +26,7 @@ end
 --- @param item data.ItemPrototype
 --- @return data.LocalisedString
 function flib_locale.of_item(item)
-  if item.type ~= "item" then
+  if not defines.prototypes.item[item.type] then
     error("Given prototype is not an item: " .. serpent.block(item))
   end
   if item.localised_name then
