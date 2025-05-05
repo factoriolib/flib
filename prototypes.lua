@@ -161,6 +161,9 @@ function flib_prototypes.find(base_type, name)
   if type(base_type) ~= "string" then
     error("base_type must be a string")
   end
+  if base_type == "" then
+    error("base_type must be a non-empty string")
+  end
   if not defines.prototypes[base_type] then
     error("'" .. base_type .. "' is not a valid base prototype type")
   end
@@ -170,6 +173,9 @@ function flib_prototypes.find(base_type, name)
   end
   if type(name) ~= "string" then
     error("name must be a string")
+  end
+  if name == "" then
+    error("name must be a non-empty string")
   end
 
   for derived_type in pairs(defines.prototypes[base_type]) do
