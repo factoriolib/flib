@@ -2,7 +2,7 @@ if ... ~= "__flib__.bounding-box" then
   return require("__flib__.bounding-box")
 end
 
-local position = require("__flib__.position")
+local flib_position = require("__flib__.position")
 
 --- Utilities for manipulating bounding boxes. All functions support both the shorthand and explicit syntaxes for boxes
 --- and positions, and will preserve the syntax that was passed in. Boxes are considered immutable; all functions will
@@ -67,7 +67,7 @@ end
 --- @return boolean
 function flib_bounding_box.contains_position(box, pos)
   local box = flib_bounding_box.ensure_explicit(box)
-  local pos = position.ensure_explicit(pos)
+  local pos = flib_position.ensure_explicit(pos)
   return box.left_top.x <= pos.x
     and box.left_top.y <= pos.y
     and box.right_bottom.x >= pos.x
@@ -79,8 +79,8 @@ end
 --- @return BoundingBox
 function flib_bounding_box.ensure_explicit(box)
   return {
-    left_top = position.ensure_explicit(box.left_top or box[1]),
-    right_bottom = position.ensure_explicit(box.right_bottom or box[2]),
+    left_top = flib_position.ensure_explicit(box.left_top or box[1]),
+    right_bottom = flib_position.ensure_explicit(box.right_bottom or box[2]),
   }
 end
 
@@ -89,8 +89,8 @@ end
 --- @return BoundingBox
 function flib_bounding_box.ensure_short(box)
   return {
-    position.ensure_short(box.left_top or box[1]),
-    position.ensure_short(box.right_bottom or box[2]),
+    flib_position.ensure_short(box.left_top or box[1]),
+    flib_position.ensure_short(box.right_bottom or box[2]),
   }
 end
 
@@ -131,7 +131,7 @@ end
 --- @param pos MapPosition
 --- @return BoundingBox
 function flib_bounding_box.expand_to_contain_position(box, pos)
-  local pos = position.ensure_explicit(pos)
+  pos = flib_position.ensure_explicit(pos)
 
   if box.left_top then
     return {
@@ -188,9 +188,9 @@ end
 --- @return BoundingBox
 function flib_bounding_box.from_position(pos, snap)
   if snap then
-    pos = position.floor(pos)
+    pos = flib_position.floor(pos)
   else
-    pos = position.sub(pos, { 0.5, 0.5 })
+    pos = flib_position.sub(pos, { 0.5, 0.5 })
   end
   local x = pos.x or pos[1]
   local y = pos.y or pos[2]
