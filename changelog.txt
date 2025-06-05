@@ -1,6 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.16.3
 Date: ????
+  Features:
+    - Added `flib_prototypes.get_base_type` method.
   Changes:
     - Improved error messaging of flib_prototypes functions.
 ---------------------------------------------------------------------------------------------------

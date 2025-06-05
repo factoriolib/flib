@@ -262,4 +262,23 @@ function flib_prototypes.get(base_type, name)
   return result
 end
 
+--- @type table<string, string?>
+local base_type_lookup = {}
+for base_type, derived_types in pairs(defines.prototypes) do
+  for derived_type in pairs(derived_types) do
+    base_type_lookup[derived_type] = base_type
+  end
+end
+
+--- Returns the base type of the given prototype type.
+--- @param derived_type string
+--- @return string
+function flib_prototypes.get_base_type(derived_type)
+  local base_type = base_type_lookup[derived_type]
+  if not base_type then
+    error("'" .. derived_type .. "' is not a valid prototype type.")
+  end
+  return base_type
+end
+
 return flib_prototypes
