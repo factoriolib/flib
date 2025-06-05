@@ -18,7 +18,7 @@ function flib_locale.of(prototype, name)
   elseif defines.prototypes.item[prototype.type] then
     return flib_locale.of_item(prototype --[[@as data.ItemPrototype]])
   else
-    return prototype.localised_name or { prototype.type .. "-name." .. prototype.name }
+    return prototype.localised_name or { flib_prototypes.get_base_type(prototype.type) .. "-name." .. prototype.name }
   end
 end
 

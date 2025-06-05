@@ -5,6 +5,8 @@ Date: ????
     - Added `flib_prototypes.get_base_type` method.
   Changes:
     - Improved error messaging of flib_prototypes functions.
+  Bugfixes:
+    - Fixed that `flib_locale.of` would give an incorrect result in some cases. (#80)
 ---------------------------------------------------------------------------------------------------
 Version: 0.16.2
 Date: 2025-01-24
